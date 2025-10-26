@@ -172,7 +172,7 @@ function handleRoomSelection(roomId) {
         return;
     }
 
-    selectedRoom = rooms.find(r => r.RoomID === roomId);
+    selectedRoom = rooms.find(r => r.RoomID == roomId); // Use loose equality here
     
     // --- SAFEGUARD ADDED HERE ---
     if (!selectedRoom) {
