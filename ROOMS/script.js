@@ -1,8 +1,8 @@
 // script.js
 
 // --- CONFIGURATION ---
-const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID'; // <-- IMPORTANT: Paste your Client ID here
-const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL'; // <-- IMPORTANT: Paste your Web App URL here
+const GOOGLE_CLIENT_ID = '750824340469-nrqmioc1jgoe6rjnuaqjdu9mh0b4or2o.apps.googleusercontent.com'; // <-- IMPORTANT: Paste your Client ID here
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzyzkJemDwWdQU_JMub5Jtm5Ss5u_WL2ebp-nFQkvzUj8Q4txiHfMPIgQkQn_mPT-muWQ/exec'; // <-- IMPORTANT: Paste your Web App URL here
 
 // --- STATE MANAGEMENT ---
 let currentUser = null;
