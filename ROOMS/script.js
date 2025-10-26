@@ -132,15 +132,15 @@ function showStep(stepId) {
     window.scrollTo(0, 0);
 }
 
+// --- UPDATED fetchRooms Function with Debugging ---
 async function fetchRooms() {
-    // This part you already have working: it fetches the data.
+    console.log("Fetching rooms...");
     const roomsData = await apiCall('getRooms');
     
-    if (roomsData) {
-        rooms = roomsData; // Store the rooms data globally
+    if (roomsData && roomsData.length > 0) {
+        rooms = roomsData;
+        console.log("Rooms fetched:", rooms); // Log the fetched rooms to see their structure
 
-        // This line creates the HTML for each room card and puts it on the page.
-        // Make sure your button has the class "select-room-btn".
         roomList.innerHTML = rooms.map(room => `
             <div class="room-card" data-room-id="${room.RoomID}">
                 <img src="${room.ImageURL}" alt="${room.RoomName}">
@@ -152,28 +152,36 @@ async function fetchRooms() {
             </div>
         `).join('');
 
-        // --- THIS IS THE CRUCIAL PART THAT WAS LIKELY MISSING ---
-        // After the buttons are on the page, we need to find them and add listeners.
         document.querySelectorAll('.select-room-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                // Find the unique ID of the room that was clicked
                 const roomId = e.target.closest('.room-card').dataset.roomId;
-                
-                // Call the function to proceed to the next step
+                console.log("Book Now clicked for RoomID:", roomId); // Log the specific ID being clicked
                 handleRoomSelection(roomId);
             });
         });
     } else {
         roomList.innerHTML = "<p>Could not load any rooms. Please check the connection and try again.</p>";
+        console.error("No room data was returned from the API, or the array is empty.");
     }
 }
 
+// --- UPDATED handleRoomSelection Function with Safeguard ---
 function handleRoomSelection(roomId) {
     if (!currentUser) {
         alert("Please sign in with Google to book a room.");
         return;
     }
+
     selectedRoom = rooms.find(r => r.RoomID === roomId);
+    
+    // --- SAFEGUARD ADDED HERE ---
+    if (!selectedRoom) {
+        console.error(`Error: Could not find a room with RoomID "${roomId}". Please check for typos or case-sensitivity issues between your HTML data-room-id and the data from Google Sheets.`, rooms);
+        alert("Oops! There was an error selecting this room. Please try refreshing the page.");
+        return; // Stop the function here to prevent the crash
+    }
+    
+    // This code will only run if the room was found successfully
     document.getElementById('schedule-title').innerText = `Schedule for ${selectedRoom.RoomName}`;
     selectedDate = new Date();
     currentMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
@@ -181,6 +189,7 @@ function handleRoomSelection(roomId) {
     fetchAndDisplayTimeSlots();
     showStep('schedule-selection');
 }
+
 
 // Calendar
 function renderCalendar() {
