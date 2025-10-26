@@ -132,11 +132,15 @@ function showStep(stepId) {
     window.scrollTo(0, 0);
 }
 
-// Room Selection
 async function fetchRooms() {
+    // This part you already have working: it fetches the data.
     const roomsData = await apiCall('getRooms');
+    
     if (roomsData) {
-        rooms = roomsData;
+        rooms = roomsData; // Store the rooms data globally
+
+        // This line creates the HTML for each room card and puts it on the page.
+        // Make sure your button has the class "select-room-btn".
         roomList.innerHTML = rooms.map(room => `
             <div class="room-card" data-room-id="${room.RoomID}">
                 <img src="${room.ImageURL}" alt="${room.RoomName}">
@@ -148,12 +152,19 @@ async function fetchRooms() {
             </div>
         `).join('');
 
+        // --- THIS IS THE CRUCIAL PART THAT WAS LIKELY MISSING ---
+        // After the buttons are on the page, we need to find them and add listeners.
         document.querySelectorAll('.select-room-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
+                // Find the unique ID of the room that was clicked
                 const roomId = e.target.closest('.room-card').dataset.roomId;
+                
+                // Call the function to proceed to the next step
                 handleRoomSelection(roomId);
             });
         });
+    } else {
+        roomList.innerHTML = "<p>Could not load any rooms. Please check the connection and try again.</p>";
     }
 }
 
