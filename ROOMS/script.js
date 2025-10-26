@@ -2,7 +2,7 @@
 
 // --- CONFIGURATION ---
 const GOOGLE_CLIENT_ID = '750824340469-nrqmioc1jgoe6rjnuaqjdu9mh0b4or2o.apps.googleusercontent.com'; // <-- IMPORTANT: Paste your Client ID here
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyPmjwcHnrt3bFUx0ViZQfKvSgRqEBKQlZI_qDx2kQVQ4NhUv7EkZFPrtaQFGg5qhzNQg/exec'; // <-- IMPORTANT: Paste your Web App URL here
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxyYl1HK6NPuwjCIH30gTUK8d2Ciz9JZPnGuUnu7tVhhUHwQnyQmD35Dt_7VDdJCCdZuw/exec'; // <-- IMPORTANT: Paste your Web App URL here
 
 // --- STATE MANAGEMENT ---
 let currentUser = null;
