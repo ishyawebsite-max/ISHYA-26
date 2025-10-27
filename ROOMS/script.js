@@ -2,42 +2,22 @@
 
 // --- CONFIGURATION ---
 const GOOGLE_CLIENT_ID = '750824340469-nrqmioc1jgoe6rjnuaqjdu9mh0b4or2o.apps.googleusercontent.com'; // <-- IMPORTANT: Paste your Client ID here
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYuhr_xzXkELNlTwUKjNDIUYgBi_x8iwbRSUmy0_GomyzpvtG9-RDoSP7LgE_t9mjaAw/exec'; // <-- IMPORTANT: Paste your Web App URL here
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw2CjjvbujaHq5LH07agVARwmKODyJ13RD1meQM4kvalcbFecjSKhBPdBZagvTg2bRL0A/exec'; // <-- IMPORTANT: Paste your Web App URL here
 
-// --- COMPLETE & CORRE
 
-// --- STATE MANAGEMENT ---
-let currentUser = null;
-let rooms = [];
-let selectedRoom = null;
-let selectedDate = new Date();
-let selectedSlots = [];
-let currentMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
+let currentUser = null, rooms = [], selectedRoom = null, selectedDate = new Date(), selectedSlots = [], currentMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
+const loader = document.getElementById('loader'), roomList = document.getElementById('room-list'), roomSelectionStep = document.getElementById('room-selection'), scheduleSelectionStep = document.getElementById('schedule-selection');
 
-// --- DOM ELEMENTS ---
-const loader = document.getElementById('loader');
-const roomList = document.getElementById('room-list');
-const roomSelectionStep = document.getElementById('room-selection');
-const scheduleSelectionStep = document.getElementById('schedule-selection');
-
-// --- INITIALIZATION ---
 window.onload = function () {
-    google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleCredentialResponse
-    });
-    google.accounts.id.renderButton(
-        document.getElementById('auth-container'), { theme: 'outline', size: 'large' }
-    );
+    google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handleCredentialResponse });
+    google.accounts.id.renderButton(document.getElementById('auth-container'), { theme: 'outline', size: 'large' });
     google.accounts.id.prompt();
     setupEventListeners();
     fetchRooms();
 };
 
-// --- AUTHENTICATION ---
 function handleCredentialResponse(response) {
-    const id_token = response.credential;
-    const decodedToken = JSON.parse(atob(id_token.split('.')[1]));
+    const decodedToken = JSON.parse(atob(response.credential.split('.')[1]));
     currentUser = { name: decodedToken.name, email: decodedToken.email, picture: decodedToken.picture };
     updateAuthUI();
 }
@@ -45,21 +25,12 @@ function handleCredentialResponse(response) {
 function updateAuthUI() {
     const authContainer = document.getElementById('auth-container');
     if (currentUser) {
-        authContainer.innerHTML = `
-            <div id="user-profile">
-                <img src="${currentUser.picture}" alt="User profile picture">
-                <span>${currentUser.name}</span>
-                <button id="my-bookings-btn">My Bookings</button>
-                <button id="logout-btn">Log Out</button>
-            </div>
-        `;
+        authContainer.innerHTML = `<div id="user-profile"><img src="${currentUser.picture}" alt="User profile picture"><span>${currentUser.name}</span><button id="my-bookings-btn">My Bookings</button><button id="logout-btn">Log Out</button></div>`;
         document.getElementById('logout-btn').addEventListener('click', handleSignOut);
         document.getElementById('my-bookings-btn').addEventListener('click', openMyBookingsModal);
     } else {
         authContainer.innerHTML = '';
-        google.accounts.id.renderButton(
-            authContainer, { theme: 'outline', size: 'large' }
-        );
+        google.accounts.id.renderButton(authContainer, { theme: 'outline', size: 'large' });
     }
 }
 
@@ -69,38 +40,27 @@ function handleSignOut() {
     updateAuthUI();
 }
 
-// --- API CALLS ---
 async function apiCall(action, payload = {}) {
     showLoader();
     try {
-        const response = await fetch(APPS_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'cors',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ action, ...payload })
-        });
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        const response = await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action, ...payload }) });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         return await response.json();
     } catch (error) {
         console.error('API Call Error:', error);
-        alert('An error occurred while communicating with the server. Please check the console for details.');
+        alert('An error occurred. Please check the console.');
         return null;
     } finally {
         hideLoader();
     }
 }
 
-// --- UI RENDERING & LOGIC ---
 function setupEventListeners() {
     document.querySelector('.back-btn').addEventListener('click', () => showStep('room-selection'));
     document.getElementById('prev-month').addEventListener('click', () => changeMonth(-1));
     document.getElementById('next-month').addEventListener('click', () => changeMonth(1));
     document.getElementById('proceed-to-booking-btn').addEventListener('click', openBookingModal);
-    document.querySelectorAll('.modal-wrapper .close-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => e.target.closest('.modal-wrapper').classList.add('hidden'));
-    });
+    document.querySelectorAll('.modal-wrapper .close-btn').forEach(btn => btn.addEventListener('click', (e) => e.target.closest('.modal-wrapper').classList.add('hidden')));
     document.getElementById('booking-form').addEventListener('submit', handleBookingSubmit);
 }
 
@@ -114,32 +74,13 @@ async function fetchRooms() {
     const roomsData = await apiCall('getRooms');
     if (roomsData) {
         rooms = roomsData;
-        roomList.innerHTML = rooms.map(room => `
-            <div class="room-card" data-room-id="${room.RoomID}">
-                <img src="${room.ImageURL}" alt="${room.RoomName}">
-                <div class="room-card-content">
-                    <h3>${room.RoomName}</h3>
-                    <p>${room.Description}</p>
-                    <button class="cta-btn select-room-btn">Book Now</button>
-                </div>
-            </div>
-        `).join('');
-        document.querySelectorAll('.select-room-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const card = e.target.closest('.room-card');
-                if (card) {
-                    handleRoomSelection(card.dataset.roomId);
-                }
-            });
-        });
+        roomList.innerHTML = rooms.map(room => `<div class="room-card" data-room-id="${room.RoomID}"><img src="${room.ImageURL}" alt="${room.RoomName}"><div class="room-card-content"><h3>${room.RoomName}</h3><p>${room.Description}</p><button class="cta-btn select-room-btn">Book Now</button></div></div>`).join('');
+        document.querySelectorAll('.select-room-btn').forEach(btn => btn.addEventListener('click', (e) => handleRoomSelection(e.target.closest('.room-card').dataset.roomId)));
     }
 }
 
 function handleRoomSelection(roomId) {
-    if (!currentUser) {
-        alert("Please sign in with Google to book a room.");
-        return;
-    }
+    if (!currentUser) { alert("Please sign in to book a room."); return; }
     selectedRoom = rooms.find(r => String(r.RoomID) === String(roomId));
     if (selectedRoom) {
         document.getElementById('schedule-title').innerText = `Schedule for ${selectedRoom.RoomName}`;
@@ -152,42 +93,23 @@ function handleRoomSelection(roomId) {
 }
 
 function renderCalendar() {
-    const monthYearEl = document.getElementById('month-year');
-    const calendarGrid = document.querySelector('.calendar-grid');
-    calendarGrid.innerHTML = '';
-    const month = currentMonth.getMonth();
-    const year = currentMonth.getFullYear();
+    const monthYearEl = document.getElementById('month-year'), grid = document.querySelector('.calendar-grid');
+    grid.innerHTML = '';
+    const month = currentMonth.getMonth(), year = currentMonth.getFullYear();
     monthYearEl.textContent = `${currentMonth.toLocaleString('default', { month: 'long' })} ${year}`;
-    ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
-        const dayEl = document.createElement('div');
-        dayEl.textContent = day;
-        dayEl.classList.add('calendar-day-name');
-        calendarGrid.appendChild(dayEl);
-    });
-    const firstDay = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    for (let i = 0; i < firstDay; i++) {
-        calendarGrid.appendChild(document.createElement('div'));
-    }
+    ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => { const el = document.createElement('div'); el.textContent = day; el.classList.add('calendar-day-name'); grid.appendChild(el); });
+    const firstDay = new Date(year, month, 1).getDay(), daysInMonth = new Date(year, month + 1, 0).getDate();
+    for (let i = 0; i < firstDay; i++) grid.appendChild(document.createElement('div'));
     for (let i = 1; i <= daysInMonth; i++) {
         const dayEl = document.createElement('div');
         dayEl.textContent = i;
         dayEl.classList.add('calendar-day');
-        const today = new Date();
-        const date = new Date(year, month, i);
-        if (date < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
-            dayEl.classList.add('disabled');
-        } else {
-            dayEl.addEventListener('click', () => {
-                selectedDate = date;
-                document.querySelectorAll('.calendar-day.selected').forEach(d => d.classList.remove('selected'));
-                dayEl.classList.add('selected');
-                fetchAndDisplayTimeSlots();
-            });
-        }
+        const today = new Date(), date = new Date(year, month, i);
+        if (date < new Date(today.getFullYear(), today.getMonth(), today.getDate())) dayEl.classList.add('disabled');
+        else dayEl.addEventListener('click', () => { selectedDate = date; document.querySelectorAll('.calendar-day.selected').forEach(d => d.classList.remove('selected')); dayEl.classList.add('selected'); fetchAndDisplayTimeSlots(); });
         if (date.toDateString() === selectedDate.toDateString()) dayEl.classList.add('selected');
         if (date.toDateString() === today.toDateString()) dayEl.classList.add('today');
-        calendarGrid.appendChild(dayEl);
+        grid.appendChild(dayEl);
     }
 }
 
@@ -197,24 +119,17 @@ function changeMonth(offset) {
 }
 
 function getLocalDateString(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 }
 
 async function fetchAndDisplayTimeSlots() {
     selectedSlots = [];
     updateProceedButton();
     const dateStr = getLocalDateString(selectedDate);
-    // THIS LINE IS FIXED
     document.getElementById('selected-date-display').textContent = selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
     const timeslotGrid = document.getElementById('timeslot-grid');
     timeslotGrid.innerHTML = '<em>Loading slots...</em>';
-    const availability = await apiCall('getAvailability', {
-        roomId: selectedRoom.RoomID,
-        date: dateStr
-    });
+    const availability = await apiCall('getAvailability', { roomId: selectedRoom.RoomID, date: dateStr });
     if (availability) {
         const duration = selectedRoom.DurationMinutes || 30;
         timeslotGrid.innerHTML = '';
@@ -226,20 +141,18 @@ async function fetchAndDisplayTimeSlots() {
                 slotBtn.textContent = new Date(`1970-01-01T${time}:00`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
                 slotBtn.dataset.time = time;
                 const status = availability[time] || { confirmed: 0, waitlisted: 0 };
+
+                // Simplified, stable logic
                 if (status.confirmed >= 1 && status.waitlisted >= 1) {
                     slotBtn.classList.add('booked');
                     slotBtn.disabled = true;
-                    slotBtn.title = "This slot is fully booked.";
                 } else if (status.confirmed >= 1) {
                     slotBtn.classList.add('waitlist');
-                    slotBtn.title = "Slot available for waitlist only.";
                 } else {
                     slotBtn.classList.add('available');
-                    slotBtn.title = "This slot is available.";
                 }
-                if (!slotBtn.disabled) {
-                    slotBtn.addEventListener('click', () => toggleSlotSelection(slotBtn));
-                }
+
+                if (!slotBtn.disabled) slotBtn.addEventListener('click', () => toggleSlotSelection(slotBtn));
                 timeslotGrid.appendChild(slotBtn);
             }
         }
@@ -253,11 +166,7 @@ function toggleSlotSelection(slotBtn) {
         selectedSlots.splice(index, 1);
         slotBtn.classList.remove('selected');
     } else {
-        selectedSlots.push({
-            roomId: selectedRoom.RoomID,
-            date: getLocalDateString(selectedDate),
-            time: time
-        });
+        selectedSlots.push({ roomId: selectedRoom.RoomID, date: getLocalDateString(selectedDate), time: time });
         slotBtn.classList.add('selected');
     }
     updateProceedButton();
@@ -275,67 +184,41 @@ function openBookingModal() {
     document.getElementById('user-email').value = currentUser.email;
     const summaryEl = document.getElementById('booking-summary');
     const displayDate = new Date(selectedSlots[0].date + 'T00:00:00Z').toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' });
-    summaryEl.innerHTML = `
-        <p><strong>Room:</strong> ${selectedRoom.RoomName}</p>
-        <p><strong>Date:</strong> ${displayDate}</p>
-        <p><strong>Time Slots:</strong> ${selectedSlots.map(s => s.time).sort().join(', ')}</p>
-    `;
+    summaryEl.innerHTML = `<p><strong>Room:</strong> ${selectedRoom.RoomName}</p><p><strong>Date:</strong> ${displayDate}</p><p><strong>Time Slots:</strong> ${selectedSlots.map(s => s.time).sort().join(', ')}</p>`;
     document.getElementById('booking-modal').classList.remove('hidden');
 }
 
 async function handleBookingSubmit(e) {
     e.preventDefault();
-    const bookingDetails = {
-        user: currentUser,
-        roomName: selectedRoom.RoomName,
-        slots: selectedSlots,
-        participants: document.getElementById('participants').value,
-        notes: document.getElementById('notes').value
-    };
+    const bookingDetails = { user: currentUser, roomName: selectedRoom.RoomName, slots: selectedSlots, participants: document.getElementById('participants').value, notes: document.getElementById('notes').value };
     const result = await apiCall('makeBooking', { bookingDetails });
     if (result && result.status === 'completed') {
-        let successMessage = "Your booking request has been processed:\n";
-        result.results.forEach(res => {
-            successMessage += `- ${res.time}: ${res.bookingStatus || res.message}\n`;
-        });
+        let successMessage = "Booking request processed:\n";
+        result.results.forEach(res => { successMessage += `- ${res.time}: ${res.bookingStatus || res.message}\n`; });
         alert(successMessage);
         document.getElementById('booking-modal').classList.add('hidden');
         document.getElementById('booking-form').reset();
         fetchAndDisplayTimeSlots();
     } else {
-        alert('Booking failed. The slot may have been taken. Please try again.');
+        alert('Booking failed. The slot may have been taken.');
     }
 }
 
 async function openMyBookingsModal() {
-    const modal = document.getElementById('my-bookings-modal');
-    const listEl = document.getElementById('user-bookings-list');
+    const modal = document.getElementById('my-bookings-modal'), listEl = document.getElementById('user-bookings-list');
     listEl.innerHTML = '<p>Loading your bookings...</p>';
     modal.classList.remove('hidden');
     const bookings = await apiCall('getUserBookings', { userEmail: currentUser.email });
     if (bookings && bookings.length > 0) {
-        listEl.innerHTML = bookings
-            .sort((a, b) => {
-                const dateA = new Date(a.BookingDate.split('/').reverse().join('-'));
-                const dateB = new Date(b.BookingDate.split('/').reverse().join('-'));
-                return dateB - dateA;
-            })
+        listEl.innerHTML = bookings.sort((a, b) => new Date(b.BookingDate.split('/').reverse().join('-')) - new Date(a.BookingDate.split('/').reverse().join('-')))
             .map(b => {
                 const room = rooms.find(r => String(r.RoomID) === String(b.RoomID)) || { RoomName: b.RoomID };
                 const bookingDate = new Date(b.BookingDate.split('/').reverse().join('-'));
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
+                const today = new Date(); today.setHours(0, 0, 0, 0);
                 const canCancel = b.Status !== 'Canceled' && bookingDate >= today;
-                return `
-                <div class="booking-item" data-status="${b.Status}">
-                    <h4>${room.RoomName} - ${b.Status}</h4>
-                    <p>${b.BookingDate} at ${b.StartTime}</p>
-                    ${canCancel ? `<button class="cta-btn cancel-btn" data-booking-id="${b.BookingID}">Cancel</button>` : ''}
-                </div>
-            `}).join('');
-        document.querySelectorAll('.cancel-btn').forEach(btn => {
-            btn.addEventListener('click', handleCancelBooking);
-        });
+                return `<div class="booking-item" data-status="${b.Status}"><h4>${room.RoomName} - ${b.Status}</h4><p>${b.BookingDate} at ${b.StartTime}</p>${canCancel ? `<button class="cta-btn cancel-btn" data-booking-id="${b.BookingID}">Cancel</button>` : ''}</div>`;
+            }).join('');
+        document.querySelectorAll('.cancel-btn').forEach(btn => btn.addEventListener('click', handleCancelBooking));
     } else {
         listEl.innerHTML = '<p>You have no bookings.</p>';
     }
@@ -343,16 +226,14 @@ async function openMyBookingsModal() {
 
 async function handleCancelBooking(e) {
     const bookingId = e.target.dataset.bookingId;
-    if (confirm("Are you sure you want to cancel this booking? This action cannot be undone.")) {
+    if (confirm("Are you sure you want to cancel this booking?")) {
         const result = await apiCall('cancelBooking', { bookingId, userEmail: currentUser.email });
         if (result && result.status === 'success') {
             alert(result.message);
             openMyBookingsModal();
-            if (selectedRoom) {
-                fetchAndDisplayTimeSlots();
-            }
+            if (selectedRoom) fetchAndDisplayTimeSlots();
         } else {
-            alert(result ? result.message : 'Failed to cancel booking.');
+            alert(result ? result.message : 'Failed to cancel.');
         }
     }
 }
