@@ -2,7 +2,7 @@
 
 // --- CONFIGURATION ---
 const GOOGLE_CLIENT_ID = '750824340469-nrqmioc1jgoe6rjnuaqjdu9mh0b4or2o.apps.googleusercontent.com'; // <-- IMPORTANT: Paste your Client ID here
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxTIuL0VtFz6f7UjAEiLQ1RIveRHg2J75ouNR0We_0QRJtjdFLtt_CORagT9O-8ghzzkA/exec'; // <-- IMPORTANT: Paste your Web App URL here
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyeHFu-l9WxZdEQ1r6Ql-FCSQwii63I1zTS-tX4JllvZ2EAtmd5kOxcbePoF8Sb5_TnHg/exec'; // <-- IMPORTANT: Paste your Web App URL here
 
 
 let currentUser = null, rooms = [], selectedRoom = null, selectedDate = new Date(), selectedSlots = [], currentMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
@@ -182,8 +182,10 @@ function openBookingModal() {
     document.getElementById('user-name').value = currentUser.name;
     document.getElementById('user-email').value = currentUser.email;
     const summaryEl = document.getElementById('booking-summary');
-    const displayDate = new Date(selectedSlots[0].date + 'T00:00:00Z').toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' });
-    summaryEl.innerHTML = `<p><strong>Room:</strong> ${selectedRoom.RoomName}</p><p><strong>Date:</strong> ${displayDate}</p><p><strong>Time Slots:</strong> ${selectedSlots.map(s => s.time).sort().join(', ')}</p>`;
+    // Using a reliable way to parse the date string without timezone issues
+    const [year, month, day] = selectedSlots[0].date.split('-');
+    const displayDate = new Date(year, month - 1, day).toLocaleDateString('en-GB'); // DD/MM/YYYY
+    summaryEl.innerHTML = `<p><strong>Room:</strong> ${selectedRoom.RoomName}</p><p><strong>Date:</strong> ${displayDate}</p><p><strong>Time Slots:</strong> ${selectedSlots.map(s => new Date(`1970-01-01T${s.time}:00`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })).sort().join(', ')}</p>`;
     document.getElementById('booking-modal').classList.remove('hidden');
 }
 
@@ -193,13 +195,16 @@ async function handleBookingSubmit(e) {
     const result = await apiCall('makeBooking', { bookingDetails });
     if (result && result.status === 'completed') {
         let successMessage = "Booking request processed:\n";
-        result.results.forEach(res => { successMessage += `- ${res.time}: ${res.bookingStatus || res.message}\n`; });
+        result.results.forEach(res => { 
+            const formattedTime = new Date(`1970-01-01T${res.time}:00`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+            successMessage += `- ${formattedTime}: ${res.bookingStatus || res.message}\n`; 
+        });
         alert(successMessage);
         document.getElementById('booking-modal').classList.add('hidden');
         document.getElementById('booking-form').reset();
-        fetchAndDisplayTimeSlots();
+        fetchAndDisplayTimeSlots(); // Refresh slots to show new status
     } else {
-        alert('Booking failed. The slot may have been taken.');
+        alert(`Booking failed. ${result ? result.message : 'The slot may have been taken.'}`);
     }
 }
 
@@ -209,13 +214,16 @@ async function openMyBookingsModal() {
     modal.classList.remove('hidden');
     const bookings = await apiCall('getUserBookings', { userEmail: currentUser.email });
     if (bookings && bookings.length > 0) {
+        // Sort bookings by date, most recent first
         listEl.innerHTML = bookings.sort((a, b) => new Date(b.BookingDate.split('/').reverse().join('-')) - new Date(a.BookingDate.split('/').reverse().join('-')))
             .map(b => {
-                const room = rooms.find(r => String(r.RoomID) === String(b.RoomID)) || { RoomName: b.RoomID };
-                const bookingDate = new Date(b.BookingDate.split('/').reverse().join('-'));
+                const room = rooms.find(r => String(r.RoomID) === String(b.RoomID)) || { RoomName: `Room ID ${b.RoomID}` };
+                const bookingDate = new Date(b.BookingDate.split('/').reverse().join('-') + 'T00:00:00');
                 const today = new Date(); today.setHours(0, 0, 0, 0);
                 const canCancel = b.Status !== 'Canceled' && bookingDate >= today;
-                return `<div class="booking-item" data-status="${b.Status}"><h4>${room.RoomName} - ${b.Status}</h4><p>${b.BookingDate} at ${b.StartTime}</p>${canCancel ? `<button class="cta-btn cancel-btn" data-booking-id="${b.BookingID}">Cancel</button>` : ''}</div>`;
+                const formattedTime = new Date(`1970-01-01T${b.StartTime}:00`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+
+                return `<div class="booking-item" data-status="${b.Status}"><h4>${room.RoomName} - <strong>${b.Status}</strong></h4><p>${b.BookingDate} at ${formattedTime}</p>${canCancel ? `<button class="cta-btn cancel-btn" data-booking-id="${b.BookingID}">Cancel Booking</button>` : ''}</div>`;
             }).join('');
         document.querySelectorAll('.cancel-btn').forEach(btn => btn.addEventListener('click', handleCancelBooking));
     } else {
@@ -225,14 +233,17 @@ async function openMyBookingsModal() {
 
 async function handleCancelBooking(e) {
     const bookingId = e.target.dataset.bookingId;
-    if (confirm("Are you sure you want to cancel this booking?")) {
+    if (confirm("Are you sure you want to cancel this booking? This action cannot be undone.")) {
         const result = await apiCall('cancelBooking', { bookingId, userEmail: currentUser.email });
         if (result && result.status === 'success') {
             alert(result.message);
-            openMyBookingsModal();
-            if (selectedRoom) fetchAndDisplayTimeSlots();
+            openMyBookingsModal(); // Refresh the bookings list
+            // If the user is on the schedule page for the canceled room, refresh its slots
+            if (scheduleSelectionStep.classList.contains('active')) {
+                fetchAndDisplayTimeSlots();
+            }
         } else {
-            alert(result ? result.message : 'Failed to cancel.');
+            alert(result ? result.message : 'Failed to cancel booking.');
         }
     }
 }
