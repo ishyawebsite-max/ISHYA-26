@@ -4,9 +4,7 @@
 const GOOGLE_CLIENT_ID = '750824340469-nrqmioc1jgoe6rjnuaqjdu9mh0b4or2o.apps.googleusercontent.com'; // <-- IMPORTANT: Paste your Client ID here
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYuhr_xzXkELNlTwUKjNDIUYgBi_x8iwbRSUmy0_GomyzpvtG9-RDoSP7LgE_t9mjaAw/exec'; // <-- IMPORTANT: Paste your Web App URL here
 
-// --- COMPLETE & MORE ROBUST script.js (Expanded for Readability) ---
-
-/
+// --- COMPLETE & CORRE
 
 // --- STATE MANAGEMENT ---
 let currentUser = null;
@@ -112,7 +110,6 @@ function showStep(stepId) {
     window.scrollTo(0, 0);
 }
 
-// --- Room Selection ---
 async function fetchRooms() {
     const roomsData = await apiCall('getRooms');
     if (roomsData) {
@@ -143,7 +140,7 @@ function handleRoomSelection(roomId) {
         alert("Please sign in with Google to book a room.");
         return;
     }
-    selectedRoom = rooms.find(r => r.RoomID === roomId);
+    selectedRoom = rooms.find(r => String(r.RoomID) === String(roomId));
     if (selectedRoom) {
         document.getElementById('schedule-title').innerText = `Schedule for ${selectedRoom.RoomName}`;
         selectedDate = new Date();
@@ -154,7 +151,6 @@ function handleRoomSelection(roomId) {
     }
 }
 
-// --- Calendar ---
 function renderCalendar() {
     const monthYearEl = document.getElementById('month-year');
     const calendarGrid = document.querySelector('.calendar-grid');
@@ -200,8 +196,6 @@ function changeMonth(offset) {
     renderCalendar();
 }
 
-// --- TIME SLOTS (WITH DATE & WAITLIST FIXES) ---
-
 function getLocalDateString(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -213,6 +207,7 @@ async function fetchAndDisplayTimeSlots() {
     selectedSlots = [];
     updateProceedButton();
     const dateStr = getLocalDateString(selectedDate);
+    // THIS LINE IS FIXED
     document.getElementById('selected-date-display').textContent = selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
     const timeslotGrid = document.getElementById('timeslot-grid');
     timeslotGrid.innerHTML = '<em>Loading slots...</em>';
@@ -231,7 +226,6 @@ async function fetchAndDisplayTimeSlots() {
                 slotBtn.textContent = new Date(`1970-01-01T${time}:00`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
                 slotBtn.dataset.time = time;
                 const status = availability[time] || { confirmed: 0, waitlisted: 0 };
-
                 if (status.confirmed >= 1 && status.waitlisted >= 1) {
                     slotBtn.classList.add('booked');
                     slotBtn.disabled = true;
@@ -275,7 +269,6 @@ function updateProceedButton() {
     btn.textContent = selectedSlots.length > 0 ? `Book ${selectedSlots.length} Slot(s)` : 'Book Selected Slots';
 }
 
-// --- Booking Modal & Submission ---
 function openBookingModal() {
     if (selectedSlots.length === 0) return;
     document.getElementById('user-name').value = currentUser.name;
@@ -314,7 +307,6 @@ async function handleBookingSubmit(e) {
     }
 }
 
-// --- My Bookings Modal ---
 async function openMyBookingsModal() {
     const modal = document.getElementById('my-bookings-modal');
     const listEl = document.getElementById('user-bookings-list');
@@ -365,6 +357,5 @@ async function handleCancelBooking(e) {
     }
 }
 
-// --- UTILITIES ---
 function showLoader() { loader.classList.remove('hidden'); }
 function hideLoader() { loader.classList.add('hidden'); }
