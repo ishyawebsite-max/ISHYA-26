@@ -2,7 +2,7 @@
 
 // --- CONFIGURATION ---
 const GOOGLE_CLIENT_ID = '750824340469-nrqmioc1jgoe6rjnuaqjdu9mh0b4or2o.apps.googleusercontent.com'; // <-- IMPORTANT: Paste your Client ID here
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw2CjjvbujaHq5LH07agVARwmKODyJ13RD1meQM4kvalcbFecjSKhBPdBZagvTg2bRL0A/exec'; // <-- IMPORTANT: Paste your Web App URL here
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwAVKfKOZrFAtMFLvhflZdgNVmz-J-88jn5A_pMQKNdwHs3fjVz2YFI10vCyzrJz_vOnw/exec'; // <-- IMPORTANT: Paste your Web App URL here
 
 
 let currentUser = null, rooms = [], selectedRoom = null, selectedDate = new Date(), selectedSlots = [], currentMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
@@ -141,8 +141,7 @@ async function fetchAndDisplayTimeSlots() {
                 slotBtn.textContent = new Date(`1970-01-01T${time}:00`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
                 slotBtn.dataset.time = time;
                 const status = availability[time] || { confirmed: 0, waitlisted: 0 };
-
-                // Simplified, stable logic
+                
                 if (status.confirmed >= 1 && status.waitlisted >= 1) {
                     slotBtn.classList.add('booked');
                     slotBtn.disabled = true;
