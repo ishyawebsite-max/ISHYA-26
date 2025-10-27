@@ -141,7 +141,7 @@ function handleRoomSelection(roomId) {
         alert("Please sign in to book a room.");
         return;
     }
-    selectedRoom = rooms.find(r => r.RoomID === roomId);
+    selectedRoom = rooms.find(r => r.RoomID == roomId);
     if (selectedRoom) {
         document.getElementById('schedule-title').innerText = `Schedule for ${selectedRoom.RoomName}`;
         selectedDate = new Date();
