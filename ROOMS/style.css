@@ -1,12 +1,14 @@
-/* style.css */
+/* --- COMPLETE & CORRECTED style.css --- */
 :root {
     --bg-color: #0d1117;
     --primary-color: #161b22;
     --border-color: #30363d;
     --text-color: #c9d1d9;
     --text-secondary: #8b949e;
-    --accent-color: #f0b90b;
+    --accent-color: #f0b90b; /* Gold/Yellow */
     --accent-hover: #f8d32b;
+    --waitlist-color: #388bfd; /* Bright Blue */
+    --booked-color: #8b0808; /* Dark Red/Maroon */
     --font-family: 'Poppins', sans-serif;
 }
 
@@ -193,7 +195,7 @@ h2 {
     opacity: 0.5;
 }
 
-/* Time Slots */
+/* Time Slots - NEW STYLES */
 #timeslot-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -208,45 +210,53 @@ h2 {
     color: var(--text-color);
     border-radius: 5px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
+    font-weight: 500;
 }
 
+/* AVAILABLE STATE */
 .timeslot-btn.available:hover {
     background: var(--border-color);
+    border-color: var(--text-color);
 }
 
+/* SELECTED STATE (by user) */
 .timeslot-btn.selected {
     background-color: var(--accent-color);
-    border-color: var(--accent-color);
+    border-color: var(--accent-hover);
     color: var(--bg-color);
     font-weight: 600;
+    transform: scale(1.05);
 }
 
+/* WAITLIST STATE (1 booking exists) */
 .timeslot-btn.waitlist {
-    border-style: dashed;
-    border-color: var(--accent-color);
-    color: var(--accent-color);
+    border-color: var(--waitlist-color);
+    color: var(--waitlist-color);
 }
-
 .timeslot-btn.waitlist:hover {
-    background: rgba(240, 185, 11, 0.1);
+    background: rgba(56, 139, 253, 0.15); /* Blue glow */
 }
 
+/* BOOKED STATE (Confirmed + Waitlist exist) */
 .timeslot-btn.booked {
-    background-color: #333;
-    color: #777;
+    background-color: var(--booked-color);
+    border-color: var(--booked-color);
+    color: rgba(255, 255, 255, 0.4);
+    text-decoration: line-through;
     cursor: not-allowed;
-    border-color: #444;
 }
 
+.info-text { /* ... no changes ... */ }
+
+/* Modal Styling */
+/* ... no changes needed for the rest of the file ... */
 .info-text {
     font-size: 0.8rem;
     color: var(--text-secondary);
     text-align: center;
     margin: 1rem 0;
 }
-
-/* Modal Styling */
 .modal-wrapper {
     position: fixed;
     top: 0;
@@ -259,7 +269,6 @@ h2 {
     align-items: center;
     z-index: 1000;
 }
-
 .modal-content {
     background: var(--primary-color);
     padding: 2rem;
@@ -269,7 +278,6 @@ h2 {
     position: relative;
     border: 1px solid var(--border-color);
 }
-
 .close-btn {
     position: absolute;
     top: 15px;
@@ -277,17 +285,14 @@ h2 {
     font-size: 1.5rem;
     cursor: pointer;
 }
-
 #booking-form .form-group {
     margin-bottom: 1rem;
 }
-
 #booking-form label {
     display: block;
     margin-bottom: 5px;
     color: var(--text-secondary);
 }
-
 #booking-form input, #booking-form textarea {
     width: 100%;
     padding: 10px;
@@ -296,19 +301,15 @@ h2 {
     border-radius: 5px;
     color: var(--text-color);
 }
-
 #booking-form input:disabled {
     background: #222;
 }
-
 #booking-summary {
     background: var(--bg-color);
     padding: 1rem;
     border-radius: 5px;
     margin-bottom: 1.5rem;
 }
-
-/* My Bookings Modal */
 #user-bookings-list .booking-item {
     background: var(--bg-color);
     padding: 1rem;
@@ -316,11 +317,8 @@ h2 {
     margin-bottom: 1rem;
     border-left: 4px solid var(--accent-color);
 }
-#user-bookings-list .booking-item[data-status="Waitlisted"] { border-color: orange; }
+#user-bookings-list .booking-item[data-status="Waitlisted"] { border-color: var(--waitlist-color); }
 #user-bookings-list .booking-item[data-status="Canceled"] { border-color: #555; opacity: 0.6; }
-
-
-/* Loader */
 #loader {
     position: fixed;
     top: 0;
@@ -345,10 +343,7 @@ h2 {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
-
 .hidden { display: none !important; }
-
-/* Auth Buttons */
 #auth-container button {
     background: var(--primary-color);
     border: 1px solid var(--border-color);
