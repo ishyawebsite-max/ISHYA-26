@@ -4,7 +4,9 @@
 const GOOGLE_CLIENT_ID = '750824340469-nrqmioc1jgoe6rjnuaqjdu9mh0b4or2o.apps.googleusercontent.com'; // <-- IMPORTANT: Paste your Client ID here
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz1mknIERZJ_HxWUQcKPojAzWQq1w1CDvN3oyrFhWwdaXdKTWHrLHt-B8kaReYiwPR_fA/exec'; // <-- IMPORTANT: Paste your Web App URL here
 
-// --- COMPLETE & CORRECTED script.js ---
+// --- COMPLETE & MORE ROBUST script.js (Expanded for Readability) ---
+
+
 
 // --- STATE MANAGEMENT ---
 let currentUser = null;
@@ -14,14 +16,19 @@ let selectedDate = new Date();
 let selectedSlots = [];
 let currentMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
 
-// --- DOM ELEMENTS ---
-const loader = document.getElementById('loader');
-const roomList = document.getElementById('room-list');
-const roomSelectionStep = document.getElementById('room-selection');
-const scheduleSelectionStep = document.getElementById('schedule-selection');
+// --- DOM ELEMENTS (DECLARED BUT NOT ASSIGNED) ---
+// FIX: We will find these elements only after the page has loaded.
+let loader, roomList, roomSelectionStep, scheduleSelectionStep;
 
 // --- INITIALIZATION ---
 window.onload = function () {
+    // --- ASSIGN DOM ELEMENTS (SAFE TO DO NOW) ---
+    loader = document.getElementById('loader');
+    roomList = document.getElementById('room-list');
+    roomSelectionStep = document.getElementById('room-selection');
+    scheduleSelectionStep = document.getElementById('schedule-selection');
+
+    // --- CONTINUE INITIALIZATION ---
     google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
         callback: handleCredentialResponse
@@ -57,9 +64,7 @@ function updateAuthUI() {
         document.getElementById('my-bookings-btn').addEventListener('click', openMyBookingsModal);
     } else {
         authContainer.innerHTML = '';
-        google.accounts.id.renderButton(
-            authContainer, { theme: 'outline', size: 'large' }
-        );
+        google.accounts.id.renderButton(authContainer, { theme: 'outline', size: 'large' });
     }
 }
 
@@ -79,20 +84,18 @@ async function apiCall(action, payload = {}) {
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify({ action, ...payload })
         });
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         return await response.json();
     } catch (error) {
         console.error('API Call Error:', error);
-        alert('An error occurred while communicating with the server. Please check the console for details.');
+        alert('An error occurred. Check the console.');
         return null;
     } finally {
         hideLoader();
     }
 }
 
-// --- UI RENDERING & LOGIC ---
+// --- UI LOGIC ---
 function setupEventListeners() {
     document.querySelector('.back-btn').addEventListener('click', () => showStep('room-selection'));
     document.getElementById('prev-month').addEventListener('click', () => changeMonth(-1));
@@ -110,7 +113,6 @@ function showStep(stepId) {
     window.scrollTo(0, 0);
 }
 
-// --- Room Selection ---
 async function fetchRooms() {
     const roomsData = await apiCall('getRooms');
     if (roomsData) {
@@ -128,9 +130,7 @@ async function fetchRooms() {
         document.querySelectorAll('.select-room-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const card = e.target.closest('.room-card');
-                if (card) {
-                    handleRoomSelection(card.dataset.roomId);
-                }
+                if (card) handleRoomSelection(card.dataset.roomId);
             });
         });
     }
@@ -138,7 +138,7 @@ async function fetchRooms() {
 
 function handleRoomSelection(roomId) {
     if (!currentUser) {
-        alert("Please sign in with Google to book a room.");
+        alert("Please sign in to book a room.");
         return;
     }
     selectedRoom = rooms.find(r => r.RoomID === roomId);
@@ -152,7 +152,6 @@ function handleRoomSelection(roomId) {
     }
 }
 
-// --- Calendar ---
 function renderCalendar() {
     const monthYearEl = document.getElementById('month-year');
     const calendarGrid = document.querySelector('.calendar-grid');
@@ -160,17 +159,20 @@ function renderCalendar() {
     const month = currentMonth.getMonth();
     const year = currentMonth.getFullYear();
     monthYearEl.textContent = `${currentMonth.toLocaleString('default', { month: 'long' })} ${year}`;
+
     ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
-        const dayEl = document.createElement('div');
-        dayEl.textContent = day;
-        dayEl.classList.add('calendar-day-name');
-        calendarGrid.appendChild(dayEl);
+        const el = document.createElement('div');
+        el.textContent = day;
+        el.classList.add('calendar-day-name');
+        calendarGrid.appendChild(el);
     });
+
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     for (let i = 0; i < firstDay; i++) {
         calendarGrid.appendChild(document.createElement('div'));
     }
+
     for (let i = 1; i <= daysInMonth; i++) {
         const dayEl = document.createElement('div');
         dayEl.textContent = i;
@@ -187,8 +189,12 @@ function renderCalendar() {
                 fetchAndDisplayTimeSlots();
             });
         }
-        if (date.toDateString() === selectedDate.toDateString()) dayEl.classList.add('selected');
-        if (date.toDateString() === today.toDateString()) dayEl.classList.add('today');
+        if (date.toDateString() === selectedDate.toDateString()) {
+            dayEl.classList.add('selected');
+        }
+        if (date.toDateString() === today.toDateString()) {
+            dayEl.classList.add('today');
+        }
         calendarGrid.appendChild(dayEl);
     }
 }
@@ -197,8 +203,6 @@ function changeMonth(offset) {
     currentMonth.setMonth(currentMonth.getMonth() + offset);
     renderCalendar();
 }
-
-// --- TIME SLOTS (WITH DATE & WAITLIST FIXES) ---
 
 function getLocalDateString(date) {
     const year = date.getFullYear();
@@ -214,37 +218,35 @@ async function fetchAndDisplayTimeSlots() {
     document.getElementById('selected-date-display').textContent = selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
     const timeslotGrid = document.getElementById('timeslot-grid');
     timeslotGrid.innerHTML = '<em>Loading slots...</em>';
-    const availability = await apiCall('getAvailability', {
-        roomId: selectedRoom.RoomID,
-        date: dateStr
-    });
+    const availability = await apiCall('getAvailability', { roomId: selectedRoom.RoomID, date: dateStr });
+
     if (availability) {
         const duration = selectedRoom.DurationMinutes || 30;
         timeslotGrid.innerHTML = '';
-        for (let hour = 6; hour < 24; hour++) {
-            for (let min = 0; min < 60; min += duration) {
-                const time = `${String(hour).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
-                const slotBtn = document.createElement('button');
-                slotBtn.classList.add('timeslot-btn');
-                slotBtn.textContent = new Date(`1970-01-01T${time}:00`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-                slotBtn.dataset.time = time;
+        for (let h = 6; h < 24; h++) {
+            for (let m = 0; m < 60; m += duration) {
+                const time = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+                const btn = document.createElement('button');
+                btn.classList.add('timeslot-btn');
+                btn.textContent = new Date(`1970-01-01T${time}:00`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+                btn.dataset.time = time;
                 const status = availability[time] || { confirmed: 0, waitlisted: 0 };
 
                 if (status.confirmed >= 1 && status.waitlisted >= 1) {
-                    slotBtn.classList.add('booked');
-                    slotBtn.disabled = true;
-                    slotBtn.title = "This slot is fully booked.";
+                    btn.classList.add('booked');
+                    btn.disabled = true;
+                    btn.title = "This slot is fully booked.";
                 } else if (status.confirmed >= 1) {
-                    slotBtn.classList.add('waitlist');
-                    slotBtn.title = "Slot available for waitlist only.";
+                    btn.classList.add('waitlist');
+                    btn.title = "Slot available for waitlist only.";
                 } else {
-                    slotBtn.classList.add('available');
-                    slotBtn.title = "This slot is available.";
+                    btn.classList.add('available');
+                    btn.title = "This slot is available.";
                 }
-                if (!slotBtn.disabled) {
-                    slotBtn.addEventListener('click', () => toggleSlotSelection(slotBtn));
+                if (!btn.disabled) {
+                    btn.addEventListener('click', () => toggleSlotSelection(btn));
                 }
-                timeslotGrid.appendChild(slotBtn);
+                timeslotGrid.appendChild(btn);
             }
         }
     }
@@ -257,11 +259,7 @@ function toggleSlotSelection(slotBtn) {
         selectedSlots.splice(index, 1);
         slotBtn.classList.remove('selected');
     } else {
-        selectedSlots.push({
-            roomId: selectedRoom.RoomID,
-            date: getLocalDateString(selectedDate),
-            time: time
-        });
+        selectedSlots.push({ roomId: selectedRoom.RoomID, date: getLocalDateString(selectedDate), time: time });
         slotBtn.classList.add('selected');
     }
     updateProceedButton();
@@ -273,46 +271,32 @@ function updateProceedButton() {
     btn.textContent = selectedSlots.length > 0 ? `Book ${selectedSlots.length} Slot(s)` : 'Book Selected Slots';
 }
 
-// --- Booking Modal & Submission ---
 function openBookingModal() {
     if (selectedSlots.length === 0) return;
     document.getElementById('user-name').value = currentUser.name;
     document.getElementById('user-email').value = currentUser.email;
     const summaryEl = document.getElementById('booking-summary');
     const displayDate = new Date(selectedSlots[0].date + 'T00:00:00Z').toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' });
-    summaryEl.innerHTML = `
-        <p><strong>Room:</strong> ${selectedRoom.RoomName}</p>
-        <p><strong>Date:</strong> ${displayDate}</p>
-        <p><strong>Time Slots:</strong> ${selectedSlots.map(s => s.time).sort().join(', ')}</p>
-    `;
+    summaryEl.innerHTML = `<p><strong>Room:</strong> ${selectedRoom.RoomName}</p><p><strong>Date:</strong> ${displayDate}</p><p><strong>Time Slots:</strong> ${selectedSlots.map(s => s.time).sort().join(', ')}</p>`;
     document.getElementById('booking-modal').classList.remove('hidden');
 }
 
 async function handleBookingSubmit(e) {
     e.preventDefault();
-    const bookingDetails = {
-        user: currentUser,
-        roomName: selectedRoom.RoomName,
-        slots: selectedSlots,
-        participants: document.getElementById('participants').value,
-        notes: document.getElementById('notes').value
-    };
-    const result = await apiCall('makeBooking', { bookingDetails });
+    const details = { user: currentUser, roomName: selectedRoom.RoomName, slots: selectedSlots, participants: document.getElementById('participants').value, notes: document.getElementById('notes').value };
+    const result = await apiCall('makeBooking', { bookingDetails: details });
     if (result && result.status === 'completed') {
-        let successMessage = "Your booking request has been processed:\n";
-        result.results.forEach(res => {
-            successMessage += `- ${res.time}: ${res.bookingStatus || res.message}\n`;
-        });
-        alert(successMessage);
+        let msg = "Your booking request has been processed:\n";
+        result.results.forEach(res => { msg += `- ${res.time}: ${res.bookingStatus || res.message}\n`; });
+        alert(msg);
         document.getElementById('booking-modal').classList.add('hidden');
         document.getElementById('booking-form').reset();
         fetchAndDisplayTimeSlots();
     } else {
-        alert('Booking failed. The slot may have been taken. Please try again.');
+        alert('Booking failed. Please try again.');
     }
 }
 
-// --- My Bookings Modal ---
 async function openMyBookingsModal() {
     const modal = document.getElementById('my-bookings-modal');
     const listEl = document.getElementById('user-bookings-list');
@@ -321,27 +305,17 @@ async function openMyBookingsModal() {
     const bookings = await apiCall('getUserBookings', { userEmail: currentUser.email });
     if (bookings && bookings.length > 0) {
         listEl.innerHTML = bookings
-            .sort((a, b) => {
-                const dateA = new Date(a.BookingDate.split('/').reverse().join('-'));
-                const dateB = new Date(b.BookingDate.split('/').reverse().join('-'));
-                return dateB - dateA;
-            })
+            .sort((a, b) => new Date(a.BookingDate.split('/').reverse().join('-')) - new Date(b.BookingDate.split('/').reverse().join('-')))
+            .reverse()
             .map(b => {
                 const room = rooms.find(r => String(r.RoomID) === String(b.RoomID)) || { RoomName: b.RoomID };
                 const bookingDate = new Date(b.BookingDate.split('/').reverse().join('-'));
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
                 const canCancel = b.Status !== 'Canceled' && bookingDate >= today;
-                return `
-                <div class="booking-item" data-status="${b.Status}">
-                    <h4>${room.RoomName} - ${b.Status}</h4>
-                    <p>${b.BookingDate} at ${b.StartTime}</p>
-                    ${canCancel ? `<button class="cta-btn cancel-btn" data-booking-id="${b.BookingID}">Cancel</button>` : ''}
-                </div>
-            `}).join('');
-        document.querySelectorAll('.cancel-btn').forEach(btn => {
-            btn.addEventListener('click', handleCancelBooking);
-        });
+                return `<div class="booking-item" data-status="${b.Status}"><h4>${room.RoomName} - ${b.Status}</h4><p>${b.BookingDate} at ${b.StartTime}</p>${canCancel ? `<button class="cta-btn cancel-btn" data-booking-id="${b.BookingID}">Cancel</button>` : ''}</div>`;
+            }).join('');
+        document.querySelectorAll('.cancel-btn').forEach(btn => btn.addEventListener('click', handleCancelBooking));
     } else {
         listEl.innerHTML = '<p>You have no bookings.</p>';
     }
@@ -349,20 +323,24 @@ async function openMyBookingsModal() {
 
 async function handleCancelBooking(e) {
     const bookingId = e.target.dataset.bookingId;
-    if (confirm("Are you sure you want to cancel this booking? This action cannot be undone.")) {
+    if (confirm("Are you sure you want to cancel this booking?")) {
         const result = await apiCall('cancelBooking', { bookingId, userEmail: currentUser.email });
         if (result && result.status === 'success') {
             alert(result.message);
             openMyBookingsModal();
-            if (selectedRoom) {
-                fetchAndDisplayTimeSlots();
-            }
+            if (selectedRoom) fetchAndDisplayTimeSlots();
         } else {
             alert(result ? result.message : 'Failed to cancel booking.');
         }
     }
 }
 
+function showLoader() {
+    if (loader) loader.classList.remove('hidden');
+}
+function hideLoader() {
+    if (loader) loader.classList.add('hidden');
+}
 // --- UTILITIES ---
 function showLoader() { loader.classList.remove('hidden'); }
 function hideLoader() { loader.classList.add('hidden'); }
