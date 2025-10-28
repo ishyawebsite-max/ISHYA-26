@@ -2,7 +2,7 @@
 
 // --- CONFIGURATION ---
 const GOOGLE_CLIENT_ID = '750824340469-nrqmioc1jgoe6rjnuaqjdu9mh0b4or2o.apps.googleusercontent.com'; // <-- IMPORTANT: Paste your Client ID here
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwd_csyDAYB8NKOF81uyAd3Wgt9UIXjpBbFG0pHbzOuaPJirv8_swdqObJNQHAU_VyosQ/exec'; // <-- IMPORTANT: Paste your Web App URL here
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxseOnkFZpL7JEvdWzFE4uLIE1aw8l1BXqIyKcoCaVsg1AGKbIMvlU5GlBQXdwoQHtcZw/exec'; // <-- IMPORTANT: Paste your Web App URL here
 
 
 let currentUser = null, rooms = [], selectedRoom = null, selectedDate = new Date(), selectedSlots = [], currentMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
