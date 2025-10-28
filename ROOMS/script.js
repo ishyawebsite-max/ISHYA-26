@@ -208,19 +208,31 @@ async function handleBookingSubmit(e) {
     }
 }
 
+// In script.js - Replace this function
 async function openMyBookingsModal() {
     const modal = document.getElementById('my-bookings-modal'), listEl = document.getElementById('user-bookings-list');
     listEl.innerHTML = '<p>Loading your bookings...</p>';
     modal.classList.remove('hidden');
     const bookings = await apiCall('getUserBookings', { userEmail: currentUser.email });
+
     if (bookings && bookings.length > 0) {
-        // Sort bookings by date, most recent first
-        listEl.innerHTML = bookings.sort((a, b) => new Date(b.BookingDate.split('/').reverse().join('-')) - new Date(a.BookingDate.split('/').reverse().join('-')))
-            .map(b => {
+        listEl.innerHTML = bookings.sort((a, b) => {
+            // Sort by date, then by time
+            const dateA = new Date(a.BookingDate.split('/').reverse().join('-'));
+            const dateB = new Date(b.BookingDate.split('/').reverse().join('-'));
+            if (dateA > dateB) return -1;
+            if (dateA < dateB) return 1;
+            return a.StartTime.localeCompare(b.StartTime);
+        }).map(b => {
                 const room = rooms.find(r => String(r.RoomID) === String(b.RoomID)) || { RoomName: `Room ID ${b.RoomID}` };
-                const bookingDate = new Date(b.BookingDate.split('/').reverse().join('-') + 'T00:00:00');
-                const today = new Date(); today.setHours(0, 0, 0, 0);
+
+                // THE FIX IS HERE: More robust date parsing for the canCancel check
+                const [day, month, year] = b.BookingDate.split('/');
+                const bookingDate = new Date(year, month - 1, day);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
                 const canCancel = b.Status !== 'Canceled' && bookingDate >= today;
+
                 const formattedTime = new Date(`1970-01-01T${b.StartTime}:00`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
 
                 return `<div class="booking-item" data-status="${b.Status}"><h4>${room.RoomName} - <strong>${b.Status}</strong></h4><p>${b.BookingDate} at ${formattedTime}</p>${canCancel ? `<button class="cta-btn cancel-btn" data-booking-id="${b.BookingID}">Cancel Booking</button>` : ''}</div>`;
