@@ -122,6 +122,8 @@ function getLocalDateString(date) {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 }
 
+// In script.js - FINAL VERSION of this function
+
 async function fetchAndDisplayTimeSlots() {
     selectedSlots = [];
     updateProceedButton();
@@ -130,12 +132,39 @@ async function fetchAndDisplayTimeSlots() {
     const timeslotGrid = document.getElementById('timeslot-grid');
     timeslotGrid.innerHTML = '<em>Loading slots...</em>';
     const availability = await apiCall('getAvailability', { roomId: selectedRoom.RoomID, date: dateStr });
+
     if (availability) {
         const duration = selectedRoom.DurationMinutes || 30;
         timeslotGrid.innerHTML = '';
+
+        // --- FINAL LOGIC: Set up the time buffer for today ---
+        const isToday = (selectedDate.toDateString() === new Date().toDateString());
+        const now = new Date();
+        // The cutoff is exactly 30 minutes from now. Any slot starting before this time will be disabled.
+        const cutoffTime = new Date(now.getTime() + 30 * 60000); 
+        // --- END OF FINAL LOGIC ---
+
         for (let hour = 6; hour < 24; hour++) {
             for (let min = 0; min < 60; min += duration) {
                 const time = `${String(hour).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+                
+                // Create a full Date object for the specific slot time to allow for comparison
+                const slotTime = new Date(selectedDate);
+                slotTime.setHours(hour, min, 0, 0);
+
+                // --- FINAL LOGIC: Check if this slot is in the past or within the 30-minute buffer ---
+                if (isToday && slotTime < cutoffTime) {
+                    // If the slot is too soon, create a disabled button and skip the rest of the logic
+                    const pastBtn = document.createElement('button');
+                    pastBtn.classList.add('timeslot-btn', 'booked'); // Use 'booked' style for disabled past slots
+                    pastBtn.textContent = new Date(`1970-01-01T${time}:00`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+                    pastBtn.disabled = true;
+                    timeslotGrid.appendChild(pastBtn);
+                    continue; // Skip to the next slot in the loop
+                }
+                // --- END OF FINAL LOGIC ---
+
+                // This part only runs for slots that are valid to be booked
                 const slotBtn = document.createElement('button');
                 slotBtn.classList.add('timeslot-btn');
                 slotBtn.textContent = new Date(`1970-01-01T${time}:00`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
@@ -157,7 +186,6 @@ async function fetchAndDisplayTimeSlots() {
         }
     }
 }
-
 function toggleSlotSelection(slotBtn) {
     const time = slotBtn.dataset.time;
     const index = selectedSlots.findIndex(s => s.time === time);
