@@ -208,7 +208,8 @@ async function handleBookingSubmit(e) {
     }
 }
 
-// In script.js - Replace this function
+// In script.js - FINAL VERSION of this function
+
 async function openMyBookingsModal() {
     const modal = document.getElementById('my-bookings-modal'), listEl = document.getElementById('user-bookings-list');
     listEl.innerHTML = '<p>Loading your bookings...</p>';
@@ -226,15 +227,29 @@ async function openMyBookingsModal() {
         }).map(b => {
                 const room = rooms.find(r => String(r.RoomID) === String(b.RoomID)) || { RoomName: `Room ID ${b.RoomID}` };
 
-                // THE FIX IS HERE: More robust date parsing for the canCancel check
+                // Correctly parse the date for the canCancel check
                 const [day, month, year] = b.BookingDate.split('/');
                 const bookingDate = new Date(year, month - 1, day);
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
                 const canCancel = b.Status !== 'Canceled' && bookingDate >= today;
 
-                const formattedTime = new Date(`1970-01-01T${b.StartTime}:00`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-
+                // --- THE FINAL FIX IS HERE ---
+                // This now correctly handles both "HH:mm" strings and full Date objects for the time.
+                let formattedTime = 'Invalid Time';
+                try {
+                    // Try to parse it as if it's a full date string first
+                    let timeObj = new Date(b.StartTime);
+                    // If it's an invalid date, it might be a simple "HH:mm" string
+                    if (isNaN(timeObj.getTime())) {
+                       timeObj = new Date(`1970-01-01T${b.StartTime}:00`);
+                    }
+                    formattedTime = timeObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+                } catch(e) {
+                    // If all parsing fails, we'll know. But it shouldn't.
+                    console.error("Could not format time:", b.StartTime);
+                }
+                
                 return `<div class="booking-item" data-status="${b.Status}"><h4>${room.RoomName} - <strong>${b.Status}</strong></h4><p>${b.BookingDate} at ${formattedTime}</p>${canCancel ? `<button class="cta-btn cancel-btn" data-booking-id="${b.BookingID}">Cancel Booking</button>` : ''}</div>`;
             }).join('');
         document.querySelectorAll('.cancel-btn').forEach(btn => btn.addEventListener('click', handleCancelBooking));
@@ -242,7 +257,6 @@ async function openMyBookingsModal() {
         listEl.innerHTML = '<p>You have no bookings.</p>';
     }
 }
-
 async function handleCancelBooking(e) {
     const bookingId = e.target.dataset.bookingId;
     if (confirm("Are you sure you want to cancel this booking? This action cannot be undone.")) {
