@@ -44,6 +44,24 @@
                             <!-- Time slots will be loaded here -->
                         </div>
                         <p class="info-text">You can select multiple slots.</p>
+                        
+                        <!-- --- NEW: Time Slot Legend --- -->
+                        <div class="timeslot-legend">
+                            <div class="legend-item">
+                                <div class="legend-color-box" style="border: 1px solid var(--accent-color);"></div>
+                                <span>Available</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color-box" style="border: 1px dashed var(--waitlist-color);"></div>
+                                <span>Waitlist</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color-box" style="background-color: var(--booked-color);"></div>
+                                <span>Booked</span>
+                            </div>
+                        </div>
+                        <!-- --- END: Time Slot Legend --- -->
+                        
                         <button id="proceed-to-booking-btn" class="cta-btn" disabled>Book Selected Slots</button>
                     </div>
                 </div>
