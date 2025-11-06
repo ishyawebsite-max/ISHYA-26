@@ -1,0 +1,199 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+:root {
+    --primary-bg: #1a1a2e;
+    --secondary-bg: #16213e;
+    --accent-color: #e94560;
+    --text-color: #f0f0f0;
+    --highlight-color: #0f3460;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="28" height="49" viewBox="0 0 28 49"%3E%3Cg fill-rule="evenodd"%3E%3Cg id="hexagons" fill="%2316213e" fill-opacity="0.2" fill-rule="nonzero"%3E%3Cpath d="M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.99-7.5L26 15v18.5l-13 7.5L0 33.5V15z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+}
+
+.container {
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+}
+
+header h1 {
+    font-size: 4rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: white;
+    margin-bottom: 0;
+    text-shadow: 0 0 10px var(--accent-color), 0 0 20px var(--accent-color);
+}
+
+header p {
+    font-size: 1.2rem;
+    color: #ddd;
+    margin-top: 5px;
+}
+
+.coupon-card {
+    background-color: var(--secondary-bg);
+    border: 2px solid var(--accent-color);
+    border-radius: 15px;
+    padding: 30px;
+    margin-top: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.coupon-card h2 {
+    margin-top: 0;
+    color: white;
+}
+
+.coupon-card .description {
+    font-size: 1rem;
+    color: #ccc;
+    line-height: 1.6;
+}
+
+.price {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin: 20px 0;
+}
+
+#buy-now-btn {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+}
+
+#buy-now-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(233, 69, 96, 0.6);
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: var(--secondary-bg);
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 800px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #aaa;
+}
+.close-btn:hover { color: white; }
+
+.payment-instructions {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.qr-code-container, .form-container {
+    flex: 1;
+    text-align: center;
+}
+
+.payment-instructions p {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+}
+
+#upi-qr-code {
+    max-width: 200px;
+    width: 100%;
+    border-radius: 8px;
+    background: white;
+    padding: 10px;
+}
+
+.pay-now-mobile-btn {
+    display: none; /* Hidden by default, shown on mobile */
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-weight: 600;
+}
+
+#coupon-form { display: flex; flex-direction: column; gap: 15px; }
+#coupon-form input, #coupon-form button {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--highlight-color);
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    font-size: 1rem;
+}
+
+#coupon-form input[type="file"] { padding: 8px; }
+
+#coupon-form button {
+    background-color: var(--accent-color);
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+#coupon-form button:hover { background-color: #d43d51; }
+#coupon-form button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
+
+#status-message {
+    margin-top: 20px;
+    font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .payment-instructions {
+        flex-direction: column;
+    }
+    .pay-now-mobile-btn {
+        display: inline-block; /* Show on mobile */
+    }
+}
