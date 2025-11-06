@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ====================================================================
     
     // PASTE YOUR DEPLOYED WEB APP URL FROM GOOGLE APPS SCRIPT HERE
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby5lXj2fu7FOK3PaLagKNpZ-6KhG_S-DaqbsXkCuRaMcUNyzoVe35tkm-wdr8-uqPN7rQ/exec"; 
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxHMm5yeQy0hlqXYilVp-W0tBF4zwt1U-NaE0FftjUZtyCHd0ZumtPL70cmrtMLkBmDpQ/exec"; 
 
     // --- Details for the UPI Payment Link & QR Code ---
     // These should match what you have in Code.gs
