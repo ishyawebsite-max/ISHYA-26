@@ -4,11 +4,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // ====================================================================
     
     // PASTE YOUR DEPLOYED WEB APP URL FROM GOOGLE APPS SCRIPT HERE
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxHMm5yeQy0hlqXYilVp-W0tBF4zwt1U-NaE0FftjUZtyCHd0ZumtPL70cmrtMLkBmDpQ/exec"; 
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzlQ-ueQPjINtCoYonUvg66jHe3CwqWO1x8EFxkjzKA6kg3BpU2RGyrAEux5kehdQ1kOQ/exec"; 
 
     // --- Details for the UPI Payment Link & QR Code ---
     // These should match what you have in Code.gs
-    const UPI_ID = "your-upi-id@okhdfcbank"; // IMPORTANT: Replace with your actual UPI ID
+    const UPI_ID = "veldho56@icici"; // IMPORTANT: Replace with your actual UPI ID
     const PAYEE_NAME = "ISHYA IISER TVM"; // Replace with the name you want to show
     const TRANSACTION_NOTE = "ISHYA26 Coupon";
     const AMOUNT = "50";
