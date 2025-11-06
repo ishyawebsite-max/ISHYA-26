@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
+/* A good practice for more predictable sizing */
+* {
+    box-sizing: border-box;
+}
+
 :root {
     --primary-bg: #1a1a2e;
     --secondary-bg: #16213e;
@@ -13,7 +18,7 @@ body {
     background-color: var(--primary-bg);
     color: var(--text-color);
     margin: 0;
-    padding: 20px;
+    padding: 20px 15px; /* Less padding on the sides for mobile */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -34,12 +39,14 @@ header h1 {
     color: white;
     margin-bottom: 0;
     text-shadow: 0 0 10px var(--accent-color), 0 0 20px var(--accent-color);
+    transition: font-size 0.3s ease; /* Smooth transition */
 }
 
 header p {
     font-size: 1.2rem;
     color: #ddd;
     margin-top: 5px;
+    transition: font-size 0.3s ease;
 }
 
 .coupon-card {
@@ -49,6 +56,7 @@ header p {
     padding: 30px;
     margin-top: 30px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transition: padding 0.3s ease;
 }
 
 .coupon-card h2 {
@@ -67,6 +75,7 @@ header p {
     font-weight: 700;
     color: var(--accent-color);
     margin: 20px 0;
+    transition: font-size 0.3s ease;
 }
 
 #buy-now-btn {
@@ -94,11 +103,12 @@ header p {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.8);
     display: none;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    padding: 10px;
 }
 
 .modal-content {
@@ -106,18 +116,22 @@ header p {
     padding: 30px;
     border-radius: 15px;
     max-width: 800px;
-    width: 90%;
+    width: 100%; /* Take full width within padding */
     position: relative;
     box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    max-height: 90vh; /* Set a max height */
+    overflow-y: auto; /* Allow scrolling inside the modal if content is too long */
 }
 
 .close-btn {
     position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 2rem;
+    top: 10px;
+    right: 15px;
+    font-size: 2.5rem; /* Bigger, easier to tap */
+    font-weight: bold;
     cursor: pointer;
     color: #aaa;
+    line-height: 1;
 }
 .close-btn:hover { color: white; }
 
@@ -147,7 +161,7 @@ header p {
 }
 
 .pay-now-mobile-btn {
-    display: none; /* Hidden by default, shown on mobile */
+    display: none; /* Hidden by default */
     background-color: #4CAF50;
     color: white;
     padding: 12px 20px;
@@ -186,14 +200,40 @@ header p {
 #status-message {
     margin-top: 20px;
     font-weight: 600;
+    min-height: 24px; /* Prevents layout shift when message appears */
 }
 
-/* Responsive Design */
+/* =============================================== */
+/* =========== MOBILE OPTIMIZATIONS ============== */
+/* =============================================== */
 @media (max-width: 768px) {
-    .payment-instructions {
-        flex-direction: column;
+    header h1 {
+        font-size: 2.8rem; /* Reduce font size for smaller screens */
     }
+    header p {
+        font-size: 1rem;
+    }
+    .coupon-card {
+        padding: 25px;
+    }
+    .price {
+        font-size: 2.5rem;
+    }
+
+    .payment-instructions {
+        flex-direction: column; /* Stack QR code and form vertically */
+        gap: 25px;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+
     .pay-now-mobile-btn {
-        display: inline-block; /* Show on mobile */
+        display: inline-block; /* Show the direct payment button on mobile */
+    }
+
+    #upi-qr-code {
+        max-width: 180px; /* Make QR code slightly smaller */
     }
 }
