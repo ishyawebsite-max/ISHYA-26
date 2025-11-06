@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISHYA'26 Merchandise & Coupons</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>ISHYA'26</h1>
+            <p>Gift Coupon Lucky Draw</p>
+        </header>
+
+        <div class="coupon-card">
+            <h2>Get Your Lucky Draw Coupon!</h2>
+            <p class="description">
+                Buy a coupon and get a chance to win exciting prizes like Proshow tickets, exclusive merch, and more!
+            </p>
+            <div class="price">₹50</div>
+            <button id="buy-now-btn">Buy Now</button>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="payment-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Complete Your Purchase</h2>
+            <div class="payment-instructions">
+                <div class="qr-code-container">
+                    <p>1. Scan to Pay ₹50</p>
+                    <img id="upi-qr-code" src="" alt="UPI QR Code">
+                    <a id="pay-now-link" class="pay-now-mobile-btn" href="#">Pay using UPI App</a>
+                </div>
+                <div class="form-container">
+                    <p>2. Fill details & upload receipt</p>
+                    <form id="coupon-form">
+                        <input type="text" name="name" placeholder="Full Name" required>
+                        <input type="email" name="email" placeholder="Email Address" required>
+                        <input type="tel" name="phone" placeholder="Phone Number" required>
+                        <label for="screenshot">Upload Payment Screenshot:</label>
+                        <input type="file" name="screenshot" id="screenshot" accept="image/*" required>
+                        <button type="submit" id="submit-btn">Submit</button>
+                    </form>
+                </div>
+            </div>
+            <div id="status-message"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
