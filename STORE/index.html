@@ -37,7 +37,8 @@
                 </div>
                 <div class="form-container">
                     <p>2. Fill details & upload receipt</p>
-                    <form id="coupon-form">
+                    <form id="coupon-form" novalidate> <!-- novalidate prevents default browser bubbles -->
+                        <!-- All input fields now have the 'required' attribute -->
                         <input type="text" name="name" placeholder="Full Name" required>
                         <input type="email" name="email" placeholder="Email Address" required>
                         <input type="tel" name="phone" placeholder="Phone Number" required>
@@ -47,6 +48,7 @@
                     </form>
                 </div>
             </div>
+            <!-- This div is now used for our custom error messages -->
             <div id="status-message"></div>
         </div>
     </div>
