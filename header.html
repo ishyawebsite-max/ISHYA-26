@@ -3,7 +3,7 @@
 <!-- The header brings its own font dependency -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700&display=swap" rel="stylesheet">
 
 <style>
     /* All the CSS for the header goes here */
@@ -14,19 +14,24 @@
         transform: translateX(-50%);
         z-index: 1000;
         cursor: pointer;
-        font-family: 'Inter', sans-serif; /* Use the font we just imported */
+        font-family: 'Inter', sans-serif;
     }
 
     .header-content {
         display: flex;
         flex-direction: column; 
         align-items: center; 
+        gap: 15px; /* Space between logo and nav row */
         background: #1C1F26;
-        border-radius: 30px;
+        border-radius: 50px; /* Start as a perfect pill */
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         overflow: hidden;
-        width: 180px; 
+        
+        /* Initial animation state */
+        width: 160px; 
+        padding: 10px 24px;
         transition: width 0.6s cubic-bezier(0.86, 0, 0.07, 1), 
+                    padding 0.5s ease,
                     border-radius 0.6s ease;
     }
 
@@ -34,11 +39,7 @@
         display: flex;
         align-items: center;
         gap: 14px;
-        padding: 14px 28px;
         flex-shrink: 0;
-        width: 100%;
-        justify-content: center;
-        box-sizing: border-box; 
     }
 
     .logo-svg { width: 24px; height: 24px; }
@@ -48,6 +49,7 @@
         font-weight: 700;
         letter-spacing: 1.5px;
         text-transform: uppercase;
+        white-space: nowrap;
     }
 
     nav {
@@ -55,37 +57,70 @@
         opacity: 0;
         overflow: hidden;
         width: 100%;
-        transition: max-height 0.7s ease, opacity 0.4s ease 0.2s;
+        transition: max-height 0.5s ease, opacity 0.3s ease 0.2s;
+    }
+    
+    /* NEW: 4-Column, 1-Row layout */
+    nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: space-around; /* Evenly space the 4 items */
+        width: 100%;
     }
 
-    nav ul { list-style: none; padding: 10px 0; margin: 0; }
-    nav li { border-bottom: 1px solid #2a2e37; }
-    nav li:last-child { border-bottom: none; }
+    /* REMOVED: No more border-bottom on li */
+    nav li {
+        text-align: center;
+    }
 
+    /* NEW: Link styling for icon + text stack */
     nav a {
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
         align-items: center;
-        padding: 14px 25px;
+        gap: 8px; /* Space between icon and text */
+        padding: 10px;
         text-decoration: none;
-        transition: background-color 0.2s ease;
-    }
-    nav a:hover { background-color: rgba(255, 255, 255, 0.03); }
-
-    .nav-left {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        font-weight: 500;
-        color: #c8cdd5;
-        letter-spacing: 0.5px;
+        color: #a0a0a0; /* Dimmer default color */
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        transition: color 0.3s ease;
     }
 
-    .nav-right { color: #7a828e; font-size: 0.9em; }
-    .folder-icon { width: 18px; height: 18px; color: #7a828e; }
+    .folder-icon {
+        width: 22px;
+        height: 22px;
+        color: #a0a0a0; /* Icon color matches text */
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
 
-    .expanding-header:hover .header-content { width: 600px; border-radius: 24px; }
-    .expanding-header:hover nav { max-height: 500px; opacity: 1; }
+    /* --- HOVER STATES --- */
+
+    /* Main container expansion */
+    .expanding-header:hover .header-content {
+        width: 500px; /* Adjust width for the 4-column layout */
+        border-radius: 28px; /* Final corner radius */
+        padding: 24px 40px;
+    }
+
+    /* Reveal the navigation */
+    .expanding-header:hover nav {
+        max-height: 150px;
+        opacity: 1;
+    }
+    
+    /* Individual item hover effect */
+    nav a:hover,
+    nav a:hover .folder-icon {
+        color: #ffffff; /* Make both icon and text white */
+    }
+    nav a:hover .folder-icon {
+        transform: translateY(-2px); /* Animate icon slightly up */
+    }
 </style>
 
 <header class="expanding-header">
@@ -97,11 +132,30 @@
         
         <nav>
             <ul>
-                <li><a href="#certificate"><span class="nav-left"><img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iY3VycmVudENvbG9yIiBkPSJNMTAgNEg0Yy0xLjExIDAtMiAuODktMiAydjEyYTIgMiAwIDAgMCAyIDJoMTZhMiAyIDAgMCAwIDItMlY4YzAtMS4xMS0uOS0yLTItMmg-OGwtMi0yeiI+PC9wYXRoPjwvc3ZnPg==" alt="Folder" class="folder-icon"> CERTIFICATE</span><span class="nav-right">Create index_certificate.html</span></a></li>
-                <li><a href="#events"><span class="nav-left"><img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iY3VycmVudENvbG9yIiBkPSJNMTAgNEg0Yy0xLjExIDAtMiAuODktMiAydjEyYTIgMiAwIDAgMCAyIDJoMTZhMiAyIDAgMCAwIDItMlY4YzAtMS4xMS0uOS0yLTItMmg-OGwtMi0yeiI+PC9wYXRoPjwvc3ZnPg==" alt="Folder" class="folder-icon"> EVENTS</span><span class="nav-right">Create index_events.html</span></a></li>
-                <li><a href="#home"><span class="nav-left"><img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iY3VycmVudENvbG9yIiBkPSJNMTAgNEg0Yy0xLjExIDAtMiAuODktMiAydjEyYTIgMiAwIDAgMCAyIDJoMTZhMiAyIDAgMCAwIDItMlY4YzAtMS4xMS0uOS0yLTItMmg-OGwtMi0yeiI+PC9wYXRoPjwvc3ZnPg==" alt="Folder" class="folder-icon"> HOME</span><span class="nav-right">Create home_test.html</span></a></li>
-                <li><a href="#team"><span class="nav-left"><img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iY3VycmVudENvbG9yIiBkPSJNMTAgNEg0Yy0xLjExIDAtMiAuODktMiAydjEyYTIgMiAwIDAgMCAyIDJoMTZhMiAyIDAgMCAwIDItMlY4YzAtMS4xMS0uOS0yLTItMmg-OGwtMi0yeiI+PC9wYXRoPjwvc3ZnPg==" alt="Folder" class="folder-icon"> TEAM</span><span class="nav-right">Create index_team.html</span></a></li>
-                <li><a href="ROOMS/index.html"><span class="nav-left"><img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iY3VycmVudENvbG9yIiBkPSJNMTAgNEg0Yy0xLjExIDAtMiAuODktMiAydjEyYTIgMiAwIDAgMCAyIDJoMTZhMiAyIDAgMCAwIDItMlY4YzAtMS4xMS0uOS0yLTItMmg-OGwtMi0yeiI+PC9wYXRoPjwvc3ZnPg==" alt="Folder" class="folder-icon"> ROOMS</span><span class="nav-right">Create index_team.html</span></a></li>
+                <li>
+                    <a href="/certificate.html">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iY3VycmVudENvbG9yIiBkPSJNMTAgNEg0Yy0xLjExIDAtMiAuODktMiAydjEyYTIgMiAwIDAgMCAyIDJoMTZhMiAyIDAgMCAwIDItMlY4YzAtMS4xMS0uOS0yLTItMmg-OGwtMi0yeiI+PC9wYXRoPjwvc3ZnPg==" alt="Folder" class="folder-icon">
+                        CERTIFICATE
+                    </a>
+                </li>
+                <li>
+                    <a href="/events.html">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iY3VycmVudENvbG9yIiBkPSJNMTAgNEg0Yy0xLjExIDAtMiAuODktMiAydjEyYTIgMiAwIDAgMCAyIDJoMTZhMiAyIDAgMCAwIDItMlY4YzAtMS4xMS0uOS0yLTItMmg-OGwtMi0yeiI+PC9wYXRoPjwvc3ZnPg==" alt="Folder" class="folder-icon">
+                        EVENTS
+                    </a>
+                </li>
+                <li>
+                    <a href="/home.html">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iY3VycmVudENvbG9yIiBkPSJNMTAgNEg0Yy0xLjExIDAtMiAuODktMiAydjEyYTIgMiAwIDAgMCAyIDJoMTZhMiAyIDAgMCAwIDItMlY4YzAtMS4xMS0uOS0yLTItMmg-OGwtMi0yeiI+PC9wYXRoPjwvc3ZnPg==" alt="Folder" class="folder-icon">
+                        HOME
+                    </a>
+                </li>
+                <li>
+                    <a href="/team.html">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iY3VycmVudENvbG9yIiBkPSJNMTAgNEg0Yy0xLjExIDAtMiAuODktMiAydjEyYTIgMiAwIDAgMCAyIDJoMTZhMiAyIDAgMCAwIDItMlY4YzAtMS4xMS0uOS0yLTItMmg-OGwtMi0yeiI+PC9wYXRoPjwvc3ZnPg==" alt="Folder" class="folder-icon">
+                        TEAM
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>
