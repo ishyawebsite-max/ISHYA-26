@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // If the placeholder exists, fetch the header component
     if (headerPlaceholder) {
-        fetch("/header.html")
+        fetch("header.html")
             .then(response => {
                 // Check if the file was found
                 if (!response.ok) {
