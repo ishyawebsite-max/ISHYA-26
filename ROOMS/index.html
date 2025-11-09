@@ -9,11 +9,16 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
+    <!-- 1. The placeholder for our universal header is placed here -->
+    <div id="universal-header-placeholder"></div>
+
     <div id="app">
+
         <header>
             <h1>Room Booking System</h1>
             <div id="auth-container"></div>
         </header>
+       
 
         <main>
             <!-- Step 1: Room Selection -->
@@ -114,5 +119,8 @@
     </div>
 
     <script src="script.js"></script>
+    
+    <!-- 3. The loader script is added here, at the end -->
+    <script src="loader.js"></script>
 </body>
 </html>
