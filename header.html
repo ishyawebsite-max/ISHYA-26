@@ -1,166 +1,273 @@
-<!-- This file ONLY contains the header component. No <html> or <body> tags. -->
-
-<!-- The header brings its own font dependency -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700&display=swap" rel="stylesheet">
+<!-- 
+    ISHYA 2026 HEADER (Logo Version)
+    Theme: Midnight Navy & Pale Gold
+-->
 
 <style>
-    /* All the CSS for the header goes here */
-    .expanding-header {
+    :root {
+        /* --- THEME VARS --- */
+        --ishya-navy: #0b1120;
+        --ishya-glass: rgba(18, 27, 56, 0.85);
+        --ishya-gold: #f0d57a;
+        --ishya-gold-dim: rgba(240, 213, 122, 0.3);
+        --ishya-white: #e2e8f0;
+        
+        /* --- ANIMATION PHYSICS --- */
+        --spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1); 
+    }
+
+    /* Reset */
+    .ishya-nav-wrapper * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    .ishya-nav-wrapper a { text-decoration: none; }
+
+    /* --- NAV CONTAINER --- */
+    .ishya-nav-container {
         position: fixed;
         top: 30px;
         left: 50%;
         transform: translateX(-50%);
-        z-index: 1000;
-        cursor: pointer;
-        font-family: 'Inter', sans-serif;
-    }
-
-    .header-content {
-        display: flex;
-        flex-direction: column; 
-        align-items: center; 
-        gap: 15px; /* Space between logo and nav row */
-        background: #1C1F26;
-        border-radius: 50px; /* Start as a perfect pill */
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        overflow: hidden;
+        z-index: 9999;
         
-        /* Initial animation state */
-        width: 160px; 
-        padding: 10px 24px;
-        transition: width 0.6s cubic-bezier(0.86, 0, 0.07, 1), 
-                    padding 0.5s ease,
-                    border-radius 0.6s ease;
-    }
-
-    .logo-area {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        flex-shrink: 0;
-    }
-
-    .logo-svg { width: 24px; height: 24px; }
-    .logo-name {
-        color: #FFFFFF;
-        font-size: 1.1rem;
-        font-weight: 700;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        white-space: nowrap;
-    }
-
-    nav {
-        max-height: 0;
-        opacity: 0;
+        /* Initial State (Closed) */
+        width: 100px; /* Slightly smaller width for just a logo */
+        height: 55px;
+        
+        background: var(--ishya-glass);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        
+        border: 1px solid rgba(240, 213, 122, 0.15);
+        border-radius: 50px;
+        box-shadow: 0 10px 40px -10px rgba(0,0,0,0.6);
+        
         overflow: hidden;
-        width: 100%;
-        transition: max-height 0.5s ease, opacity 0.3s ease 0.2s;
+        cursor: pointer;
+        
+        transition: 
+            width 0.5s var(--spring-bounce),
+            height 0.5s var(--spring-bounce),
+            border-radius 0.4s ease,
+            background 0.3s ease,
+            border-color 0.3s ease;
     }
-    
-    /* NEW: 4-Column, 1-Row layout */
-    nav ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
+
+    /* --- LOGO IMAGE STYLING --- */
+    .ishya-logo {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 55px;
         display: flex;
-        justify-content: space-around; /* Evenly space the 4 items */
-        width: 120%;
+        justify-content: center;
+        align-items: center;
+        pointer-events: none;
+        transition: opacity 0.3s ease, transform 0.3s ease;
     }
 
-    /* REMOVED: No more border-bottom on li */
-    nav li {
-        text-align: center;
+    .ishya-logo img {
+        height: 32px; /* Adjust size based on your icon aspect ratio */
+        width: auto;
+        object-fit: contain;
+        /* Adds a subtle gold glow around the icon to fit the theme */
+        filter: drop-shadow(0 0 5px rgba(240, 213, 122, 0.4));
     }
 
-    /* NEW: Link styling for icon + text stack */
-    nav a {
+    /* --- MENU ITEMS --- */
+    .ishya-menu {
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        pointer-events: none;
+        display: flex;
+        transition: opacity 0.2s ease;
+    }
+
+    .ishya-item {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 8px; /* Space between icon and text */
-        padding: 10px;
-        text-decoration: none;
-        color: #a0a0a0; /* Dimmer default color */
-        font-size: 0.75rem;
+        justify-content: center;
+        color: var(--ishya-white);
+        transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+    .ishya-item svg {
+        stroke: currentColor;
+        stroke-width: 2;
+        fill: none;
+        margin-bottom: 6px;
+        transition: stroke 0.3s, filter 0.3s;
+    }
+
+    .ishya-item span {
+        font-family: sans-serif;
+        font-size: 0.7rem;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.8px;
-        transition: color 0.3s ease;
+        letter-spacing: 1px;
     }
 
-    .folder-icon {
-        width: 22px;
-        height: 22px;
-        color: #a0a0a0; /* Icon color matches text */
-        transition: color 0.3s ease, transform 0.3s ease;
+    /* --- DESKTOP LOGIC --- */
+    @media screen and (min-width: 768px) {
+        
+        /* HOVER TO OPEN */
+        @media (hover: hover) {
+            .ishya-nav-container:hover {
+                width: 850px;
+                height: 100px;
+                background: #0f172a;
+                border-color: var(--ishya-gold-dim);
+                border-radius: 20px;
+            }
+            /* Hide logo on hover */
+            .ishya-nav-container:hover .ishya-logo { opacity: 0; transform: translateY(-20px); }
+            /* Show menu */
+            .ishya-nav-container:hover .ishya-menu { opacity: 1; pointer-events: auto; transition-delay: 0.1s; }
+        }
+
+        /* FALLBACK FOR CLASS (Tablet Landscape) */
+        .ishya-nav-container.expanded {
+            width: 850px;
+            height: 100px;
+            background: #0f172a;
+            border-color: var(--ishya-gold-dim);
+            border-radius: 20px;
+        }
+        .ishya-nav-container.expanded .ishya-logo { opacity: 0; transform: translateY(-20px); }
+        .ishya-nav-container.expanded .ishya-menu { opacity: 1; pointer-events: auto; transition-delay: 0.1s; }
+
+        .ishya-menu {
+            flex-direction: row;
+            justify-content: space-evenly;
+            align-items: center;
+            padding: 0 30px;
+        }
+        .ishya-item svg { width: 24px; height: 24px; }
+        .ishya-item:hover { color: var(--ishya-gold); transform: translateY(-4px); }
+        .ishya-item:hover svg { filter: drop-shadow(0 0 8px var(--ishya-gold)); }
     }
 
-    /* --- HOVER STATES --- */
+    /* --- MOBILE LOGIC --- */
+    @media screen and (max-width: 767px) {
+        .ishya-nav-container { width: 80px; height: 50px; top: 20px; } /* Smaller button for mobile */
 
-    /* Main container expansion */
-    .expanding-header:hover .header-content {
-        width: 500px; /* Adjust width for the 4-column layout */
-        border-radius: 28px; /* Final corner radius */
-        padding: 24px 40px;
-    }
+        .ishya-nav-container.expanded {
+            width: 92vw;
+            height: 340px;
+            background: rgba(11, 17, 32, 0.98);
+            border-color: var(--ishya-gold);
+            border-radius: 24px;
+        }
 
-    /* Reveal the navigation */
-    .expanding-header:hover nav {
-        max-height: 150px;
-        opacity: 1;
-    }
-    
-    /* Individual item hover effect */
-    nav a:hover,
-    nav a:hover .folder-icon {
-        color: #ffffff; /* Make both icon and text white */
-    }
-    nav a:hover .folder-icon {
-        transform: translateY(-2px); /* Animate icon slightly up */
+        /* On Mobile, Logo stays visible at top center of drawer */
+        .ishya-nav-container.expanded .ishya-logo {
+            transform: translateY(0);
+            opacity: 1;
+            height: 60px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .ishya-nav-container.expanded .ishya-menu {
+            opacity: 1;
+            pointer-events: auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 75px 15px 20px 15px;
+            align-items: start;
+            transition-delay: 0.1s;
+        }
+
+        .ishya-item {
+            background: rgba(255,255,255,0.03);
+            padding: 12px 5px;
+            border-radius: 12px;
+            width: 100%;
+            border: 1px solid transparent;
+        }
+
+        .ishya-item:active {
+            border-color: var(--ishya-gold-dim);
+            background: rgba(240, 213, 122, 0.05);
+        }
+
+        .ishya-item:last-child {
+            grid-column: span 3; 
+            flex-direction: row;
+            gap: 10px;
+            background: linear-gradient(90deg, rgba(240, 213, 122, 0.1), transparent);
+        }
+        .ishya-item svg { width: 26px; height: 26px; }
     }
 </style>
 
-<header class="expanding-header">
-    <div class="header-content">
-        <div class="logo-area">
-            <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48bGluZSB4MT0iMjUiIHkxPSIyMCIgeDI9IjI1IiB5Mj0iODAiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMTUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik03NSAyMCBDIDQ1IDIwLCA0NSA4MCwgNzUgODAiIHN0cm9rZT0id2hpdGUiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMTUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==" alt="ISHYA Logo" class="logo-svg">
-            <span class="logo-name">ISHYA</span>
-        </div>
+<!-- HEADER HTML -->
+<div class="ishya-nav-wrapper">
+    <nav class="ishya-nav-container" id="ishyaHeader">
         
-        <nav>
-            <ul>
-                <li>
-                    <a href="/certificate.html">
-                        <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iY3VycmVudENvbG9yIiBkPSJNMTAgNEg0Yy0xLjExIDAtMiAuODktMiAydjEyYTIgMiAwIDAgMCAyIDJoMTZhMiAyIDAgMCAwIDItMlY4YzAtMS4xMS0uOS0yLTItMmg-OGwtMi0yeiI+PC9wYXRoPjwvc3ZnPg==" alt="Folder" class="folder-icon">
-                        CERTIFICATE
-                    </a>
-                </li>
-                <li>
-                    <a href="/events.html">
-                        <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iY3VycmVudENvbG9yIiBkPSJNMTAgNEg0Yy0xLjExIDAtMiAuODktMiAydjEyYTIgMiAwIDAgMCAyIDJoMTZhMiAyIDAgMCAwIDItMlY4YzAtMS4xMS0uOS0yLTItMmg-OGwtMi0yeiI+PC9wYXRoPjwvc3ZnPg==" alt="Folder" class="folder-icon">
-                        EVENTS
-                    </a>
-                </li>
-                <li>
-                    <a href="/home.html">
-                        <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iY3VycmVudENvbG9yIiBkPSJNMTAgNEg0Yy0xLjExIDAtMiAuODktMiAydjEyYTIgMiAwIDAgMCAyIDJoMTZhMiAyIDAgMCAwIDItMlY4YzAtMS4xMS0uOS0yLTItMmg-OGwtMi0yeiI+PC9wYXRoPjwvc3ZnPg==" alt="Folder" class="folder-icon">
-                        HOME
-                    </a>
-                </li>
-                <li>
-                    <a href="/team.html">
-                        <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iY3VycmVudENvbG9yIiBkPSJNMTAgNEg0Yy0xLjExIDAtMiAuODktMiAydjEyYTIgMiAwIDAgMCAyIDJoMTZhMiAyIDAgMCAwIDItMlY4YzAtMS4xMS0uOS0yLTItMmg-OGwtMi0yeiI+PC9wYXRoPjwvc3ZnPg==" alt="Folder" class="folder-icon">
-                        TEAM
-                    </a>
-                    <a href="/ISHYA-26/ROOMS/index.html">
-                        <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iY3VycmVudENvbG9yIiBkPSJNMTAgNEg0Yy0xLjExIDAtMiAuODktMiAydjEyYTIgMiAwIDAgMCAyIDJoMTZhMiAyIDAgMCAwIDItMlY4YzAtMS4xMS0uOS0yLTItMmg-OGwtMi0yeiI+PC9wYXRoPjwvc3ZnPg==" alt="Folder" class="folder-icon">
-                        ROOMS
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-</header>
+        <!-- Logo Image -->
+        <div class="ishya-logo">
+            <!-- Replacing text with your logo.ico -->
+            <img src="Logo Ishya.ico" alt="Ishya Logo">
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="ishya-menu">
+            <a href="index.html" class="ishya-item">
+                <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>Home</span>
+            </a>
+            <a href="events.html" class="ishya-item">
+                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <span>Events</span>
+            </a>
+            <a href="merch.html" class="ishya-item">
+                <svg viewBox="0 0 24 24"><path d="M20.38 3.4a2 2 0 0 0-1.2-1.28L13.08 0a2 2 0 0 0-2.16 0L4.82 2.12a2 2 0 0 0-1.2 1.28L2.06 8.56a2 2 0 0 0 .58 2.22l.14.1 1.98 1.4-1.12 7.02a2 2 0 0 0 1.98 2.32h12.76a2 2 0 0 0 1.98-2.32l-1.12-7.02 1.98-1.4.14-.1a2 2 0 0 0 .58-2.22l-1.56-5.16z"></path></svg>
+                <span>Merch</span>
+            </a>
+            <a href="sponsors.html" class="ishya-item">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                <span>Sponsors</span>
+            </a>
+            <a href="team.html" class="ishya-item">
+                <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                <span>Team</span>
+            </a>
+            <a href="results.html" class="ishya-item">
+                <svg viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path></svg>
+                <span>Results</span>
+            </a>
+            <a href="book.html" class="ishya-item">
+                <svg viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                <span>Book Rooms</span>
+            </a>
+        </div>
+    </nav>
+</div>
+
+<script>
+    (function() {
+        const nav = document.getElementById('ishyaHeader');
+
+        // CLICK LOGIC (Mostly for Mobile/Touch)
+        nav.addEventListener('click', (e) => {
+            if (e.target.closest('a')) return;
+            
+            if (nav.classList.contains('expanded')) {
+                nav.classList.remove('expanded');
+            } else {
+                nav.classList.add('expanded');
+            }
+        });
+
+        // Close on outside click
+        document.addEventListener('click', (e) => {
+            if (!nav.contains(e.target)) {
+                nav.classList.remove('expanded');
+            }
+        });
+
+        // Reset on resize
+        window.addEventListener('resize', () => {
+            nav.classList.remove('expanded');
+        });
+    })();
+</script>
