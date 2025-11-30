@@ -8,25 +8,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <!-- this is the script for header -->
-    <div id="nav-placeholder"></div>
-    <script>
-    fetch('/ISHYA-26/header.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('nav-placeholder').innerHTML = data;
-            // Re-execute script inside the header after injection
-            const scripts = document.getElementById('nav-placeholder').querySelectorAll("script");
-            scripts.forEach(oldScript => {
-                const newScript = document.createElement("script");
-                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
-                newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-                oldScript.parentNode.replaceChild(newScript, oldScript);
-            });
-        });
-    </script>
+    
 
 </head>
 <body>
+    <!-- Place holder for header -->
+<div id="header-container"></div>
+
+<script>
+    // Load the header.html file
+    fetch('header.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('header-container').innerHTML = data;
+            
+            // Re-activate the script inside header.html
+            const scripts = document.getElementById('header-container').querySelectorAll("script");
+            scripts.forEach(oldScript => {
+                const newScript = document.createElement("script");
+                newScript.textContent = oldScript.textContent;
+                oldScript.parentNode.replaceChild(newScript, oldScript);
+            });
+        });
+</script>              
     <!-- 1. The placeholder for our universal header is placed here -->
     <div id="universal-header-placeholder"></div>
 
