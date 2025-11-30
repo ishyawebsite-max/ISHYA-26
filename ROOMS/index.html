@@ -12,27 +12,7 @@
 
 </head>
 <body>
-    <!-- Place holder for header -->
-<div id="header-container"></div>
-
-<script>
-    // Load the header.html file
-    fetch('/ISHYA-26/header.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('header-container').innerHTML = data;
-            
-            // Re-activate the script inside header.html
-            const scripts = document.getElementById('header-container').querySelectorAll("script");
-            scripts.forEach(oldScript => {
-                const newScript = document.createElement("script");
-                newScript.textContent = oldScript.textContent;
-                oldScript.parentNode.replaceChild(newScript, oldScript);
-            });
-        });
-</script>              
-    <!-- 1. The placeholder for our universal header is placed here -->
-    <div id="universal-header-placeholder"></div>
+                 
 
     <div id="app">
 
@@ -141,7 +121,30 @@
     </div>
 
     <script src="script.js"></script>
-    
+    <!-- ADD THIS AT THE BOTTOM OF YOUR PAGES BEFORE </body> -->
+<script>
+    fetch('header.html')
+        .then(response => response.text())
+        .then(data => {
+            // Create a temporary container
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = data;
+
+            // Extract the script tag from the loaded HTML
+            const script = tempDiv.querySelector('script');
+            
+            // Insert the HTML at the very top of the body (First Child)
+            document.body.prepend(tempDiv);
+            
+            // Execute the extracted script manually
+            if (script) {
+                const newScript = document.createElement('script');
+                newScript.textContent = script.textContent;
+                document.body.appendChild(newScript);
+            }
+        })
+        .catch(err => console.error('Error loading header:', err));
+</script>
     <!-- 3. The loader script is added here, at the end -->
 </body>
 </html>
