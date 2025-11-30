@@ -7,6 +7,23 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <div id="nav-placeholder"></div>
+    <script>
+    fetch('/ISHYA-26/header.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('nav-placeholder').innerHTML = data;
+            // Re-execute script inside the header after injection
+            const scripts = document.getElementById('nav-placeholder').querySelectorAll("script");
+            scripts.forEach(oldScript => {
+                const newScript = document.createElement("script");
+                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                oldScript.parentNode.replaceChild(newScript, oldScript);
+            });
+        });
+    </script>
+
 </head>
 <body>
     <!-- 1. The placeholder for our universal header is placed here -->
@@ -121,6 +138,5 @@
     <script src="script.js"></script>
     
     <!-- 3. The loader script is added here, at the end -->
-    <script src="/ISHYA-26/loader.js"></script>
 </body>
 </html>
