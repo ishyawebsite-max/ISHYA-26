@@ -1,39 +1,39 @@
-<!-- ISHYA FLOATING HEADER COMPONENT -->
+<!-- ISHYA FLOATING HEADER (FORCE TOP LAYER) -->
 <style>
-    /* Scoped Variables for the Header */
+    /* Scoped Variables */
     #ishya-floating-nav-wrapper {
-        --nav-bg: rgba(13, 17, 23, 0.85); /* Matches deep dark themes */
-        --nav-border: rgba(255, 255, 255, 0.1);
+        --nav-bg: rgba(13, 17, 23, 0.9); /* Slightly darker for contrast */
+        --nav-border: rgba(255, 255, 255, 0.2);
         --nav-gold: #f0d57a; 
         --nav-text: #e2e8f0;
         --nav-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
         font-family: system-ui, -apple-system, sans-serif;
     }
 
-    /* Container Positioning - Fixed to float over everything */
+    /* CONTAINER: FORCE TOP LAYER */
     .ishya-nav-container {
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 99999; /* Very high to sit on top of other headers */
+        position: fixed !important; /* Force Fixed */
+        top: 15px !important;       /* Slightly higher to center in bar */
+        left: 50% !important;
+        transform: translateX(-50%) !important;
         
-        /* Initial State: Small Pill */
+        /* THE FIX: Maximum possible Z-Index to override everything else */
+        z-index: 2147483647 !important; 
+        
         width: 80px; 
         height: 50px;
         
         background: var(--nav-bg);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
         
         border: 1px solid var(--nav-border);
         border-radius: 50px;
-        box-shadow: 0 10px 30px -5px rgba(0,0,0,0.5);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.8); /* Stronger shadow */
         
         overflow: hidden;
         cursor: pointer;
         
-        /* Smooth Animation */
         transition: 
             width 0.5s var(--nav-bounce),
             height 0.5s var(--nav-bounce),
@@ -41,7 +41,7 @@
             background 0.3s ease;
     }
 
-    /* Logo Image (Center Button) */
+    /* Logo Image */
     .ishya-logo-btn {
         position: absolute;
         top: 0; left: 0; width: 100%; height: 50px;
@@ -49,17 +49,17 @@
         justify-content: center;
         align-items: center;
         pointer-events: none;
-        transition: opacity 0.3s ease, transform 0.3s ease;
+        transition: opacity 0.3s ease;
     }
 
     .ishya-logo-btn img {
-        width: 32px;
-        height: 32px;
+        width: 28px; /* Slightly smaller to fit nicely */
+        height: 28px;
         object-fit: contain;
-        filter: drop-shadow(0 0 5px rgba(240, 213, 122, 0.3));
+        filter: drop-shadow(0 0 5px rgba(240, 213, 122, 0.5));
     }
 
-    /* Menu Items (Hidden initially) */
+    /* Menu Items */
     .ishya-menu-grid {
         width: 100%;
         height: 100%;
@@ -90,37 +90,31 @@
     }
 
     .ishya-link span {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
 
-    /* =========================================
-       INTERACTION STATES
-       ========================================= */
+    /* --- INTERACTIONS --- */
 
-    /* DESKTOP (Hover support) */
+    /* DESKTOP HOVER */
     @media screen and (min-width: 768px) {
-        
-        /* Hover Logic */
         .ishya-nav-container:hover, 
         .ishya-nav-container.expanded {
             width: 800px;
             height: 90px;
-            background: #0f111a; 
+            background: #0b0d14; /* Solid dark when open */
             border-color: var(--nav-gold);
             border-radius: 24px;
         }
 
-        /* Hide Logo on Open */
         .ishya-nav-container:hover .ishya-logo-btn,
         .ishya-nav-container.expanded .ishya-logo-btn {
             opacity: 0;
             transform: translateY(-20px);
         }
 
-        /* Show Menu on Open */
         .ishya-nav-container:hover .ishya-menu-grid,
         .ishya-nav-container.expanded .ishya-menu-grid {
             opacity: 1;
@@ -132,23 +126,20 @@
             transition-delay: 0.1s;
         }
 
-        /* Link Hover Effect */
         .ishya-link:hover { color: var(--nav-gold); transform: translateY(-3px); }
         .ishya-link:hover svg { stroke: var(--nav-gold); filter: drop-shadow(0 0 5px var(--nav-gold)); }
     }
 
-    /* MOBILE (< 768px) */
+    /* MOBILE DRAWER */
     @media screen and (max-width: 767px) {
-        /* Mobile Expansion (Drawer) */
         .ishya-nav-container.expanded {
             width: 95%;
             height: 320px;
-            background: rgba(15, 17, 26, 0.98);
+            background: rgba(11, 13, 20, 0.98);
             border-color: var(--nav-gold);
             border-radius: 20px;
         }
 
-        /* Keep Logo Visible on Mobile top */
         .ishya-nav-container.expanded .ishya-logo-btn {
             opacity: 1;
             transform: translateY(0);
@@ -156,7 +147,6 @@
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
-        /* Grid Layout for Mobile Items */
         .ishya-nav-container.expanded .ishya-menu-grid {
             opacity: 1;
             pointer-events: auto;
@@ -178,15 +168,13 @@
     }
 </style>
 
+<!-- WRAPPER -->
 <div id="ishya-floating-nav-wrapper">
     <nav class="ishya-nav-container" id="ishyaHeader">
-        
-        <!-- CENTER LOGO BUTTON -->
         <div class="ishya-logo-btn">
-            <img src="logo.ico" alt="Ishya">
+            <!-- Ensure logo.ico is in the same folder -->
+            <img src="Logo Ishya.ico" alt="Ishya">
         </div>
-
-        <!-- MENU LINKS -->
         <div class="ishya-menu-grid">
             <a href="index.html" class="ishya-link">
                 <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -223,18 +211,12 @@
 <script>
     (function(){
         const nav = document.getElementById('ishyaHeader');
-        
-        // Touch Interaction (Mobile)
         nav.addEventListener('click', (e) => {
             if (e.target.closest('a')) return;
             nav.classList.toggle('expanded');
         });
-
-        // Close when clicking outside (Desktop/Mobile)
         document.addEventListener('click', (e) => {
-            if (!nav.contains(e.target)) {
-                nav.classList.remove('expanded');
-            }
+            if (!nav.contains(e.target)) nav.classList.remove('expanded');
         });
     })();
 </script>
