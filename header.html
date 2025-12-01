@@ -1,47 +1,75 @@
-<!-- ISHYA FLOATING HEADER (FORCE TOP LAYER) -->
+<!-- ISHYA AERO / LIQUID GLASS HEADER -->
 <style>
-    /* Scoped Variables */
+    /* =========================================
+       1. PAGE PUSH LOGIC
+       ========================================= */
+    body {
+        /* Smooth transition for the page content */
+        transition: padding-top 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        padding-top: 80px; /* Default space */
+    }
+
+    body.ishya-push-active {
+        /* Pushes page content down when menu expands */
+        padding-top: 150px !important; 
+    }
+
+    /* =========================================
+       2. GLASS AERO STYLES
+       ========================================= */
     #ishya-floating-nav-wrapper {
-        --nav-bg: rgba(13, 17, 23, 0.9); /* Slightly darker for contrast */
-        --nav-border: rgba(255, 255, 255, 0.2);
-        --nav-gold: #f0d57a; 
-        --nav-text: #e2e8f0;
-        --nav-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+        --glass-bg: linear-gradient(135deg, rgba(20, 25, 40, 0.6) 0%, rgba(5, 5, 10, 0.8) 100%);
+        --glass-border: rgba(255, 255, 255, 0.12);
+        --glass-highlight: rgba(255, 255, 255, 0.15);
+        --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        --nav-gold: #f0d57a;
+        --text-color: #e2e8f0;
+        --anim-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
         font-family: system-ui, -apple-system, sans-serif;
     }
 
-    /* CONTAINER: FORCE TOP LAYER */
     .ishya-nav-container {
-        position: fixed !important; /* Force Fixed */
-        top: 15px !important;       /* Slightly higher to center in bar */
+        /* FIXATION & POSITIONING */
+        position: fixed !important;
+        top: 20px !important;
         left: 50% !important;
         transform: translateX(-50%) !important;
-        
-        /* THE FIX: Maximum possible Z-Index to override everything else */
-        z-index: 2147483647 !important; 
-        
+        z-index: 2147483647 !important;
+
+        /* DIMENSIONS (Closed) */
         width: 80px; 
         height: 50px;
+
+        /* --- THE LIQUID AERO EFFECT --- */
+        background: var(--glass-bg);
         
-        background: var(--nav-bg);
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
+        /* The Blur Magic (Frosted Glass) */
+        backdrop-filter: blur(20px) saturate(120%);
+        -webkit-backdrop-filter: blur(20px) saturate(120%);
         
-        border: 1px solid var(--nav-border);
+        /* Borders & Bevels */
+        border: 1px solid var(--glass-border);
+        border-top: 1px solid var(--glass-highlight); /* Top highlight for Aero look */
         border-radius: 50px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.8); /* Stronger shadow */
         
+        /* Depth Shadows */
+        box-shadow: 
+            var(--glass-shadow),
+            inset 0 0 15px rgba(255,255,255,0.05); /* Inner glow */
+
         overflow: hidden;
         cursor: pointer;
-        
+
+        /* ANIMATIONS */
         transition: 
-            width 0.5s var(--nav-bounce),
-            height 0.5s var(--nav-bounce),
+            width 0.6s var(--anim-spring),
+            height 0.6s var(--anim-spring),
             border-radius 0.4s ease,
-            background 0.3s ease;
+            background 0.4s ease,
+            box-shadow 0.4s ease;
     }
 
-    /* Logo Image */
+    /* LOGO (Center) */
     .ishya-logo-btn {
         position: absolute;
         top: 0; left: 0; width: 100%; height: 50px;
@@ -49,24 +77,25 @@
         justify-content: center;
         align-items: center;
         pointer-events: none;
-        transition: opacity 0.3s ease;
+        transition: opacity 0.3s ease, transform 0.3s ease;
     }
 
     .ishya-logo-btn img {
-        width: 28px; /* Slightly smaller to fit nicely */
+        width: 28px;
         height: 28px;
         object-fit: contain;
-        filter: drop-shadow(0 0 5px rgba(240, 213, 122, 0.5));
+        /* Adds a subtle glow to the logo itself */
+        filter: drop-shadow(0 0 8px rgba(240, 213, 122, 0.4));
     }
 
-    /* Menu Items */
+    /* LINKS GRID */
     .ishya-menu-grid {
         width: 100%;
         height: 100%;
         opacity: 0;
         pointer-events: none;
         display: flex;
-        transition: opacity 0.2s ease;
+        transition: opacity 0.3s ease;
     }
 
     .ishya-link {
@@ -75,13 +104,14 @@
         align-items: center;
         justify-content: center;
         text-decoration: none;
-        color: var(--nav-text);
-        transition: transform 0.2s ease, color 0.2s ease;
+        color: var(--text-color);
+        transition: all 0.2s ease;
+        position: relative;
     }
 
     .ishya-link svg {
-        width: 24px;
-        height: 24px;
+        width: 22px;
+        height: 22px;
         stroke: currentColor;
         stroke-width: 2;
         fill: none;
@@ -90,90 +120,98 @@
     }
 
     .ishya-link span {
-        font-size: 0.7rem;
-        font-weight: 600;
+        font-size: 0.65rem;
+        font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
 
-    /* --- INTERACTIONS --- */
-
-    /* DESKTOP HOVER */
-    @media screen and (min-width: 768px) {
-        .ishya-nav-container:hover, 
-        .ishya-nav-container.expanded {
-            width: 800px;
-            height: 90px;
-            background: #0b0d14; /* Solid dark when open */
-            border-color: var(--nav-gold);
-            border-radius: 24px;
-        }
-
-        .ishya-nav-container:hover .ishya-logo-btn,
-        .ishya-nav-container.expanded .ishya-logo-btn {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-
-        .ishya-nav-container:hover .ishya-menu-grid,
-        .ishya-nav-container.expanded .ishya-menu-grid {
-            opacity: 1;
-            pointer-events: auto;
-            flex-direction: row;
-            justify-content: space-evenly;
-            align-items: center;
-            padding: 0 20px;
-            transition-delay: 0.1s;
-        }
-
-        .ishya-link:hover { color: var(--nav-gold); transform: translateY(-3px); }
-        .ishya-link:hover svg { stroke: var(--nav-gold); filter: drop-shadow(0 0 5px var(--nav-gold)); }
+    /* --- EXPANDED / HOVER STATE --- */
+    
+    /* Desktop */
+    .ishya-nav-container.expanded {
+        width: 800px;
+        height: 100px;
+        
+        /* Darker glass when open for readability */
+        background: linear-gradient(135deg, rgba(15, 20, 30, 0.85) 0%, rgba(5, 5, 10, 0.95) 100%);
+        border-color: rgba(240, 213, 122, 0.4); /* Gold Border when open */
+        border-radius: 24px;
+        
+        /* Stronger shadow when active */
+        box-shadow: 
+            0 20px 50px rgba(0,0,0,0.6),
+            inset 0 0 0 1px rgba(240, 213, 122, 0.1);
     }
 
-    /* MOBILE DRAWER */
+    .ishya-nav-container.expanded .ishya-logo-btn {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    .ishya-nav-container.expanded .ishya-menu-grid {
+        opacity: 1;
+        pointer-events: auto;
+        flex-direction: row;
+        justify-content: space-evenly;
+        align-items: center;
+        padding: 0 20px;
+        transition-delay: 0.15s;
+    }
+
+    /* Hover Effects for Items */
+    .ishya-link:hover {
+        color: var(--nav-gold);
+        transform: translateY(-2px);
+        text-shadow: 0 0 10px rgba(240, 213, 122, 0.5);
+    }
+    .ishya-link:hover svg {
+        stroke: var(--nav-gold);
+        filter: drop-shadow(0 0 5px var(--nav-gold));
+    }
+
+    /* --- MOBILE RESPONSIVENESS --- */
     @media screen and (max-width: 767px) {
         .ishya-nav-container.expanded {
             width: 95%;
-            height: 320px;
-            background: rgba(11, 13, 20, 0.98);
-            border-color: var(--nav-gold);
-            border-radius: 20px;
+            height: 340px;
+            /* Even darker background on mobile to cover page content */
+            background: linear-gradient(135deg, rgba(10, 12, 20, 0.95) 0%, rgba(0, 0, 0, 0.98) 100%);
         }
 
         .ishya-nav-container.expanded .ishya-logo-btn {
             opacity: 1;
             transform: translateY(0);
             height: 60px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
         }
 
         .ishya-nav-container.expanded .ishya-menu-grid {
-            opacity: 1;
-            pointer-events: auto;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            padding: 70px 10px 10px 10px;
+            gap: 12px;
+            padding: 70px 15px 15px 15px;
             align-items: start;
         }
 
         .ishya-link {
-            background: rgba(255,255,255,0.03);
-            padding: 10px 0;
-            border-radius: 8px;
+            background: rgba(255,255,255,0.04);
+            padding: 12px 0;
+            border-radius: 12px;
             width: 100%;
+            border: 1px solid rgba(255,255,255,0.02);
         }
         
         .ishya-link:last-child { grid-column: span 3; flex-direction: row; gap: 10px; }
+        
+        body.ishya-push-active { padding-top: 20px !important; }
     }
 </style>
 
-<!-- WRAPPER -->
 <div id="ishya-floating-nav-wrapper">
     <nav class="ishya-nav-container" id="ishyaHeader">
         <div class="ishya-logo-btn">
-            <!-- Ensure logo.ico is in the same folder -->
-            <img src="/ISHYA-26/Logo Ishya.ico" alt="Ishya">
+            <img src="ISHYA-26/Logo Ishya.ico" alt="Ishya">
         </div>
         <div class="ishya-menu-grid">
             <a href="index.html" class="ishya-link">
@@ -211,12 +249,39 @@
 <script>
     (function(){
         const nav = document.getElementById('ishyaHeader');
+        
+        // --- INTERACTION LOGIC ---
+        const toggleNav = (shouldOpen) => {
+            if (shouldOpen) {
+                nav.classList.add('expanded');
+                document.body.classList.add('ishya-push-active');
+            } else {
+                nav.classList.remove('expanded');
+                document.body.classList.remove('ishya-push-active');
+            }
+        };
+
+        // Desktop Hover
+        nav.addEventListener('mouseenter', () => {
+            if(window.innerWidth > 768) toggleNav(true);
+        });
+        nav.addEventListener('mouseleave', () => {
+            if(window.innerWidth > 768) toggleNav(false);
+        });
+
+        // Mobile/Click Interaction
         nav.addEventListener('click', (e) => {
             if (e.target.closest('a')) return;
-            nav.classList.toggle('expanded');
+            if (nav.classList.contains('expanded')) {
+                toggleNav(false);
+            } else {
+                toggleNav(true);
+            }
         });
+
+        // Close on Click Outside
         document.addEventListener('click', (e) => {
-            if (!nav.contains(e.target)) nav.classList.remove('expanded');
+            if (!nav.contains(e.target)) toggleNav(false);
         });
     })();
 </script>
