@@ -1,1 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fest Merch Store</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --success: #10b981;
+            --border: #334155;
+        }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* --- Navbar --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            position: sticky;
+            top: 0;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo { font-size: 1.5rem; font-weight: 700; letter-spacing: -1px; }
+        .logo span { color: var(--accent); }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--accent);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 50%;
+            display: none;
+        }
+
+        /* --- Hero --- */
+        header {
+            text-align: center;
+            padding: 4rem 1rem;
+            animation: fadeIn 1s ease;
+        }
+
+        header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        header p { color: var(--text-secondary); }
+
+        /* --- Product Grid --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0; /* For animation */
+            animation: slideUp 0.5s forwards;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border-color: var(--accent);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            background: #2d3748;
+        }
+
+        .product-info { padding: 1.5rem; }
+        
+        .product-cat {
+            font-size: 0.75rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .product-title { font-size: 1.25rem; margin: 0.5rem 0; font-weight: 600; }
+        .product-price { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 1rem; }
+
+        .size-select {
+            width: 100%;
+            padding: 0.5rem;
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            color: white;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover { background: var(--accent-hover); }
+
+        /* --- Cart Sidebar --- */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 350px;
+            height: 100vh;
+            background: var(--card-bg);
+            border-left: 1px solid var(--border);
+            z-index: 200;
+            padding: 2rem;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-sidebar.open { right: 0; }
+        
+        .cart-header { display: flex; justify-content: space-between; margin-bottom: 2rem; }
+        .close-cart { cursor: pointer; font-size: 1.5rem; }
+        
+        .cart-items { flex-grow: 1; overflow-y: auto; }
+        
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cart-footer { margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border); }
+        .total-row { display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 1.2rem; font-weight: bold; }
+
+        /* --- Checkout Modal --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 300;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: scaleIn 0.3s ease;
+        }
+
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-secondary); }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: white;
+        }
+
+        .step-container { display: none; }
+        .step-container.active { display: block; }
+
+        /* Payment UI */
+        .qr-container { background: white; padding: 1rem; display: inline-block; border-radius: 8px; margin: 1rem auto; }
+        .upi-btn {
+            display: block;
+            text-align: center;
+            background: #22c55e;
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.1);
+            border-left-color: var(--accent);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+            display: none;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    </style>
+</head>
+<body>
+
+    <!-- Nav -->
+    <nav>
+        <div class="logo">ISHYA <span>STORE</span></div>
+        <div class="cart-icon" onclick="toggleCart()">
+            Cart 🛒
+            <div class="cart-badge" id="cartBadge">0</div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header>
+        <h1>Official Merchandise</h1>
+        <p>Grab your gear before the fest begins.</p>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div id="loading" class="spinner" style="display: block;"></div>
+        <div class="product-grid" id="productGrid">
+            <!-- Products injected via JS -->
+        </div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h2>Your Cart</h2>
+            <span class="close-cart" onclick="toggleCart()">&times;</span>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <!-- Cart Items injected here -->
+        </div>
+        <div class="cart-footer">
+            <div class="total-row">
+                <span>Total:</span>
+                <span id="cartTotal">₹0</span>
+            </div>
+            <button class="btn btn-primary" onclick="openCheckout()">Checkout</button>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div class="modal-overlay" id="checkoutModal">
+        <div class="modal-content">
+            <span class="close-cart" style="position: absolute; right: 20px; top: 20px;" onclick="closeCheckout()">&times;</span>
+            
+            <!-- STEP 1: Details -->
+            <div id="step1" class="step-container active">
+                <h2>Your Details</h2>
+                <form id="detailsForm" onsubmit="goToPayment(event)">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="cName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number *</label>
+                        <input type="tel" id="cPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label>College Email *</label>
+                        <input type="email" id="cEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Roll Number (Optional)</label>
+                        <input type="text" id="cRoll">
+                    </div>
+                    <div class="form-group">
+                        <label>Address (Optional)</label>
+                        <textarea id="cAddress"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Proceed to Pay</button>
+                </form>
+            </div>
+
+            <!-- STEP 2: Payment -->
+            <div id="step2" class="step-container">
+                <h2>Payment</h2>
+                <p>Scan to pay <strong><span id="payAmount"></span></strong></p>
+                <div style="text-align: center;">
+                    <div id="qrcode" class="qr-container"></div>
+                </div>
+                <a id="mobilePayBtn" href="#" class="upi-btn">Pay via UPI App</a>
+                <br>
+                <div class="form-group">
+                    <label>Upload Payment Screenshot *</label>
+                    <input type="file" id="receiptFile" accept="image/*" required>
+                </div>
+                <button class="btn btn-primary" onclick="submitOrder()">Confirm Purchase</button>
+                <div id="submitSpinner" class="spinner"></div>
+            </div>
+
+            <!-- STEP 3: Success -->
+            <div id="step3" class="step-container" style="text-align: center;">
+                <h2 style="color: var(--success);">Order Placed!</h2>
+                <p>We've sent a confirmation email to you.</p>
+                <br>
+                <button class="btn btn-primary" onclick="location.reload()">Shop More</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURATION
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpERF04YBoeR9B-wet2Rl5XmFIDPSxr49VpqM2gjgvocngbPzIGSCZwczU2pvYxXVkmQ/exec"; 
+        const UPI_ID = "8113099230@upi"; // e.g. festname@sbi
+        const FEST_NAME = "ISHYA-26";
+
+        // STATE
+        let products = [];
+        let cart = [];
+        let orderId = "";
+
+        // --- INIT ---
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchProducts();
+        });
+
+        // --- FETCH PRODUCTS ---
+        async function fetchProducts() {
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL);
+                const json = await response.json();
+                
+                if (json.status === 'success') {
+                    products = json.data;
+                    renderProducts(products);
+                }
+            } catch (e) {
+                console.error("Error loading products", e);
+                document.getElementById('productGrid').innerHTML = "<p>Failed to load products. Refresh page.</p>";
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        // --- RENDER UI ---
+        function renderProducts(list) {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+
+            list.forEach(p => {
+                // Handle Sizes
+                let sizeHtml = '';
+                if(p.sizes && p.sizes.toString().trim() !== '') {
+                    const sizeArr = p.sizes.toString().split(',');
+                    sizeHtml = `<select class="size-select" id="size-${p.id}">
+                        ${sizeArr.map(s => `<option value="${s.trim()}">${s.trim()}</option>`).join('')}
+                    </select>`;
+                }
+
+                // Handle Image (Take first one)
+                const mainImg = p.images.toString().split(',')[0];
+
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.style.animationDelay = `${Math.random() * 0.5}s`;
+                card.innerHTML = `
+                    <img src="${mainImg}" class="product-img" alt="${p.name}">
+                    <div class="product-info">
+                        <div class="product-cat">${p.category}</div>
+                        <div class="product-title">${p.name}</div>
+                        <div class="product-price">₹${p.price}</div>
+                        ${sizeHtml}
+                        <button class="btn btn-primary" onclick="addToCart('${p.id}')">Add to Cart</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- CART LOGIC ---
+        function addToCart(pid) {
+            const product = products.find(p => p.id === pid);
+            const sizeSelector = document.getElementById(`size-${pid}`);
+            const selectedSize = sizeSelector ? sizeSelector.value : null;
+
+            // Check if item exists in cart with same size
+            const existingItem = cart.find(item => item.id === pid && item.size === selectedSize);
+
+            if (existingItem) {
+                existingItem.qty++;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    size: selectedSize,
+                    qty: 1
+                });
+            }
+            updateCartUI();
+            toggleCart(); // Open cart to show addition
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cartItems');
+            const totalEl = document.getElementById('cartTotal');
+            const badge = document.getElementById('cartBadge');
+            
+            container.innerHTML = '';
+            let total = 0;
+            let count = 0;
+
+            cart.forEach((item, index) => {
+                total += item.price * item.qty;
+                count += item.qty;
+                
+                const div = document.createElement('div');
+                div.className = 'cart-item';
+                div.innerHTML = `
+                    <div>
+                        <strong>${item.name}</strong> <br>
+                        <small>${item.size ? 'Size: ' + item.size : ''} | ₹${item.price} x ${item.qty}</small>
+                    </div>
+                    <span style="color:red; cursor:pointer;" onclick="removeFromCart(${index})">🗑️</span>
+                `;
+                container.appendChild(div);
+            });
+
+            totalEl.innerText = '₹' + total;
+            badge.innerText = count;
+            badge.style.display = count > 0 ? 'block' : 'none';
+        }
+
+        function toggleCart() {
+            document.getElementById('cartSidebar').classList.toggle('open');
+        }
+
+        // --- CHECKOUT FLOW ---
+        function openCheckout() {
+            if (cart.length === 0) return alert("Cart is empty!");
+            toggleCart(); // Close sidebar
+            document.getElementById('checkoutModal').style.display = 'flex';
+        }
+
+        function closeCheckout() {
+            document.getElementById('checkoutModal').style.display = 'none';
+        }
+
+        function goToPayment(e) {
+            e.preventDefault();
+            
+            // Generate Order ID
+            orderId = 'ORD-' + Math.floor(Math.random() * 100000);
+            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            
+            document.getElementById('payAmount').innerText = '₹' + total;
+
+            // 1. Generate UPI String
+            const upiString = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(FEST_NAME)}&am=${total}&tn=${orderId}`;
+
+            // 2. Render QR
+            document.getElementById('qrcode').innerHTML = "";
+            new QRCode(document.getElementById("qrcode"), {
+                text: upiString,
+                width: 128,
+                height: 128
+            });
+
+            // 3. Set Mobile Button Link
+            document.getElementById('mobilePayBtn').href = upiString;
+
+            // Switch Views
+            document.getElementById('step1').classList.remove('active');
+            document.getElementById('step2').classList.add('active');
+        }
+
+        // --- SUBMIT ORDER ---
+        async function submitOrder() {
+            const fileInput = document.getElementById('receiptFile');
+            if (fileInput.files.length === 0) return alert("Please upload payment screenshot.");
+
+            const spinner = document.getElementById('submitSpinner');
+            spinner.style.display = 'block';
+
+            // 1. Convert Image to Base64
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            reader.onloadend = async function() {
+                const base64Img = reader.result;
+
+                // 2. Prepare Payload
+                const payload = {
+                    orderId: orderId,
+                    customerName: document.getElementById('cName').value,
+                    customerPhone: document.getElementById('cPhone').value,
+                    customerEmail: document.getElementById('cEmail').value,
+                    rollNumber: document.getElementById('cRoll').value,
+                    address: document.getElementById('cAddress').value,
+                    totalPrice: cart.reduce((sum, item) => sum + (item.price * item.qty), 0),
+                    cart: cart,
+                    receiptImage: base64Img
+                };
+
+                // 3. Send to Google Apps Script
+                try {
+                    const res = await fetch(GOOGLE_SCRIPT_URL, {
+                        method: "POST",
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await res.json();
+
+                    if(result.status === 'success') {
+                        document.getElementById('step2').classList.remove('active');
+                        document.getElementById('step3').classList.add('active');
+                        cart = []; // Clear cart
+                        updateCartUI();
+                    } else {
+                        alert("Error: " + result.message);
+                    }
+                } catch (err) {
+                    alert("Submission failed. Check internet.");
+                } finally {
+                    spinner.style.display = 'none';
+                }
+            };
+
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+</html>
