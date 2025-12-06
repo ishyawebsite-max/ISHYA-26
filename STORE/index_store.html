@@ -37,7 +37,7 @@
             padding: 1.5rem 5%;
             position: sticky;
             top: 0;
-            background: rgba(15, 23, 42, 0.9);
+            background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(10px);
             z-index: 100;
             border-bottom: 1px solid var(--border);
@@ -52,8 +52,13 @@
             font-size: 1.2rem;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.2s;
         }
+        
+        .cart-icon:hover { background: rgba(255,255,255,0.05); }
 
         .cart-badge {
             background: var(--accent);
@@ -62,6 +67,7 @@
             padding: 2px 8px;
             border-radius: 12px;
             display: none;
+            font-weight: bold;
         }
 
         /* --- Hero --- */
@@ -106,13 +112,78 @@
             border-color: var(--accent);
         }
 
-        .product-img {
+        /* --- CAROUSEL STYLES (NEW) --- */
+        .image-container {
+            position: relative;
             width: 100%;
             height: 250px;
-            object-fit: cover;
             background: #2d3748;
+            overflow: hidden;
         }
 
+        .product-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .product-img.active {
+            opacity: 1;
+            z-index: 1;
+        }
+
+        /* Carousel Navigation Buttons */
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            user-select: none;
+        }
+
+        .carousel-btn:hover { background: var(--accent); }
+        .prev-btn { left: 10px; }
+        .next-btn { right: 10px; }
+
+        /* Carousel Dots */
+        .carousel-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 5;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .dot.active { background: white; transform: scale(1.2); }
+
+
+        /* --- Product Info --- */
         .product-info { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
         
         .product-cat {
@@ -128,13 +199,14 @@
 
         .size-select {
             width: 100%;
-            padding: 0.5rem;
+            padding: 0.75rem;
             background: var(--bg-color);
             border: 1px solid var(--border);
             color: white;
             border-radius: 6px;
             margin-bottom: 1rem;
             cursor: pointer;
+            appearance: none; /* Custom arrow ideally, but simple for now */
         }
 
         .btn {
@@ -154,6 +226,7 @@
         }
 
         .btn-primary:hover { background: var(--accent-hover); }
+        .btn:disabled { opacity: 0.7; cursor: not-allowed; }
 
         /* --- Cart Sidebar --- */
         .cart-sidebar {
@@ -276,7 +349,7 @@
         <div class="logo">ISHYA <span>STORE</span></div>
         <div class="cart-icon" onclick="toggleCart()">
             <span>Cart</span>
-            <span style="font-size: 1.5rem;">🛒</span>
+            <span>🛒</span>
             <div class="cart-badge" id="cartBadge">0</div>
         </div>
     </nav>
@@ -376,12 +449,16 @@
     </div>
 
     <script>
-        // CONFIGURATION
+        // **********************************************
+        // CONFIGURATION (EDIT THIS SECTION)
+        // **********************************************
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpERF04YBoeR9B-wet2Rl5XmFIDPSxr49VpqM2gjgvocngbPzIGSCZwczU2pvYxXVkmQ/exec"; 
         const UPI_ID = "8113099230@upi"; // e.g. festname@sbi
         const FEST_NAME = "ISHYA-26";
 
-        // STATE
+        // **********************************************
+        // APP LOGIC
+        // **********************************************
         let products = [];
         let cart = [];
         let orderId = "";
@@ -412,16 +489,15 @@
             }
         }
 
-        // --- RENDER UI ---
+        // --- RENDER UI (WITH SLIDESHOW) ---
         function renderProducts(list) {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = '';
 
             list.forEach(p => {
-                // Safely convert ID to string for HTML attributes
                 const safeId = String(p.id);
 
-                // Handle Sizes
+                // 1. Handle Sizes
                 let sizeHtml = '';
                 if(p.sizes && String(p.sizes).trim() !== '') {
                     const sizeArr = String(p.sizes).split(',');
@@ -430,16 +506,39 @@
                     </select>`;
                 }
 
-                // Handle Image (Take first one, clean up spaces)
-                const mainImg = String(p.images).split(',')[0].trim();
+                // 2. Handle Images (Carousel Logic)
+                const images = String(p.images).split(',').map(img => img.trim()).filter(img => img !== "");
+                let imageHtml = '';
+                let controlsHtml = '';
 
+                if (images.length > 0) {
+                    imageHtml = images.map((img, index) => 
+                        `<img src="${img}" class="product-img ${index === 0 ? 'active' : ''}" data-index="${index}" onerror="this.src='https://placehold.co/400x300?text=No+Image'">`
+                    ).join('');
+
+                    if (images.length > 1) {
+                        controlsHtml = `
+                            <button class="carousel-btn prev-btn" onclick="moveSlide('${safeId}', -1)">&#10094;</button>
+                            <button class="carousel-btn next-btn" onclick="moveSlide('${safeId}', 1)">&#10095;</button>
+                            <div class="carousel-dots">
+                                ${images.map((_, index) => `<div class="dot ${index === 0 ? 'active' : ''}"></div>`).join('')}
+                            </div>
+                        `;
+                    }
+                } else {
+                    imageHtml = `<img src="https://placehold.co/400x300?text=No+Image" class="product-img active">`;
+                }
+
+                // 3. Construct Card
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 card.style.animationDelay = `${Math.random() * 0.5}s`;
                 
-                // IMPORTANT: In onclick, we pass the safeId as a string
                 card.innerHTML = `
-                    <img src="${mainImg}" class="product-img" alt="${p.name}" onerror="this.src='https://placehold.co/400x300?text=No+Image'">
+                    <div class="image-container" id="carousel-${safeId}" data-current="0" data-total="${images.length}">
+                        ${imageHtml}
+                        ${controlsHtml}
+                    </div>
                     <div class="product-info">
                         <div class="product-cat">${p.category}</div>
                         <div class="product-title">${p.name}</div>
@@ -452,24 +551,49 @@
             });
         }
 
-        // --- CART LOGIC (FIXED) ---
-        function addToCart(pid) {
-            // 1. Force the incoming ID to be a string
-            const stringPid = String(pid);
+        // --- SLIDESHOW CONTROLS ---
+        function moveSlide(productId, direction) {
+            const container = document.getElementById(`carousel-${productId}`);
+            if(!container) return;
 
-            // 2. Find product by comparing Strings
+            let currentIndex = parseInt(container.getAttribute('data-current'));
+            const totalImages = parseInt(container.getAttribute('data-total'));
+            const images = container.querySelectorAll('.product-img');
+            const dots = container.querySelectorAll('.dot');
+
+            // Remove active from current
+            if(images[currentIndex]) images[currentIndex].classList.remove('active');
+            if(dots.length > 0 && dots[currentIndex]) dots[currentIndex].classList.remove('active');
+
+            // Calculate new index
+            currentIndex += direction;
+            if (currentIndex >= totalImages) currentIndex = 0;
+            if (currentIndex < 0) currentIndex = totalImages - 1;
+
+            // Add active to new
+            if(images[currentIndex]) images[currentIndex].classList.add('active');
+            if(dots.length > 0 && dots[currentIndex]) dots[currentIndex].classList.add('active');
+
+            // Update state
+            container.setAttribute('data-current', currentIndex);
+        }
+
+
+        // --- CART LOGIC ---
+        function addToCart(pid) {
+            // Force text for comparison
+            const stringPid = String(pid);
             const product = products.find(p => String(p.id) === stringPid);
 
             if (!product) {
-                console.error("Product not found with ID:", stringPid);
+                console.error("Product not found:", stringPid);
                 return;
             }
 
-            // 3. Get Size
             const sizeSelector = document.getElementById(`size-${stringPid}`);
             const selectedSize = sizeSelector ? sizeSelector.value : null;
 
-            // 4. Check cart for existing item (Compare strings)
+            // Check existing (comparing strings)
             const existingItem = cart.find(item => String(item.id) === stringPid && item.size === selectedSize);
 
             if (existingItem) {
@@ -485,7 +609,6 @@
             }
             updateCartUI();
             
-            // Auto open cart for feedback
             const cartSidebar = document.getElementById('cartSidebar');
             if(!cartSidebar.classList.contains('open')) {
                 toggleCart();
@@ -625,7 +748,7 @@
                         submitBtn.innerText = "Confirm Purchase";
                     }
                 } catch (err) {
-                    alert("Submission failed. Check internet.");
+                    alert("Submission failed. Check internet connection.");
                     submitBtn.disabled = false;
                     submitBtn.innerText = "Confirm Purchase";
                 } finally {
