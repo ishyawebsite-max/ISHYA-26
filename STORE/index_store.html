@@ -759,5 +759,28 @@
             reader.readAsDataURL(file);
         }
     </script>
+    <script>
+    fetch('/ISHYA-26/header.html')
+        .then(response => response.text())
+        .then(data => {
+            // Create a temporary container
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = data;
+
+            // Extract the script tag from the loaded HTML
+            const script = tempDiv.querySelector('script');
+            
+            // Insert the HTML at the very top of the body (First Child)
+            document.body.prepend(tempDiv);
+            
+            // Execute the extracted script manually
+            if (script) {
+                const newScript = document.createElement('script');
+                newScript.textContent = script.textContent;
+                document.body.appendChild(newScript);
+            }
+        })
+        .catch(err => console.error('Error loading header:', err));
+</script>
 </body>
 </html>
