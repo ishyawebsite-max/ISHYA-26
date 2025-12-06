@@ -50,17 +50,17 @@
             position: relative;
             cursor: pointer;
             font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .cart-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
             background: var(--accent);
             color: white;
-            font-size: 0.7rem;
-            padding: 2px 6px;
-            border-radius: 50%;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 12px;
             display: none;
         }
 
@@ -79,6 +79,7 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
+            min-height: 60vh;
         }
 
         .product-grid {
@@ -95,6 +96,8 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             opacity: 0; /* For animation */
             animation: slideUp 0.5s forwards;
+            display: flex;
+            flex-direction: column;
         }
 
         .product-card:hover {
@@ -110,7 +113,7 @@
             background: #2d3748;
         }
 
-        .product-info { padding: 1.5rem; }
+        .product-info { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
         
         .product-cat {
             font-size: 0.75rem;
@@ -131,6 +134,7 @@
             color: white;
             border-radius: 6px;
             margin-bottom: 1rem;
+            cursor: pointer;
         }
 
         .btn {
@@ -141,6 +145,7 @@
             cursor: pointer;
             font-weight: 600;
             transition: 0.2s;
+            margin-top: auto;
         }
 
         .btn-primary {
@@ -155,7 +160,8 @@
             position: fixed;
             top: 0;
             right: -400px;
-            width: 350px;
+            width: 100%;
+            max-width: 400px;
             height: 100vh;
             background: var(--card-bg);
             border-left: 1px solid var(--border);
@@ -164,22 +170,24 @@
             transition: right 0.3s ease;
             display: flex;
             flex-direction: column;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.5);
         }
 
         .cart-sidebar.open { right: 0; }
         
-        .cart-header { display: flex; justify-content: space-between; margin-bottom: 2rem; }
-        .close-cart { cursor: pointer; font-size: 1.5rem; }
+        .cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .close-cart { cursor: pointer; font-size: 1.5rem; padding: 5px; }
         
-        .cart-items { flex-grow: 1; overflow-y: auto; }
+        .cart-items { flex-grow: 1; overflow-y: auto; padding-right: 5px; }
         
         .cart-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border);
+            padding: 1rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
         }
 
         .cart-footer { margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border); }
@@ -207,6 +215,7 @@
             overflow-y: auto;
             position: relative;
             animation: scaleIn 0.3s ease;
+            border: 1px solid var(--border);
         }
 
         .form-group { margin-bottom: 1rem; }
@@ -218,7 +227,10 @@
             border: 1px solid var(--border);
             border-radius: 6px;
             color: white;
+            outline: none;
         }
+        
+        .form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
 
         .step-container { display: none; }
         .step-container.active { display: block; }
@@ -234,6 +246,7 @@
             padding: 0.8rem;
             border-radius: 8px;
             margin-top: 1rem;
+            font-weight: 600;
         }
 
         /* --- Animations --- */
@@ -246,8 +259,8 @@
             border: 4px solid rgba(255,255,255,0.1);
             border-left-color: var(--accent);
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
+            width: 40px;
+            height: 40px;
             animation: spin 1s linear infinite;
             margin: 2rem auto;
             display: none;
@@ -262,7 +275,8 @@
     <nav>
         <div class="logo">ISHYA <span>STORE</span></div>
         <div class="cart-icon" onclick="toggleCart()">
-            Cart 🛒
+            <span>Cart</span>
+            <span style="font-size: 1.5rem;">🛒</span>
             <div class="cart-badge" id="cartBadge">0</div>
         </div>
     </nav>
@@ -288,7 +302,7 @@
             <span class="close-cart" onclick="toggleCart()">&times;</span>
         </div>
         <div class="cart-items" id="cartItems">
-            <!-- Cart Items injected here -->
+            <p style="text-align:center; color: var(--text-secondary); margin-top: 2rem;">Your cart is empty.</p>
         </div>
         <div class="cart-footer">
             <div class="total-row">
@@ -302,7 +316,7 @@
     <!-- Checkout Modal -->
     <div class="modal-overlay" id="checkoutModal">
         <div class="modal-content">
-            <span class="close-cart" style="position: absolute; right: 20px; top: 20px;" onclick="closeCheckout()">&times;</span>
+            <span class="close-cart" style="position: absolute; right: 20px; top: 20px; z-index: 10;" onclick="closeCheckout()">&times;</span>
             
             <!-- STEP 1: Details -->
             <div id="step1" class="step-container active">
@@ -351,8 +365,9 @@
 
             <!-- STEP 3: Success -->
             <div id="step3" class="step-container" style="text-align: center;">
-                <h2 style="color: var(--success);">Order Placed!</h2>
-                <p>We've sent a confirmation email to you.</p>
+                <h2 style="color: var(--success); font-size: 3rem;">✔</h2>
+                <h2 style="color: var(--text-primary);">Order Placed!</h2>
+                <p style="color: var(--text-secondary);">We've sent a confirmation email to you.</p>
                 <br>
                 <button class="btn btn-primary" onclick="location.reload()">Shop More</button>
             </div>
@@ -385,10 +400,13 @@
                 if (json.status === 'success') {
                     products = json.data;
                     renderProducts(products);
+                } else {
+                    throw new Error(json.message);
                 }
             } catch (e) {
                 console.error("Error loading products", e);
-                document.getElementById('productGrid').innerHTML = "<p>Failed to load products. Refresh page.</p>";
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('productGrid').innerHTML = "<p style='text-align:center;'>Failed to load products. <br>Please check connection or script URL.</p>";
             } finally {
                 document.getElementById('loading').style.display = 'none';
             }
@@ -400,43 +418,59 @@
             grid.innerHTML = '';
 
             list.forEach(p => {
+                // Safely convert ID to string for HTML attributes
+                const safeId = String(p.id);
+
                 // Handle Sizes
                 let sizeHtml = '';
-                if(p.sizes && p.sizes.toString().trim() !== '') {
-                    const sizeArr = p.sizes.toString().split(',');
-                    sizeHtml = `<select class="size-select" id="size-${p.id}">
+                if(p.sizes && String(p.sizes).trim() !== '') {
+                    const sizeArr = String(p.sizes).split(',');
+                    sizeHtml = `<select class="size-select" id="size-${safeId}">
                         ${sizeArr.map(s => `<option value="${s.trim()}">${s.trim()}</option>`).join('')}
                     </select>`;
                 }
 
-                // Handle Image (Take first one)
-                const mainImg = p.images.toString().split(',')[0];
+                // Handle Image (Take first one, clean up spaces)
+                const mainImg = String(p.images).split(',')[0].trim();
 
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 card.style.animationDelay = `${Math.random() * 0.5}s`;
+                
+                // IMPORTANT: In onclick, we pass the safeId as a string
                 card.innerHTML = `
-                    <img src="${mainImg}" class="product-img" alt="${p.name}">
+                    <img src="${mainImg}" class="product-img" alt="${p.name}" onerror="this.src='https://placehold.co/400x300?text=No+Image'">
                     <div class="product-info">
                         <div class="product-cat">${p.category}</div>
                         <div class="product-title">${p.name}</div>
                         <div class="product-price">₹${p.price}</div>
                         ${sizeHtml}
-                        <button class="btn btn-primary" onclick="addToCart('${p.id}')">Add to Cart</button>
+                        <button class="btn btn-primary" onclick="addToCart('${safeId}')">Add to Cart</button>
                     </div>
                 `;
                 grid.appendChild(card);
             });
         }
 
-        // --- CART LOGIC ---
+        // --- CART LOGIC (FIXED) ---
         function addToCart(pid) {
-            const product = products.find(p => p.id === pid);
-            const sizeSelector = document.getElementById(`size-${pid}`);
+            // 1. Force the incoming ID to be a string
+            const stringPid = String(pid);
+
+            // 2. Find product by comparing Strings
+            const product = products.find(p => String(p.id) === stringPid);
+
+            if (!product) {
+                console.error("Product not found with ID:", stringPid);
+                return;
+            }
+
+            // 3. Get Size
+            const sizeSelector = document.getElementById(`size-${stringPid}`);
             const selectedSize = sizeSelector ? sizeSelector.value : null;
 
-            // Check if item exists in cart with same size
-            const existingItem = cart.find(item => item.id === pid && item.size === selectedSize);
+            // 4. Check cart for existing item (Compare strings)
+            const existingItem = cart.find(item => String(item.id) === stringPid && item.size === selectedSize);
 
             if (existingItem) {
                 existingItem.qty++;
@@ -450,7 +484,12 @@
                 });
             }
             updateCartUI();
-            toggleCart(); // Open cart to show addition
+            
+            // Auto open cart for feedback
+            const cartSidebar = document.getElementById('cartSidebar');
+            if(!cartSidebar.classList.contains('open')) {
+                toggleCart();
+            }
         }
 
         function removeFromCart(index) {
@@ -467,6 +506,10 @@
             let total = 0;
             let count = 0;
 
+            if(cart.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color: var(--text-secondary); margin-top: 2rem;">Your cart is empty.</p>';
+            }
+
             cart.forEach((item, index) => {
                 total += item.price * item.qty;
                 count += item.qty;
@@ -475,10 +518,10 @@
                 div.className = 'cart-item';
                 div.innerHTML = `
                     <div>
-                        <strong>${item.name}</strong> <br>
-                        <small>${item.size ? 'Size: ' + item.size : ''} | ₹${item.price} x ${item.qty}</small>
+                        <strong style="color:white;">${item.name}</strong> <br>
+                        <small style="color:var(--text-secondary);">${item.size ? 'Size: ' + item.size + ' | ' : ''} ₹${item.price} x ${item.qty}</small>
                     </div>
-                    <span style="color:red; cursor:pointer;" onclick="removeFromCart(${index})">🗑️</span>
+                    <span style="color:#ef4444; cursor:pointer; font-size:1.2rem;" onclick="removeFromCart(${index})">&times;</span>
                 `;
                 container.appendChild(div);
             });
@@ -537,7 +580,11 @@
             if (fileInput.files.length === 0) return alert("Please upload payment screenshot.");
 
             const spinner = document.getElementById('submitSpinner');
+            const submitBtn = document.querySelector('#step2 .btn-primary');
+            
             spinner.style.display = 'block';
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Processing...";
 
             // 1. Convert Image to Base64
             const file = fileInput.files[0];
@@ -574,9 +621,13 @@
                         updateCartUI();
                     } else {
                         alert("Error: " + result.message);
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = "Confirm Purchase";
                     }
                 } catch (err) {
                     alert("Submission failed. Check internet.");
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "Confirm Purchase";
                 } finally {
                     spinner.style.display = 'none';
                 }
