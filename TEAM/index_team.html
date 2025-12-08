@@ -1,1 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <link rel="shortcut icon" type="image/x-icon" href="../Logo Ishya.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Booking System</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- this is the script for header -->
+    <style>
+        /* --- CSS Variables --- */
+        :root {
+            --primary-color: #D4C685;
+            /* Muted Gold */
+            --secondary-color: #C45C3D;
+            /* Warm Rust/Orange */
+            --dark-bg: #1A2238;
+            /* Deep Navy */
+            --card-bg: rgba(30, 41, 59, 0.6);
+            --text-color: #F4F4F9;
+            --text-muted: #BCC2D9;
+            --accent-purple: #8B5CF6;
+            --accent-blue: #3B82F6;
+        }
+
+        /* --- Reset & Base Styles --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body,
+        html {
+            width: 100%;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- Animated Background --- */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(at 20% 50%, rgba(212, 198, 133, 0.1) 0%, transparent 50%),
+                radial-gradient(at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(at 40% 0%, rgba(196, 92, 61, 0.05) 0%, transparent 50%);
+            background-attachment: fixed;
+            z-index: -1;
+            pointer-events: none;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+
+            0%,
+            100% {
+                filter: brightness(1);
+            }
+
+            50% {
+                filter: brightness(1.1);
+            }
+        }
+
+        /* --- Floating Elements --- */
+        .floating-element {
+            position: fixed;
+            border-radius: 50%;
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .element-1 {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 5%;
+            background: var(--primary-color);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .element-2 {
+            width: 200px;
+            height: 200px;
+            bottom: 20%;
+            right: 10%;
+            background: var(--accent-purple);
+            animation: float 10s ease-in-out infinite 1s;
+        }
+
+        .element-3 {
+            width: 250px;
+            height: 250px;
+            top: 50%;
+            right: 5%;
+            background: var(--secondary-color);
+            animation: float 12s ease-in-out infinite 2s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(30px, 30px);
+            }
+        }
+
+        /* --- Main Container --- */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* --- Section Titles --- */
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .section-title h2 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title .line {
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            margin: 0 auto;
+            border-radius: 2px;
+            animation: expandWidth 0.8s ease-out;
+        }
+
+        @keyframes expandWidth {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 100px;
+            }
+        }
+
+        /* --- Team Grid --- */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+
+        /* --- Team Card --- */
+        .team-card {
+            position: relative;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 198, 133, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+            overflow: hidden;
+            cursor: pointer;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .team-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .team-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .team-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .team-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .team-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .team-card:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .team-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .team-card:hover::before {
+            opacity: 1;
+        }
+
+        .team-card:hover {
+            background: rgba(30, 41, 59, 0.9);
+            border-color: rgba(212, 198, 133, 0.5);
+            transform: translateY(-20px);
+            box-shadow:
+                0 20px 60px rgba(212, 198, 133, 0.2),
+                inset 0 1px 0 rgba(212, 198, 133, 0.1);
+        }
+
+        /* --- Team Member Avatar --- */
+        .member-avatar {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            box-shadow: 0 10px 30px rgba(212, 198, 133, 0.2);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .team-card:hover .member-avatar {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 15px 50px rgba(212, 198, 133, 0.4);
+        }
+
+        .member-avatar::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg,
+                    transparent 30%,
+                    rgba(255, 255, 255, 0.1) 50%,
+                    transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translate(-100%, -100%);
+            }
+
+            100% {
+                transform: translate(100%, 100%);
+            }
+        }
+
+        /* --- Member Info --- */
+        .member-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .team-card:hover .member-name {
+            color: var(--text-color);
+            text-shadow: 0 0 10px rgba(212, 198, 133, 0.5);
+        }
+
+        .member-role {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .member-bio {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.6;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+
+        .team-card:hover .member-bio {
+            opacity: 1;
+            color: var(--text-color);
+        }
+
+        /* --- Social Links --- */
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .team-card:hover .social-links {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(212, 198, 133, 0.1);
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-link:hover {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+            transform: scale(1.2) rotate(15deg);
+            box-shadow: 0 5px 20px rgba(212, 198, 133, 0.4);
+        }
+
+        /* --- Department Section --- */
+        .department-section {
+            margin-bottom: 80px;
+        }
+
+        .department-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .department-header h3 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2rem;
+            color: var(--secondary-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .department-header .line {
+            width: 80px;
+            height: 2px;
+            background: var(--secondary-color);
+            margin: 0 auto;
+        }
+
+        /* --- Leadership Card --- */
+        .leadership-card {
+            background: linear-gradient(135deg, rgba(212, 198, 133, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(212, 198, 133, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .leadership-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(212, 198, 133, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .leadership-card:hover {
+            transform: translateY(-15px);
+            border-color: rgba(212, 198, 133, 0.6);
+            box-shadow: 0 20px 60px rgba(212, 198, 133, 0.15);
+        }
+
+        .leadership-card:hover::before {
+            opacity: 1;
+        }
+
+        .leadership-avatar {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, var(--primary-color), var(--accent-purple), var(--secondary-color), var(--primary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            box-shadow: 0 15px 40px rgba(212, 198, 133, 0.25);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .leadership-card:hover .leadership-avatar {
+            transform: scale(1.15) rotateY(10deg);
+            box-shadow: 0 20px 60px rgba(212, 198, 133, 0.4);
+        }
+
+        .leadership-name {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .leadership-title {
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .leadership-bio {
+            color: var(--text-muted);
+            line-height: 1.7;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* --- Stats Section --- */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 80px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 198, 133, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(212, 198, 133, 0.5);
+            box-shadow: 0 15px 40px rgba(212, 198, 133, 0.2);
+            transform: translateY(-10px);
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .stat-number {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid rgba(212, 198, 133, 0.2);
+            background: rgba(26, 34, 56, 0.5);
+            backdrop-filter: blur(10px);
+            color: var(--text-muted);
+            position: relative;
+            z-index: 5;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        footer .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 30px;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        footer .back-link:hover {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+
+            .team-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .team-card {
+                padding: 25px;
+            }
+
+            .member-avatar {
+                width: 100px;
+                height: 100px;
+                font-size: 40px;
+            }
+
+            .leadership-avatar {
+                width: 120px;
+                height: 120px;
+                font-size: 50px;
+            }
+
+            .stats-section {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 25px 15px;
+                margin-bottom: 40px;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .section-title h2 {
+                font-size: 1.5rem;
+            }
+
+            .team-card {
+                padding: 20px;
+            }
+
+            .member-name {
+                font-size: 1.2rem;
+            }
+
+            .leadership-card {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+
+    <!-- Floating Elements -->
+    <div class="floating-element element-1"></div>
+    <div class="floating-element element-2"></div>
+    <div class="floating-element element-3"></div>
+
+    <!-- Header -->
+    <header>
+        <h1>TEAM ISHYA</h1>
+        <p class="subtitle">Bringing Culture to Life | Annual Fest 2026</p>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+            <!-- Stats Section -->
+            <div class="section-title">
+                <h2>Our Impact</h2>
+                <div class="line"></div>
+            </div>
+            <div class="stats-section">
+                <div class="stat-card">
+                    <div class="stat-icon"><img
+                            src="https://tse4.mm.bing.net/th/id/OIP.kFmj90xYMTH9OUe-esGiqgHaEw?rs=1&pid=ImgDetMain&o=7&rm=3"
+                            style="width: 80%;" alt="notfound"></div>
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Team Members</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><img
+                            src="https://tse4.mm.bing.net/th/id/OIP.kFmj90xYMTH9OUe-esGiqgHaEw?rs=1&pid=ImgDetMain&o=7&rm=3"
+                            style="width: 80%;" alt="notfound"></div>
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Dedication</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><img
+                            src="https://tse4.mm.bing.net/th/id/OIP.kFmj90xYMTH9OUe-esGiqgHaEw?rs=1&pid=ImgDetMain&o=7&rm=3"
+                            style="width: 80%;" alt="notfound"></div>
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Creativity</div>
+                </div>
+            </div>
+
+            <!-- Leadership Section -->
+            <div class="department-section">
+                <div class="section-title">
+                    <h2>Leadership</h2>
+                    <div class="line"></div>
+                </div>
+
+                <div class="leadership-card">
+                    <div class="leadership-avatar">👨‍💼</div>
+                    <div class="leadership-name">Organizer Name</div>
+                    <div class="leadership-title">Chief Coordinator</div>
+                    <p class="leadership-bio">Leading the vision of ISHYA with passion and excellence. Dedicated to
+                        creating an unforgettable cultural experience for everyone.</p>
+                </div>
+            </div>
+
+            <!-- Creative Department -->
+            <div class="department-section">
+                <div class="department-header">
+                    <h3>Creative & Design</h3>
+                    <div class="line"></div>
+                </div>
+                <div class="team-grid">
+                    <div class="team-card">
+                        <div class="member-avatar">🎨</div>
+                        <div class="member-name">Creative Lead</div>
+                        <div class="member-role">Design Head</div>
+                        <p class="member-bio">Crafting visual masterpieces that bring ISHYA to life. Visionary designer
+                            with passion for aesthetics.</p>
+                        <div class="social-links">
+                            <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="member-avatar">🖼️</div>
+                        <div class="member-name">UI/UX Designer</div>
+                        <div class="member-role">Interface Designer</div>
+                        <p class="member-bio">Creating seamless digital experiences. Focused on user-centered design and
+                            innovation.</p>
+                        <div class="social-links">
+                            <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="member-avatar">✨</div>
+                        <div class="member-name">Brand Strategist</div>
+                        <div class="member-role">Brand Manager</div>
+                        <p class="member-bio">Building the ISHYA brand identity. Strategist with a keen eye for market
+                            trends.</p>
+                        <div class="social-links">
+                            <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events Department -->
+            <div class="department-section">
+                <div class="department-header">
+                    <h3>Events & Management</h3>
+                    <div class="line"></div>
+                </div>
+                <div class="team-grid">
+                    <div class="team-card">
+                        <div class="member-avatar">🎭</div>
+                        <div class="member-name">Events Coordinator</div>
+                        <div class="member-role">Event Head</div>
+                        <p class="member-bio">Orchestrating unforgettable cultural moments. Expert in logistics and
+                            entertainment coordination.</p>
+                        <div class="social-links">
+                            <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="member-avatar">🎤</div>
+                        <div class="member-name">Entertainment Manager</div>
+                        <div class="member-role">Performances Lead</div>
+                        <p class="member-bio">Curating world-class performances and entertainment experiences for all
+                            attendees.</p>
+                        <div class="social-links">
+                            <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="member-avatar">📋</div>
+                        <div class="member-name">Logistics Manager</div>
+                        <div class="member-role">Operations Lead</div>
+                        <p class="member-bio">Ensuring smooth operations and seamless execution of all events and
+                            activities.</p>
+                        <div class="social-links">
+                            <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Marketing Department -->
+            <div class="department-section">
+                <div class="department-header">
+                    <h3>Marketing & Outreach</h3>
+                    <div class="line"></div>
+                </div>
+                <div class="team-grid">
+                    <div class="team-card">
+                        <div class="member-avatar">📱</div>
+                        <div class="member-name">Social Media Head</div>
+                        <div class="member-role">Digital Marketer</div>
+                        <p class="member-bio">Building online presence and engaging with our vibrant community across
+                            all platforms.</p>
+                        <div class="social-links">
+                            <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="member-avatar">📢</div>
+                        <div class="member-name">PR & Communications</div>
+                        <div class="member-role">Communications Lead</div>
+                        <p class="member-bio">Managing media relations and crafting compelling narratives about ISHYA's
+                            mission.</p>
+                        <div class="social-links">
+                            <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="member-avatar">🎯</div>
+                        <div class="member-name">Sponsorship Lead</div>
+                        <div class="member-role">Partnerships Manager</div>
+                        <p class="member-bio">Building strategic partnerships and securing sponsorships for the fest's
+                            success.</p>
+                        <div class="social-links">
+                            <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technical Department -->
+            <div class="department-section">
+                <div class="department-header">
+                    <h3>Technical & Support</h3>
+                    <div class="line"></div>
+                </div>
+                <div class="team-grid">
+                    <div class="team-card">
+                        <div class="member-avatar">💻</div>
+                        <div class="member-name">Tech Lead</div>
+                        <div class="member-role">Tech Manager</div>
+                        <p class="member-bio">Ensuring seamless technical operations and cutting-edge technology
+                            integration.</p>
+                        <div class="social-links">
+                            <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="member-avatar">🎙️</div>
+                        <div class="member-name">A/V Technical</div>
+                        <div class="member-role">Audio-Visual Head</div>
+                        <p class="member-bio">Managing audio, video, and lighting to create immersive visual
+                            experiences.</p>
+                        <div class="social-links">
+                            <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="member-avatar">🛠️</div>
+                        <div class="member-name">Support Team Lead</div>
+                        <div class="member-role">Support Manager</div>
+                        <p class="member-bio">Providing excellent support and ensuring every team member is equipped for
+                            success.</p>
+                        <div class="social-links">
+                            <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+    <script>
+        // Smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all team cards
+        document.querySelectorAll('.team-card, .leadership-card, .stat-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Counter animation for stats
+        function animateCounter(element, target, duration = 2000) {
+            let current = 0;
+            const increment = target / (duration / 16);
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 16);
+        }
+
+        // Trigger counter animation on scroll
+        const statNumbers = document.querySelectorAll('.stat-number');
+        const statsSection = document.querySelector('.stats-section');
+
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.animated) {
+                    entry.target.animated = true;
+                    statNumbers.forEach(num => {
+                        const value = parseInt(num.textContent);
+                        if (!isNaN(value)) {
+                            animateCounter(num, value);
+                        }
+                    });
+                }
+            });
+        }, { threshold: 0.5 });
+
+        if (statsSection) {
+            statsObserver.observe(statsSection);
+        }
+    </script>
+<script>
+    fetch('/ISHYA-26/header.html')
+        .then(response => response.text())
+        .then(data => {
+            // Create a temporary container
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = data;
+            // Extract the script tag from the loaded HTML
+            const script = tempDiv.querySelector('script');
+            // Insert the HTML at the very top of the body (First Child)
+            document.body.prepend(tempDiv);
+            // Execute the extracted script manually
+            if (script) {
+                const newScript = document.createElement('script');
+                newScript.textContent = script.textContent;
+                document.body.appendChild(newScript);
+            }
+        })
+        .catch(err => console.error('Error loading header:', err));
+</script>
+</body>
+
+</html>
