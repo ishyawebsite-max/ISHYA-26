@@ -9,21 +9,32 @@
         <link rel="stylesheet" href="style.css">
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Fontdiner+Swanky&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
         <script src="https://accounts.google.com/gsi/client" async defer></script>
         <!-- this is the script for header -->
         <style>
             /* --- CSS Variables --- */
     
-            body,
-            html {
+            body{
                 width: 100%;
+                margin: 0;
+                padding: 0;
                 font-family: 'Poppins', sans-serif;
                 color: var(--text-color);
                 line-height: 1.6;
-                overflow-x: hidden;
+                /*overflow-x: hidden;*/
+            }
+            html {
+                scroll-snap-type: y mandatory;
+                scroll-behavior: smooth;
+                overflow-y: scroll;
+                height: 100%;
             }
     
-            /* --- Animated Background --- */
+            header {
+                scroll-snap-align: start;
+            }
     
     
             @keyframes gradientShift {
@@ -93,6 +104,7 @@
                 padding: 0 20px 60px;
                 position: relative;
                 z-index: 5;
+                overflow: visible;
             }
     
             /* --- Section Titles --- */
@@ -340,8 +352,38 @@
             /* --- Department Section --- */
             .department-section {
                 margin-bottom: 80px;
+                scroll-snap-align: start;
+                scroll-snap-stop: always;
+                scroll-margin-top: 0px;
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                width: 100vw;
+                position: relative;
+                left: 50%;
+                right: 50%;
+                margin-left: -50vw;
+                margin-right: -50vw;
+                padding: 50px;
             }
-    
+            .leadership-section{
+                margin-bottom: 80px;
+                scroll-snap-align: start;
+                scroll-snap-stop: always;
+                scroll-margin-top: 0px;
+                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://static.wixstatic.com/media/0ad737_e58ebd7863864ee8a9c141a9fef232e6~mv2.jpg/v1/fill/w_980,h_474,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0ad737_e58ebd7863864ee8a9c141a9fef232e6~mv2.jpg');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                width: 100vw;
+                position: relative;
+                left: 50%;
+                right: 50%;
+                margin-left: -50vw;
+                margin-right: -50vw;
+                padding: 50px;
+            }
+               
             .department-header {
                 text-align: center;
                 margin-bottom: 40px;
@@ -447,18 +489,55 @@
     
             /* --- Stats Section --- */
             .stats-section {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: 30px;
+                /* --- 1. The "Breakout" Trick (Forces Full Width) --- */
+                width: 100vw;
+                position: relative;
+                left: 50%;
+                right: 50%;
+                margin-left: -50vw;
+                margin-right: -50vw;
+                background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                            url('https://tse4.mm.bing.net/th/id/OIP.qnkvB5wo7CBE4CFQ2bD_rgHaEK?rs=1&pid=ImgDetMain&o=7&rm=3');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed; /* This creates the cool "Parallax" scrolling effect */
+                
+                /*Flexbox Layout (Centers the cards) --- */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 50px;
+                
+                /*Borders --- */
+                padding: 200px 20px;
                 margin-bottom: 80px;
+                border-radius: 0;
+
+                /*auto scroll*/
+                scroll-snap-align: start;
+                scroll-snap-stop: always;
+            }
+            /* Update this rule to ensure the title breaks to a new line */
+            .stats-section .section-title {
+                flex-basis: 100%; /* Forces the title to take full width */
+                text-align: center;
+                margin-bottom: 40px; /* Adds space between text and circles */
             }
     
             .stat-card {
+                border-radius: 50%;
+                aspect-ratio: 1 / 1;
+                margin: 0 auto;
                 background: var(--card-bg);
                 backdrop-filter: blur(10px);
                 border: 1px solid rgba(212, 198, 133, 0.2);
-                border-radius: 15px;
                 padding: 30px;
+                max-width: 200px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
                 text-align: center;
                 transition: all 0.4s ease;
                 cursor: pointer;
@@ -477,7 +556,7 @@
             }
     
             .stat-number {
-                font-family: 'Oswald', sans-serif;
+                font-family: 'Michroma';
                 font-size: 2.5rem;
                 font-weight: 700;
                 color: var(--text-color);
@@ -522,6 +601,65 @@
             footer .back-link:hover {
                 background: var(--primary-color);
                 color: var(--dark-bg);
+            }
+
+            .gold-text {
+                /* The Magic Gradient */
+                background-image: linear-gradient(
+                    to right, 
+                    #BF953F, 
+                    #FCF6BA, 
+                    #B38728, 
+                    #FBF5B7, 
+                    #AA771C
+                );
+                
+                /* Clip background to text */
+                -webkit-background-clip: text;
+                background-clip: text;
+                
+                /* Make text transparent so background shows */
+                color: transparent !important;
+                
+                /* Optional: Add a subtle glow */
+                text-shadow: 0px 0px 30px rgba(255, 215, 0, 0.2);
+            }
+
+            .aurora-text {
+                /* A 3-way gradient */
+                background-image: linear-gradient(
+                    45deg,
+                    #ff00cc 0%, 
+                    #333399 50%, 
+                    #00d4ff 100%
+                );
+                
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                
+                /* Slight blur to blend it */
+                filter: drop-shadow(0 0 5px rgba(0, 212, 255, 0.3));
+            }
+
+            .holo-text {
+                background-image: linear-gradient(
+                    135deg, 
+                    #E0E0E0 10%, 
+                    #FFFFFF 25%, 
+                    #A8A8A8 40%, 
+                    #6B6B6B 50%, 
+                    #A8A8A8 60%, 
+                    #FFFFFF 75%, 
+                    #E0E0E0 90%
+                );
+                
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent !important;
+                
+                /* Sharp metallic drop shadow */
+                filter: drop-shadow(2px 2px 0px rgba(255,255,255,0.1));
             }
     
             /* --- Responsive Design --- */
@@ -599,56 +737,60 @@
             <div class="floating-element element-3"></div>
     
             <!-- Header -->
-            <header>
-                <h1>TEAM ISHYA</h1>
-                <p class="subtitle">Bringing Culture to Life | Annual Fest 2026</p>
-            </header>
+              <!-- <header>-->
+                <!--<h1>TEAM ISHYA</h1>
+                <p class="subtitle">Bringing Culture to Life | Annual Fest 2026</p>-->
+            <!--</header>-->
     
             <!-- Main Content -->
             <main>
                 <div class="container">
                     <!-- Stats Section -->
-                    <div class="section-title">
-                        <h2>The ISHYA Family</h2>
-                        <div class="line"></div>
-                    </div>
-                    <div class="stats-section">
+                   
+                    <div class="stats-section section-title">    
+                        <div class="section-title">
+                            <h2 class="aurora-text" style="font-family: Fontdiner Swanky;">The ISHYA Family</h2>
+                            <div class="line"></div>
+                        </div>
                         <div class="stat-card">
-                            <div class="stat-icon"><img
-                                    src="https://tse4.mm.bing.net/th/id/OIP.kFmj90xYMTH9OUe-esGiqgHaEw?rs=1&pid=ImgDetMain&o=7&rm=3"
-                                    style="width: 80%;" alt="notfound"></div>
+                            <div class="stat-icon"></div>
                             <div class="stat-number">50+</div>
                             <div class="stat-label">Team Members</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-icon"><img
-                                    src="https://tse4.mm.bing.net/th/id/OIP.kFmj90xYMTH9OUe-esGiqgHaEw?rs=1&pid=ImgDetMain&o=7&rm=3"
-                                    style="width: 80%;" alt="notfound"></div>
+                            <div class="stat-icon"></div>
                             <div class="stat-number">100%</div>
                             <div class="stat-label">Dedication</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-icon"><img
-                                    src="https://tse4.mm.bing.net/th/id/OIP.kFmj90xYMTH9OUe-esGiqgHaEw?rs=1&pid=ImgDetMain&o=7&rm=3"
-                                    style="width: 80%;" alt="notfound"></div>
+                            <div class="stat-icon"></div>
                             <div class="stat-number">∞</div>
                             <div class="stat-label">Creativity</div>
                         </div>
                     </div>
     
                     <!-- Leadership Section -->
-                    <div class="department-section">
+                    <div class="leadership-section">
                         <div class="section-title">
                             <h2>Leadership</h2>
                             <div class="line"></div>
                         </div>
-    
-                        <div class="leadership-card">
-                            <div class="leadership-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                            <div class="leadership-name" style="color: var(--text-secondary)";>Dummy</div>
-                            <div class="leadership-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>
-                            <p class="leadership-bio">Leading the vision of ISHYA with passion and excellence. Dedicated to
-                                creating an unforgettable cultural experience for everyone.</p>
+                        
+                        <div class="team-grid">
+                            <div class="leadership-card">
+                                <div class="leadership-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="leadership-name" style="color: var(--text-secondary)";>Dummy</div>
+                                <div class="leadership-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>
+                                <p class="leadership-bio">Leading the vision of ISHYA with passion and excellence. Dedicated to
+                                    creating an unforgettable cultural experience for everyone.</p>
+                            </div>
+                                                        <div class="leadership-card">
+                                <div class="leadership-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="leadership-name" style="color: var(--text-secondary)";>Dummy</div>
+                                <div class="leadership-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
+                                <p class="leadership-bio">Leading the vision of ISHYA with passion and excellence. Dedicated to
+                                    creating an unforgettable cultural experience for everyone.</p>
+                            </div>
                         </div>
                     </div>
     
