@@ -11,6 +11,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <link href="https://fonts.googleapis.com/css2?family=Fontdiner+Swanky&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Texturina&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Jim+Nightshade&display=swap" rel="stylesheet">
         <script src="https://accounts.google.com/gsi/client" async defer></script>
         <!-- this is the script for header -->
         <style>
@@ -111,13 +113,13 @@
             .section-title {
                 text-align: center;
                 margin-bottom: 50px;
-                position: relative;
+                position: relative;                
             }
     
             .section-title h2 {
-                font-family: 'Oswald', sans-serif;
-                font-size: 2.5rem;
-                color: var(--text-color);
+                font-family: 'Jim Nightshade';
+                font-size: 3rem;
+                color: var(--text-secondary);
                 text-transform: uppercase;
                 letter-spacing: 3px;
                 margin-bottom: 15px;
@@ -157,7 +159,7 @@
                 position: relative;
                 background: var(--card-bg);
                 backdrop-filter: blur(10px);
-                border: 1px solid rgba(212, 198, 133, 0.2);
+                border: 1px solid rgba(216, 212, 207, 0.2);
                 border-radius: 20px;
                 padding: 30px;
                 text-align: center;
@@ -220,8 +222,8 @@
             }
     
             .team-card:hover {
-                background: rgba(30, 41, 59, 0.9);
-                border-color: rgba(212, 198, 133, 0.5);
+                /*background: rgba(159, 166, 176, 0.9);*/
+                border-color: rgba(64, 66, 67, 0.5);
                 transform: translateY(-20px);
                 box-shadow:
                     0 20px 60px rgba(212, 198, 133, 0.2),
@@ -351,7 +353,7 @@
     
             /* --- Department Section --- */
             .department-section {
-                margin-bottom: 80px;
+                margin-bottom: 0px;
                 scroll-snap-align: start;
                 scroll-snap-stop: always;
                 scroll-margin-top: 0px;
@@ -366,33 +368,47 @@
                 margin-right: -50vw;
                 padding: 50px;
             }
-            .leadership-section{
-                margin-bottom: 80px;
-                scroll-snap-align: start;
-                scroll-snap-stop: always;
-                scroll-margin-top: 0px;
+            .leadership-section.department-section{
                 background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://static.wixstatic.com/media/0ad737_e58ebd7863864ee8a9c141a9fef232e6~mv2.jpg/v1/fill/w_980,h_474,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0ad737_e58ebd7863864ee8a9c141a9fef232e6~mv2.jpg');
                 background-size: cover;
                 background-position: center;
                 background-attachment: fixed;
-                width: 100vw;
-                position: relative;
-                left: 50%;
-                right: 50%;
-                margin-left: -50vw;
-                margin-right: -50vw;
-                padding: 50px;
+            }
+            .creative-section.department-section{
+                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_980,h_551,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+            }
+            .events-section.department-section{
+                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://tse3.mm.bing.net/th/id/OIP.xR2aF0RsXzz3GQKDT6uKCQHaEN?rs=1&pid=ImgDetMain&o=7&rm=3');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+            }
+            .marketing-section.department-section{
+                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://tse3.mm.bing.net/th/id/OIP.mznYV7PY4P5nX_ZzU89JcgHaE8?rs=1&pid=ImgDetMain&o=7&rm=3');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+            }
+            .technical-section.department-section{
+                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://i.ytimg.com/vi/NijChtRbLAY/hqdefault.jpg');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
             }
                
             .department-header {
                 text-align: center;
                 margin-bottom: 40px;
                 position: relative;
+                
             }
     
             .department-header h3 {
-                font-family: 'Oswald', sans-serif;
-                font-size: 2rem;
+                font-family: 'Jim Nightshade';  
+                font-size: 3rem;
                 color: var(--text-secondary);
                 text-transform: uppercase;
                 letter-spacing: 2px;
@@ -409,7 +425,7 @@
             /* --- Leadership Card --- */
             .leadership-card {
                 background: linear-gradient(135deg, rgba(212, 198, 133, 0.1), rgba(139, 92, 246, 0.1));
-                border: 1px solid rgba(212, 198, 133, 0.3);
+                border: 1px solid rgba(55, 54, 46, 0.3);
                 border-radius: 20px;
                 padding: 40px;
                 text-align: center;
@@ -435,7 +451,7 @@
     
             .leadership-card:hover {
                 transform: translateY(-15px);
-                border-color: rgba(212, 198, 133, 0.6);
+                border-color: rgba(177, 155, 172, 0.6);
                 box-shadow: 0 20px 60px rgba(212, 198, 133, 0.15);
             }
     
@@ -511,7 +527,7 @@
                 
                 /*Borders --- */
                 padding: 200px 20px;
-                margin-bottom: 80px;
+                margin-bottom: 0px;
                 border-radius: 0;
 
                 /*auto scroll*/
@@ -661,6 +677,34 @@
                 /* Sharp metallic drop shadow */
                 filter: drop-shadow(2px 2px 0px rgba(255,255,255,0.1));
             }
+            .aurora-textnew {
+                background-image: linear-gradient(
+                    to right,
+                    #9fd0d6 0%,    
+                    #72d7d4 50%,   
+                    #a6d5af 100%   
+                );
+
+                /* Make the gradient repeat slightly for a metallic shine */
+                background-size: 200% auto;
+
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent !important;
+
+                /* A warm glow to separate it from the photo */
+                filter: drop-shadow(0 0 10px rgba(236, 162, 71, 0.5));
+
+                /* Optional: Animate the shine */
+                animation: shine 3s linear infinite;
+            }
+
+            /* Optional Animation Keyframes */
+            @keyframes shine {
+                to {
+                    background-position: 200% center;
+                }
+            }
     
             /* --- Responsive Design --- */
             @media (max-width: 768px) {
@@ -749,7 +793,7 @@
                    
                     <div class="stats-section section-title">    
                         <div class="section-title">
-                            <h2 class="aurora-text" style="font-family: Fontdiner Swanky;">The ISHYA Family</h2>
+                            <h2 class="aurora-textnew" style="font-family: Texturina; size: 100px;">The ISHYA Family</h2>
                             <div class="line"></div>
                         </div>
                         <div class="stat-card">
@@ -770,7 +814,7 @@
                     </div>
     
                     <!-- Leadership Section -->
-                    <div class="leadership-section">
+                    <div class="leadership-section department-section">
                         <div class="section-title">
                             <h2>Leadership</h2>
                             <div class="line"></div>
@@ -795,7 +839,7 @@
                     </div>
     
                     <!-- Creative Department -->
-                    <div class="department-section">
+                    <div class="creative-section department-section">
                         <div class="department-header">
                             <h3>Creative & Design</h3>
                             <div class="line"></div>
@@ -841,7 +885,7 @@
                     </div>
     
                     <!-- Events Department -->
-                    <div class="department-section">
+                    <div class="events-section department-section">
                         <div class="department-header">
                             <h3>Events & Management</h3>
                             <div class="line"></div>
@@ -885,7 +929,7 @@
                     </div>
     
                     <!-- Marketing Department -->
-                    <div class="department-section">
+                    <div class="marketing-section department-section">
                         <div class="department-header">
                             <h3>Marketing & Outreach</h3>
                             <div class="line"></div>
@@ -931,7 +975,7 @@
                     </div>
     
                     <!-- Technical Department -->
-                    <div class="department-section">
+                    <div class="technical-section department-section">
                         <div class="department-header">
                             <h3>Technical & Support</h3>
                             <div class="line"></div>
