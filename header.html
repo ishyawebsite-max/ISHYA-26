@@ -71,37 +71,35 @@
     }
     /* backdrop for menu like effect*/
 /* =========================================
-       LIQUID GLASS BACKDROP (Wet & Glossy)
+       CRYSTAL GLASS BACKDROP (Premium & Glossy)
        ========================================= */
     .ishya-nav-backdrop {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
-        height: 90px; /* Perfectly centered behind your 50px nav */
+        height: 90px;
         
-        /* 1. THE LIQUID BASE: Very transparent with a subtle wet shine gradient */
-        background: linear-gradient(
-            to bottom, 
-            rgba(255, 255, 255, 0.03) 0%,   /* Faint top shine */
-            rgba(10, 12, 20, 0.4) 100%      /* Darker bottom for depth */
-        );
+        /* 1. CRYSTAL CLEAR BASE: Almost fully transparent to let colors through */
+        background: rgba(255, 255, 255, 0.01); 
         
-        /* 2. THE DISTORTION: High blur + High Saturation = "Wet" look */
-        backdrop-filter: blur(20px) saturate(180%) contrast(1.2);
-        -webkit-backdrop-filter: blur(20px) saturate(180%) contrast(1.2);
+        /* 2. THE REFRACTION: High blur + Extreme Saturation */
+        /* 'saturate(200%)' makes background colors look rich and vibrant through the glass */
+        backdrop-filter: blur(16px) saturate(200%) contrast(100%);
+        -webkit-backdrop-filter: blur(16px) saturate(200%) contrast(100%);
         
-        /* 3. SURFACE TENSION BORDERS: Shinier top and bottom edges */
-        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        /* 3. THE "EDGE LIGHT": A strong white highlight on top, faint on bottom */
+        border-top: 1px solid rgba(255, 255, 255, 0.25);  /* The "Catchlight" */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         
-        /* 4. GLOW SHADOW: A soft glow underneath */
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        /* 4. INNER GLOW & SHADOW: This creates the 3D "thick glass" feel */
+        box-shadow: 
+            0 4px 30px rgba(0, 0, 0, 0.1),           /* Drop shadow for depth */
+            inset 0 0 20px rgba(255, 255, 255, 0.05); /* Inner white glow */
 
-        /* Layers */
         z-index: 2147483640; 
         pointer-events: none;
-        transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        transition: all 0.5s ease;
     }
 
     /* LOGO (Center) */
