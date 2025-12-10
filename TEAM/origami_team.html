@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISHYA 2026 | Unfold The Dream</title>
+    
+    <!-- Premium Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Montserrat:wght@200;400;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #111115;
+            --paper-color: #e8e6e1;
+            --paper-dark: #b8b6b1;
+            --accent-gold: #c5a059;
+            --accent-red: #d64545; /* Traditional Origami Red */
+            --text-dark: #1a1a1a;
+            --text-light: #f0f0f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Montserrat', sans-serif;
+            color: var(--paper-color);
+            overflow-x: hidden; /* Hide horizontal scrollbar */
+            cursor: none; /* We will make a custom cursor */
+        }
+
+        /* --- 1. CUSTOM CURSOR --- */
+        .cursor-dot, .cursor-outline {
+            position: fixed;
+            top: 0; left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        .cursor-dot { width: 8px; height: 8px; background-color: var(--accent-gold); }
+        .cursor-outline {
+            width: 40px; height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: width 0.2s, height 0.2s;
+        }
+
+        /* --- 2. GRAIN TEXTURE --- */
+        .noise-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9000;
+        }
+
+        /* --- 3. LOADER --- */
+        .loader-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 10000;
+        }
+        .loader-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            color: var(--accent-gold);
+            opacity: 0;
+        }
+
+        /* --- 4. NAVIGATION --- */
+        nav {
+            position: fixed; top: 0; width: 100%;
+            padding: 30px 50px;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000;
+            mix-blend-mode: difference;
+        }
+        .logo { font-family: 'Cormorant Garamond'; font-weight: 700; font-size: 1.5rem; letter-spacing: 2px; }
+        .menu-btn { font-size: 0.9rem; text-transform: uppercase; cursor: pointer; letter-spacing: 1px;}
+
+        /* --- 5. HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            perspective: 1000px;
+            overflow: hidden;
+        }
+
+        /* The Hero Background "Fold" */
+        .hero-paper-bg {
+            position: absolute;
+            width: 60vw; height: 80vh;
+            background: #1a1a20;
+            transform: rotateX(20deg) rotateY(-10deg);
+            box-shadow: 0 50px 100px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex; justify-content: center; align-items: center;
+            overflow: hidden;
+        }
+        
+        /* Decorative crease lines */
+        .crease-line {
+            position: absolute;
+            background: rgba(255,255,255,0.03);
+        }
+        .c1 { width: 1px; height: 150%; top: -25%; left: 30%; transform: rotate(15deg); }
+        .c2 { width: 150%; height: 1px; top: 40%; left: -25%; transform: rotate(-5deg); }
+
+        .hero-content {
+            z-index: 2;
+            text-align: center;
+            mix-blend-mode: exclusion; /* Makes text look printed */
+        }
+
+        .hero-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 8vw;
+            line-height: 0.9;
+            font-weight: 300;
+            font-style: italic;
+            overflow: hidden; /* For reveal animation */
+        }
+        
+        .hero-title span { display: inline-block; transform: translateY(100%); }
+
+        .hero-subtitle {
+            margin-top: 20px;
+            font-size: 1rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--accent-gold);
+            opacity: 0;
+        }
+
+        /* --- 6. THE SCROLLING PAPER PLANE --- */
+        .plane-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 500;
+        }
+        #paper-plane {
+            position: absolute;
+            width: 60px;
+            top: 10%; left: 50%;
+            filter: drop-shadow(5px 10px 5px rgba(0,0,0,0.5));
+            will-change: transform;
+        }
+
+        /* --- 7. HORIZONTAL SCROLL SECTION (Team) --- */
+        .horizontal-scroll-wrapper {
+            width: 100%;
+            height: 100vh; /* It locks the screen height */
+            background: var(--paper-color); /* Contrast section */
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .horizontal-content {
+            display: flex;
+            gap: 100px;
+            padding: 0 10vw;
+            width: max-content; /* Allows it to stretch infinitely */
+        }
+
+        .section-intro {
+            min-width: 40vw;
+            padding-right: 50px;
+        }
+        .section-intro h2 {
+            font-family: 'Cormorant Garamond';
+            font-size: 5rem;
+            line-height: 1;
+            margin-bottom: 20px;
+        }
+        .section-intro p {
+            font-family: 'Montserrat';
+            font-size: 1.1rem;
+            max-width: 400px;
+            line-height: 1.6;
+        }
+
+        /* The 3D Cards */
+        .origami-card {
+            width: 350px;
+            height: 500px;
+            position: relative;
+            perspective: 1500px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            width: 100%; height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%; height: 100%;
+            backface-visibility: hidden;
+            background: #fff;
+            padding: 30px;
+            display: flex; flex-direction: column; justify-content: flex-end;
+        }
+
+        .card-front {
+            /* Image Background */
+            background-size: cover;
+            background-position: center;
+        }
+        /* Overlay for text readability */
+        .card-front::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        }
+
+        .card-info { z-index: 2; color: #fff; transform: translateZ(20px); }
+        .card-name { font-family: 'Cormorant Garamond'; font-size: 2.5rem; margin: 0; line-height: 1; }
+        .card-role { font-family: 'Montserrat'; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; color: var(--accent-gold); }
+
+        /* The Back of the card (The "Inside" of the paper) */
+        .card-back {
+            background: var(--bg-color);
+            color: var(--paper-color);
+            transform: rotateY(180deg);
+            border: 1px solid var(--accent-gold);
+        }
+        
+        /* Folded Corner Visual */
+        .corner-fold {
+            position: absolute; top: 0; right: 0;
+            width: 0; height: 0;
+            border-style: solid;
+            border-width: 0 60px 60px 0;
+            border-color: transparent #f0f0f0 transparent transparent;
+            filter: drop-shadow(-2px 2px 2px rgba(0,0,0,0.2));
+            z-index: 10;
+            transition: all 0.3s;
+        }
+        .origami-card:hover .corner-fold {
+            border-width: 0 80px 80px 0; /* Corner grows on hover */
+        }
+        
+        .origami-card:hover .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* --- 8. FOOTER (Dark again) --- */
+        .footer-section {
+            height: 100vh;
+            background: var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+        }
+        .big-end-text {
+            font-family: 'Cormorant Garamond';
+            font-size: 10vw;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255,255,255,0.2);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Noise Texture -->
+    <div class="noise-overlay"></div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <!-- Loader -->
+    <div class="loader-screen">
+        <div class="loader-text"><p style="align-items: center;">ISHYA<br>Unfolding Reality...</p></div>
+    </div>
+
+    <!-- The Paper Plane (Animated via JS) -->
+    <div class="plane-container">
+        <svg id="paper-plane" viewBox="0 0 512 512" fill="#fff">
+            <!-- Simple Origami Plane Path -->
+            <path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z"/>
+        </svg>
+    </div>
+
+
+    <!-- SECTION 1: HERO -->
+    <section class="hero">
+        <div class="hero-paper-bg">
+            <div class="crease-line c1"></div>
+            <div class="crease-line c2"></div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="word">THE</span> <br> 
+                <span class="word">ISHYA</span> <br>
+                <span class="word">FAMILY</span>
+            </h1>
+            <div class="hero-subtitle">Scroll to Unfold</div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: HORIZONTAL SCROLL GALLERY (The "Aww" Factor) -->
+    <section class="horizontal-scroll-wrapper">
+        <div class="horizontal-content">
+            
+            <!-- Intro Text -->
+            <div class="section-intro">
+                <h2>The Core<br>Committee</h2>
+                <p>Like a single sheet of paper folded into infinite shapes, our team adapts, creates, and defines the structure of Ishya.</p>
+            </div>
+
+            <!-- Card 1: Convenor -->
+            <div class="origami-card">
+                <div class="card-inner">
+                    <div class="card-front" style="background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000');">
+                        <div class="corner-fold"></div>
+                        <div class="card-info">
+                            <h3 class="card-name">Dummy</h3>
+                            <div class="card-role">Convenor</div>
+                        </div>
+                    </div>
+                    <div class="card-back">
+                        <i class="fas fa-quote-left" style="font-size: 2rem; margin-bottom: 20px; color: var(--accent-gold);"></i>
+                        <p>Leading the vision with precision and passion. The fold starts here.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Co-Convenor -->
+            <div class="origami-card">
+                <div class="card-inner">
+                    <div class="card-front" style="background-image: url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1000');">
+                        <div class="corner-fold"></div>
+                        <div class="card-info">
+                            <h3 class="card-name">Dummy</h3>
+                            <div class="card-role">Co-Convenor</div>
+                        </div>
+                    </div>
+                    <div class="card-back">
+                        <i class="fas fa-quote-left" style="font-size: 2rem; margin-bottom: 20px; color: var(--accent-gold);"></i>
+                        <p>Turning chaos into structure. Every detail matters.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Creative -->
+            <div class="origami-card">
+                <div class="card-inner">
+                    <div class="card-front" style="background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1000');">
+                        <div class="corner-fold"></div>
+                        <div class="card-info">
+                            <h3 class="card-name">Dummy</h3>
+                            <div class="card-role">Creative Head</div>
+                        </div>
+                    </div>
+                    <div class="card-back">
+                        <i class="fas fa-quote-left" style="font-size: 2rem; margin-bottom: 20px; color: var(--accent-gold);"></i>
+                        <p>Visualizing the unseen. Folding reality into art.</p>
+                    </div>
+                </div>
+            </div>
+
+             <!-- Card 4: Tech -->
+             <div class="origami-card">
+                <div class="card-inner">
+                    <div class="card-front" style="background-image: url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1000');">
+                        <div class="corner-fold"></div>
+                        <div class="card-info">
+                            <h3 class="card-name">Dummy</h3>
+                            <div class="card-role">Tech Lead</div>
+                        </div>
+                    </div>
+                    <div class="card-back">
+                        <i class="fas fa-quote-left" style="font-size: 2rem; margin-bottom: 20px; color: var(--accent-gold);"></i>
+                        <p>Coding the future. One line at a time.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+    
+
+    <!-- SECTION 3: FOOTER -->
+    <section class="footer-section">
+        <h2 class="big-end-text">CRAFTED 2026</h2>
+    </section>
+
+
+    <!-- GSAP LIBRARIES -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // --- 1. LOADER ANIMATION ---
+        const tl = gsap.timeline();
+        
+        tl.to(".loader-text", { opacity: 1, duration: 1, ease: "power2.inOut" })
+          .to(".loader-text", { opacity: 0, duration: 0.5, delay: 0.5 })
+          .to(".loader-screen", { 
+              height: 0, 
+              duration: 1.5, 
+              ease: "expo.inOut" 
+          })
+          .from(".hero-paper-bg", {
+              rotationX: 90, // Unfolds from flat
+              scale: 0.5,
+              opacity: 0,
+              duration: 1.5,
+              ease: "back.out(1.7)"
+          }, "-=1")
+          .to(".hero-title span", {
+              y: 0,
+              stagger: 0.1,
+              duration: 1,
+              ease: "power4.out"
+          }, "-=1")
+          .to(".hero-subtitle", { opacity: 1, duration: 1 }, "-=0.5");
+
+
+        // --- 2. HORIZONTAL SCROLL (The "Pin & Move") ---
+        // This is what makes the team section scroll sideways while you scroll down
+        const raceContainer = document.querySelector(".horizontal-scroll-wrapper");
+        const raceWrapper = document.querySelector(".horizontal-content");
+
+        function getScrollAmount() {
+            let raceWidth = raceWrapper.scrollWidth;
+            return -(raceWidth - window.innerWidth);
+        }
+
+        const tween = gsap.to(raceWrapper, {
+            x: getScrollAmount,
+            duration: 3,
+            ease: "none"
+        });
+
+        ScrollTrigger.create({
+            trigger: ".horizontal-scroll-wrapper",
+            start: "top top",
+            end: () => `+=${getScrollAmount() * -1}`,
+            pin: true,
+            animation: tween,
+            scrub: 1,
+            invalidateOnRefresh: true
+        });
+
+        
+
+
+        // --- 3. PAPER PLANE FLIGHT ---
+        // The plane moves differently based on scroll sections
+        // Initial flight
+        gsap.to("#paper-plane", {
+            scrollTrigger: {
+                trigger: ".hero",
+                start: "top top",
+                end: "bottom top",
+                scrub: 1
+            },
+            y: "50vh",
+            x: "20vw",
+            rotation: 45,
+            scale: 1.5
+        });
+
+        // Flight during horizontal scroll
+        gsap.to("#paper-plane", {
+            scrollTrigger: {
+                trigger: ".horizontal-scroll-wrapper",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1
+            },
+            y: "80vh",
+            x: "80vw", // Flies across the screen
+            rotation: 135,
+            scale: 0.8
+        });
+
+
+        // --- 4. CUSTOM CURSOR INTERACTION ---
+        const cursorDot = document.querySelector(".cursor-dot");
+        const cursorOutline = document.querySelector(".cursor-outline");
+
+        window.addEventListener("mousemove", (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            // Dot follows instantly
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+
+            // Outline follows with lag (created by the animate function below)
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        // Hover Effect on Cards (Cursor Grows)
+        document.querySelectorAll(".origami-card").forEach(card => {
+            card.addEventListener("mouseenter", () => {
+                cursorOutline.style.width = "80px";
+                cursorOutline.style.height = "80px";
+                cursorOutline.style.backgroundColor = "rgba(255,255,255,0.1)";
+            });
+            card.addEventListener("mouseleave", () => {
+                cursorOutline.style.width = "40px";
+                cursorOutline.style.height = "40px";
+                cursorOutline.style.backgroundColor = "transparent";
+            });
+        });
+
+    </script>
+</body>
+</html>
