@@ -68,6 +68,22 @@
             background 0.4s ease,
             box-shadow 0.4s ease;
     }
+        .ishya-header-backdrop {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 90px; /* Height of the bar */
+        
+        /* Glass Style for the Bar */
+        background: rgba(10, 12, 18, 0.6); 
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        
+        z-index: 2147483646; /* Just below the menu */
+        pointer-events: none; /* Let clicks pass through if needed */
+    }
 
     /* LOGO (Center) */
     .ishya-logo-btn {
