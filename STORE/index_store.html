@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Merch Store</title>
-    <!-- Standard Clean Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
@@ -13,9 +12,9 @@
             --bg: #121212;
             --paper-dark: #1e1e1e;
             --paper-light: #2c2c2c;
-            --accent: #d4af37; /* Paper Gold */
+            --accent: #d4af37; /* Metallic Gold */
+            --success: #4cc9f0; /* Cyan */
             --text: #eeeeee;
-            --shadow-hard: 6px 6px 0px rgba(0,0,0,0.5); /* Hard shadow for paper look */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -27,299 +26,257 @@
             overflow-x: hidden;
         }
 
-        /* =========================================
-           1. THE ORIGAMI STAR LOADER (High Visibility)
-           ========================================= */
+        /* 1. ORIGAMI LOADER */
         #origami-curtain {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: var(--bg);
             z-index: 10000;
             display: flex; justify-content: center; align-items: center;
             overflow: hidden;
-            transition: visibility 0.8s ease 1s; /* Delay hiding container */
+            transition: visibility 0s linear 1s;
         }
-
-        .star-wrapper {
-            position: relative;
-            width: 0; height: 0; /* Centered point */
-        }
-
-        /* The 8 Triangle Shards */
+        .star-wrapper { position: relative; width: 0; height: 0; }
         .shard {
-            position: absolute;
-            top: 0; left: 0;
-            width: 0; height: 0;
-            border-left: 50px solid transparent;
-            border-right: 50px solid transparent;
-            border-bottom: 200px solid var(--accent); /* Visible Gold Color */
-            transform-origin: 50% 100%; /* Pivot from the bottom (center of screen) */
-            transition: transform 1s cubic-bezier(0.7, 0, 0.3, 1);
-            filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
+            position: absolute; top: 0; left: 0; width: 0; height: 0;
+            border-left: 60px solid transparent; border-right: 60px solid transparent;
+            border-bottom: 250px solid var(--accent);
+            transform-origin: 50% 100%; transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));
         }
-
-        /* Arrange shards into an 8-pointed star */
         .shard:nth-child(1) { transform: translate(-50%, -100%) rotate(0deg); }
-        .shard:nth-child(2) { transform: translate(-50%, -100%) rotate(45deg); border-bottom-color: #c5a028; }
+        .shard:nth-child(2) { transform: translate(-50%, -100%) rotate(45deg); filter: brightness(0.8); }
         .shard:nth-child(3) { transform: translate(-50%, -100%) rotate(90deg); }
-        .shard:nth-child(4) { transform: translate(-50%, -100%) rotate(135deg); border-bottom-color: #c5a028; }
+        .shard:nth-child(4) { transform: translate(-50%, -100%) rotate(135deg); filter: brightness(0.8); }
         .shard:nth-child(5) { transform: translate(-50%, -100%) rotate(180deg); }
-        .shard:nth-child(6) { transform: translate(-50%, -100%) rotate(225deg); border-bottom-color: #c5a028; }
+        .shard:nth-child(6) { transform: translate(-50%, -100%) rotate(225deg); filter: brightness(0.8); }
         .shard:nth-child(7) { transform: translate(-50%, -100%) rotate(270deg); }
-        .shard:nth-child(8) { transform: translate(-50%, -100%) rotate(315deg); border-bottom-color: #c5a028; }
+        .shard:nth-child(8) { transform: translate(-50%, -100%) rotate(315deg); filter: brightness(0.8); }
 
-        /* UN-FOLD Animation State */
         body.loaded #origami-curtain { visibility: hidden; }
-        
-        /* Slide them WAY out */
-        body.loaded .shard:nth-child(1) { transform: translate(-50%, -100%) rotate(0deg) translateY(-100vh); }
-        body.loaded .shard:nth-child(2) { transform: translate(-50%, -100%) rotate(45deg) translateY(-100vh); }
-        body.loaded .shard:nth-child(3) { transform: translate(-50%, -100%) rotate(90deg) translateY(-100vh); }
-        body.loaded .shard:nth-child(4) { transform: translate(-50%, -100%) rotate(135deg) translateY(-100vh); }
-        body.loaded .shard:nth-child(5) { transform: translate(-50%, -100%) rotate(180deg) translateY(-100vh); }
-        body.loaded .shard:nth-child(6) { transform: translate(-50%, -100%) rotate(225deg) translateY(-100vh); }
-        body.loaded .shard:nth-child(7) { transform: translate(-50%, -100%) rotate(270deg) translateY(-100vh); }
-        body.loaded .shard:nth-child(8) { transform: translate(-50%, -100%) rotate(315deg) translateY(-100vh); }
+        body.loaded .shard:nth-child(1) { transform: translate(-50%, -100%) rotate(0deg) translateY(-120vh); }
+        body.loaded .shard:nth-child(2) { transform: translate(-50%, -100%) rotate(45deg) translateY(-120vh); }
+        body.loaded .shard:nth-child(3) { transform: translate(-50%, -100%) rotate(90deg) translateY(-120vh); }
+        body.loaded .shard:nth-child(4) { transform: translate(-50%, -100%) rotate(135deg) translateY(-120vh); }
+        body.loaded .shard:nth-child(5) { transform: translate(-50%, -100%) rotate(180deg) translateY(-120vh); }
+        body.loaded .shard:nth-child(6) { transform: translate(-50%, -100%) rotate(225deg) translateY(-120vh); }
+        body.loaded .shard:nth-child(7) { transform: translate(-50%, -100%) rotate(270deg) translateY(-120vh); }
+        body.loaded .shard:nth-child(8) { transform: translate(-50%, -100%) rotate(315deg) translateY(-120vh); }
 
         .loading-text {
-            position: absolute; bottom: 10%; width: 100vw; text-align: center;
-            color: #666; font-size: 0.9rem; transition: opacity 0.5s;
+            position: absolute; bottom: 15%; width: 100%; text-align: center;
+            color: #666; font-size: 0.8rem; letter-spacing: 2px; transition: opacity 0.3s;
         }
         body.loaded .loading-text { opacity: 0; }
 
-
-        /* =========================================
-           2. ORIGAMI UI STYLING
-           ========================================= */
-        nav {
-            padding: 20px 40px;
-            display: flex; justify-content: space-between; align-items: center;
-            background: #111;
-            border-bottom: 2px solid #333;
+        /* 2. ROCKET & SUCCESS */
+        #rocket-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 11000; pointer-events: none; overflow: hidden; display: none;
         }
+        .paper-rocket {
+            position: absolute; bottom: -150px; left: -150px; width: 100px; height: 100px;
+            fill: var(--accent); filter: drop-shadow(5px 5px 0px rgba(0,0,0,0.5)); transform: rotate(45deg);
+        }
+        .paper-rocket.fly { animation: flyAcross 2s ease-in-out forwards; }
+        @keyframes flyAcross {
+            0% { transform: translate(0, 0) rotate(45deg) scale(0.5); }
+            50% { transform: translate(50vw, -50vh) rotate(45deg) scale(1.2); }
+            100% { transform: translate(120vw, -120vh) rotate(45deg) scale(1); }
+        }
+
+        #success-card {
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: var(--paper-dark);
+            border: 2px solid var(--success);
+            padding: 40px; width: 90%; max-width: 400px;
+            text-align: center; z-index: 12000; display: none; opacity: 0;
+            clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
+            box-shadow: 0 0 50px rgba(76, 201, 240, 0.2);
+        }
+        #success-card.show { display: block; animation: cardPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes cardPop { to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+
+        .checkmark-circle {
+            width: 80px; height: 80px; margin: 0 auto 20px;
+            border-radius: 50%; border: 4px solid var(--success);
+            display: flex; justify-content: center; align-items: center;
+            background: rgba(76, 201, 240, 0.1);
+        }
+        .checkmark {
+            width: 40px; height: 20px; border-left: 5px solid var(--success);
+            border-bottom: 5px solid var(--success); transform: rotate(-45deg) translate(2px, -2px);
+        }
+
+        /* 3. CORE UI */
+        .cart-floater {
+            position: fixed; top: 30px; right: 30px; z-index: 100;
+            background: var(--accent); color: #000; padding: 12px 25px;
+            font-weight: 800; font-size: 0.9rem; letter-spacing: 1px; cursor: pointer; border: none;
+            clip-path: polygon(15% 0, 100% 0, 100% 70%, 85% 100%, 0 100%, 0 30%);
+            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.5)); transition: transform 0.2s;
+        }
+        .cart-floater:hover { transform: translate(-2px, -2px); filter: drop-shadow(6px 6px 0px rgba(0,0,0,0.5)); }
+
+        header { text-align: center; padding: 80px 20px 40px 20px; }
+        header h1 { font-size: 3rem; text-transform: uppercase; letter-spacing: -1px; text-shadow: 2px 2px 0 #333; }
         
-        .logo { font-weight: 700; font-size: 1.4rem; letter-spacing: 1px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px 100px 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 40px; }
 
-        .btn-origami {
-            background: var(--text); color: var(--bg);
-            border: none; padding: 10px 20px; font-weight: bold; cursor: pointer;
-            /* Angled Cut Corners */
-            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
-            transition: all 0.2s;
-        }
-        .btn-origami:hover {
-            background: var(--accent);
-            transform: translateY(-2px);
-        }
-
-        header { text-align: center; margin: 60px 0; }
-        header h1 { font-size: 2.5rem; text-transform: uppercase; margin-bottom: 10px; }
-
-        /* Grid */
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px 50px 20px; }
-        .grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 40px;
-        }
-
-        /* --- THE CARD (Paper Style) --- */
         .card {
             background: var(--paper-dark);
-            position: relative;
-            /* Paper shape: cut top-left, cut bottom-right */
-            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
-            transition: transform 0.3s;
-            /* Hard shadow cannot go on clipped element, so we use filter */
-            filter: drop-shadow(5px 5px 0px rgba(0,0,0,0.3)); 
+            clip-path: polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px);
+            filter: drop-shadow(8px 8px 0px rgba(0,0,0,0.3)); transition: transform 0.3s;
             display: flex; flex-direction: column;
         }
+        .card:hover { transform: translateY(-8px); filter: drop-shadow(12px 12px 0px rgba(0,0,0,0.4)); }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 30px; height: 30px; background: linear-gradient(135deg, transparent 50%, #333 50%); }
+        .card::after { content: ''; position: absolute; bottom: 0; right: 0; width: 30px; height: 30px; background: linear-gradient(-45deg, transparent 50%, #333 50%); }
 
-        .card:hover { transform: translateY(-5px); }
-
-        /* Visual "Fold" Triangle overlay */
-        .card::before {
-            content: ''; position: absolute; top: 0; left: 0;
-            width: 20px; height: 20px;
-            background: var(--paper-light); /* Lighter to look like back of paper */
-        }
-
-        .card-img-box {
-            height: 280px; width: 100%; overflow: hidden;
-            background: #000;
-            /* Matches card clip */
-            clip-path: polygon(20px 0, 100% 0, 100% 100%, 0 100%, 0 20px);
+        .card-img-wrap {
+            height: 300px; width: 100%; overflow: hidden; background: #000;
+            clip-path: polygon(30px 0, 100% 0, 100% 100%, 0 100%, 0 30px);
         }
         .card-img { width: 100%; height: 100%; object-fit: cover; }
-
-        .card-info { padding: 20px; display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
-
-        .cat { color: var(--accent); font-size: 0.8rem; text-transform: uppercase; font-weight: bold; }
-        .title { font-size: 1.2rem; margin: 0; font-weight: 600; }
-        .price { font-size: 1.1rem; color: #aaa; margin-bottom: 10px; }
-
-        /* Controls Area */
-        .controls {
-            display: flex; gap: 10px; margin-top: auto;
-            border-top: 1px dashed #333; padding-top: 15px;
-        }
-
+        .card-info { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
+        .c-cat { color: var(--accent); font-size: 0.75rem; text-transform: uppercase; font-weight: bold; margin-bottom: 5px; }
+        .c-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 5px; color: white; }
+        .c-price { color: #888; font-size: 1.1rem; margin-bottom: 15px; }
+        
+        .controls { display: flex; gap: 10px; margin-top: auto; border-top: 1px dashed #333; padding-top: 15px; }
         .input-origami {
-            background: var(--paper-light); border: none; color: white;
-            padding: 10px;
-            /* Slight angle cut */
-            clip-path: polygon(0 0, 100% 0, 100% 90%, 90% 100%, 0 100%);
-            font-family: inherit;
+            background: var(--paper-light); border: none; color: white; padding: 10px; font-family: inherit;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 90% 100%, 0 100%);
         }
-        .input-origami:focus { outline: 1px solid var(--accent); }
-
         select.input-origami { flex-grow: 2; cursor: pointer; }
-        input[type="number"].input-origami { width: 60px; text-align: center; }
+        input.input-origami { width: 60px; text-align: center; }
 
         .add-btn {
-            width: 100%; margin-top: 15px;
-            background: var(--text); color: #000;
-            border: none; padding: 12px; font-weight: bold; cursor: pointer;
-            clip-path: polygon(0 0, 100% 0, 100% 80%, 95% 100%, 0 100%);
-            transition: 0.2s;
+            width: 100%; margin-top: 15px; padding: 14px; background: var(--text); color: #000; border: none;
+            font-weight: 800; text-transform: uppercase; cursor: pointer;
+            clip-path: polygon(0 0, 100% 0, 100% 75%, 95% 100%, 0 100%); transition: 0.2s;
         }
         .add-btn:hover { background: var(--accent); }
 
-
-        /* --- CART SIDEBAR --- */
-        .sidebar-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); z-index: 900; display: none;
-        }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 200; display: none; }
         .sidebar {
-            position: fixed; top: 0; right: -420px;
-            width: 400px; height: 100vh;
-            background: var(--paper-dark);
-            z-index: 950;
-            transition: right 0.4s ease;
-            display: flex; flex-direction: column;
-            border-left: 2px solid var(--accent);
-            box-shadow: -10px 0 20px rgba(0,0,0,0.5);
+            position: fixed; top: 0; right: -420px; width: 400px; height: 100vh;
+            background: var(--paper-dark); z-index: 250; transition: right 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+            display: flex; flex-direction: column; border-left: 4px solid var(--accent);
         }
         .sidebar.open { right: 0; }
-
-        .cart-header { padding: 20px; background: #111; display: flex; justify-content: space-between; align-items: center; }
+        .sb-header { padding: 30px; background: #0a0a0a; display: flex; justify-content: space-between; align-items: center; }
+        .sb-body { flex-grow: 1; overflow-y: auto; padding: 20px; }
         .cart-item {
-            padding: 15px; margin: 15px; background: var(--paper-light);
+            background: var(--paper-light); padding: 15px; margin-bottom: 15px;
             display: flex; justify-content: space-between; align-items: center;
-            clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%);
+            clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px);
         }
+        .sb-footer { padding: 30px; background: #0a0a0a; border-top: 1px solid #222; }
 
-        /* --- CHECKOUT MODAL (Folder Style) --- */
-        .modal-wrap {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 2000;
-            display: none; justify-content: center; align-items: center;
-        }
+        .modal-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 500; display: none; justify-content: center; align-items: center; }
         .modal {
-            width: 90%; max-width: 500px; background: var(--paper-dark);
-            padding: 40px; position: relative;
-            /* Tabbed folder look */
-            clip-path: polygon(0 20px, 30% 20px, 35% 0, 100% 0, 100% 100%, 0 100%);
-            border-top: 2px solid var(--accent);
-            max-height: 90vh; overflow-y: auto;
+            background: var(--paper-dark); width: 90%; max-width: 500px; padding: 40px; position: relative;
+            clip-path: polygon(5% 0, 95% 0, 100% 5%, 100% 95%, 95% 100%, 5% 100%, 0 95%, 0 5%);
+            border: 2px solid var(--accent); max-height: 90vh; overflow-y: auto;
         }
-
-        .form-row { margin-bottom: 15px; }
         .form-row input, .form-row textarea {
-            width: 100%; padding: 12px; background: #111;
-            border: 1px solid #333; color: white;
-            font-family: inherit;
+            width: 100%; padding: 12px; background: #111; border: 1px solid #333; color: white;
+            font-family: inherit; font-size: 1rem; margin-bottom: 15px;
         }
 
+        /* Responsive Fix for close button on success card */
+        .close-success-btn {
+            margin-top: 30px; 
+            background: var(--success); 
+            color: #000;
+            width: 100%;
+            cursor: pointer;
+            z-index: 12001; /* Ensure above card */
+            position: relative;
+        }
     </style>
 </head>
 <body>
 
-    <!-- 1. THE HIGH CONTRAST ORIGAMI LOADER -->
+    <!-- LOADER -->
     <div id="origami-curtain">
         <div class="star-wrapper">
-            <div class="shard"></div>
-            <div class="shard"></div>
-            <div class="shard"></div>
-            <div class="shard"></div>
-            <div class="shard"></div>
-            <div class="shard"></div>
-            <div class="shard"></div>
-            <div class="shard"></div>
+            <div class="shard"></div><div class="shard"></div><div class="shard"></div><div class="shard"></div>
+            <div class="shard"></div><div class="shard"></div><div class="shard"></div><div class="shard"></div>
         </div>
-        <div class="loading-text">UNFOLDING COLLECTION...</div>
+        <div class="loading-text">UNFOLDING ARCHIVE...</div>
     </div>
 
-    <!-- UI -->
-    <nav>
-        <div class="logo">ISHYA STORE</div>
-        <button class="btn-origami" onclick="toggleCart()">CART (<span id="cartCount">0</span>)</button>
-    </nav>
+    <!-- ROCKET -->
+    <div id="rocket-container">
+        <svg class="paper-rocket" id="flyingRocket" viewBox="0 0 24 24"><path d="M2 12l20-9-9 20-2-9-9-2z"></path></svg>
+    </div>
 
+    <!-- SUCCESS CARD -->
+    <div id="success-card">
+        <div class="checkmark-circle"><div class="checkmark"></div></div>
+        <h2 style="text-transform: uppercase; color: var(--success); margin-bottom: 10px;">Hurray!</h2>
+        <p style="color: white; margin-bottom: 20px;">Your order has been successfully placed.</p>
+        <p style="color: #888; font-size: 0.9rem;">Check your email for further details.</p>
+        
+        <!-- FIXED CLOSE BUTTON -->
+        <button class="add-btn close-success-btn" onclick="closeSuccess()">CLOSE</button>
+    </div>
+
+    <!-- CART BUTTON -->
+    <button class="cart-floater" onclick="toggleCart()">CART (<span id="cartCount">0</span>)</button>
+
+    <!-- HEADER -->
     <header>
         <h1>Merchandise</h1>
-        <p style="color:#888;">Official 2026 Collection</p>
+        <p style="color:#666; letter-spacing: 2px; text-transform: uppercase;">Official Collection</p>
     </header>
 
-    <div class="container">
-        <div class="grid" id="productGrid">
-            <!-- Cards go here -->
-        </div>
-    </div>
+    <div class="container"><div class="grid" id="productGrid"></div></div>
 
-    <!-- Cart Sidebar -->
-    <div class="sidebar-bg" id="sidebarBg" onclick="toggleCart()"></div>
+    <!-- SIDEBAR -->
+    <div class="sidebar-overlay" id="sbOverlay" onclick="toggleCart()"></div>
     <div class="sidebar" id="sidebar">
-        <div class="cart-header">
-            <h2>Your Cart</h2>
-            <button onclick="toggleCart()" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">&times;</button>
-        </div>
-        <div id="cartItems" style="flex-grow:1; overflow-y:auto;">
-            <p style="text-align:center; padding:20px; color:#666;">Empty</p>
-        </div>
-        <div style="padding:20px; border-top:1px solid #333;">
-            <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.2rem; margin-bottom:15px;">
-                <span>Total:</span>
-                <span id="cartTotal">₹0</span>
+        <div class="sb-header"><h2>Inventory</h2><span onclick="toggleCart()" style="cursor:pointer; font-size:2rem; line-height:0.5;">&times;</span></div>
+        <div class="sb-body" id="cartItems"><p style="text-align:center; color:#666; padding:20px;">Cart is empty.</p></div>
+        <div class="sb-footer">
+            <div style="display:flex; justify-content:space-between; font-size:1.4rem; font-weight:bold; margin-bottom:20px;">
+                <span>TOTAL</span><span id="cartTotal" style="color:var(--accent);">₹0</span>
             </div>
-            <button class="btn-origami" style="width:100%;" onclick="openCheckout()">CHECKOUT</button>
+            <button class="add-btn" onclick="openCheckout()">PROCEED TO CHECKOUT</button>
         </div>
     </div>
 
-    <!-- Checkout Modal -->
+    <!-- CHECKOUT MODAL -->
     <div class="modal-wrap" id="checkoutModal">
         <div class="modal">
-            <button onclick="closeCheckout()" style="position:absolute; top:10px; right:10px; background:none; border:none; color:white; font-size:2rem; cursor:pointer;">&times;</button>
-            
-            <!-- Details -->
+            <span onclick="closeCheckout()" style="position:absolute; top:20px; right:20px; font-size:2rem; cursor:pointer;">&times;</span>
             <div id="step1">
-                <h2 style="margin-bottom:20px;">Shipping Details</h2>
-                <form onsubmit="goToPayment(event)">
+                <h2 style="color:var(--accent); margin-bottom:20px;">CREDENTIALS</h2>
+                <form id="checkoutForm" onsubmit="goToPayment(event)">
                     <div class="form-row"><input type="text" id="cName" placeholder="Full Name" required></div>
                     <div class="form-row"><input type="tel" id="cPhone" placeholder="Phone Number" required></div>
-                    <div class="form-row"><input type="email" id="cEmail" placeholder="Email Address" required></div>
+                    <div class="form-row"><input type="email" id="cEmail" placeholder="Email" required></div>
                     <div class="form-row"><input type="text" id="cRoll" placeholder="Roll No (Optional)"></div>
-                    <div class="form-row"><textarea id="cAddress" placeholder="Address / Hostel" rows="3"></textarea></div>
-                    <button type="submit" class="btn-origami" style="width:100%">PROCEED</button>
+                    <div class="form-row"><textarea id="cAddress" placeholder="Delivery Address" rows="2"></textarea></div>
+                    <button type="submit" class="add-btn">NEXT STEP</button>
                 </form>
             </div>
-
-            <!-- Payment -->
             <div id="step2" style="display:none; text-align:center;">
-                <h2 style="margin-bottom:10px;">Payment</h2>
-                <p>Total: <strong id="payAmount" style="color:var(--accent)"></strong></p>
-                
-                <div style="background:white; padding:10px; display:inline-block; margin:20px 0; border:4px solid var(--accent);">
+                <h2 style="color:var(--accent); margin-bottom:10px;">SCAN TO PAY</h2>
+                <p>Due: <strong id="payAmount" style="color:white; font-size:1.2rem;"></strong></p>
+                <div style="background:white; padding:10px; display:inline-block; margin:20px 0; border:2px solid var(--accent); clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px);">
                     <div id="qrcode"></div>
                 </div>
-                
                 <br>
-                <a id="upiLink" href="#" style="color:var(--accent);">Click here to pay via UPI App</a>
-                
-                <div class="form-row" style="margin-top:20px; text-align:left;">
-                    <label style="font-size:0.9rem; color:#888;">Upload Screenshot</label>
-                    <input type="file" id="receiptFile" accept="image/*" required>
+                <a id="upiLink" href="#" style="color:var(--accent); border-bottom:1px dashed var(--accent);">Open UPI App</a>
+                <div class="form-row" style="margin-top:25px; text-align:left;">
+                    <label style="font-size:0.8rem; color:#888; text-transform:uppercase;">Upload Receipt</label>
+                    <input type="file" id="receiptFile" accept="image/*" required style="width:100%; margin-top:5px;">
                 </div>
-
-                <button class="btn-origami" style="width:100%" onclick="submitOrder()" id="finalBtn">CONFIRM ORDER</button>
+                <button class="add-btn" onclick="submitOrder()" id="finalBtn">CONFIRM ORDER</button>
             </div>
         </div>
     </div>
@@ -333,9 +290,7 @@
         let cart = [];
         let orderId = '';
 
-        window.onload = () => {
-            fetchProducts();
-        };
+        window.onload = () => { fetchProducts(); };
 
         async function fetchProducts() {
             try {
@@ -344,194 +299,130 @@
                 if(json.status === 'success') {
                     products = json.data;
                     renderProducts(products);
-                    
-                    // Trigger the Star Unfold Animation
-                    setTimeout(() => {
-                        document.body.classList.add('loaded');
-                    }, 500);
+                    setTimeout(() => { document.body.classList.add('loaded'); }, 500);
                 }
             } catch (e) {
                 console.error(e);
-                alert("Failed to load store data.");
+                alert("Connection Error");
             }
         }
 
         function renderProducts(list) {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = '';
-
             list.forEach(p => {
                 const safeId = String(p.id);
-                const images = p.images ? p.images.split(',') : [];
-                const imgUrl = images.length ? images[0].trim() : 'https://placehold.co/400x400/222/fff';
-
-                // Size Select
-                let sizeHtml = '';
-                if(p.sizes) {
-                    const sizes = p.sizes.split(',');
-                    sizeHtml = `<select id="size-${safeId}" class="input-origami">
-                        ${sizes.map(s => `<option value="${s.trim()}">${s.trim()}</option>`).join('')}
-                    </select>`;
-                } else {
-                    sizeHtml = `<input type="hidden" id="size-${safeId}" value="Standard"><span style="flex-grow:2; align-self:center; color:#666;">Standard</span>`;
-                }
-
+                const img = p.images ? p.images.split(',')[0].trim() : 'https://placehold.co/400x400/222/fff';
+                let sizeHtml = p.sizes ? `<select id="size-${safeId}" class="input-origami">${p.sizes.split(',').map(s=>`<option value="${s.trim()}">${s.trim()}</option>`).join('')}</select>` : `<input type="hidden" id="size-${safeId}" value="Std"><span style="flex-grow:2; align-self:center; color:#666;">Standard</span>`;
+                
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
-                    <div class="card-img-box">
-                        <img src="${imgUrl}" class="card-img">
-                    </div>
+                    <div class="card-img-wrap"><img src="${img}" class="card-img"></div>
                     <div class="card-info">
-                        <div class="cat">${p.category}</div>
-                        <h3 class="title">${p.name}</h3>
-                        <div class="price">₹${p.price}</div>
-                        
-                        <div class="controls">
-                            ${sizeHtml}
-                            <input type="number" id="qty-${safeId}" class="input-origami" value="1" min="1" max="10">
-                        </div>
-                        
+                        <div class="c-cat">${p.category}</div><h3 class="c-title">${p.name}</h3><div class="c-price">₹${p.price}</div>
+                        <div class="controls">${sizeHtml}<input type="number" id="qty-${safeId}" class="input-origami" value="1" min="1" max="10"></div>
                         <button class="add-btn" onclick="addToCart('${safeId}')">ADD TO CART</button>
-                    </div>
-                `;
+                    </div>`;
                 grid.appendChild(card);
             });
         }
 
-        // --- CART ---
         function addToCart(pid) {
             const p = products.find(x => String(x.id) === pid);
             const size = document.getElementById(`size-${pid}`).value;
             const qty = parseInt(document.getElementById(`qty-${pid}`).value);
-
-            if(qty < 1) return alert("Min quantity is 1");
-
-            const exist = cart.find(i => i.id === p.id && i.size === size);
-            if(exist) exist.qty += qty;
-            else cart.push({ id: p.id, name: p.name, price: p.price, size, qty });
-
-            updateCart();
-            document.getElementById('sidebar').classList.add('open');
-            document.getElementById('sidebarBg').style.display = 'block';
+            if(qty < 1) return alert("Min qty 1");
+            const ex = cart.find(i => i.id === p.id && i.size === size);
+            if(ex) ex.qty += qty; else cart.push({ id: p.id, name: p.name, price: p.price, size, qty });
+            updateCart(); openSidebar();
         }
 
-        function removeFromCart(idx) {
-            cart.splice(idx, 1);
-            updateCart();
-        }
-
+        function removeFromCart(idx) { cart.splice(idx, 1); updateCart(); }
         function updateCart() {
-            const box = document.getElementById('cartItems');
-            const totalEl = document.getElementById('cartTotal');
-            const countEl = document.getElementById('cartCount');
-            
-            box.innerHTML = '';
-            let total = 0, count = 0;
-
+            const box = document.getElementById('cartItems'); box.innerHTML = ''; let total = 0, count = 0;
             cart.forEach((item, i) => {
-                total += item.price * item.qty;
-                count += item.qty;
-                box.innerHTML += `
-                    <div class="cart-item">
-                        <div>
-                            <div style="font-weight:bold;">${item.name}</div>
-                            <div style="font-size:0.8rem; color:#888;">${item.size} x ${item.qty}</div>
-                        </div>
-                        <div style="text-align:right">
-                            <div>₹${item.price*item.qty}</div>
-                            <div style="color:var(--accent); font-size:0.8rem; cursor:pointer;" onclick="removeFromCart(${i})">REMOVE</div>
-                        </div>
-                    </div>
-                `;
+                total += item.price * item.qty; count += item.qty;
+                box.innerHTML += `<div class="cart-item"><div><div style="font-weight:bold;">${item.name}</div><div style="font-size:0.8rem; color:#888;">${item.size} x ${item.qty}</div></div><div style="text-align:right;"><div>₹${item.price*item.qty}</div><div style="color:var(--accent); font-size:0.8rem; cursor:pointer;" onclick="removeFromCart(${i})">REMOVE</div></div></div>`;
             });
-
-            if(cart.length === 0) box.innerHTML = "<p style='text-align:center; padding:20px; color:#666;'>Empty</p>";
-            
-            totalEl.innerText = "₹" + total;
-            countEl.innerText = count;
+            if(cart.length===0) box.innerHTML = "<p style='text-align:center; color:#666; padding:20px;'>Cart is empty.</p>";
+            document.getElementById('cartTotal').innerText = "₹" + total; document.getElementById('cartCount').innerText = count;
         }
 
-        function toggleCart() {
-            const sb = document.getElementById('sidebar');
-            const bg = document.getElementById('sidebarBg');
-            if(sb.classList.contains('open')) {
-                sb.classList.remove('open');
-                bg.style.display = 'none';
-            } else {
-                sb.classList.add('open');
-                bg.style.display = 'block';
-            }
-        }
-
-        // --- CHECKOUT ---
-        function openCheckout() {
-            if(cart.length === 0) return alert("Cart is empty");
-            toggleCart();
-            document.getElementById('checkoutModal').style.display = 'flex';
-        }
-        function closeCheckout() {
-            document.getElementById('checkoutModal').style.display = 'none';
-        }
+        function toggleCart() { const sb = document.getElementById('sidebar'); if(sb.classList.contains('open')) closeSidebar(); else openSidebar(); }
+        function openSidebar() { document.getElementById('sidebar').classList.add('open'); document.getElementById('sbOverlay').style.display = 'block'; }
+        function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sbOverlay').style.display = 'none'; }
+        function openCheckout() { if(cart.length===0) return alert("Empty"); closeSidebar(); document.getElementById('checkoutModal').style.display = 'flex'; }
+        function closeCheckout() { document.getElementById('checkoutModal').style.display = 'none'; }
 
         function goToPayment(e) {
             e.preventDefault();
             orderId = 'ORD-' + Date.now();
-            const total = cart.reduce((a,b) => a+(b.price*b.qty), 0);
-            
+            const total = cart.reduce((a,b)=>a+(b.price*b.qty),0);
             document.getElementById('payAmount').innerText = "₹" + total;
-            
             const url = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(FEST)}&am=${total}&tn=${orderId}`;
             document.getElementById('upiLink').href = url;
-            
             document.getElementById('qrcode').innerHTML = "";
             new QRCode(document.getElementById("qrcode"), { text: url, width: 140, height: 140 });
-
             document.getElementById('step1').style.display = 'none';
             document.getElementById('step2').style.display = 'block';
         }
 
         async function submitOrder() {
             const f = document.getElementById('receiptFile').files[0];
-            if(!f) return alert("Please upload screenshot");
-
+            if(!f) return alert("Upload Receipt");
             const btn = document.getElementById('finalBtn');
-            btn.innerText = "SENDING...";
-            btn.disabled = true;
+            btn.innerText = "SENDING..."; btn.disabled = true;
 
             const reader = new FileReader();
             reader.readAsDataURL(f);
             reader.onload = async () => {
                 const payload = {
-                    orderId,
-                    customerName: document.getElementById('cName').value,
-                    customerPhone: document.getElementById('cPhone').value,
-                    customerEmail: document.getElementById('cEmail').value,
-                    rollNumber: document.getElementById('cRoll').value,
-                    address: document.getElementById('cAddress').value,
-                    totalPrice: cart.reduce((a,b)=>a+(b.price*b.qty),0),
-                    cart,
-                    receiptImage: reader.result
+                    orderId, customerName: document.getElementById('cName').value, customerPhone: document.getElementById('cPhone').value,
+                    customerEmail: document.getElementById('cEmail').value, rollNumber: document.getElementById('cRoll').value,
+                    address: document.getElementById('cAddress').value, totalPrice: cart.reduce((a,b)=>a+(b.price*b.qty),0),
+                    cart, receiptImage: reader.result
                 };
-
                 try {
                     await fetch(API, {method:'POST', body:JSON.stringify(payload)});
-                    alert("Order Placed!");
-                    location.reload();
+                    
+                    document.getElementById('checkoutModal').style.display = 'none';
+                    const container = document.getElementById('rocket-container');
+                    const rocket = document.getElementById('flyingRocket');
+                    container.style.display = 'block';
+                    rocket.classList.add('fly');
+
+                    setTimeout(() => {
+                        container.style.display = 'none'; rocket.classList.remove('fly');
+                        document.getElementById('success-card').classList.add('show');
+                        cart = []; updateCart();
+                    }, 1800);
                 } catch(e) {
-                    alert("Error submitting.");
-                    btn.disabled = false;
-                    btn.innerText = "CONFIRM ORDER";
+                    alert("Submission failed."); btn.disabled = false; btn.innerText = "CONFIRM ORDER";
                 }
             };
         }
-    </script>
-    <script>
-    fetch('/ISHYA-26/header.html').then(r=>r.text()).then(h=>{
-        const d=document.createElement('div');d.innerHTML=h;
-        document.body.prepend(d);
-        if(d.querySelector('script')) eval(d.querySelector('script').text);
-    });
+
+        // --- NEW: CLOSE SUCCESS LOGIC (Reset instead of Reload) ---
+        function closeSuccess() {
+            // Hide Card
+            const card = document.getElementById('success-card');
+            card.classList.remove('show');
+            setTimeout(() => card.style.display = 'none', 300);
+
+            // Reset Forms
+            document.getElementById('checkoutForm').reset();
+            document.getElementById('receiptFile').value = '';
+
+            // Reset Checkout Modal Steps
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step1').style.display = 'block';
+            
+            // Reset Submit Button
+            const btn = document.getElementById('finalBtn');
+            btn.disabled = false;
+            btn.innerText = "CONFIRM ORDER";
+        }
     </script>
 </body>
 </html>
