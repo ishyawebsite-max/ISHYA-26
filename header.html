@@ -1,12 +1,13 @@
 <!-- ISHYA AERO / LIQUID GLASS HEADER -->
 <style>
     /* =========================================
-       1. PAGE SETUP (Dark bg to see the glass)
+       1. PAGE SETUP & SPACING FIX
        ========================================= */
     body {
         margin: 0;
-        padding-top: 0px;
-        background-color: #05050a; /* Dark background essential for glass effect */
+        /* CRITICAL FIX: Pushes site content down so the header doesn't cover it */
+        padding-top: 100px; 
+        background-color: #05050a; 
         font-family: system-ui, -apple-system, sans-serif;
     }
 
@@ -26,13 +27,13 @@
         top: 0;
         left: 0;
         width: 100%;
-        height: 90px;
+        height: 90px; /* The bar is 90px tall */
         
         /* The Blur Magic */
         background: linear-gradient(
             180deg, 
             rgba(255, 255, 255, 0.04) 0%, 
-            rgba(10, 15, 30, 0.5) 100%
+            rgba(10, 15, 30, 0.6) 100%
         );
         backdrop-filter: blur(25px) saturate(120%);
         -webkit-backdrop-filter: blur(25px) saturate(120%);
@@ -42,7 +43,7 @@
             inset 0 1px 0 rgba(255,255,255,0.2),
             0 15px 30px rgba(0,0,0,0.3);
             
-        z-index: 9998; /* Behind the nav, above page content */
+        z-index: 9998; 
         pointer-events: none; 
     }
 
@@ -58,7 +59,7 @@
         left: 50%;
         transform: translateX(-50%);
         
-        width: 100px; /* Slightly wider for text fallback */
+        width: 100px; 
         height: 50px;
         
         /* Glass Look */
@@ -107,7 +108,7 @@
         letter-spacing: 2px;
         text-transform: uppercase;
         text-shadow: 0 0 10px rgba(240, 213, 122, 0.6);
-        display: none; /* Hidden by default, shown via JS if img fails */
+        display: none; 
     }
 
     /* MENU ITEMS GRID */
@@ -156,15 +157,12 @@
         /* Move UP into the background bar */
         top: 10px; 
         
-        /* Dimensions */
+        /* Dimensions - Fits exactly inside the 90px bar */
         width: 850px;
         height: 70px;
         border-radius: 16px;
 
-        /* THE INFUSION TRICK: 
-           1. Transparent background to see the blur behind it 
-           2. Remove shadow to look "flat" on the surface
-        */
+        /* INFUSION TRICK: Transparent bg + No Shadow */
         background: rgba(255, 255, 255, 0.01); 
         box-shadow: none; 
         border: 1px solid rgba(255, 255, 255, 0.05);
@@ -194,7 +192,6 @@
         .ishya-nav-container.expanded {
             width: 95%;
             height: 320px;
-            /* On mobile, we need a dark background again */
             background: rgba(15, 20, 30, 0.95);
             box-shadow: 0 20px 50px rgba(0,0,0,0.8);
             border: 1px solid rgba(255,255,255,0.1);
@@ -218,20 +215,12 @@
     <!-- The Expanding Menu -->
     <nav class="ishya-nav-container" id="ishyaHeader">
         
-        <!-- Center Logo (Image + Text Fallback) -->
         <div class="ishya-logo-btn">
-            <!-- 
-               LOGIC: 
-               1. Try to load image. 
-               2. If it fails (onerror), hide image, show text.
-            -->
             <img src="/ISHYA-26/Logo Ishya.ico" alt="ISHYA" 
                  onerror="this.style.display='none'; document.getElementById('ishyaFallback').style.display='block';">
-            
             <span id="ishyaFallback" class="ishya-logo-text">ISHYA</span>
         </div>
 
-        <!-- Links -->
         <div class="ishya-menu-grid">
             <a href="index.html" class="ishya-link">
                 <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -269,7 +258,7 @@
     (function(){
         const nav = document.getElementById('ishyaHeader');
         
-        // Force Text fallback immediately if image src is obviously empty
+        // Image Error Handling
         const img = nav.querySelector('img');
         const text = document.getElementById('ishyaFallback');
         if(!img.getAttribute('src') || img.getAttribute('src') === '') {
