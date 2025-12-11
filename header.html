@@ -1,14 +1,24 @@
 <!-- ISHYA AERO / LIQUID GLASS HEADER -->
 <style>
     /* =========================================
-       1. PAGE SETUP & SPACING
+       1. GLOBAL SETTINGS
        ========================================= */
     body {
         margin: 0;
-        /* Pushes site content down so header doesn't overlap */
-        padding-top: 100px; 
         background-color: #05050a; 
         font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    /* 
+       THE SPACER:
+       This invisible block physically sits at the top of your page
+       and pushes all your content down so the header doesn't cover it.
+    */
+    .ishya-header-spacer {
+        display: block;
+        width: 100%;
+        height: 120px; /* Height of header + breathing room */
+        background: transparent;
     }
 
     #ishya-floating-nav-wrapper {
@@ -37,9 +47,11 @@
         
         backdrop-filter: blur(25px) saturate(120%);
         -webkit-backdrop-filter: blur(25px) saturate(120%);
+        
         box-shadow: 
             inset 0 1px 0 rgba(255,255,255,0.2),
             0 15px 30px rgba(0,0,0,0.3);
+            
         z-index: 9998; 
         pointer-events: none; 
         transition: background 0.3s ease;
@@ -55,7 +67,6 @@
         left: 50%;
         transform: translateX(-50%);
         
-        /* Small Pill Size */
         width: 100px; 
         height: 50px;
         
@@ -68,7 +79,6 @@
         overflow: hidden;
         cursor: pointer;
         
-        /* Smooth Physics */
         transition: 
             width 0.6s var(--anim-spring),
             height 0.6s var(--anim-spring),
@@ -152,7 +162,6 @@
         width: 850px;
         height: 70px;
         border-radius: 16px;
-        /* Transparent infusion for desktop */
         background: rgba(255, 255, 255, 0.01); 
         box-shadow: none; 
         border: 1px solid rgba(255, 255, 255, 0.05);
@@ -166,7 +175,6 @@
         opacity: 1; pointer-events: auto; transition-delay: 0.1s;
     }
 
-    /* Hover Effects */
     .ishya-link:hover { transform: translateY(-3px); }
     .ishya-link:hover svg { stroke: var(--nav-gold); filter: drop-shadow(0 0 5px var(--nav-gold)); }
     .ishya-link:hover span { color: #fff; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
@@ -176,27 +184,28 @@
        ========================================= */
     @media screen and (max-width: 900px) {
         
-        /* A. MORE WHITE TINT ON BACKDROP */
+        /* A. Increase Spacer height on mobile if needed */
+        .ishya-header-spacer {
+            height: 100px;
+        }
+
+        /* B. WHITER TINT ON BACKDROP (Mobile Only) */
         .ishya-nav-backdrop {
-            /* Higher opacity white (0.15) for cleaner look on mobile */
             background: linear-gradient(
                 180deg, 
-                rgba(255, 255, 255, 0.15) 0%, 
+                rgba(255, 255, 255, 0.15) 0%, /* 15% White opacity */
                 rgba(20, 25, 40, 0.8) 100%
             );
-            /* Stronger blur */
             backdrop-filter: blur(35px) saturate(180%);
             -webkit-backdrop-filter: blur(35px) saturate(180%);
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* B. MENU EXPANSION ON MOBILE */
+        /* C. MENU CARD */
         .ishya-nav-container.expanded {
             width: 95%;
-            height: 320px; /* Tall box */
+            height: 320px;
             top: 15px;
-            
-            /* Darker background for readability against content */
             background: rgba(15, 20, 30, 0.95); 
             box-shadow: 0 30px 60px rgba(0,0,0,0.9);
             border: 1px solid rgba(255,255,255,0.15);
@@ -209,14 +218,12 @@
             gap: 10px;
         }
 
-        /* C. MOBILE LINKS (Larger touch targets) */
         .ishya-link {
             padding: 15px 5px;
             background: rgba(255,255,255,0.03);
             border-radius: 12px;
         }
 
-        /* D. MOBILE LOGO (Visible when expanded) */
         .ishya-nav-container.expanded .ishya-logo-btn {
             opacity: 1; 
             transform: scale(1);
@@ -229,10 +236,16 @@
     }
 </style>
 
+<!-- 
+    THE FIX: 
+    This div is invisible but takes up 120px of space.
+    It pushes all your other content down automatically.
+-->
+<div class="ishya-header-spacer"></div>
+
 <div id="ishya-floating-nav-wrapper">
     <div class="ishya-nav-backdrop"></div>
     <nav class="ishya-nav-container" id="ishyaHeader">
-        
         <div class="ishya-logo-btn">
             <img src="/ISHYA-26/Logo Ishya.ico" alt="ISHYA" 
                  onerror="this.style.display='none'; document.getElementById('ishyaFallback').style.display='block';">
