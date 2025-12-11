@@ -1,26 +1,22 @@
 <!-- ISHYA AERO / LIQUID GLASS HEADER -->
 <style>
     /* =========================================
-       1. GLOBAL SETTINGS
+       1. FORCED LAYOUT SPACING (The Fix)
        ========================================= */
-    body {
-        margin: 0;
+    html, body {
+        /* This forces the content down by 140px no matter what */
+        padding-top: 140px !important; 
+        margin: 0 !important;
         background-color: #05050a; 
         font-family: system-ui, -apple-system, sans-serif;
+        
+        /* Ensures background covers the new gap */
+        box-sizing: border-box; 
     }
 
-    /* 
-       THE SPACER:
-       This invisible block physically sits at the top of your page
-       and pushes all your content down so the header doesn't cover it.
-    */
-    .ishya-header-spacer {
-        display: block;
-        width: 100%;
-        height: 120px; /* Height of header + breathing room */
-        background: transparent;
-    }
-
+    /* =========================================
+       2. GLOBAL VARIABLES
+       ========================================= */
     #ishya-floating-nav-wrapper {
         --glass-border: rgba(255, 255, 255, 0.15);
         --nav-gold: #f0d57a;
@@ -29,7 +25,7 @@
     }
 
     /* =========================================
-       2. THE PERMANENT BACKDROP (Fixed Top)
+       3. THE PERMANENT BACKDROP (Fixed Top)
        ========================================= */
     .ishya-nav-backdrop {
         position: fixed;
@@ -58,7 +54,7 @@
     }
 
     /* =========================================
-       3. THE FLOATING PILL
+       4. THE FLOATING PILL
        ========================================= */
     .ishya-nav-container {
         position: fixed;
@@ -155,7 +151,7 @@
     }
 
     /* =========================================
-       4. EXPANDED STATE (Desktop)
+       5. EXPANDED STATE (Desktop)
        ========================================= */
     .ishya-nav-container.expanded {
         top: 10px; 
@@ -180,20 +176,20 @@
     .ishya-link:hover span { color: #fff; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
 
     /* =========================================
-       5. MOBILE OPTIMIZATION
+       6. MOBILE OPTIMIZATION
        ========================================= */
     @media screen and (max-width: 900px) {
         
-        /* A. Increase Spacer height on mobile if needed */
-        .ishya-header-spacer {
-            height: 100px;
+        /* FIX: Ensure padding is slightly less on mobile if needed, but still forced */
+        body {
+            padding-top: 120px !important;
         }
 
-        /* B. WHITER TINT ON BACKDROP (Mobile Only) */
+        /* WHITER TINT ON BACKDROP (Mobile Only) */
         .ishya-nav-backdrop {
             background: linear-gradient(
                 180deg, 
-                rgba(255, 255, 255, 0.15) 0%, /* 15% White opacity */
+                rgba(255, 255, 255, 0.15) 0%, 
                 rgba(20, 25, 40, 0.8) 100%
             );
             backdrop-filter: blur(35px) saturate(180%);
@@ -201,7 +197,7 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* C. MENU CARD */
+        /* MENU CARD */
         .ishya-nav-container.expanded {
             width: 95%;
             height: 320px;
@@ -235,13 +231,6 @@
         }
     }
 </style>
-
-<!-- 
-    THE FIX: 
-    This div is invisible but takes up 120px of space.
-    It pushes all your other content down automatically.
--->
-<div class="ishya-header-spacer"></div>
 
 <div id="ishya-floating-nav-wrapper">
     <div class="ishya-nav-backdrop"></div>
