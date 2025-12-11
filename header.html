@@ -1,268 +1,237 @@
-
 <!-- ISHYA AERO / LIQUID GLASS HEADER -->
 <style>
     /* =========================================
-       1. PAGE PUSH LOGIC
+       1. PAGE SETUP (Dark bg to see the glass)
        ========================================= */
     body {
-        /* Smooth transition for the page content */
-        transition: padding-top 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-        padding-top: 80px; /* Default space */
-    }
-
-    body.ishya-push-active {
-        /* Pushes page content down when menu expands */
-        padding-top: 150px !important; 
-    }
-
-    /* =========================================
-       2. GLASS AERO STYLES
-       ========================================= */
-    #ishya-floating-nav-wrapper {
-        --glass-bg: linear-gradient(135deg, rgba(20, 25, 40, 0.6) 0%, rgba(5, 5, 10, 0.8) 100%);
-        --glass-border: rgba(255, 255, 255, 0.12);
-        --glass-highlight: rgba(255, 255, 255, 0.15);
-        --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-        --nav-gold: #f0d57a;
-        --text-color: #e2e8f0;
-        --anim-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        margin: 0;
+        padding-top: 0px;
+        background-color: #05050a; /* Dark background essential for glass effect */
         font-family: system-ui, -apple-system, sans-serif;
     }
 
-    .ishya-nav-container {
-        /* FIXATION & POSITIONING */
-        position: fixed !important;
-        top: 10px !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        z-index: 2147483647 !important;
-
-        /* DIMENSIONS (Closed) */
-        width: 80px; 
-        height: 50px;
-
-        /* --- THE LIQUID AERO EFFECT --- */
-        background: var(--glass-bg);
-        
-        /* The Blur Magic (Frosted Glass) */
-        backdrop-filter: blur(20px) saturate(120%);
-        -webkit-backdrop-filter: blur(20px) saturate(120%);
-        
-        /* Borders & Bevels */
-        border: 1px solid var(--glass-border);
-        border-top: 1px solid var(--glass-highlight); /* Top highlight for Aero look */
-        border-radius: 50px;
-        
-        /* Depth Shadows */
-        box-shadow: 
-            var(--glass-shadow),
-            inset 0 0 15px rgba(255,255,255,0.05); /* Inner glow */
-
-        overflow: hidden;
-        cursor: pointer;
-
-        /* ANIMATIONS */
-        transition: 
-            width 0.6s var(--anim-spring),
-            height 0.6s var(--anim-spring),
-            border-radius 0.4s ease,
-            background 0.4s ease,
-            box-shadow 0.4s ease;
+    #ishya-floating-nav-wrapper {
+        /* VARS */
+        --glass-border: rgba(255, 255, 255, 0.15);
+        --nav-gold: #f0d57a;
+        --text-color: #ffffff;
+        --anim-spring: cubic-bezier(0.25, 1, 0.5, 1);
     }
-    /* backdrop for menu like effect*/
-/* =========================================
-       CRYSTAL GLASS BACKDROP (Premium & Glossy)
-       ========================================= */
-/* =========================================
-       3D PRISM / THICK GLASS BOX
+
+    /* =========================================
+       2. THE BLURRY BACKDROP BAR (Fixed Top)
        ========================================= */
     .ishya-nav-backdrop {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
-        height: 70px;
+        height: 90px;
         
-        /* 1. GRADIENT VOLUME: 
-           Light at the top, fading to dark at the bottom. 
-           This mimics light passing through a thick object. */
+        /* The Blur Magic */
         background: linear-gradient(
             180deg, 
-            rgba(255, 255, 255, 0.06) 0%, 
-            rgba(10, 15, 30, 0.4) 100%
+            rgba(255, 255, 255, 0.04) 0%, 
+            rgba(10, 15, 30, 0.5) 100%
         );
+        backdrop-filter: blur(25px) saturate(120%);
+        -webkit-backdrop-filter: blur(25px) saturate(120%);
         
-        /* 2. REFRACTION: High blur + high saturation */
-        backdrop-filter: blur(20px) saturate(180%);
-        -webkit-backdrop-filter: blur(20px) saturate(180%);
-        
-        /* 3. THE 3D TRICK (Inset Shadows): */
+        /* Subtle Prism Edge */
         box-shadow: 
-            /* Layer 1: Strong white highlight on the very top edge (Light Source) */
-            inset 0 1px 0 0 rgba(255, 255, 255, 0.4),
+            inset 0 1px 0 rgba(255,255,255,0.2),
+            0 15px 30px rgba(0,0,0,0.3);
             
-            /* Layer 2: Subtle white reflection on the bottom edge */
-            inset 0 -1px 0 0 rgba(255, 255, 255, 0.1),
-            
-            /* Layer 3: Soft inner glow to show "thickness" inside the block */
-            inset 0 20px 30px rgba(0, 0, 0, 0.15),
-            
-            /* Layer 4: Deep shadow underneath to lift the block off the page */
-            0 15px 35px rgba(0, 0, 0, 0.5);
-
-        /* No standard borders needed; shadows do the work */
-        border: none;
-        
-        z-index: 2147483640; 
-        pointer-events: none;
-        transition: all 0.5s ease;
+        z-index: 9998; /* Behind the nav, above page content */
+        pointer-events: none; 
     }
 
-    /* LOGO (Center) */
+    /* =========================================
+       3. THE FLOATING NAV PILL
+       ========================================= */
+    .ishya-nav-container {
+        position: fixed;
+        z-index: 9999;
+        
+        /* CLOSED STATE: Centered Pill */
+        top: 20px; 
+        left: 50%;
+        transform: translateX(-50%);
+        
+        width: 100px; /* Slightly wider for text fallback */
+        height: 50px;
+        
+        /* Glass Look */
+        background: rgba(30, 35, 50, 0.6);
+        backdrop-filter: blur(15px);
+        border: 1px solid var(--glass-border);
+        border-radius: 50px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+
+        overflow: hidden;
+        cursor: pointer;
+
+        /* Physics */
+        transition: 
+            width 0.6s var(--anim-spring),
+            height 0.6s var(--anim-spring),
+            top 0.6s var(--anim-spring),
+            background 0.4s ease,
+            box-shadow 0.4s ease,
+            border-radius 0.4s ease;
+    }
+
+    /* LOGO AREA */
     .ishya-logo-btn {
         position: absolute;
-        top: 0; left: 0; width: 100%; height: 50px;
+        top: 0; left: 0; width: 100%; height: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
-        pointer-events: none;
         transition: opacity 0.3s ease, transform 0.3s ease;
     }
 
+    /* LOGO IMAGE */
     .ishya-logo-btn img {
-        width: 50px;
-        height: Auto;
+        height: 35px;
+        width: auto;
         object-fit: contain;
-        /* Adds a subtle glow to the logo itself */
-        filter: drop-shadow(0 0 8px rgba(240, 213, 122, 0.4));
+        filter: drop-shadow(0 0 5px rgba(240, 213, 122, 0.5));
     }
 
-    /* LINKS GRID */
+    /* LOGO TEXT FALLBACK (Gold) */
+    .ishya-logo-text {
+        color: var(--nav-gold);
+        font-weight: 800;
+        font-size: 14px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        text-shadow: 0 0 10px rgba(240, 213, 122, 0.6);
+        display: none; /* Hidden by default, shown via JS if img fails */
+    }
+
+    /* MENU ITEMS GRID */
     .ishya-menu-grid {
+        display: flex;
         width: 100%;
         height: 100%;
+        align-items: center;
+        justify-content: space-evenly;
         opacity: 0;
         pointer-events: none;
-        display: flex;
-        transition: opacity 0.3s ease;
+        transition: opacity 0.2s ease;
     }
 
     .ishya-link {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
         text-decoration: none;
-        color: var(--text-color);
-        transition: all 0.2s ease;
-        position: relative;
+        color: rgba(255,255,255,0.7);
+        padding: 0 10px;
+        transition: transform 0.2s;
     }
 
     .ishya-link svg {
-        width: 22px;
-        height: 22px;
-        stroke: currentColor;
+        width: 20px; 
+        height: 20px;
+        stroke: currentColor; 
+        fill: none; 
         stroke-width: 2;
-        fill: none;
-        margin-bottom: 5px;
+        margin-bottom: 4px;
         transition: stroke 0.3s;
     }
 
     .ishya-link span {
-        font-size: 0.65rem;
+        font-size: 10px;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 1px;
     }
 
-    /* --- EXPANDED / HOVER STATE --- */
-    
-    /* Desktop */
+    /* =========================================
+       4. THE "INFUSED" EXPANDED STATE
+       ========================================= */
     .ishya-nav-container.expanded {
-        width: 800px;
-        height: 100px;
+        /* Move UP into the background bar */
+        top: 10px; 
         
-        /* Darker glass when open for readability */
-        background: linear-gradient(135deg, rgba(15, 20, 30, 0.85) 0%, rgba(5, 5, 10, 0.95) 100%);
-        border-color: rgba(240, 213, 122, 0.4); /* Gold Border when open */
-        border-radius: 24px;
-        
-        /* Stronger shadow when active */
-        box-shadow: 
-            0 20px 50px rgba(0,0,0,0.6),
-            inset 0 0 0 1px rgba(240, 213, 122, 0.1);
+        /* Dimensions */
+        width: 850px;
+        height: 70px;
+        border-radius: 16px;
+
+        /* THE INFUSION TRICK: 
+           1. Transparent background to see the blur behind it 
+           2. Remove shadow to look "flat" on the surface
+        */
+        background: rgba(255, 255, 255, 0.01); 
+        box-shadow: none; 
+        border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .ishya-nav-container.expanded .ishya-logo-btn {
         opacity: 0;
-        transform: translateY(-20px);
+        transform: scale(0.5);
+        pointer-events: none;
     }
 
     .ishya-nav-container.expanded .ishya-menu-grid {
         opacity: 1;
         pointer-events: auto;
-        flex-direction: row;
-        justify-content: space-evenly;
-        align-items: center;
-        padding: 0 20px;
-        transition-delay: 0.15s;
+        transition-delay: 0.1s;
     }
 
-    /* Hover Effects for Items */
-    .ishya-link:hover {
-        color: var(--nav-gold);
-        transform: translateY(-2px);
-        text-shadow: 0 0 10px rgba(240, 213, 122, 0.5);
-    }
-    .ishya-link:hover svg {
-        stroke: var(--nav-gold);
-        filter: drop-shadow(0 0 5px var(--nav-gold));
-    }
+    /* Hover States */
+    .ishya-link:hover { transform: translateY(-3px); }
+    .ishya-link:hover svg { stroke: var(--nav-gold); filter: drop-shadow(0 0 5px var(--nav-gold)); }
+    .ishya-link:hover span { color: #fff; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
 
-    /* --- MOBILE RESPONSIVENESS --- */
-    @media screen and (max-width: 767px) {
+    /* =========================================
+       5. MOBILE
+       ========================================= */
+    @media screen and (max-width: 900px) {
         .ishya-nav-container.expanded {
             width: 95%;
-            height: 340px;
-            /* Even darker background on mobile to cover page content */
-            background: linear-gradient(135deg, rgba(10, 12, 20, 0.95) 0%, rgba(0, 0, 0, 0.98) 100%);
+            height: 320px;
+            /* On mobile, we need a dark background again */
+            background: rgba(15, 20, 30, 0.95);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,255,255,0.1);
         }
-
-        .ishya-nav-container.expanded .ishya-logo-btn {
-            opacity: 1;
-            transform: translateY(0);
-            height: 60px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-        }
-
         .ishya-nav-container.expanded .ishya-menu-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            padding: 70px 15px 15px 15px;
-            align-items: start;
+            padding-top: 50px;
         }
-
-        .ishya-link {
-            background: rgba(255,255,255,0.04);
-            padding: 12px 0;
-            border-radius: 12px;
-            width: 100%;
-            border: 1px solid rgba(255,255,255,0.02);
+        .ishya-nav-container.expanded .ishya-logo-btn {
+            opacity: 1; transform: scale(1);
+            height: 50px; justify-content: start; padding-left: 20px;
         }
-        
-        .ishya-link:last-child { grid-column: span 3; flex-direction: row; gap: 10px; }
-        
-        body.ishya-push-active { padding-top: 20px !important; }
     }
 </style>
 
 <div id="ishya-floating-nav-wrapper">
+    <!-- The Permanent Blurry Bar -->
     <div class="ishya-nav-backdrop"></div>
+
+    <!-- The Expanding Menu -->
     <nav class="ishya-nav-container" id="ishyaHeader">
+        
+        <!-- Center Logo (Image + Text Fallback) -->
         <div class="ishya-logo-btn">
-            <img src="/ISHYA-26/Logo Ishya.ico" alt="ISHYA">
+            <!-- 
+               LOGIC: 
+               1. Try to load image. 
+               2. If it fails (onerror), hide image, show text.
+            -->
+            <img src="/ISHYA-26/Logo Ishya.ico" alt="ISHYA" 
+                 onerror="this.style.display='none'; document.getElementById('ishyaFallback').style.display='block';">
+            
+            <span id="ishyaFallback" class="ishya-logo-text">ISHYA</span>
         </div>
+
+        <!-- Links -->
         <div class="ishya-menu-grid">
             <a href="index.html" class="ishya-link">
                 <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -300,36 +269,33 @@
     (function(){
         const nav = document.getElementById('ishyaHeader');
         
-        // --- INTERACTION LOGIC ---
+        // Force Text fallback immediately if image src is obviously empty
+        const img = nav.querySelector('img');
+        const text = document.getElementById('ishyaFallback');
+        if(!img.getAttribute('src') || img.getAttribute('src') === '') {
+            img.style.display = 'none';
+            text.style.display = 'block';
+        }
+
         const toggleNav = (shouldOpen) => {
             if (shouldOpen) {
                 nav.classList.add('expanded');
-                document.body.classList.add('ishya-push-active');
             } else {
                 nav.classList.remove('expanded');
-                document.body.classList.remove('ishya-push-active');
             }
         };
 
-        // Desktop Hover
-        nav.addEventListener('mouseenter', () => {
-            if(window.innerWidth > 768) toggleNav(true);
-        });
-        nav.addEventListener('mouseleave', () => {
-            if(window.innerWidth > 768) toggleNav(false);
-        });
+        // Hover Desktop
+        nav.addEventListener('mouseenter', () => { if(window.innerWidth > 768) toggleNav(true); });
+        nav.addEventListener('mouseleave', () => { if(window.innerWidth > 768) toggleNav(false); });
 
-        // Mobile/Click Interaction
+        // Click Mobile
         nav.addEventListener('click', (e) => {
-            if (e.target.closest('a')) return;
-            if (nav.classList.contains('expanded')) {
-                toggleNav(false);
-            } else {
-                toggleNav(true);
-            }
+            if (e.target.closest('a')) return; 
+            nav.classList.contains('expanded') ? toggleNav(false) : toggleNav(true);
         });
-
-        // Close on Click Outside
+        
+        // Click Outside
         document.addEventListener('click', (e) => {
             if (!nav.contains(e.target)) toggleNav(false);
         });
