@@ -1,42 +1,56 @@
 <!-- ISHYA AERO / LIQUID GLASS HEADER -->
 <style>
     /* =========================================
-       1. FORCED LAYOUT SPACING
+       1. GLOBAL RESET (Safe Mode)
        ========================================= */
-    html, body {
-        padding-top: 140px !important; 
-        margin: 0 !important;
+    /* We only remove margin from the body to prevent white bars. 
+       We do NOT touch padding or fonts here. */
+    body {
+        margin: 0;
         background-color: #05050a; 
-        font-family: system-ui, -apple-system, sans-serif;
-        box-sizing: border-box; 
+    }
+
+    /* 
+       THE SPACER:
+       This invisible block physically sits at the top of your content flow.
+       It pushes your website down safely without breaking sidebars or popups.
+    */
+    .ishya-header-spacer {
+        display: block;
+        width: 100%;
+        height: 140px; /* Adjust this number if you want more/less space */
+        background: transparent;
     }
 
     /* =========================================
-       2. CART RESCUE (THE FIX)
+       2. CART RESCUE (Targeted)
        ========================================= */
     /* 
-       This forces any element with "cart", "bag", or "shop" in its name 
-       to sit ABOVE the glass header so you can click it.
+       This specifically lifts the Cart BUTTON above the glass header.
+       We avoid targeting the sidebar drawer to prevent layout breakage.
     */
-    [class*="cart"], [id*="cart"], 
-    [class*="bag"],  [id*="bag"],
-    [class*="shop"], .header-right {
-        z-index: 10005 !important; /* Higher than the header (9999) */
-        position: fixed !important; /* Ensure it stays floating */
+    .header-right, 
+    #cart-icon-bubble, 
+    .cart-icon, 
+    [class*="header__icon--cart"] {
+        z-index: 10005 !important; 
+        position: relative; /* Ensures z-index works */
     }
 
     /* =========================================
-       3. GLOBAL VARIABLES
+       3. HEADER VARIABLES
        ========================================= */
     #ishya-floating-nav-wrapper {
         --glass-border: rgba(255, 255, 255, 0.15);
         --nav-gold: #f0d57a;
         --text-color: #ffffff;
         --anim-spring: cubic-bezier(0.25, 1, 0.5, 1);
+        /* SCOPED FONT: Only affects the header */
+        font-family: system-ui, -apple-system, sans-serif;
     }
 
     /* =========================================
-       4. THE PERMANENT BACKDROP (Fixed Top)
+       4. THE PERMANENT BACKDROP
        ========================================= */
     .ishya-nav-backdrop {
         position: fixed;
@@ -44,23 +58,18 @@
         left: 0;
         width: 100%;
         height: 90px;
-        
         background: linear-gradient(
             180deg, 
             rgba(255, 255, 255, 0.04) 0%, 
             rgba(10, 15, 30, 0.6) 100%
         );
-        
         backdrop-filter: blur(25px) saturate(120%);
         -webkit-backdrop-filter: blur(25px) saturate(120%);
-        
         box-shadow: 
             inset 0 1px 0 rgba(255,255,255,0.2),
             0 15px 30px rgba(0,0,0,0.3);
-            
         z-index: 9998; 
         pointer-events: none; 
-        transition: background 0.3s ease;
     }
 
     /* =========================================
@@ -189,10 +198,8 @@
        7. MOBILE OPTIMIZATION
        ========================================= */
     @media screen and (max-width: 900px) {
-        
-        body {
-            padding-top: 120px !important;
-        }
+        /* Spacer Adjustment for mobile */
+        .ishya-header-spacer { height: 120px; }
 
         .ishya-nav-backdrop {
             background: linear-gradient(
@@ -238,6 +245,13 @@
         }
     }
 </style>
+
+<!-- 
+    THE SPACER:
+    This invisible div pushes your store content down 
+    so it doesn't get hidden behind the header.
+-->
+<div class="ishya-header-spacer"></div>
 
 <div id="ishya-floating-nav-wrapper">
     <div class="ishya-nav-backdrop"></div>
