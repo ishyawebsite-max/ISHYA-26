@@ -1,21 +1,32 @@
 <!-- ISHYA AERO / LIQUID GLASS HEADER -->
 <style>
     /* =========================================
-       1. FORCED LAYOUT SPACING (The Fix)
+       1. FORCED LAYOUT SPACING
        ========================================= */
     html, body {
-        /* This forces the content down by 140px no matter what */
         padding-top: 140px !important; 
         margin: 0 !important;
         background-color: #05050a; 
         font-family: system-ui, -apple-system, sans-serif;
-        
-        /* Ensures background covers the new gap */
         box-sizing: border-box; 
     }
 
     /* =========================================
-       2. GLOBAL VARIABLES
+       2. CART RESCUE (THE FIX)
+       ========================================= */
+    /* 
+       This forces any element with "cart", "bag", or "shop" in its name 
+       to sit ABOVE the glass header so you can click it.
+    */
+    [class*="cart"], [id*="cart"], 
+    [class*="bag"],  [id*="bag"],
+    [class*="shop"], .header-right {
+        z-index: 10005 !important; /* Higher than the header (9999) */
+        position: fixed !important; /* Ensure it stays floating */
+    }
+
+    /* =========================================
+       3. GLOBAL VARIABLES
        ========================================= */
     #ishya-floating-nav-wrapper {
         --glass-border: rgba(255, 255, 255, 0.15);
@@ -25,7 +36,7 @@
     }
 
     /* =========================================
-       3. THE PERMANENT BACKDROP (Fixed Top)
+       4. THE PERMANENT BACKDROP (Fixed Top)
        ========================================= */
     .ishya-nav-backdrop {
         position: fixed;
@@ -34,7 +45,6 @@
         width: 100%;
         height: 90px;
         
-        /* DESKTOP: Subtle gradient */
         background: linear-gradient(
             180deg, 
             rgba(255, 255, 255, 0.04) 0%, 
@@ -54,7 +64,7 @@
     }
 
     /* =========================================
-       4. THE FLOATING PILL
+       5. THE FLOATING PILL
        ========================================= */
     .ishya-nav-container {
         position: fixed;
@@ -151,7 +161,7 @@
     }
 
     /* =========================================
-       5. EXPANDED STATE (Desktop)
+       6. EXPANDED STATE (Desktop)
        ========================================= */
     .ishya-nav-container.expanded {
         top: 10px; 
@@ -176,16 +186,14 @@
     .ishya-link:hover span { color: #fff; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
 
     /* =========================================
-       6. MOBILE OPTIMIZATION
+       7. MOBILE OPTIMIZATION
        ========================================= */
     @media screen and (max-width: 900px) {
         
-        /* FIX: Ensure padding is slightly less on mobile if needed, but still forced */
         body {
             padding-top: 120px !important;
         }
 
-        /* WHITER TINT ON BACKDROP (Mobile Only) */
         .ishya-nav-backdrop {
             background: linear-gradient(
                 180deg, 
@@ -197,7 +205,6 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* MENU CARD */
         .ishya-nav-container.expanded {
             width: 95%;
             height: 320px;
