@@ -9,86 +9,76 @@
         :root {
             --bg-dark: #050505;
             --accent-gold: #d4af37;
-            --rose-main: #be1e2d;
+            --rose-red: #be1e2d;
             --rose-light: #f26b6b;
-            --rose-dark: #8b1520;
+            --rose-pale: #f7a3a3;
             --leaf-green: #3d6a36;
             --sidebar-w: 280px;
             --card-w: 240px;
-            --photo-h: 280px;
+            --photo-h: 300px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: var(--bg-dark); color: #fff; font-family: 'Manrope', sans-serif; height: 100vh; display: flex; overflow: hidden; }
 
-        /* --- THE ORIGAMI BLOOM LOADER --- */
+        /* --- THE COMPLEX 10-PETAL ROSE LOADER --- */
         #loader { 
             position: fixed; inset: 0; background: #050505; z-index: 2000; 
             display: flex; justify-content: center; align-items: center; 
             transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1); 
         }
 
-        .rose-canvas { width: 350px; height: 450px; }
+        .rose-canvas { width: 300px; height: 400px; }
+        .stem { stroke: var(--leaf-green); stroke-width: 3; stroke-dasharray: 500; stroke-dashoffset: 500; animation: grow 1.5s ease-out forwards; }
         
-        /* Stem and Leaves */
-        .stem { stroke: var(--leaf-green); stroke-width: 4; stroke-dasharray: 500; stroke-dashoffset: 500; animation: grow 1.5s ease-out forwards; }
-        .leaf { fill: var(--leaf-green); transform: scale(0); transform-origin: center; animation: pop 0.6s 1s ease-out forwards; }
-        .leaf-r { transform-origin: 175px 280px; }
-        .leaf-l { transform-origin: 175px 320px; }
-
-        /* Petal Base Logic */
         .petal { 
-            fill: var(--rose-main); 
-            stroke: var(--rose-dark); 
-            stroke-width: 0.5; 
-            transform-origin: 175px 150px; 
-            transform: scale(0) rotate(-60deg); 
-            opacity: 0;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            fill: var(--rose-red); stroke: rgba(0,0,0,0.2); stroke-width: 0.5;
+            transform-origin: 150px 150px; transform: scale(0) rotate(-45deg); 
+            opacity: 0; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
         }
 
-        /* Staggered Spiral Bloom */
-        .p1 { animation: unfold 1.5s 1.5s forwards; fill: #8b1520; }
-        .p2 { animation: unfold 1.5s 1.7s forwards; fill: #a51a26; }
-        .p3 { animation: unfold 1.5s 1.9s forwards; fill: #be1e2d; }
-        .p4 { animation: unfold 1.5s 2.1s forwards; fill: #d4242f; }
-        .p5 { animation: unfold 1.5s 2.3s forwards; fill: #e72a34; }
-        .p6 { animation: unfold 1.5s 2.5s forwards; fill: #f2424b; }
-        .p7 { animation: unfold 1.5s 2.7s forwards; fill: #f7636a; }
-        .p8 { animation: unfold 1.5s 2.9s forwards; fill: #f98489; }
-        .p9 { animation: unfold 1.5s 3.1s forwards; fill: #fca4a7; }
-        .p10 { animation: unfold 1.5s 3.3s forwards; fill: #ffc4c6; }
+        /* 10-Petal Spiral Animation Logic */
+        .p1 { animation: bloom 1.5s 1.2s forwards; fill: #7b121c; }
+        .p2 { animation: bloom 1.5s 1.4s forwards; fill: #941623; }
+        .p3 { animation: bloom 1.5s 1.6s forwards; fill: #be1e2d; }
+        .p4 { animation: bloom 1.5s 1.8s forwards; fill: #d32027; }
+        .p5 { animation: bloom 1.5s 2.0s forwards; fill: #e7222e; }
+        .p6 { animation: bloom 1.5s 2.2s forwards; fill: #f12532; }
+        .p7 { animation: bloom 1.5s 2.4s forwards; fill: #f75d69; }
+        .p8 { animation: bloom 1.5s 2.6s forwards; fill: #f9848e; }
+        .p9 { animation: bloom 1.5s 2.8s forwards; fill: #fca4ad; }
+        .p10 { animation: bloom 1.5s 3.0s forwards; fill: #ffced3; }
 
         @keyframes grow { to { stroke-dashoffset: 0; } }
-        @keyframes pop { to { transform: scale(1); } }
-        @keyframes unfold {
-            0% { transform: scale(0) rotate(-60deg); opacity: 0; }
-            60% { transform: scale(1.1) rotate(10deg); opacity: 1; }
+        @keyframes bloom { 
+            0% { transform: scale(0) rotate(-45deg); opacity: 0; }
             100% { transform: scale(1) rotate(0deg); opacity: 1; }
         }
 
-        /* --- UI ELEMENTS (GRID & CARDS) --- */
-        .sidebar { width: var(--sidebar-w); background: #000; border-right: 1px solid #222; flex-shrink: 0; z-index: 100; display: flex; flex-direction: column; }
+        /* --- CONTENT UI --- */
+        .sidebar { width: var(--sidebar-w); background: #000; border-right: 1px solid #222; z-index: 100; display: flex; flex-direction: column; }
         .header { padding: 40px 30px; border-bottom: 1px solid #1a1a1a; text-align: right; }
         .header h1 { font-family: 'Bodoni Moda', serif; font-size: 2.5rem; line-height: 0.9; }
-        .keys-area { flex-grow: 1; overflow-y: auto; padding: 20px 0; display: flex; flex-direction: column; gap: 12px; }
         
+        .keys-area { flex-grow: 1; overflow-y: auto; padding: 20px 0; display: flex; flex-direction: column; gap: 10px; scrollbar-width: none; }
         .origami-tab { height: 50px; margin-right: 20px; margin-left: -10px; background: #eee; cursor: pointer; display: flex; align-items: center; justify-content: flex-end; padding-right: 25px; color: #111; font-family: 'Bodoni Moda', serif; font-weight: 700; clip-path: polygon(0 0, 100% 0, 95% 50%, 100% 100%, 0 100%, 5% 50%); transition: 0.3s; transform: rotateY(15deg); }
         .origami-tab.active { transform: rotateY(0) translateX(15px); background: var(--accent-gold); color: #000; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 5% 50%); }
 
-        .stage { flex-grow: 1; height: 100%; overflow-y: auto; padding: 50px 60px; z-index: 10; scroll-behavior: smooth; }
-        .title { font-family: 'Bodoni Moda', serif; font-size: 3.5rem; margin-bottom: 80px; }
+        .stage { flex-grow: 1; height: 100%; overflow-y: auto; padding: 50px 60px; scroll-behavior: smooth; }
+        .title { font-family: 'Bodoni Moda', serif; font-size: 4rem; margin-bottom: 60px; color: #fff; }
+        
         .team-grid { display: none; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); column-gap: 40px; row-gap: 120px; padding-bottom: 100px; }
         .team-grid.active { display: grid; }
 
-        .card-root { width: var(--card-w); height: var(--photo-h); position: relative; margin: 0 auto; }
-        .photo-block { width: 100%; height: 100%; background: #111; border-radius: 2px; overflow: hidden; transform-origin: top; animation: drop 0.8s forwards; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .photo-block img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); transition: 0.4s; }
+        /* --- CARDS --- */
+        .card-root { width: var(--card-w); height: var(--photo-h); position: relative; margin: 0 auto; perspective: 1000px; }
+        .photo-block { width: 100%; height: 100%; background: #111; overflow: hidden; border-radius: 4px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); transform-origin: top; animation: drop 0.8s forwards; }
+        .photo-block img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); transition: 0.5s; display: block; }
         .card-root:hover img { filter: grayscale(0); transform: scale(1.05); }
-        
-        .name-tag { width: 92%; padding: 15px; background: #fff; position: absolute; left: 4%; top: 100%; text-align: center; border-bottom: 4px solid var(--accent-gold); transform-origin: top; transform: rotateX(-90deg); animation: swing 1s 0.3s forwards; }
-        .name-tag h3 { font-family: 'Bodoni Moda', serif; color: #000; font-size: 1.1rem; }
-        .name-tag p { font-size: 0.7rem; color: #666; font-weight: 800; text-transform: uppercase; }
+
+        .name-tag { width: 92%; padding: 15px; background: #fff; position: absolute; left: 4%; top: 95%; text-align: center; border-bottom: 4px solid var(--accent-gold); transform-origin: top; transform: rotateX(-90deg); animation: swing 1s 0.4s forwards; z-index: 50; }
+        .name-tag h3 { font-family: 'Bodoni Moda', serif; color: #000; font-size: 1.1rem; line-height: 1.2; }
+        .name-tag p { font-size: 0.7rem; color: #666; font-weight: 800; text-transform: uppercase; margin-top: 5px; }
 
         @keyframes drop { from { transform: rotateX(-30deg); opacity: 0; } to { transform: rotateX(0deg); opacity: 1; } }
         @keyframes swing { to { transform: rotateX(0deg); } }
@@ -97,34 +87,29 @@
             body { flex-direction: column; }
             .sidebar { position: fixed; bottom: 0; width: 100%; height: 80px; flex-direction: row; border-top: 1px solid #222; }
             .header { display: none; }
-            .keys-area { flex-direction: row; padding: 0 15px; align-items: center; }
-            .stage { padding: 20px; padding-bottom: 150px; }
-            .title { font-size: 2.2rem; text-align: center; }
+            .keys-area { flex-direction: row; padding: 0 10px; align-items: center; }
+            .stage { padding: 20px; padding-bottom: 120px; }
+            .title { font-size: 2.5rem; text-align: center; }
             .team-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); row-gap: 100px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- BLOOMING ORIGAMI ROSE -->
     <div id="loader">
-        <svg class="rose-canvas" viewBox="0 0 350 450">
-            <!-- Stem and Leaves -->
-            <path class="stem" d="M175,450 Q175,300 175,150" fill="none" />
-            <path class="leaf leaf-r" d="M175,300 C210,300 240,270 240,240 C210,240 175,270 175,300" />
-            <path class="leaf leaf-l" d="M175,340 C140,340 110,310 110,280 C140,280 175,310 175,340" />
-
-            <!-- Faceted Petals (Inner to Outer layering) -->
-            <polygon class="petal p1" points="175,50 250,90 270,180 175,230 80,180 100,90" />
-            <polygon class="petal p2" points="175,65 230,100 245,170 175,210 105,170 120,100" />
-            <polygon class="petal p3" points="175,80 215,110 225,160 175,190 125,160 135,110" />
-            <polygon class="petal p4" points="175,95 200,120 205,150 175,175 145,150 150,120" />
-            <polygon class="petal p5" points="175,105 190,125 192,145 175,160 158,145 160,125" />
-            <polygon class="petal p6" points="175,115 185,130 186,140 175,150 164,140 165,130" />
-            <polygon class="petal p7" points="175,122 181,133 182,140 175,145 168,140 169,133" />
-            <polygon class="petal p8" points="175,128 179,135 175,140 171,135" />
-            <polygon class="petal p9" points="175,132 177,136 175,138 173,136" />
-            <polygon class="petal p10" points="175,135 176,137 174,137" />
+        <svg class="rose-canvas" viewBox="0 0 300 400">
+            <path class="stem" d="M150,400 Q150,250 150,150" fill="none" />
+            <!-- 10 Faceted Petals -->
+            <polygon class="petal p1" points="150,40 230,80 250,180 150,230 50,180 70,80" />
+            <polygon class="petal p2" points="150,55 210,90 225,170 150,210 75,170 90,90" />
+            <polygon class="petal p3" points="150,70 195,100 205,160 150,190 95,160 105,100" />
+            <polygon class="petal p4" points="150,85 180,110 185,150 150,175 115,150 120,110" />
+            <polygon class="petal p5" points="150,95 170,115 172,140 150,160 128,140 130,115" />
+            <polygon class="petal p6" points="150,105 165,120 166,135 150,145 134,135 135,120" />
+            <polygon class="petal p7" points="150,112 160,123 161,130 150,135 139,130 140,123" />
+            <polygon class="petal p8" points="150,118 156,125 150,130 144,125" />
+            <polygon class="petal p9" points="150,122 153,126 150,128 147,126" />
+            <polygon class="petal p10" points="150,125 151,127 149,127" />
         </svg>
     </div>
 
@@ -137,22 +122,22 @@
     </aside>
 
     <main class="stage">
-        <h2 class="title" id="team-title">The Ensemble</h2>
+        <h2 class="title" id="team-title">The Team</h2>
         <div id="team-container"></div>
     </main>
 
     <script>
-        // REPLACE WITH YOUR PUBLISHED GOOGLE SHEET ID
-        const SHEET_ID = '1ZFNrA7ICRNoHCGfJClN_q3lZKAcM810sjdRkiCOih_I'; 
+        // 1. YOUR SHEET ID
+        const SHEET_ID = '1ZFNrA7ICRNoHCGfJClN_q3lZKAcM810sjdRkiCOih_I/'; 
         const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&cb=${Date.now()}`;
 
         let teamData = {};
 
         function getDirectImg(url) {
             if (!url) return '';
-            // Stronger regex to capture Google Drive IDs from any link format
-            const match = url.match(/[-\w]{25,}/);
-            return match ? `https://drive.google.com/uc?export=view&id=${match[0]}` : url;
+            const match = url.match(/[-\w]{25,}/); // Extracts File ID
+            // Using lh3 server - very reliable for embedding
+            return match ? `https://lh3.googleusercontent.com/d/${match[0]}` : url;
         }
 
         async function fetchTeam() {
@@ -172,8 +157,7 @@
                 initUI();
             } catch (e) {
                 console.error("Fetch Error:", e);
-                // Reveal page even if fetch fails so user isn't stuck
-                setTimeout(hideLoader, 3000);
+                setTimeout(hideLoader, 2000);
             }
         }
 
@@ -199,17 +183,19 @@
                     renderCards(team, grid);
                 }
             });
-            setTimeout(hideLoader, 6000); // Wait for bloom
+            setTimeout(hideLoader, 5500);
         }
 
         function renderCards(teamId, container) {
             const members = teamData[teamId];
             let html = '';
             members.forEach((m, i) => {
+                // If the image fails, it shows the "broken" icon, but 
+                // we check the console for 403 (Permission Denied) errors.
                 html += `
                 <div class="card-root" style="animation-delay: ${i*0.1}s">
                     <div class="photo-block">
-                        <img src="${m.img}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x500?text=Check+Permissions'">
+                        <img src="${m.img}" loading="lazy" alt="Missing Photo" onerror="console.warn('Failed to load: ${m.img}. Check Drive Permissions.')">
                     </div>
                     <div class="name-tag">
                         <h3>${m.name}</h3>
@@ -222,8 +208,10 @@
 
         function hideLoader() {
             const l = document.getElementById('loader');
-            l.style.opacity = '0';
-            setTimeout(() => l.style.display = 'none', 1000);
+            if(l) {
+                l.style.opacity = '0';
+                setTimeout(() => l.style.display = 'none', 1000);
+            }
         }
 
         function loadTeam(teamName, tabElement) {
