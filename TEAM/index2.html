@@ -9,77 +9,123 @@
         :root {
             --bg-dark: #050505;
             --accent-gold: #d4af37;
-            --paper-white: #fdfdfd;
-            --rose-outer: #e34d4d;
-            --rose-mid: #f26b6b;
-            --rose-inner: #f7a3a3;
-            --leaf-green: #4a7c44;
+            --rose-main: #be1e2d;
+            --rose-light: #f26b6b;
+            --rose-dark: #8b1520;
+            --leaf-green: #3d6a36;
             --sidebar-w: 280px;
             --card-w: 240px;
             --photo-h: 280px;
-            --label-h: 90px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: var(--bg-dark); color: #fff; font-family: 'Manrope', sans-serif; height: 100vh; display: flex; overflow: hidden; }
 
-        /* --- LOADER --- */
-        #loader { position: fixed; inset: 0; background: #050505; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: opacity 1s; }
-        .rose-container { width: 200px; height: 300px; }
-        .stem-path { stroke: var(--leaf-green); stroke-width: 4; stroke-dasharray: 400; stroke-dashoffset: 400; animation: growStem 1.5s ease-out forwards; }
-        .petal-group { transform-origin: 100px 100px; transform: scale(0); opacity: 0; animation: bloomSpiral 1.5s 1.5s forwards; }
-        @keyframes growStem { to { stroke-dashoffset: 0; } }
-        @keyframes bloomSpiral { to { transform: scale(1); opacity: 1; } }
+        /* --- THE ORIGAMI BLOOM LOADER --- */
+        #loader { 
+            position: fixed; inset: 0; background: #050505; z-index: 2000; 
+            display: flex; justify-content: center; align-items: center; 
+            transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
 
-        /* --- SIDEBAR --- */
-        .sidebar { width: var(--sidebar-w); background: #000; display: flex; flex-direction: column; z-index: 100; border-right: 1px solid #222; flex-shrink: 0; }
-        .header { padding: 40px 30px; text-align: right; }
+        .rose-canvas { width: 350px; height: 450px; }
+        
+        /* Stem and Leaves */
+        .stem { stroke: var(--leaf-green); stroke-width: 4; stroke-dasharray: 500; stroke-dashoffset: 500; animation: grow 1.5s ease-out forwards; }
+        .leaf { fill: var(--leaf-green); transform: scale(0); transform-origin: center; animation: pop 0.6s 1s ease-out forwards; }
+        .leaf-r { transform-origin: 175px 280px; }
+        .leaf-l { transform-origin: 175px 320px; }
+
+        /* Petal Base Logic */
+        .petal { 
+            fill: var(--rose-main); 
+            stroke: var(--rose-dark); 
+            stroke-width: 0.5; 
+            transform-origin: 175px 150px; 
+            transform: scale(0) rotate(-60deg); 
+            opacity: 0;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        /* Staggered Spiral Bloom */
+        .p1 { animation: unfold 1.5s 1.5s forwards; fill: #8b1520; }
+        .p2 { animation: unfold 1.5s 1.7s forwards; fill: #a51a26; }
+        .p3 { animation: unfold 1.5s 1.9s forwards; fill: #be1e2d; }
+        .p4 { animation: unfold 1.5s 2.1s forwards; fill: #d4242f; }
+        .p5 { animation: unfold 1.5s 2.3s forwards; fill: #e72a34; }
+        .p6 { animation: unfold 1.5s 2.5s forwards; fill: #f2424b; }
+        .p7 { animation: unfold 1.5s 2.7s forwards; fill: #f7636a; }
+        .p8 { animation: unfold 1.5s 2.9s forwards; fill: #f98489; }
+        .p9 { animation: unfold 1.5s 3.1s forwards; fill: #fca4a7; }
+        .p10 { animation: unfold 1.5s 3.3s forwards; fill: #ffc4c6; }
+
+        @keyframes grow { to { stroke-dashoffset: 0; } }
+        @keyframes pop { to { transform: scale(1); } }
+        @keyframes unfold {
+            0% { transform: scale(0) rotate(-60deg); opacity: 0; }
+            60% { transform: scale(1.1) rotate(10deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        /* --- UI ELEMENTS (GRID & CARDS) --- */
+        .sidebar { width: var(--sidebar-w); background: #000; border-right: 1px solid #222; flex-shrink: 0; z-index: 100; display: flex; flex-direction: column; }
+        .header { padding: 40px 30px; border-bottom: 1px solid #1a1a1a; text-align: right; }
         .header h1 { font-family: 'Bodoni Moda', serif; font-size: 2.5rem; line-height: 0.9; }
         .keys-area { flex-grow: 1; overflow-y: auto; padding: 20px 0; display: flex; flex-direction: column; gap: 12px; }
-        .origami-tab { height: 50px; margin-right: 20px; margin-left: -10px; background: #eee; cursor: pointer; display: flex; align-items: center; justify-content: flex-end; padding-right: 25px; color: #111; font-family: 'Bodoni Moda', serif; font-weight: 700; clip-path: polygon(0 0, 100% 0, 95% 50%, 100% 100%, 0 100%, 5% 50%); transition: 0.3s; }
-        .origami-tab.active { transform: translateX(15px); background: var(--accent-gold); color: #000; }
+        
+        .origami-tab { height: 50px; margin-right: 20px; margin-left: -10px; background: #eee; cursor: pointer; display: flex; align-items: center; justify-content: flex-end; padding-right: 25px; color: #111; font-family: 'Bodoni Moda', serif; font-weight: 700; clip-path: polygon(0 0, 100% 0, 95% 50%, 100% 100%, 0 100%, 5% 50%); transition: 0.3s; transform: rotateY(15deg); }
+        .origami-tab.active { transform: rotateY(0) translateX(15px); background: var(--accent-gold); color: #000; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 5% 50%); }
 
-        /* --- STAGE --- */
-        .stage { flex-grow: 1; height: 100%; overflow-y: auto; padding: 50px 60px; z-index: 10; }
-        .title { font-family: 'Bodoni Moda', serif; font-size: 3.5rem; margin-bottom: 60px; }
-        .team-grid { display: none; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); column-gap: 40px; row-gap: 110px; padding-bottom: 100px; }
+        .stage { flex-grow: 1; height: 100%; overflow-y: auto; padding: 50px 60px; z-index: 10; scroll-behavior: smooth; }
+        .title { font-family: 'Bodoni Moda', serif; font-size: 3.5rem; margin-bottom: 80px; }
+        .team-grid { display: none; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); column-gap: 40px; row-gap: 120px; padding-bottom: 100px; }
         .team-grid.active { display: grid; }
 
-        /* --- CARDS --- */
         .card-root { width: var(--card-w); height: var(--photo-h); position: relative; margin: 0 auto; }
-        .photo-block { width: 100%; height: 100%; background: #111; position: relative; z-index: 10; overflow: hidden; transform-origin: top center; animation: dropPhoto 0.8s forwards; }
-        .photo-block img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.4s; }
-        .card-root:hover img { filter: grayscale(0%); transform: scale(1.05); }
-        .name-tag { width: 90%; height: var(--label-h); background: #fff; position: absolute; left: 5%; top: 100%; z-index: 5; padding: 15px; text-align: center; border-bottom: 4px solid var(--accent-gold); animation: swingDown 1s 0.3s forwards; transform-origin: top; transform: rotateX(-90deg); }
+        .photo-block { width: 100%; height: 100%; background: #111; border-radius: 2px; overflow: hidden; transform-origin: top; animation: drop 0.8s forwards; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .photo-block img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); transition: 0.4s; }
+        .card-root:hover img { filter: grayscale(0); transform: scale(1.05); }
+        
+        .name-tag { width: 92%; padding: 15px; background: #fff; position: absolute; left: 4%; top: 100%; text-align: center; border-bottom: 4px solid var(--accent-gold); transform-origin: top; transform: rotateX(-90deg); animation: swing 1s 0.3s forwards; }
         .name-tag h3 { font-family: 'Bodoni Moda', serif; color: #000; font-size: 1.1rem; }
-        .name-tag p { font-size: 0.7rem; color: #666; text-transform: uppercase; font-weight: 800; }
+        .name-tag p { font-size: 0.7rem; color: #666; font-weight: 800; text-transform: uppercase; }
 
-        @keyframes dropPhoto { from { transform: rotateX(-40deg); opacity: 0; } to { transform: rotateX(0deg); opacity: 1; } }
-        @keyframes swingDown { to { transform: rotateX(0deg); } }
+        @keyframes drop { from { transform: rotateX(-30deg); opacity: 0; } to { transform: rotateX(0deg); opacity: 1; } }
+        @keyframes swing { to { transform: rotateX(0deg); } }
 
         @media (max-width: 768px) {
             body { flex-direction: column; }
-            .sidebar { position: fixed; bottom: 0; width: 100%; height: 80px; flex-direction: row; }
+            .sidebar { position: fixed; bottom: 0; width: 100%; height: 80px; flex-direction: row; border-top: 1px solid #222; }
             .header { display: none; }
-            .keys-area { flex-direction: row; padding: 0 15px; }
+            .keys-area { flex-direction: row; padding: 0 15px; align-items: center; }
             .stage { padding: 20px; padding-bottom: 150px; }
             .title { font-size: 2.2rem; text-align: center; }
-            .team-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); row-gap: 90px; }
+            .team-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); row-gap: 100px; }
         }
     </style>
 </head>
 <body>
 
+    <!-- BLOOMING ORIGAMI ROSE -->
     <div id="loader">
-        <div class="rose-container">
-            <svg viewBox="0 0 200 300">
-                <path class="stem-path" d="M100,300 L100,120" fill="none" stroke="#4a7c44" stroke-width="4" />
-                <g class="petal-group">
-                    <polygon fill="#be1e2d" points="100,20 160,50 180,110 100,140 20,110 40,50" />
-                    <polygon fill="#f26b6b" points="100,50 130,70 120,100 100,110 80,100 70,70" />
-                </g>
-            </svg>
-        </div>
+        <svg class="rose-canvas" viewBox="0 0 350 450">
+            <!-- Stem and Leaves -->
+            <path class="stem" d="M175,450 Q175,300 175,150" fill="none" />
+            <path class="leaf leaf-r" d="M175,300 C210,300 240,270 240,240 C210,240 175,270 175,300" />
+            <path class="leaf leaf-l" d="M175,340 C140,340 110,310 110,280 C140,280 175,310 175,340" />
+
+            <!-- Faceted Petals (Inner to Outer layering) -->
+            <polygon class="petal p1" points="175,50 250,90 270,180 175,230 80,180 100,90" />
+            <polygon class="petal p2" points="175,65 230,100 245,170 175,210 105,170 120,100" />
+            <polygon class="petal p3" points="175,80 215,110 225,160 175,190 125,160 135,110" />
+            <polygon class="petal p4" points="175,95 200,120 205,150 175,175 145,150 150,120" />
+            <polygon class="petal p5" points="175,105 190,125 192,145 175,160 158,145 160,125" />
+            <polygon class="petal p6" points="175,115 185,130 186,140 175,150 164,140 165,130" />
+            <polygon class="petal p7" points="175,122 181,133 182,140 175,145 168,140 169,133" />
+            <polygon class="petal p8" points="175,128 179,135 175,140 171,135" />
+            <polygon class="petal p9" points="175,132 177,136 175,138 173,136" />
+            <polygon class="petal p10" points="175,135 176,137 174,137" />
+        </svg>
     </div>
 
     <aside class="sidebar">
@@ -96,46 +142,38 @@
     </main>
 
     <script>
-        // 1. CHANGE THIS ID
+        // REPLACE WITH YOUR PUBLISHED GOOGLE SHEET ID
         const SHEET_ID = '1ZFNrA7ICRNoHCGfJClN_q3lZKAcM810sjdRkiCOih_I'; 
-        
-        // Added cache buster (?cb=...) to ensure updates show immediately
         const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&cb=${Date.now()}`;
 
         let teamData = {};
 
         function getDirectImg(url) {
             if (!url) return '';
-            const fileId = url.match(/[-\w]{25,}/);
-            return fileId ? `https://drive.google.com/uc?export=view&id=${fileId[0]}` : url;
+            // Stronger regex to capture Google Drive IDs from any link format
+            const match = url.match(/[-\w]{25,}/);
+            return match ? `https://drive.google.com/uc?export=view&id=${match[0]}` : url;
         }
 
         async function fetchTeam() {
             try {
                 const response = await fetch(SHEET_URL);
                 const text = await response.text();
-                // Strip Google's JSON wrapper
                 const json = JSON.parse(text.substring(47).slice(0, -2));
                 const rows = json.table.rows;
                 
-                if (!rows || rows.length === 0) {
-                    document.getElementById('loader').innerHTML = "<p>No data found in Sheet.</p>";
-                    return;
-                }
-
                 rows.forEach(row => {
-                    const teamName = row.c[1] ? row.c[1].v : "General";
-                    const personName = row.c[2] ? row.c[2].v : "Anonymous";
-                    const photoUrl = row.c[3] ? getDirectImg(row.c[3].v) : "";
-
-                    if (!teamData[teamName]) teamData[teamName] = [];
-                    teamData[teamName].push({ name: personName, role: teamName, img: photoUrl });
+                    const team = row.c[1] ? row.c[1].v : "General";
+                    const name = row.c[2] ? row.c[2].v : "Member";
+                    const img = row.c[3] ? getDirectImg(row.c[3].v) : "";
+                    if (!teamData[team]) teamData[team] = [];
+                    teamData[team].push({ name, role: team, img });
                 });
-
                 initUI();
             } catch (e) {
-                console.error("Fetch error:", e);
-                document.getElementById('loader').innerHTML = "<p>Error loading sheet. Check ID and Publishing.</p>";
+                console.error("Fetch Error:", e);
+                // Reveal page even if fetch fails so user isn't stuck
+                setTimeout(hideLoader, 3000);
             }
         }
 
@@ -161,11 +199,7 @@
                     renderCards(team, grid);
                 }
             });
-
-            setTimeout(() => {
-                document.getElementById('loader').style.opacity = '0';
-                setTimeout(() => document.getElementById('loader').style.display = 'none', 1000);
-            }, 3000);
+            setTimeout(hideLoader, 6000); // Wait for bloom
         }
 
         function renderCards(teamId, container) {
@@ -174,16 +208,22 @@
             members.forEach((m, i) => {
                 html += `
                 <div class="card-root" style="animation-delay: ${i*0.1}s">
-                    <div class="photo-block" style="animation-delay: ${i*0.1}s">
-                        <img src="${m.img}" onerror="this.src='https://via.placeholder.com/400x500?text=Photo+Error'">
+                    <div class="photo-block">
+                        <img src="${m.img}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x500?text=Check+Permissions'">
                     </div>
-                    <div class="name-tag" style="animation-delay: ${i*0.1+0.3}s">
+                    <div class="name-tag">
                         <h3>${m.name}</h3>
                         <p>${m.role}</p>
                     </div>
                 </div>`;
             });
             container.innerHTML = html;
+        }
+
+        function hideLoader() {
+            const l = document.getElementById('loader');
+            l.style.opacity = '0';
+            setTimeout(() => l.style.display = 'none', 1000);
         }
 
         function loadTeam(teamName, tabElement) {
