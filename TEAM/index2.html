@@ -7,160 +7,76 @@
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;0,800;1,500&family=Manrope:wght@300;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #09090b;
+            --bg-dark: #050505;
             --accent-gold: #d4af37;
             --paper-white: #fdfdfd;
-            
-            /* Rose Palette from Image */
             --rose-outer: #e34d4d;
             --rose-mid: #f26b6b;
             --rose-inner: #f7a3a3;
-            --rose-dark: #8b1520;
             --leaf-green: #4a7c44;
-            --leaf-light: #6a9c64;
-
             --sidebar-w: 280px;
             --card-w: 240px;
             --photo-h: 280px;
             --label-h: 90px;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background: #050505; color: #fff; font-family: 'Manrope', sans-serif; height: 100vh; display: flex; overflow: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg-dark); color: #fff; font-family: 'Manrope', sans-serif; height: 100vh; display: flex; overflow: hidden; }
 
-        /* --- COMPLEX ORIGAMI ROSE LOADER --- */
-        #loader {
-            position: fixed;
-            inset: 0;
-            background: var(--bg-dark);
-            z-index: 2000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 1s ease-in-out;
-        }
-
-        .rose-container { width: 300px; height: 400px; position: relative; }
-        .rose-svg { width: 100%; height: 100%; }
-
-        /* Animation Classes */
-        .stem-path {
-            stroke: var(--leaf-green);
-            stroke-width: 4;
-            stroke-dasharray: 400;
-            stroke-dashoffset: 400;
-            animation: growStem 1.5s ease-out forwards;
-        }
-
-        .sepal { fill: var(--leaf-green); transform: scale(0); transform-origin: 100px 140px; animation: pop 0.5s 1.5s ease-out forwards; }
-        
-        .leaf-poly {
-            fill: var(--leaf-green);
-            transform: scale(0);
-            animation: pop 0.6s 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-        .leaf-l { transform-origin: 100px 250px; }
-        .leaf-r { transform-origin: 100px 220px; }
-        .leaf-shade { fill: var(--leaf-light); opacity: 0.4; }
-
-        /* Petal Layers */
-        .petal-group { transform-origin: 100px 100px; transform: scale(0) rotate(-45deg); opacity: 0; }
-        
-        /* Staggered Bloom Logic */
-        .layer-outer { animation: bloomSpiral 1.5s 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-        .layer-mid { animation: bloomSpiral 1.5s 2.1s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-        .layer-inner { animation: bloomSpiral 1.5s 2.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-        .layer-core { animation: bloomSpiral 1.5s 2.7s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-
+        /* --- LOADER --- */
+        #loader { position: fixed; inset: 0; background: #050505; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: opacity 1s; }
+        .rose-container { width: 200px; height: 300px; }
+        .stem-path { stroke: var(--leaf-green); stroke-width: 4; stroke-dasharray: 400; stroke-dashoffset: 400; animation: growStem 1.5s ease-out forwards; }
+        .petal-group { transform-origin: 100px 100px; transform: scale(0); opacity: 0; animation: bloomSpiral 1.5s 1.5s forwards; }
         @keyframes growStem { to { stroke-dashoffset: 0; } }
-        @keyframes pop { to { transform: scale(1); } }
-        @keyframes bloomSpiral {
-            0% { transform: scale(0) rotate(-60deg); opacity: 0; }
-            100% { transform: scale(1) rotate(0deg); opacity: 1; }
-        }
+        @keyframes bloomSpiral { to { transform: scale(1); opacity: 1; } }
 
-        /* --- BASE UI STYLES --- */
-        .sidebar { width: var(--sidebar-w); background: #050505; display: flex; flex-direction: column; z-index: 100; border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
-        .header { padding: 40px 30px; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        /* --- SIDEBAR --- */
+        .sidebar { width: var(--sidebar-w); background: #000; display: flex; flex-direction: column; z-index: 100; border-right: 1px solid #222; flex-shrink: 0; }
+        .header { padding: 40px 30px; text-align: right; }
         .header h1 { font-family: 'Bodoni Moda', serif; font-size: 2.5rem; line-height: 0.9; }
-        .keys-area { flex-grow: 1; overflow-y: auto; padding: 20px 0; display: flex; flex-direction: column; gap: 12px; scrollbar-width: none; }
-        .keys-area::-webkit-scrollbar { display: none; }
+        .keys-area { flex-grow: 1; overflow-y: auto; padding: 20px 0; display: flex; flex-direction: column; gap: 12px; }
+        .origami-tab { height: 50px; margin-right: 20px; margin-left: -10px; background: #eee; cursor: pointer; display: flex; align-items: center; justify-content: flex-end; padding-right: 25px; color: #111; font-family: 'Bodoni Moda', serif; font-weight: 700; clip-path: polygon(0 0, 100% 0, 95% 50%, 100% 100%, 0 100%, 5% 50%); transition: 0.3s; }
+        .origami-tab.active { transform: translateX(15px); background: var(--accent-gold); color: #000; }
 
-        .origami-tab { height: 50px; margin-right: 20px; margin-left: -10px; background: linear-gradient(90deg, #dcdcdc 0%, #ffffff 100%); cursor: pointer; display: flex; align-items: center; justify-content: flex-end; padding-right: 25px; color: #111; font-family: 'Bodoni Moda', serif; font-weight: 700; font-size: 0.85rem; clip-path: polygon(0 0, 100% 0, 95% 50%, 100% 100%, 0 100%, 5% 50%); transform-origin: left center; transform: rotateY(15deg); transition: 0.3s ease; }
-        .origami-tab.active { transform: rotateY(0deg) translateX(15px); background: var(--accent-gold); color: #000; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 5% 50%); }
-
-        .stage { flex-grow: 1; height: 100%; overflow-y: auto; padding: 50px 60px; z-index: 10; scroll-behavior: smooth; }
-        .title { font-family: 'Bodoni Moda', serif; font-size: 3.5rem; margin-bottom: 60px; background: linear-gradient(to right, #fff, #999); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        /* --- STAGE --- */
+        .stage { flex-grow: 1; height: 100%; overflow-y: auto; padding: 50px 60px; z-index: 10; }
+        .title { font-family: 'Bodoni Moda', serif; font-size: 3.5rem; margin-bottom: 60px; }
         .team-grid { display: none; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); column-gap: 40px; row-gap: 110px; padding-bottom: 100px; }
         .team-grid.active { display: grid; }
 
-        .card-root { width: var(--card-w); height: var(--photo-h); position: relative; perspective: 1000px; margin: 0 auto; }
-        .photo-block { width: 100%; height: 100%; background: #111; position: relative; z-index: 10; box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden; transform-origin: top center; animation: dropPhoto 0.8s forwards; }
-        .photo-block img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.4s ease; }
+        /* --- CARDS --- */
+        .card-root { width: var(--card-w); height: var(--photo-h); position: relative; margin: 0 auto; }
+        .photo-block { width: 100%; height: 100%; background: #111; position: relative; z-index: 10; overflow: hidden; transform-origin: top center; animation: dropPhoto 0.8s forwards; }
+        .photo-block img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.4s; }
         .card-root:hover img { filter: grayscale(0%); transform: scale(1.05); }
-        .name-tag { width: 90%; height: var(--label-h); background: var(--paper-white); position: absolute; left: 5%; top: 100%; transform-origin: top center; z-index: 5; padding: 15px; text-align: center; border-bottom: 4px solid var(--accent-gold); box-shadow: 0 10px 25px rgba(0,0,0,0.4); transform: rotateX(-110deg); animation: swingDown 1s 0.3s forwards; }
-        .name-tag h3 { font-family: 'Bodoni Moda', serif; color: #111; font-size: 1.05rem; }
-        .name-tag p { font-size: 0.65rem; color: #666; font-weight: 700; text-transform: uppercase; }
+        .name-tag { width: 90%; height: var(--label-h); background: #fff; position: absolute; left: 5%; top: 100%; z-index: 5; padding: 15px; text-align: center; border-bottom: 4px solid var(--accent-gold); animation: swingDown 1s 0.3s forwards; transform-origin: top; transform: rotateX(-90deg); }
+        .name-tag h3 { font-family: 'Bodoni Moda', serif; color: #000; font-size: 1.1rem; }
+        .name-tag p { font-size: 0.7rem; color: #666; text-transform: uppercase; font-weight: 800; }
 
         @keyframes dropPhoto { from { transform: rotateX(-40deg); opacity: 0; } to { transform: rotateX(0deg); opacity: 1; } }
-        @keyframes swingDown { from { transform: rotateX(-110deg); } to { transform: rotateX(0deg); } }
+        @keyframes swingDown { to { transform: rotateX(0deg); } }
 
         @media (max-width: 768px) {
             body { flex-direction: column; }
-            .sidebar { position: fixed; bottom: 0; width: 100%; height: 80px; flex-direction: row; border-right: none; border-top: 1px solid #222; }
+            .sidebar { position: fixed; bottom: 0; width: 100%; height: 80px; flex-direction: row; }
             .header { display: none; }
-            .keys-area { flex-direction: row; padding: 0 15px; align-items: center; }
-            .stage { padding: 20px; padding-top: 40px; padding-bottom: 150px; }
+            .keys-area { flex-direction: row; padding: 0 15px; }
+            .stage { padding: 20px; padding-bottom: 150px; }
+            .title { font-size: 2.2rem; text-align: center; }
             .team-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); row-gap: 90px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- BLOOMING COMPLEX ROSE LOADER -->
     <div id="loader">
         <div class="rose-container">
-            <svg class="rose-svg" viewBox="0 0 200 400">
-                <!-- Stem -->
-                <path class="stem-path" d="M100,400 L100,120" fill="none" />
-                
-                <!-- Leaves (Geometric Facets) -->
-                <g class="leaf-poly leaf-l">
-                    <path d="M100,250 L60,230 L40,260 L80,280 Z" />
-                    <path class="leaf-shade" d="M100,250 L80,280 L60,230 Z" />
-                </g>
-                <g class="leaf-poly leaf-r">
-                    <path d="M100,200 L140,180 L160,220 L120,240 Z" />
-                    <path class="leaf-shade" d="M100,200 L120,240 L140,180 Z" />
-                </g>
-
-                <!-- Sepals -->
-                <polygon class="sepal" points="100,130 120,150 100,140 80,150" />
-
-                <!-- ROSE HEAD (FACETED LAYERS) -->
-                <!-- Layer 1: Outer Petals -->
-                <g class="petal-group layer-outer">
+            <svg viewBox="0 0 200 300">
+                <path class="stem-path" d="M100,300 L100,120" fill="none" stroke="#4a7c44" stroke-width="4" />
+                <g class="petal-group">
                     <polygon fill="#be1e2d" points="100,20 160,50 180,110 100,140 20,110 40,50" />
-                    <polygon fill="#8b1520" opacity="0.3" points="100,140 180,110 160,50" />
-                    <polygon fill="#8b1520" opacity="0.3" points="100,140 20,110 40,50" />
-                </g>
-
-                <!-- Layer 2: Mid Petals -->
-                <g class="petal-group layer-mid">
-                    <polygon fill="#e34d4d" points="100,40 150,65 140,120 100,130 60,120 50,65" />
-                    <polygon fill="#8b1520" opacity="0.2" points="100,130 150,65 140,120" />
-                </g>
-
-                <!-- Layer 3: Inner Petals -->
-                <g class="petal-group layer-inner">
-                    <polygon fill="#f26b6b" points="100,60 130,80 120,110 100,115 80,110 70,80" />
-                    <polygon fill="#fff" opacity="0.2" points="100,60 130,80 100,115" />
-                </g>
-
-                <!-- Layer 4: Core Swirl -->
-                <g class="petal-group layer-core">
-                    <polygon fill="#f7a3a3" points="100,80 115,90 110,105 100,110 90,105 85,90" />
-                    <path fill="#be1e2d" opacity="0.4" d="M100,80 L115,90 L100,110 Z" />
+                    <polygon fill="#f26b6b" points="100,50 130,70 120,100 100,110 80,100 70,70" />
                 </g>
             </svg>
         </div>
@@ -169,7 +85,7 @@
     <aside class="sidebar">
         <div class="header">
             <h1>Ishya</h1>
-            <span>The Team '25</span>
+            <p style="font-size: 0.6rem; color: #d4af37; letter-spacing: 2px;">THE TEAM '25</p>
         </div>
         <div class="keys-area" id="piano-keys"></div>
     </aside>
@@ -180,9 +96,11 @@
     </main>
 
     <script>
-        // INSERT YOUR GOOGLE SHEET ID HERE
+        // 1. CHANGE THIS ID
         const SHEET_ID = '1ZFNrA7ICRNoHCGfJClN_q3lZKAcM810sjdRkiCOih_I'; 
-        const SHEET_URL = `https://docs.google.com/spreadsheets/d/1ZFNrA7ICRNoHCGfJClN_q3lZKAcM810sjdRkiCOih_I/gviz/tq?tqx=out:json`;
+        
+        // Added cache buster (?cb=...) to ensure updates show immediately
+        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&cb=${Date.now()}`;
 
         let teamData = {};
 
@@ -196,21 +114,28 @@
             try {
                 const response = await fetch(SHEET_URL);
                 const text = await response.text();
-                const json = JSON.parse(text.substr(47).slice(0, -2));
+                // Strip Google's JSON wrapper
+                const json = JSON.parse(text.substring(47).slice(0, -2));
                 const rows = json.table.rows;
                 
+                if (!rows || rows.length === 0) {
+                    document.getElementById('loader').innerHTML = "<p>No data found in Sheet.</p>";
+                    return;
+                }
+
                 rows.forEach(row => {
-                    const teamName = row.c[1]?.v || "Ensemble";
-                    const name = row.c[2]?.v || "Member";
-                    const photoUrl = getDirectImg(row.c[3]?.v);
+                    const teamName = row.c[1] ? row.c[1].v : "General";
+                    const personName = row.c[2] ? row.c[2].v : "Anonymous";
+                    const photoUrl = row.c[3] ? getDirectImg(row.c[3].v) : "";
+
                     if (!teamData[teamName]) teamData[teamName] = [];
-                    teamData[teamName].push({ name, role: teamName, img: photoUrl });
+                    teamData[teamName].push({ name: personName, role: teamName, img: photoUrl });
                 });
+
                 initUI();
-            } catch (e) { 
-                console.error(e); 
-                // Fallback to hide loader if error
-                setTimeout(() => document.getElementById('loader').style.opacity = '0', 3000);
+            } catch (e) {
+                console.error("Fetch error:", e);
+                document.getElementById('loader').innerHTML = "<p>Error loading sheet. Check ID and Publishing.</p>";
             }
         }
 
@@ -220,11 +145,10 @@
             const teams = Object.keys(teamData);
 
             teams.forEach((team, index) => {
-                const freq = 261.63 + (index * 30);
                 const tab = document.createElement('div');
                 tab.className = `origami-tab ${index === 0 ? 'active' : ''}`;
                 tab.innerText = team;
-                tab.onclick = () => loadTeam(team, freq, tab);
+                tab.onclick = () => loadTeam(team, tab);
                 keysArea.appendChild(tab);
 
                 const grid = document.createElement('div');
@@ -238,12 +162,10 @@
                 }
             });
 
-            // LOADING TRANSITION TIMING
             setTimeout(() => {
-                const loader = document.getElementById('loader');
-                loader.style.opacity = '0';
-                setTimeout(() => loader.style.display = 'none', 1000);
-            }, 5000); // 5 seconds for full bloom experience
+                document.getElementById('loader').style.opacity = '0';
+                setTimeout(() => document.getElementById('loader').style.display = 'none', 1000);
+            }, 3000);
         }
 
         function renderCards(teamId, container) {
@@ -253,7 +175,7 @@
                 html += `
                 <div class="card-root" style="animation-delay: ${i*0.1}s">
                     <div class="photo-block" style="animation-delay: ${i*0.1}s">
-                        <img src="${m.img}" onerror="this.src='https://via.placeholder.com/400x500?text=Pending'">
+                        <img src="${m.img}" onerror="this.src='https://via.placeholder.com/400x500?text=Photo+Error'">
                     </div>
                     <div class="name-tag" style="animation-delay: ${i*0.1+0.3}s">
                         <h3>${m.name}</h3>
@@ -264,26 +186,9 @@
             container.innerHTML = html;
         }
 
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playNote(freq) {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            const t = audioCtx.currentTime;
-            gain.gain.setValueAtTime(0, t);
-            gain.gain.linearRampToValueAtTime(0.3, t + 0.05);
-            gain.gain.exponentialRampToValueAtTime(0.001, t + 1.0);
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(); osc.stop(t + 1.0);
-        }
-
-        function loadTeam(teamName, freq, tabElement) {
-            playNote(freq);
+        function loadTeam(teamName, tabElement) {
             document.querySelectorAll('.origami-tab').forEach(k => k.classList.remove('active'));
             tabElement.classList.add('active');
-            tabElement.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
             document.getElementById('team-title').innerText = teamName;
             document.querySelectorAll('.team-grid').forEach(g => { g.classList.remove('active'); g.innerHTML = ''; });
             const activeGrid = document.getElementById(`grid-${teamName.replace(/\s/g, '')}`);
