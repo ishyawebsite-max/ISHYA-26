@@ -8,264 +8,203 @@
     <style>
         :root {
             --bg-dark: #09090b;
+            --rose-red: #b3001b;
+            --rose-light: #ff2d4b;
+            --stem-green: #2d5a27;
             --accent-gold: #d4af37;
             --paper-white: #fdfdfd;
-            
-            --sidebar-w: 280px;
-            --card-w: 240px;
-            --photo-h: 280px;  /* Height of just the image */
-            --label-h: 90px;   /* Height of the name tag */
-            
-            --mobile-nav-h: 80px;
-            --mobile-header-h: 60px;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg-dark); color: #fff; font-family: 'Manrope', sans-serif; height: 100vh; overflow: hidden; }
 
-        body {
-            background: radial-gradient(circle at 70% 30%, #1a1a20 0%, #050505 80%);
-            color: #fff;
-            font-family: 'Manrope', sans-serif;
-            height: 100vh;
-            display: flex;
-            overflow: hidden;
-            perspective: 2000px;
+        /* --- LOADING SCREEN --- */
+        #loader {
+            position: fixed; inset: 0;
+            background: var(--bg-dark);
+            z-index: 1000;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.8s ease;
         }
 
-        /* --- SIDEBAR / NAV --- */
-        .sidebar {
-            width: var(--sidebar-w);
-            background: #050505;
-            display: flex;
-            flex-direction: column;
-            z-index: 100;
-            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
-            border-right: 1px solid rgba(255,255,255,0.05);
-            flex-shrink: 0;
+        /* --- ROSE SVG ANIMATION --- */
+        .rose-svg { width: 300px; height: 300px; overflow: visible; }
+
+        .flower-part {
+            transform-origin: center;
+            transform-box: fill-box;
+            opacity: 0;
+            fill-rule: evenodd;
         }
 
-        .header {
-            padding: 40px 30px;
-            text-align: right;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+        @keyframes growStem {
+            0% { transform: scaleY(0); opacity: 1; }
+            100% { transform: scaleY(1); opacity: 1; }
         }
 
+        @keyframes foldOut {
+            0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        @keyframes spiralBloom {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            60% { opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        /* Classes applied via Animation */
+        .anim-stem { animation: growStem 1s ease-out forwards; transform-origin: bottom; }
+        .anim-leaf-l { animation: foldOut 0.8s ease-out 0.8s forwards; transform-origin: right; }
+        .anim-leaf-r { animation: foldOut 0.8s ease-out 1s forwards; transform-origin: left; }
+        .anim-petal-1 { animation: spiralBloom 1.5s cubic-bezier(0.4, 0, 0.2, 1) 1.5s forwards; }
+        .anim-petal-2 { animation: spiralBloom 1.5s cubic-bezier(0.4, 0, 0.2, 1) 1.8s forwards; }
+        .anim-petal-3 { animation: spiralBloom 1.5s cubic-bezier(0.4, 0, 0.2, 1) 2.1s forwards; }
+        .anim-center { animation: spiralBloom 1s ease-out 2.5s forwards; }
+
+        /* --- UI STYLES --- */
+        .sidebar { width: 280px; background: #050505; display: flex; flex-direction: column; z-index: 100; border-right: 1px solid rgba(255,255,255,0.05); }
+        .header { padding: 40px 30px; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .header h1 { font-family: 'Bodoni Moda', serif; font-size: 2.5rem; line-height: 0.9; }
         .header span { font-size: 0.65rem; color: var(--accent-gold); letter-spacing: 3px; text-transform: uppercase; }
-
-        .keys-area {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 20px 0;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            scrollbar-width: none; 
-        }
-
-        .origami-tab {
-            height: 50px;
-            margin-right: 20px;
-            margin-left: -10px;
-            background: linear-gradient(90deg, #dcdcdc 0%, #ffffff 100%);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 25px;
-            color: #111;
-            font-family: 'Bodoni Moda', serif;
-            font-weight: 700;
-            font-size: 0.85rem;
-            clip-path: polygon(0 0, 100% 0, 95% 50%, 100% 100%, 0 100%, 5% 50%);
-            transform-origin: left center;
-            transform: rotateY(15deg);
-            transition: all 0.3s ease;
-        }
-
-        .origami-tab.active {
-            transform: rotateY(0deg) translateX(15px);
-            background: var(--accent-gold);
-            color: #000;
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 5% 50%);
-        }
-
-        /* --- MAIN STAGE --- */
-        .stage {
-            flex-grow: 1;
-            height: 100%;
-            overflow-y: auto;
-            padding: 50px 60px;
-            z-index: 10;
-        }
-
-        .title {
-            font-family: 'Bodoni Moda', serif;
-            font-size: 3.5rem;
-            margin-bottom: 60px;
-            background: linear-gradient(to right, #fff, #999);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* --- THE GRID FIX --- */
-        .team-grid {
-            display: none;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            /* Large vertical gap to account for the swinging label */
-            column-gap: 40px;
-            row-gap: 110px; 
-            padding-bottom: 100px;
-        }
+        .keys-area { flex-grow: 1; overflow-y: auto; padding: 20px 0; display: flex; flex-direction: column; gap: 12px; scrollbar-width: none; }
+        .keys-area::-webkit-scrollbar { display: none; }
+        .origami-tab { height: 50px; margin-right: 20px; margin-left: -10px; background: linear-gradient(90deg, #dcdcdc 0%, #ffffff 100%); cursor: pointer; display: flex; align-items: center; justify-content: flex-end; padding-right: 25px; color: #111; font-family: 'Bodoni Moda', serif; font-weight: 700; font-size: 0.85rem; clip-path: polygon(0 0, 100% 0, 95% 50%, 100% 100%, 0 100%, 5% 50%); transform-origin: left center; transform: rotateY(15deg); transition: 0.3s ease; }
+        .origami-tab.active { transform: rotateY(0deg) translateX(15px); background: var(--accent-gold); color: #000; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 5% 50%); }
+        .stage { flex-grow: 1; height: 100%; overflow-y: auto; padding: 50px 60px; z-index: 10; scroll-behavior: smooth; }
+        .title { font-family: 'Bodoni Moda', serif; font-size: 3.5rem; margin-bottom: 60px; background: linear-gradient(to right, #fff, #999); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .team-grid { display: none; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); column-gap: 40px; row-gap: 110px; padding-bottom: 100px; }
         .team-grid.active { display: grid; }
-
-        /* --- THE CARD --- */
-        .card-root {
-            width: var(--card-w);
-            height: var(--photo-h); /* Base height is just the photo */
-            position: relative;
-            perspective: 1000px;
-            margin: 0 auto;
-        }
-
-        .photo-block {
-            width: 100%;
-            height: 100%;
-            background: #111;
-            position: relative;
-            z-index: 10; /* Photo is always above its own label */
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            overflow: hidden;
-            transform-origin: top center;
-            animation: dropPhoto 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
-        .photo-block img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            filter: grayscale(100%);
-            transition: 0.4s ease;
-        }
-        .card-root:hover img { filter: grayscale(0%); transform: scale(1.05); }
-
-        .name-tag {
-            width: 90%;
-            height: var(--label-h);
-            background: var(--paper-white);
-            position: absolute;
-            left: 5%;
-            top: 100%; /* Sits exactly at bottom of photo */
-            transform-origin: top center;
-            z-index: 5; /* Behind the photo block for the fold effect */
-            
-            padding: 15px;
-            text-align: center;
-            border-bottom: 4px solid var(--accent-gold);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-            
-            /* Origami Animation */
-            transform: rotateX(-110deg);
-            animation: swingDown 1s 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
+        .card-root { width: 240px; height: 280px; position: relative; perspective: 1000px; margin: 0 auto; }
+        .photo-block { width: 100%; height: 100%; background: #111; position: relative; z-index: 10; box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden; transform-origin: top center; animation: dropPhoto 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .photo-block img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.4s ease; }
+        .name-tag { width: 90%; height: 90px; background: var(--paper-white); position: absolute; left: 5%; top: 100%; transform-origin: top center; z-index: 5; padding: 15px; text-align: center; border-bottom: 4px solid var(--accent-gold); box-shadow: 0 10px 25px rgba(0,0,0,0.4); transform: rotateX(-110deg); animation: swingDown 1s 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         .name-tag h3 { font-family: 'Bodoni Moda', serif; color: #111; font-size: 1.05rem; margin-bottom: 2px; }
         .name-tag p { font-size: 0.65rem; color: #666; font-weight: 700; text-transform: uppercase; }
 
-        @keyframes dropPhoto {
-            0% { transform: rotateX(-40deg); opacity: 0; }
-            100% { transform: rotateX(0deg); opacity: 1; }
-        }
+        @keyframes dropPhoto { 0% { transform: rotateX(-40deg); opacity: 0; } 100% { transform: rotateX(0deg); opacity: 1; } }
+        @keyframes swingDown { 0% { transform: rotateX(-110deg); } 100% { transform: rotateX(0deg); } }
 
-        @keyframes swingDown {
-            0% { transform: rotateX(-110deg); }
-            100% { transform: rotateX(0deg); }
-        }
-
-        /* --- MOBILE REFINEMENTS --- */
         @media (max-width: 768px) {
             body { flex-direction: column; }
-            .sidebar {
-                position: fixed; bottom: 0; width: 100%; height: var(--mobile-nav-h);
-                flex-direction: row; border-right: none; border-top: 1px solid #222;
-            }
+            .sidebar { position: fixed; bottom: 0; width: 100%; height: 80px; flex-direction: row; border-right: none; border-top: 1px solid #222; }
             .header { display: none; }
             .keys-area { flex-direction: row; padding: 0 15px; width: 100%; align-items: center; }
             .origami-tab { min-width: 110px; height: 40px; margin: 0; clip-path: none; border-radius: 4px; justify-content: center; padding: 0; transform: none !important; }
-            
-            .stage { 
-                padding: 20px; 
-                padding-top: 40px;
-                padding-bottom: 150px; /* Essential padding for bottom nav */
-            }
+            .stage { padding: 20px; padding-top: 40px; padding-bottom: 150px; }
             .title { font-size: 2.2rem; text-align: center; }
-            
-            .team-grid { 
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
-                row-gap: 90px; /* Slightly smaller gap for smaller mobile photos */
-            }
-            
-            :root { --photo-h: 200px; }
-            .name-tag { padding: 10px; }
-            .name-tag h3 { font-size: 0.85rem; }
+            .team-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); row-gap: 90px; }
         }
     </style>
 </head>
 <body>
+
+    <div id="loader">
+        <svg class="rose-svg" viewBox="0 0 200 200">
+            <!-- Stem -->
+            <rect class="flower-part anim-stem" x="98" y="110" width="4" height="80" fill="#2d5a27" />
+            <!-- Leaves -->
+            <path class="flower-part anim-leaf-l" d="M98,160 Q70,160 60,140 Q90,135 98,160" fill="#2d5a27" />
+            <path class="flower-part anim-leaf-r" d="M102,145 Q130,145 140,125 Q110,120 102,145" fill="#2d5a27" />
+            
+            <!-- Flower Group -->
+            <g transform="translate(100, 100)">
+                <!-- Sepals -->
+                <path class="flower-part anim-petal-1" d="M0,0 L-20,30 L0,15 L20,30 Z" fill="#1a3317" />
+                <!-- Petal Layers (Origami Style) -->
+                <path class="flower-part anim-petal-1" d="M0,-50 L40,-20 L25,40 L-25,40 L-40,-20 Z" fill="#990000" />
+                <path class="flower-part anim-petal-2" d="M0,-40 L30,-15 L20,30 L-20,30 L-30,-15 Z" fill="#cc0000" transform="rotate(36)" />
+                <path class="flower-part anim-petal-3" d="M0,-25 L20,-8 L12,18 L-12,18 L-20,-8 Z" fill="#ff3333" transform="rotate(72)" />
+                <!-- Center -->
+                <circle class="flower-part anim-center" cx="0" cy="0" r="8" fill="#660000" />
+            </g>
+        </svg>
+    </div>
 
     <aside class="sidebar">
         <div class="header">
             <h1>Ishya</h1>
             <span>Orchestra '25</span>
         </div>
-        <div class="keys-area">
-            <div class="origami-tab active" onclick="loadTeam('convenors', 261.63)">Convenors</div>
-            <div class="origami-tab" onclick="loadTeam('finance', 293.66)">Finance</div>
-            <div class="origami-tab" onclick="loadTeam('web', 329.63)">Web Team</div>
-            <div class="origami-tab" onclick="loadTeam('design', 349.23)">Design</div>
-            <div class="origami-tab" onclick="loadTeam('events', 392.00)">Events</div>
-            <div class="origami-tab" onclick="loadTeam('media', 440.00)">Media</div>
-            <div class="origami-tab" onclick="loadTeam('spons', 493.88)">Sponsors</div>
-            <div class="origami-tab" onclick="loadTeam('decor', 523.25)">Decor</div>
-        </div>
+        <div class="keys-area" id="piano-keys"></div>
     </aside>
 
     <main class="stage">
-        <h2 class="title" id="team-title">Convenors</h2>
-        <div id="convenors" class="team-grid active"></div>
-        <div id="finance" class="team-grid"></div>
-        <div id="web" class="team-grid"></div>
-        <div id="design" class="team-grid"></div>
-        <div id="events" class="team-grid"></div>
-        <div id="media" class="team-grid"></div>
-        <div id="spons" class="team-grid"></div>
-        <div id="decor" class="team-grid"></div>
+        <h2 class="title" id="team-title">The Ensemble</h2>
+        <div id="team-container"></div>
     </main>
 
     <script>
-        const teamData = {
-            'convenors': [
-                {name: "Gayathri Binu", role: "Convenor", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400"},
-                {name: "Dheeraj R.", role: "Co-Convenor", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400"},
-                {name: "Aditya S.", role: "Secretary", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400"}
-            ],
-            'web': [
-                {name: "Eldho Sam", role: "Web Head", img: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=400"},
-                {name: "Aswath Vinod", role: "Fullstack", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=400"}
-            ],
-            'default': [
-                {name: "Core Member", role: "Team Lead", img: "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?auto=format&fit=crop&q=80&w=600"},
-                {name: "Volunteer", role: "Associate", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=600"}
-            ]
-        };
+        const SHEET_ID = '1ZFNrA7ICRNoHCGfJClN_q3lZKAcM810sjdRkiCOih_I'; // <--- ENTER YOUR SHEET ID HERE
+        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
-        function renderTeam(teamId, container) {
-            const members = teamData[teamId] || teamData['default'];
+        let teamData = {};
+
+        function getDirectImg(url) {
+            if (!url) return '';
+            const fileId = url.match(/[-\w]{25,}/);
+            return fileId ? `https://drive.google.com/uc?export=view&id=${fileId[0]}` : url;
+        }
+
+        async function fetchTeam() {
+            try {
+                const response = await fetch(SHEET_URL);
+                const text = await response.text();
+                const json = JSON.parse(text.substr(47).slice(0, -2));
+                const rows = json.table.rows;
+                
+                rows.forEach(row => {
+                    const teamName = row.c[1]?.v || "Ensemble";
+                    const name = row.c[2]?.v || "Member";
+                    const photoUrl = getDirectImg(row.c[3]?.v);
+                    if (!teamData[teamName]) teamData[teamName] = [];
+                    teamData[teamName].push({ name, role: teamName, img: photoUrl });
+                });
+
+                // Control Loader: Bloom finishes ~4s, stay 1s, fade.
+                setTimeout(() => {
+                    document.getElementById('loader').style.opacity = '0';
+                    setTimeout(() => document.getElementById('loader').style.display = 'none', 800);
+                    initUI();
+                }, 4500);
+
+            } catch (e) {
+                console.error(e);
+                document.getElementById('loader').innerHTML = "Sheet ID Required.";
+            }
+        }
+
+        function initUI() {
+            const keysArea = document.getElementById('piano-keys');
+            const container = document.getElementById('team-container');
+            const teams = Object.keys(teamData);
+
+            teams.forEach((team, index) => {
+                const tab = document.createElement('div');
+                tab.className = `origami-tab ${index === 0 ? 'active' : ''}`;
+                tab.innerText = team;
+                tab.onclick = () => loadTeam(team, 261 + (index * 20), tab);
+                keysArea.appendChild(tab);
+
+                const grid = document.createElement('div');
+                grid.id = `grid-${team.replace(/\s/g, '')}`;
+                grid.className = `team-grid ${index === 0 ? 'active' : ''}`;
+                container.appendChild(grid);
+                if (index === 0) {
+                    document.getElementById('team-title').innerText = team;
+                    renderCards(team, grid);
+                }
+            });
+        }
+
+        function renderCards(teamId, container) {
+            const members = teamData[teamId];
             let html = '';
             members.forEach((m, i) => {
                 html += `
                 <div class="card-root" style="animation-delay: ${i*0.1}s">
                     <div class="photo-block" style="animation-delay: ${i*0.1}s">
-                        <img src="${m.img}" alt="${m.name}">
+                        <img src="${m.img}" onerror="this.src='https://via.placeholder.com/400x500?text=Photo+Pending'">
                     </div>
                     <div class="name-tag" style="animation-delay: ${i*0.1+0.3}s">
                         <h3>${m.name}</h3>
@@ -284,26 +223,25 @@
             osc.type = 'triangle';
             osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
             gain.gain.setValueAtTime(0, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.05);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.0);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start(); osc.stop(audioCtx.currentTime + 1.0);
+            gain.gain.linearRampToValueAtTime(0.2, audioCtx.currentTime + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.8);
         }
 
-        function loadTeam(teamId, freq) {
+        function loadTeam(teamName, freq, tabElement) {
             playNote(freq);
             document.querySelectorAll('.origami-tab').forEach(k => k.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            event.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-            document.getElementById('team-title').innerText = event.currentTarget.innerText;
+            tabElement.classList.add('active');
+            tabElement.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+            document.getElementById('team-title').innerText = teamName;
             document.querySelectorAll('.team-grid').forEach(g => { g.classList.remove('active'); g.innerHTML = ''; });
-            const activeGrid = document.getElementById(teamId) || document.getElementById('convenors');
+            const activeGrid = document.getElementById(`grid-${teamName.replace(/\s/g, '')}`);
             activeGrid.classList.add('active');
-            renderTeam(teamId, activeGrid);
+            renderCards(teamName, activeGrid);
         }
 
-        window.onload = () => renderTeam('convenors', document.getElementById('convenors'));
+        fetchTeam();
     </script>
 </body>
 </html>
