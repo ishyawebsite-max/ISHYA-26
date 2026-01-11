@@ -104,6 +104,7 @@
             border: 1px solid var(--neon); font-family: 'Oswald'; letter-spacing: 2px; cursor: pointer;
             clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
             transition: 0.3s; text-transform: uppercase;
+            text-decoration: none; display: inline-block; text-align: center;
         }
         .add-btn:hover { background: var(--neon); color: #000; box-shadow: 0 0 20px var(--neon); }
 
@@ -126,7 +127,7 @@
         .sidebar.open { right: 0; }
         .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; display: none; backdrop-filter: blur(8px); }
 
-        .modal-wrap { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 20000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(12px); }
+        .modal-wrap { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 20000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(12px); overflow-y: auto;}
         .modal { 
             background: var(--paper-dark); width: 95%; max-width: 450px; padding: 35px; 
             border: 1px solid var(--neon); clip-path: polygon(0 30px, 30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%);
@@ -203,14 +204,21 @@
                 </form>
             </div>
             
-            <!-- Step 2: Payment -->
+            <!-- Step 2: Payment (WITH CLICK TO PAY) -->
             <div id="step2" style="display:none; text-align:center;">
                 <p style="margin-bottom:15px; font-family:'Oswald';">Total Payable: <span id="payAmount" style="color:var(--neon)"></span></p>
+                
+                <!-- QR Code -->
                 <div id="qrcode" style="background:white; padding:12px; display:inline-block; border:4px solid var(--neon)"></div>
-                <p style="font-size:0.8rem; color:#888; margin-top:10px;">Scan to Pay via UPI</p>
+                
+                <!-- MOBILE CLICK TO PAY BUTTON (Added Feature) -->
+                <a id="payBtnLink" href="#" target="_blank" class="add-btn" style="margin: 20px 0; background: #fff; color: #000; border: 2px solid var(--neon); font-weight: 900; box-shadow: 0 0 15px var(--neon);">
+                    CLICK TO PAY (UPI APP)
+                </a>
+
+                <p style="font-size:0.8rem; color:#888; margin-bottom:10px;">or Scan Code above. Then upload screenshot below:</p>
                 
                 <div style="margin:20px 0; text-align:left;">
-                    <label style="font-size:0.8rem; color:var(--gold);">Upload Payment Screenshot:</label>
                     <input type="file" id="receiptFile" accept="image/*" required style="margin-top:5px; color:#aaa; font-size:0.8rem; display:block; width:100%;">
                 </div>
                 
@@ -272,8 +280,8 @@
         initCanvas(); animate();
 
         // --- 2. CORE LOGIC ---
-        // !!! REPLACE THIS WITH YOUR DEPLOYED SCRIPT URL !!!
-        const API = "https://script.google.com/macros/s/AKfycbxpERF04YBoeR9B-wet2Rl5XmFIDPSxr49VpqM2gjgvocngbPzIGSCZwczU2pvYxXVkmQ/exec"; 
+        // !!! REPLACE WITH YOUR DEPLOYED SCRIPT URL !!!
+        const API = "REPLACE_THIS_WITH_YOUR_DEPLOYED_WEB_APP_URL"; 
         
         const UPI_ID = "8113099230@upi";
         let products = [];
@@ -292,7 +300,6 @@
                 setTimeout(() => document.body.classList.add('loaded'), 1000);
             } catch (e) { 
                 console.log("Fetch Error", e);
-                // Fallback for visual testing if API fails
                 setTimeout(() => document.body.classList.add('loaded'), 1000);
             }
         }
@@ -373,14 +380,23 @@
             e.preventDefault();
             const total = cart.reduce((a,b) => a + (b.price*b.qty), 0);
             document.getElementById('payAmount').innerText = "₹" + total;
+            
+            // GENERATE UPI LINK
             const upi = `upi://pay?pa=${UPI_ID}&pn=IshyaMerch&am=${total}&tn=Order`;
+            
+            // UPDATE QR CODE
             document.getElementById('qrcode').innerHTML = "";
             new QRCode(document.getElementById("qrcode"), { text: upi, width: 160, height: 160 });
+            
+            // UPDATE CLICK-TO-PAY BUTTON
+            const payBtn = document.getElementById('payBtnLink');
+            payBtn.href = upi;
+            
             document.getElementById('step1').style.display = 'none';
             document.getElementById('step2').style.display = 'block';
         }
 
-        // --- SUBMIT FUNCTION MATCHING YOUR GOOGLE SCRIPT ---
+        // --- SUBMIT FUNCTION ---
         async function submitOrder() {
             const btn = document.getElementById('finalBtn');
             const fileInput = document.getElementById('receiptFile');
@@ -393,12 +409,10 @@
             reader.readAsDataURL(fileInput.files[0]);
             
             reader.onload = async () => {
-                // Your script splits the string internally, so we send the FULL Base64 Data URL
                 const fullBase64 = reader.result; 
                 const total = cart.reduce((a,b) => a + (b.price*b.qty), 0);
                 const orderId = "ORD-" + Math.floor(100000 + Math.random() * 900000);
 
-                // Construct JSON Object exactly as your Script expects
                 const payload = {
                     orderId: orderId,
                     customerName: document.getElementById('cName').value,
@@ -407,16 +421,15 @@
                     customerPhone: document.getElementById('cPhone').value,
                     address: document.getElementById('cAddress').value,
                     totalPrice: total,
-                    cart: cart, // The script iterates over this array
+                    cart: cart,
                     receiptImage: fullBase64 
                 };
 
                 try {
-                    // Send as JSON
                     const res = await fetch(API, {
                         method: "POST",
                         body: JSON.stringify(payload),
-                        headers: { "Content-Type": "text/plain;charset=utf-8" } // Bypass CORS Preflight
+                        headers: { "Content-Type": "text/plain;charset=utf-8" }
                     });
                     
                     const result = await res.json();
