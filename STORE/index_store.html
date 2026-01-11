@@ -4,10 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Merch Store | ISHYA 2026</title>
+    
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
+    <!-- QRCode Lib -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
+        /* --- THEME CONFIGURATION --- */
         :root {
             --bg: #030503;
             --neon: #a7f305;
@@ -31,10 +35,11 @@
         /* --- 1. GEOMETRIC EMBER CANVAS --- */
         #bg-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; background: radial-gradient(circle at center, #0d1a0d 0%, #030503 100%);
+            z-index: -1; 
+            background: radial-gradient(circle at center, #0d1a0d 0%, #030503 100%);
         }
 
-        /* --- 2. LAYERED ORIGAMI LOADER --- */
+        /* --- 2. ORIGAMI LOADER --- */
         #loader-wrapper {
             position: fixed; inset: 0; background: var(--bg); z-index: 99999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -57,12 +62,15 @@
         }
         body.loaded #loader-wrapper { opacity: 0; visibility: hidden; }
 
-        /* --- 3. STORE UI --- */
+        /* --- 3. UI COMPONENTS --- */
         header { text-align: center; padding: 60px 20px; }
         header h1 { font-family: 'Oswald'; font-size: 3.5rem; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; }
+        header p { color: var(--neon); letter-spacing: 6px; font-weight: 900; font-size: 0.6rem; margin-top: 5px; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 35px; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 35px; padding: 20px; }
 
+        /* CARD DESIGN */
         .card {
             background: rgba(18, 26, 18, 0.95);
             border: 1px solid rgba(167, 243, 5, 0.1);
@@ -70,11 +78,7 @@
             transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
             position: relative;
         }
-        .card:hover {
-            transform: translateY(-10px);
-            border-color: var(--neon);
-            box-shadow: 0 0 30px rgba(167, 243, 5, 0.2);
-        }
+        .card:hover { transform: translateY(-10px); border-color: var(--neon); box-shadow: 0 0 30px rgba(167, 243, 5, 0.2); }
 
         .card-img-wrap { width: 100%; height: 350px; position: relative; background: #000; padding: 15px; }
         .card-img { 
@@ -88,9 +92,10 @@
         .card-info h3 { font-family: 'Oswald'; font-size: 1.4rem; color: var(--gold); margin-bottom: 5px; }
         .card-price { color: var(--neon); font-family: 'Oswald'; font-size: 1.2rem; margin-bottom: 20px; display: block; }
 
+        /* Controls */
         .controls-row { display: flex; gap: 10px; margin-bottom: 20px; }
-        .controls-row select, .controls-row input {
-            background: #000; color: var(--neon); border: 1px solid #333; padding: 10px; font-family: 'Inter';
+        .controls-row select, .controls-row input { 
+            background: #000; color: var(--neon); border: 1px solid #333; padding: 10px; font-family: 'Inter'; 
         }
         .controls-row input { width: 70px; text-align: center; }
 
@@ -102,7 +107,7 @@
         }
         .add-btn:hover { background: var(--neon); color: #000; box-shadow: 0 0 20px var(--neon); }
 
-        /* --- 4. CART & SIDEBAR --- */
+        /* --- 4. FLOATING CART --- */
         .cart-floater {
             position: fixed; top: calc(var(--header-h) + 15px); right: 20px; z-index: 9000;
             background: var(--neon); color: #000; padding: 12px 22px;
@@ -111,6 +116,7 @@
             box-shadow: var(--glow); cursor: pointer;
         }
 
+        /* --- 5. SIDEBAR & MODALS --- */
         .sidebar {
             position: fixed; top: 0; right: -100%; width: 400px; height: 100%;
             background: var(--paper-dark); z-index: 10001; 
@@ -119,6 +125,12 @@
         }
         .sidebar.open { right: 0; }
         .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; display: none; backdrop-filter: blur(8px); }
+
+        .modal-wrap { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 20000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(12px); }
+        .modal { 
+            background: var(--paper-dark); width: 95%; max-width: 450px; padding: 35px; 
+            border: 1px solid var(--neon); clip-path: polygon(0 30px, 30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%);
+        }
 
         @media (max-width: 600px) {
             header h1 { font-size: 2.2rem; }
@@ -133,29 +145,29 @@
     <!-- GEOMETRIC EMBER CANVAS -->
     <canvas id="bg-canvas"></canvas>
 
-    <!-- LOADER -->
+    <!-- LOADING SCREEN -->
     <div id="loader-wrapper">
         <div class="flame-container">
             <div class="f-layer l1"></div>
             <div class="f-layer l2"></div>
             <div class="f-layer l3"></div>
         </div>
-        <p style="margin-top:20px; font-family:'Oswald'; color:var(--neon); letter-spacing:4px; font-size:0.7rem;">ALIGNING THE FOLDS</p>
+        <p style="margin-top:20px; font-family:'Oswald'; color:var(--neon); letter-spacing:4px; font-size:0.7rem;">IGNITING THE ARMORY</p>
     </div>
 
-    <!-- UI -->
+    <!-- MAIN UI -->
     <button class="cart-floater" onclick="toggleCart()">CART (<span id="cartCount">0</span>)</button>
 
     <header>
         <h1>THE ARMORY</h1>
-        <p style="color:var(--neon); letter-spacing:6px; font-weight:900; font-size:0.6rem;">ISHYA 2026 OFFICIAL MERCH</p>
+        <p>ISHYA 2026 OFFICIAL MERCH</p>
     </header>
 
     <div class="container">
         <div class="grid" id="productGrid"></div>
     </div>
 
-    <!-- SIDEBAR -->
+    <!-- CART SIDEBAR -->
     <div class="sidebar-overlay" id="sbOverlay" onclick="toggleCart()"></div>
     <div class="sidebar" id="sidebar">
         <div style="padding:25px; background:#000; border-bottom:1px solid var(--neon); display:flex; justify-content:space-between; align-items:center;">
@@ -171,33 +183,44 @@
         </div>
     </div>
 
-    <!-- MODAL -->
-    <div id="checkoutModal" style="position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:20000; display:none; align-items:center; justify-content:center; backdrop-filter:blur(12px);">
-        <div style="background:var(--paper-dark); width: 95%; max-width: 450px; padding: 35px; border: 1px solid var(--neon); clip-path: polygon(0 30px, 30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%);">
+    <!-- CHECKOUT MODAL -->
+    <div id="checkoutModal" class="modal-wrap">
+        <div class="modal">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
                 <h3 style="color:var(--gold); font-family:'Oswald';">CHECKOUT</h3>
                 <span onclick="closeCheckout()" style="font-size:2rem; cursor:pointer; color:var(--neon)">&times;</span>
             </div>
+            
+            <!-- Step 1: Details -->
             <div id="step1">
                 <form onsubmit="goToPayment(event)">
                     <input type="text" id="cName" placeholder="Full Name" required style="width:100%; padding:15px; margin-bottom:12px; background:#000; border:1px solid #333; color:white;">
+                    <input type="text" id="cRoll" placeholder="Roll Number" required style="width:100%; padding:15px; margin-bottom:12px; background:#000; border:1px solid #333; color:white;">
                     <input type="tel" id="cPhone" placeholder="Phone Number" required style="width:100%; padding:15px; margin-bottom:12px; background:#000; border:1px solid #333; color:white;">
                     <input type="email" id="cEmail" placeholder="Email Address" required style="width:100%; padding:15px; margin-bottom:12px; background:#000; border:1px solid #333; color:white;">
                     <textarea id="cAddress" placeholder="Full Address" required style="width:100%; padding:15px; margin-bottom:12px; background:#000; border:1px solid #333; color:white; height:80px; resize:none;"></textarea>
-                    <button type="submit" class="add-btn">NEXT</button>
+                    <button type="submit" class="add-btn">NEXT: PAYMENT</button>
                 </form>
             </div>
+            
+            <!-- Step 2: Payment -->
             <div id="step2" style="display:none; text-align:center;">
-                <p style="margin-bottom:15px; font-family:'Oswald';">Total: <span id="payAmount" style="color:var(--neon)"></span></p>
+                <p style="margin-bottom:15px; font-family:'Oswald';">Total Payable: <span id="payAmount" style="color:var(--neon)"></span></p>
                 <div id="qrcode" style="background:white; padding:12px; display:inline-block; border:4px solid var(--neon)"></div>
-                <input type="file" id="receiptFile" accept="image/*" style="margin:20px 0; color:#888; font-size:0.8rem; display:block; width:100%;">
+                <p style="font-size:0.8rem; color:#888; margin-top:10px;">Scan to Pay via UPI</p>
+                
+                <div style="margin:20px 0; text-align:left;">
+                    <label style="font-size:0.8rem; color:var(--gold);">Upload Payment Screenshot:</label>
+                    <input type="file" id="receiptFile" accept="image/*" required style="margin-top:5px; color:#aaa; font-size:0.8rem; display:block; width:100%;">
+                </div>
+                
                 <button class="add-btn" onclick="submitOrder()" id="finalBtn" style="background:var(--neon); color:#000">CONFIRM ORDER</button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- 1. BACKGROUND ENGINE ---
+        // --- 1. GEOMETRIC EMBER CANVAS ---
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -225,7 +248,8 @@
             ctx.moveTo(x + Math.cos(angle) * size, y + Math.sin(angle) * size);
             ctx.lineTo(x + Math.cos(angle + 2.1) * size, y + Math.sin(angle + 2.1) * size);
             ctx.lineTo(x + Math.cos(angle + 4.2) * size, y + Math.sin(angle + 4.2) * size);
-            ctx.closePath(); ctx.fillStyle = '#a7f305'; ctx.globalAlpha = 0.25; ctx.fill();
+            ctx.closePath();
+            ctx.fillStyle = '#a7f305'; ctx.globalAlpha = 0.25; ctx.fill();
         }
 
         function animate() {
@@ -247,8 +271,10 @@
         window.addEventListener('resize', initCanvas);
         initCanvas(); animate();
 
-        // --- 2. STORE LOGIC ---
-        const API = "https://script.google.com/macros/s/AKfycbxpERF04YBoeR9B-wet2Rl5XmFIDPSxr49VpqM2gjgvocngbPzIGSCZwczU2pvYxXVkmQ/exec";
+        // --- 2. CORE LOGIC ---
+        // !!! REPLACE THIS WITH YOUR DEPLOYED SCRIPT URL !!!
+        const API = "https://script.google.com/macros/s/AKfycbxpERF04YBoeR9B-wet2Rl5XmFIDPSxr49VpqM2gjgvocngbPzIGSCZwczU2pvYxXVkmQ/exec"; 
+        
         const UPI_ID = "8113099230@upi";
         let products = [];
         let cart = [];
@@ -259,10 +285,16 @@
             try {
                 const res = await fetch(API);
                 const json = await res.json();
-                products = json.data;
-                renderProducts(products);
+                if(json.data) {
+                    products = json.data;
+                    renderProducts(products);
+                }
                 setTimeout(() => document.body.classList.add('loaded'), 1000);
-            } catch (e) { console.log("Fetch error"); }
+            } catch (e) { 
+                console.log("Fetch Error", e);
+                // Fallback for visual testing if API fails
+                setTimeout(() => document.body.classList.add('loaded'), 1000);
+            }
         }
 
         function renderProducts(list) {
@@ -280,7 +312,6 @@
                             <select id="size-${p.id}" style="flex:1;">
                                 ${(p.sizes || 'One Size').split(',').map(s=>`<option>${s.trim()}</option>`).join('')}
                             </select>
-                            <!-- UPDATED: Default quantity is 0 -->
                             <input type="number" id="qty-${p.id}" value="0" min="0">
                         </div>
                         <button class="add-btn" onclick="addToCart('${p.id}')">ADD TO INVENTORY</button>
@@ -294,7 +325,7 @@
             const size = document.getElementById(`size-${pid}`).value;
             const qty = parseInt(document.getElementById(`qty-${pid}`).value);
             
-            // Logic to prevent adding 0 items
+            // Logic: Do not add if quantity is 0
             if(qty <= 0) return;
 
             const ex = cart.find(i => i.id === p.id && i.size === size);
@@ -342,23 +373,81 @@
             e.preventDefault();
             const total = cart.reduce((a,b) => a + (b.price*b.qty), 0);
             document.getElementById('payAmount').innerText = "₹" + total;
-            const upi = `upi://pay?pa=${UPI_ID}&pn=Ishya&am=${total}&tn=Merch`;
+            const upi = `upi://pay?pa=${UPI_ID}&pn=IshyaMerch&am=${total}&tn=Order`;
             document.getElementById('qrcode').innerHTML = "";
             new QRCode(document.getElementById("qrcode"), { text: upi, width: 160, height: 160 });
             document.getElementById('step1').style.display = 'none';
             document.getElementById('step2').style.display = 'block';
         }
 
+        // --- SUBMIT FUNCTION MATCHING YOUR GOOGLE SCRIPT ---
         async function submitOrder() {
-            alert("Order Submitted. Verifying.");
-            cart = []; updateCart(); closeCheckout();
+            const btn = document.getElementById('finalBtn');
+            const fileInput = document.getElementById('receiptFile');
+            
+            if(!fileInput.files[0]) { alert("Please upload payment receipt."); return; }
+            
+            btn.innerText = "PROCESSING..."; btn.disabled = true;
+
+            const reader = new FileReader();
+            reader.readAsDataURL(fileInput.files[0]);
+            
+            reader.onload = async () => {
+                // Your script splits the string internally, so we send the FULL Base64 Data URL
+                const fullBase64 = reader.result; 
+                const total = cart.reduce((a,b) => a + (b.price*b.qty), 0);
+                const orderId = "ORD-" + Math.floor(100000 + Math.random() * 900000);
+
+                // Construct JSON Object exactly as your Script expects
+                const payload = {
+                    orderId: orderId,
+                    customerName: document.getElementById('cName').value,
+                    rollNumber: document.getElementById('cRoll').value,
+                    customerEmail: document.getElementById('cEmail').value,
+                    customerPhone: document.getElementById('cPhone').value,
+                    address: document.getElementById('cAddress').value,
+                    totalPrice: total,
+                    cart: cart, // The script iterates over this array
+                    receiptImage: fullBase64 
+                };
+
+                try {
+                    // Send as JSON
+                    const res = await fetch(API, {
+                        method: "POST",
+                        body: JSON.stringify(payload),
+                        headers: { "Content-Type": "text/plain;charset=utf-8" } // Bypass CORS Preflight
+                    });
+                    
+                    const result = await res.json();
+                    
+                    if(result.status === 'success') {
+                        alert("Order Successfully Placed! ID: " + orderId);
+                        cart = []; updateCart(); closeCheckout();
+                    } else {
+                        alert("Server Error: " + result.message);
+                    }
+                } catch (e) {
+                    console.error("Transmission Error:", e);
+                    alert("Network Error. Please check your connection.");
+                } finally {
+                    btn.innerText = "CONFIRM ORDER"; btn.disabled = false;
+                }
+            };
         }
 
+        // Header Injector
         fetch('/ISHYA-26/header.html').then(res => res.text()).then(data => {
             const temp = document.createElement('div');
             temp.innerHTML = data;
             document.body.prepend(temp);
-        });
+            const script = temp.querySelector('script');
+            if (script) {
+                const newS = document.createElement('script');
+                newS.textContent = script.textContent;
+                document.body.appendChild(newS);
+            }
+        }).catch(e => console.log("Header check."));
     </script>
 </body>
 </html>
