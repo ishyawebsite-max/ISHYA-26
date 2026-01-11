@@ -3,164 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Merch Store</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <title>Merch Store | ISHYA 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
         :root {
-            --bg: #121212;
-            --paper-dark: #1e1e1e;
-            --paper-light: #2c2c2c;
-            --accent: #d4af37;
-            --success: #4cc9f0;
-            --text: #eeeeee;
-            /* Space for the injected header */
+            --bg: #030503;
+            --neon: #a7f305;
+            --gold: #f5e9b3;
+            --paper-dark: #0a0e0a;
+            --paper-light: #121a12;
             --header-h: 70px; 
+            --glow: 0 0 15px rgba(167, 243, 5, 0.4);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             background-color: var(--bg);
-            color: var(--text);
+            color: #fff;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             padding-top: var(--header-h);
         }
 
-        /* 1. LOADER */
-        #origami-curtain {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: var(--bg); z-index: 99999;
-            display: flex; justify-content: center; align-items: center;
-            transition: visibility 0s linear 0.6s;
+        /* --- 1. GEOMETRIC EMBER CANVAS --- */
+        #bg-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; background: radial-gradient(circle at center, #0d1a0d 0%, #030503 100%);
         }
-        .star-wrapper { position: relative; }
-        .shard {
-            position: absolute; top: 0; left: 0; width: 0; height: 0;
-            border-left: 50px solid transparent; border-right: 50px solid transparent;
-            border-bottom: 200px solid var(--accent);
-            transform-origin: 50% 100%; transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+
+        /* --- 2. LAYERED ORIGAMI LOADER --- */
+        #loader-wrapper {
+            position: fixed; inset: 0; background: var(--bg); z-index: 99999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.8s ease;
         }
-        .shard:nth-child(1) { transform: translate(-50%, -100%) rotate(0deg); }
-        .shard:nth-child(2) { transform: translate(-50%, -100%) rotate(45deg); filter: brightness(0.8); }
-        .shard:nth-child(3) { transform: translate(-50%, -100%) rotate(90deg); }
-        .shard:nth-child(4) { transform: translate(-50%, -100%) rotate(135deg); filter: brightness(0.8); }
-        .shard:nth-child(5) { transform: translate(-50%, -100%) rotate(180deg); }
-        .shard:nth-child(6) { transform: translate(-50%, -100%) rotate(225deg); filter: brightness(0.8); }
-        .shard:nth-child(7) { transform: translate(-50%, -100%) rotate(270deg); }
-        .shard:nth-child(8) { transform: translate(-50%, -100%) rotate(315deg); filter: brightness(0.8); }
+        .flame-container { position: relative; width: 100px; height: 140px; }
+        .f-layer {
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; height: 100%; 
+            clip-path: polygon(50% 0%, 90% 40%, 100% 75%, 75% 100%, 25% 100%, 0% 75%, 10% 40%);
+            animation: flicker 1.2s infinite ease-in-out;
+        }
+        .l1 { background: var(--neon); height: 100%; opacity: 0.3; }
+        .l2 { background: var(--neon); height: 80%; width: 80%; animation-delay: 0.1s; opacity: 0.6; }
+        .l3 { background: var(--gold); height: 40%; width: 50%; animation-delay: 0.2s; }
 
-        body.loaded #origami-curtain { visibility: hidden; }
-        body.loaded .shard { transform: translate(-50%, -100%) rotate(calc(var(--r)*45deg)) translateY(-150vh); }
+        @keyframes flicker {
+            0%, 100% { transform: translateX(-50%) scaleY(1); }
+            50% { transform: translateX(-50%) scaleY(1.1) rotate(1deg); }
+        }
+        body.loaded #loader-wrapper { opacity: 0; visibility: hidden; }
 
-        /* 2. CART FLOATER (Adjusted for mobile) */
+        /* --- 3. STORE UI --- */
+        header { text-align: center; padding: 60px 20px; }
+        header h1 { font-family: 'Oswald'; font-size: 3.5rem; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 35px; padding: 20px; max-width: 1200px; margin: 0 auto; }
+
+        .card {
+            background: rgba(18, 26, 18, 0.95);
+            border: 1px solid rgba(167, 243, 5, 0.1);
+            clip-path: polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px);
+            transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--neon);
+            box-shadow: 0 0 30px rgba(167, 243, 5, 0.2);
+        }
+
+        .card-img-wrap { width: 100%; height: 350px; position: relative; background: #000; padding: 15px; }
+        .card-img { 
+            width: 100%; height: 100%; object-fit: cover; 
+            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+            transition: 0.6s; opacity: 0.8;
+        }
+        .card:hover .card-img { opacity: 1; transform: scale(1.05); }
+
+        .card-info { padding: 25px; text-align: left; }
+        .card-info h3 { font-family: 'Oswald'; font-size: 1.4rem; color: var(--gold); margin-bottom: 5px; }
+        .card-price { color: var(--neon); font-family: 'Oswald'; font-size: 1.2rem; margin-bottom: 20px; display: block; }
+
+        .controls-row { display: flex; gap: 10px; margin-bottom: 20px; }
+        .controls-row select, .controls-row input {
+            background: #000; color: var(--neon); border: 1px solid #333; padding: 10px; font-family: 'Inter';
+        }
+        .controls-row input { width: 70px; text-align: center; }
+
+        .add-btn {
+            width: 100%; padding: 16px; background: transparent; color: var(--neon); 
+            border: 1px solid var(--neon); font-family: 'Oswald'; letter-spacing: 2px; cursor: pointer;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+            transition: 0.3s; text-transform: uppercase;
+        }
+        .add-btn:hover { background: var(--neon); color: #000; box-shadow: 0 0 20px var(--neon); }
+
+        /* --- 4. CART & SIDEBAR --- */
         .cart-floater {
-            position: fixed; 
-            top: calc(var(--header-h) + 15px);
-            right: 20px; 
-            z-index: 9000;
-            background: var(--accent); color: #000; padding: 12px 20px;
-            font-weight: 900; font-size: 0.85rem; border: none;
+            position: fixed; top: calc(var(--header-h) + 15px); right: 20px; z-index: 9000;
+            background: var(--neon); color: #000; padding: 12px 22px;
+            font-family: 'Oswald'; font-weight: 700; border: none;
             clip-path: polygon(15% 0, 100% 0, 100% 70%, 85% 100%, 0 100%, 0 30%);
-            box-shadow: 4px 4px 0px rgba(0,0,0,0.5);
+            box-shadow: var(--glow); cursor: pointer;
         }
 
-        /* 3. SIDEBAR (CART) */
-        .sidebar-overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.8); z-index: 10000; display: none; 
-            backdrop-filter: blur(4px);
-        }
         .sidebar {
             position: fixed; top: 0; right: -100%; width: 400px; height: 100%;
             background: var(--paper-dark); z-index: 10001; 
-            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex; flex-direction: column;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            transition: right 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            display: flex; flex-direction: column; border-left: 2px solid var(--neon);
         }
         .sidebar.open { right: 0; }
-        
-        /* Fixed Sidebar Header */
-        .sb-header { 
-            padding: 20px; 
-            background: #000; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            border-bottom: 2px solid var(--accent);
-            position: sticky; top: 0;
-        }
-        .sb-header h2 { font-size: 1.2rem; letter-spacing: 1px; }
-        .close-sidebar {
-            background: var(--accent); color: #000;
-            width: 40px; height: 40px; border: none;
-            font-size: 1.8rem; font-weight: bold; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);
-        }
+        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; display: none; backdrop-filter: blur(8px); }
 
-        .sb-body { flex-grow: 1; overflow-y: auto; padding: 20px; }
-        .sb-footer { padding: 25px; background: #0a0a0a; border-top: 1px solid #333; }
-
-        /* 4. PRODUCT GRID */
-        header { text-align: center; padding: 40px 20px; }
-        header h1 { font-size: 2.5rem; text-transform: uppercase; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; padding: 20px; max-width: 1200px; margin: 0 auto; }
-        
-        .card {
-            background: var(--paper-dark);
-            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
-            display: flex; flex-direction: column;
-        }
-        .card-img { width: 100%; height: 300px; object-fit: cover; background: #000; }
-        .card-info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
-        
-        .add-btn {
-            width: 100%; margin-top: 15px; padding: 15px; background: var(--text); color: #000; border: none;
-            font-weight: 800; text-transform: uppercase; cursor: pointer;
-            clip-path: polygon(0 0, 100% 0, 100% 80%, 92% 100%, 0 100%);
-        }
-
-        /* MOBILE OPTIMIZATIONS */
         @media (max-width: 600px) {
-            :root { --header-h: 60px; }
+            header h1 { font-size: 2.2rem; }
             .sidebar { width: 100%; }
-            header h1 { font-size: 2rem; }
-            
-            /* Move cart button to bottom-right for thumb accessibility on mobile */
-            .cart-floater {
-                top: auto; bottom: 25px; right: 20px;
-                padding: 16px 24px; font-size: 1rem;
-            }
-            /* Add extra bottom padding so grid items aren't hidden by the floating button */
-            .container { padding-bottom: 100px; }
+            .cart-floater { top: auto; bottom: 25px; right: 20px; }
+            .grid { padding-bottom: 120px; }
         }
-
-        /* Modal fixes */
-        .modal-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 20000; display: none; align-items: center; justify-content: center; }
-        .modal { background: var(--paper-dark); width: 95%; max-width: 450px; padding: 25px; max-height: 90vh; overflow-y: auto; border: 1px solid var(--accent); }
     </style>
 </head>
 <body>
 
+    <!-- GEOMETRIC EMBER CANVAS -->
+    <canvas id="bg-canvas"></canvas>
+
     <!-- LOADER -->
-    <div id="origami-curtain">
-        <div class="star-wrapper">
-            <div class="shard" style="--r:0"></div><div class="shard" style="--r:1"></div>
-            <div class="shard" style="--r:2"></div><div class="shard" style="--r:3"></div>
-            <div class="shard" style="--r:4"></div><div class="shard" style="--r:5"></div>
-            <div class="shard" style="--r:6"></div><div class="shard" style="--r:7"></div>
+    <div id="loader-wrapper">
+        <div class="flame-container">
+            <div class="f-layer l1"></div>
+            <div class="f-layer l2"></div>
+            <div class="f-layer l3"></div>
         </div>
+        <p style="margin-top:20px; font-family:'Oswald'; color:var(--neon); letter-spacing:4px; font-size:0.7rem;">ALIGNING THE FOLDS</p>
     </div>
 
-    <!-- CART BUTTON -->
+    <!-- UI -->
     <button class="cart-floater" onclick="toggleCart()">CART (<span id="cartCount">0</span>)</button>
 
     <header>
-        <h1>Merchandise</h1>
-        <p style="color:#666; font-size: 0.8rem; letter-spacing: 2px;">OFFICIAL COLLECTION</p>
+        <h1>THE ARMORY</h1>
+        <p style="color:var(--neon); letter-spacing:6px; font-weight:900; font-size:0.6rem;">ISHYA 2026 OFFICIAL MERCH</p>
     </header>
 
     <div class="container">
@@ -170,50 +158,98 @@
     <!-- SIDEBAR -->
     <div class="sidebar-overlay" id="sbOverlay" onclick="toggleCart()"></div>
     <div class="sidebar" id="sidebar">
-        <div class="sb-header">
-            <h2>INVENTORY</h2>
-            <button class="close-sidebar" onclick="toggleCart()">&times;</button>
+        <div style="padding:25px; background:#000; border-bottom:1px solid var(--neon); display:flex; justify-content:space-between; align-items:center;">
+            <h2 style="font-family:'Oswald'; color:var(--gold);">INVENTORY</h2>
+            <button onclick="toggleCart()" style="background:var(--neon); border:none; width:35px; height:35px; cursor:pointer; clip-path:polygon(20% 0, 80% 0, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0 80%, 0 20%); font-weight:bold;">&times;</button>
         </div>
-        <div class="sb-body" id="cartItems">
-            <p style="text-align:center; color:#555; margin-top:50px;">Your cart is empty.</p>
-        </div>
-        <div class="sb-footer">
-            <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:bold;">
-                <span>SUBTOTAL</span><span id="cartTotal" style="color:var(--accent);">₹0</span>
+        <div id="cartItems" style="flex-grow:1; overflow-y:auto; padding:20px;"></div>
+        <div style="padding:30px; background:#0a0a0a; border-top:1px solid #222;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-family:'Oswald'; font-size:1.3rem;">
+                <span>TOTAL</span><span id="cartTotal" style="color:var(--neon);">₹0</span>
             </div>
-            <button class="add-btn" onclick="openCheckout()">PROCEED TO CHECKOUT</button>
+            <button class="add-btn" onclick="openCheckout()" style="background:var(--neon); color:#000;">PROCEED TO CHECKOUT</button>
         </div>
     </div>
 
-    <!-- CHECKOUT MODAL -->
-    <div class="modal-wrap" id="checkoutModal">
-        <div class="modal">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <h3 style="color:var(--accent)">CHECKOUT</h3>
-                <span onclick="closeCheckout()" style="font-size:2rem; cursor:pointer;">&times;</span>
+    <!-- MODAL -->
+    <div id="checkoutModal" style="position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:20000; display:none; align-items:center; justify-content:center; backdrop-filter:blur(12px);">
+        <div style="background:var(--paper-dark); width: 95%; max-width: 450px; padding: 35px; border: 1px solid var(--neon); clip-path: polygon(0 30px, 30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
+                <h3 style="color:var(--gold); font-family:'Oswald';">CHECKOUT</h3>
+                <span onclick="closeCheckout()" style="font-size:2rem; cursor:pointer; color:var(--neon)">&times;</span>
             </div>
             <div id="step1">
                 <form onsubmit="goToPayment(event)">
-                    <input type="text" id="cName" placeholder="Full Name" required style="width:100%; padding:12px; margin-bottom:10px; background:#111; border:1px solid #333; color:white;">
-                    <input type="tel" id="cPhone" placeholder="Phone Number" required style="width:100%; padding:12px; margin-bottom:10px; background:#111; border:1px solid #333; color:white;">
-                    <input type="email" id="cEmail" placeholder="Email Address" required style="width:100%; padding:12px; margin-bottom:10px; background:#111; border:1px solid #333; color:white;">
-                    <textarea id="cAddress" placeholder="Delivery Address" required style="width:100%; padding:12px; margin-bottom:10px; background:#111; border:1px solid #333; color:white; height:80px;"></textarea>
+                    <input type="text" id="cName" placeholder="Full Name" required style="width:100%; padding:15px; margin-bottom:12px; background:#000; border:1px solid #333; color:white;">
+                    <input type="tel" id="cPhone" placeholder="Phone Number" required style="width:100%; padding:15px; margin-bottom:12px; background:#000; border:1px solid #333; color:white;">
+                    <input type="email" id="cEmail" placeholder="Email Address" required style="width:100%; padding:15px; margin-bottom:12px; background:#000; border:1px solid #333; color:white;">
+                    <textarea id="cAddress" placeholder="Full Address" required style="width:100%; padding:15px; margin-bottom:12px; background:#000; border:1px solid #333; color:white; height:80px; resize:none;"></textarea>
                     <button type="submit" class="add-btn">NEXT</button>
                 </form>
             </div>
             <div id="step2" style="display:none; text-align:center;">
-                <p>Scan to pay: <strong id="payAmount"></strong></p>
-                <div id="qrcode" style="background:white; padding:10px; display:inline-block; margin:15px 0;"></div>
-                <input type="file" id="receiptFile" accept="image/*" required style="margin-bottom:15px; color:#888;">
-                <button class="add-btn" onclick="submitOrder()" id="finalBtn">CONFIRM PAYMENT</button>
+                <p style="margin-bottom:15px; font-family:'Oswald';">Total: <span id="payAmount" style="color:var(--neon)"></span></p>
+                <div id="qrcode" style="background:white; padding:12px; display:inline-block; border:4px solid var(--neon)"></div>
+                <input type="file" id="receiptFile" accept="image/*" style="margin:20px 0; color:#888; font-size:0.8rem; display:block; width:100%;">
+                <button class="add-btn" onclick="submitOrder()" id="finalBtn" style="background:var(--neon); color:#000">CONFIRM ORDER</button>
             </div>
         </div>
     </div>
 
     <script>
+        // --- 1. BACKGROUND ENGINE ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouse = { x: -100, y: -100 };
+
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles = [];
+            for (let i = 0; i < 80; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 8 + 2,
+                    speedX: (Math.random() - 0.5) * 1.5,
+                    speedY: (Math.random() - 0.5) * 2 - 1,
+                    angle: Math.random() * Math.PI * 2,
+                    spin: (Math.random() - 0.5) * 0.04
+                });
+            }
+        }
+
+        function drawShard(x, y, size, angle) {
+            ctx.beginPath();
+            ctx.moveTo(x + Math.cos(angle) * size, y + Math.sin(angle) * size);
+            ctx.lineTo(x + Math.cos(angle + 2.1) * size, y + Math.sin(angle + 2.1) * size);
+            ctx.lineTo(x + Math.cos(angle + 4.2) * size, y + Math.sin(angle + 4.2) * size);
+            ctx.closePath(); ctx.fillStyle = '#a7f305'; ctx.globalAlpha = 0.25; ctx.fill();
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.x += p.speedX; p.y += p.speedY; p.angle += p.spin;
+                let dx = mouse.x - p.x; let dy = mouse.y - p.y;
+                let d = Math.sqrt(dx*dx + dy*dy);
+                if(d < 150) { p.x -= dx / 25; p.y -= dy / 25; }
+                if (p.y < -20) p.y = canvas.height + 20;
+                if (p.x < -20) p.x = canvas.width + 20;
+                if (p.x > canvas.width + 20) p.x = -20;
+                drawShard(p.x, p.y, p.size, p.angle);
+            });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+        window.addEventListener('resize', initCanvas);
+        initCanvas(); animate();
+
+        // --- 2. STORE LOGIC ---
         const API = "https://script.google.com/macros/s/AKfycbxpERF04YBoeR9B-wet2Rl5XmFIDPSxr49VpqM2gjgvocngbPzIGSCZwczU2pvYxXVkmQ/exec";
         const UPI_ID = "8113099230@upi";
-        
         let products = [];
         let cart = [];
 
@@ -225,26 +261,29 @@
                 const json = await res.json();
                 products = json.data;
                 renderProducts(products);
-                document.body.classList.add('loaded');
-            } catch (e) { alert("Error loading products"); }
+                setTimeout(() => document.body.classList.add('loaded'), 1000);
+            } catch (e) { console.log("Fetch error"); }
         }
 
         function renderProducts(list) {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = list.map(p => `
                 <div class="card">
-                    <img src="${p.images?.split(',')[0] || ''}" class="card-img">
+                    <div class="card-img-wrap">
+                        <img src="${p.images?.split(',')[0] || ''}" class="card-img" onerror="this.src='https://via.placeholder.com/400x500/0a0e0a/a7f305?text=ISHYA'">
+                    </div>
                     <div class="card-info">
-                        <small style="color:var(--accent)">${p.category}</small>
-                        <h3 style="margin:5px 0">${p.name}</h3>
-                        <p style="color:#888">₹${p.price}</p>
-                        <div style="margin-top:auto; display:flex; gap:5px; padding-top:10px;">
-                            <select id="size-${p.id}" style="flex:1; background:#222; color:white; border:none; padding:5px;">
-                                ${(p.sizes || 'Standard').split(',').map(s=>`<option>${s.trim()}</option>`).join('')}
+                        <small style="color:var(--neon); font-weight:900; letter-spacing:2px;">${p.category.toUpperCase()}</small>
+                        <h3>${p.name}</h3>
+                        <span class="card-price">₹${p.price}</span>
+                        <div class="controls-row">
+                            <select id="size-${p.id}" style="flex:1;">
+                                ${(p.sizes || 'One Size').split(',').map(s=>`<option>${s.trim()}</option>`).join('')}
                             </select>
-                            <input type="number" id="qty-${p.id}" value="1" min="1" style="width:50px; background:#222; color:white; border:none; text-align:center;">
+                            <!-- UPDATED: Default quantity is 0 -->
+                            <input type="number" id="qty-${p.id}" value="0" min="0">
                         </div>
-                        <button class="add-btn" onclick="addToCart('${p.id}')">ADD TO CART</button>
+                        <button class="add-btn" onclick="addToCart('${p.id}')">ADD TO INVENTORY</button>
                     </div>
                 </div>
             `).join('');
@@ -255,31 +294,32 @@
             const size = document.getElementById(`size-${pid}`).value;
             const qty = parseInt(document.getElementById(`qty-${pid}`).value);
             
+            // Logic to prevent adding 0 items
+            if(qty <= 0) return;
+
             const ex = cart.find(i => i.id === p.id && i.size === size);
             if(ex) ex.qty += qty; else cart.push({ ...p, size, qty });
-            
             updateCart();
-            // REMOVED openSidebar() from here per your request.
         }
 
         function updateCart() {
             const box = document.getElementById('cartItems');
             let total = 0, count = 0;
             if(cart.length === 0) {
-                box.innerHTML = '<p style="text-align:center; color:#555; margin-top:50px;">Your cart is empty.</p>';
+                box.innerHTML = '<p style="text-align:center; color:#444; margin-top:50px;">Inventory Empty.</p>';
             } else {
                 box.innerHTML = cart.map((item, i) => {
                     total += item.price * item.qty;
                     count += item.qty;
                     return `
-                    <div style="background:var(--paper-light); padding:15px; margin-bottom:10px; display:flex; justify-content:space-between;">
+                    <div style="background:var(--paper-light); padding:15px; margin-bottom:12px; display:flex; justify-content:space-between; border-left:3px solid var(--neon);">
                         <div>
-                            <strong>${item.name}</strong><br>
-                            <small>${item.size} x ${item.qty}</small>
+                            <strong style="color:var(--gold); font-family:Oswald;">${item.name}</strong><br>
+                            <small style="color:#666; font-size:0.7rem;">${item.size} — x${item.qty}</small>
                         </div>
                         <div style="text-align:right">
-                            <div>₹${item.price * item.qty}</div>
-                            <small style="color:var(--accent); cursor:pointer" onclick="removeFromCart(${i})">REMOVE</small>
+                            <div style="font-family:Oswald; color:var(--neon)">₹${item.price * item.qty}</div>
+                            <small style="color:#ff3333; cursor:pointer; font-weight:bold; font-size:0.6rem;" onclick="removeFromCart(${i})">DROP</small>
                         </div>
                     </div>`;
                 }).join('');
@@ -289,53 +329,36 @@
         }
 
         function removeFromCart(i) { cart.splice(i, 1); updateCart(); }
-        
         function toggleCart() {
             const sb = document.getElementById('sidebar');
             const ov = document.getElementById('sbOverlay');
             sb.classList.toggle('open');
             ov.style.display = sb.classList.contains('open') ? 'block' : 'none';
         }
-
-        function openCheckout() {
-            if(cart.length === 0) return;
-            toggleCart();
-            document.getElementById('checkoutModal').style.display = 'flex';
-        }
-
-        function closeCheckout() { document.getElementById('checkoutModal').style.display = 'none'; }
-
+        function openCheckout() { if(cart.length > 0) { toggleCart(); document.getElementById('checkoutModal').style.display='flex'; } }
+        function closeCheckout() { document.getElementById('checkoutModal').style.display='none'; }
+        
         function goToPayment(e) {
             e.preventDefault();
             const total = cart.reduce((a,b) => a + (b.price*b.qty), 0);
             document.getElementById('payAmount').innerText = "₹" + total;
-            const upi = `upi://pay?pa=${UPI_ID}&pn=MerchStore&am=${total}&tn=Order`;
+            const upi = `upi://pay?pa=${UPI_ID}&pn=Ishya&am=${total}&tn=Merch`;
             document.getElementById('qrcode').innerHTML = "";
-            new QRCode(document.getElementById("qrcode"), { text: upi, width: 150, height: 150 });
+            new QRCode(document.getElementById("qrcode"), { text: upi, width: 160, height: 160 });
             document.getElementById('step1').style.display = 'none';
             document.getElementById('step2').style.display = 'block';
         }
 
         async function submitOrder() {
-            // Placeholder for your existing sheet submission logic
-            alert("Order submitted successfully!");
+            alert("Order Submitted. Verifying.");
             cart = []; updateCart(); closeCheckout();
         }
 
-        // Header Injector
-        fetch('/ISHYA-26/header.html')
-            .then(res => res.text())
-            .then(data => {
-                const temp = document.createElement('div');
-                temp.innerHTML = data;
-                document.body.prepend(temp);
-                const script = temp.querySelector('script');
-                if (script) {
-                    const newS = document.createElement('script');
-                    newS.textContent = script.textContent;
-                    document.body.appendChild(newS);
-                }
-            }).catch(e => console.log("No external header found."));
+        fetch('/ISHYA-26/header.html').then(res => res.text()).then(data => {
+            const temp = document.createElement('div');
+            temp.innerHTML = data;
+            document.body.prepend(temp);
+        });
     </script>
 </body>
 </html>
