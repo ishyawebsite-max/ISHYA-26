@@ -18,6 +18,8 @@
             --gold: #f5e9b3;
             --paper-dark: #0a0e0a;
             --paper-light: #121a12;
+            --parchment: #e3dac9;
+            --ink: #1a1a1a;
             --header-h: 70px; 
             --glow: 0 0 15px rgba(167, 243, 5, 0.4);
         }
@@ -74,6 +76,7 @@
         .card {
             background: rgba(18, 26, 18, 0.95);
             border: 1px solid rgba(167, 243, 5, 0.1);
+            /* Static fold for cards */
             clip-path: polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px);
             transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
             position: relative;
@@ -99,25 +102,115 @@
         }
         .controls-row input { width: 70px; text-align: center; }
 
+        /* --- 4. PAPERY FOLDED BUTTONS WITH ANIMATION --- */
         .add-btn {
-            width: 100%; padding: 16px; background: transparent; color: var(--neon); 
-            border: 1px solid var(--neon); font-family: 'Oswald'; letter-spacing: 2px; cursor: pointer;
-            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
-            transition: 0.3s; text-transform: uppercase;
-            text-decoration: none; display: inline-block; text-align: center;
-        }
-        .add-btn:hover { background: var(--neon); color: #000; box-shadow: 0 0 20px var(--neon); }
+            width: 100%; 
+            padding: 16px; 
+            
+            /* Antique Paper Styling */
+            background-color: var(--parchment);
+            color: var(--ink); 
+            border: 1px solid var(--neon); 
+            
+            font-family: 'Oswald'; 
+            letter-spacing: 2px; 
+            font-weight: 700;
+            text-transform: uppercase;
+            text-decoration: none; 
+            display: inline-block; 
+            text-align: center;
+            cursor: pointer;
 
-        /* --- 4. FLOATING CART --- */
+            /* INITIAL FOLDED SHAPE (Angled Corners) */
+            clip-path: polygon(
+                20px 0, 
+                100% 0, 
+                100% calc(100% - 20px), 
+                calc(100% - 20px) 100%, 
+                0 100%, 
+                0 20px
+            );
+            
+            /* Texture */
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 3px),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.25'/%3E%3C/svg%3E");
+            
+            /* The Animation Transition */
+            transition: clip-path 0.5s cubic-bezier(0.19, 1, 0.22, 1), transform 0.3s, background-color 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        /* HOVER STATE: UNFOLD (Perfect Rectangle) */
+        .add-btn:hover, .add-btn.primary-btn:hover {
+            /* Animate to full rectangle */
+            clip-path: polygon(
+                0 0, 
+                100% 0, 
+                100% 100%, 
+                100% 100%, 
+                0 100%, 
+                0 0
+            );
+            
+            background-color: #f2ebd9;
+            box-shadow: 0 0 25px var(--neon), inset 0 0 10px rgba(0,0,0,0.1);
+            border-color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .add-btn.secondary-btn {
+            background-color: #c7bea8;
+            color: #333;
+            border-color: var(--gold);
+        }
+        .add-btn.secondary-btn:hover {
+            background-color: var(--gold);
+            color: #000;
+        }
+
+        /* --- 5. FLOATING CART (Matches Button Animation) --- */
         .cart-floater {
             position: fixed; top: calc(var(--header-h) + 15px); right: 20px; z-index: 9000;
-            background: var(--neon); color: #000; padding: 12px 22px;
-            font-family: 'Oswald'; font-weight: 700; border: none;
-            clip-path: polygon(15% 0, 100% 0, 100% 70%, 85% 100%, 0 100%, 0 30%);
-            box-shadow: var(--glow); cursor: pointer;
+            background-color: var(--parchment);
+            color: var(--ink);
+            padding: 12px 22px;
+            font-family: 'Oswald'; font-weight: 700; border: 2px solid var(--neon);
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 3px),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.25'/%3E%3C/svg%3E");
+            
+            /* Initial Fold */
+            clip-path: polygon(
+                15px 0, 
+                100% 0, 
+                100% calc(100% - 15px), 
+                calc(100% - 15px) 100%, 
+                0 100%, 
+                0 15px
+            );
+
+            transition: clip-path 0.5s cubic-bezier(0.19, 1, 0.22, 1), transform 0.3s;
         }
 
-        /* --- 5. SIDEBAR & MODALS --- */
+        /* Cart Hover: Unfold */
+        .cart-floater:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 0 20px var(--neon);
+            clip-path: polygon(
+                0 0, 
+                100% 0, 
+                100% 100%, 
+                100% 100%, 
+                0 100%, 
+                0 0
+            );
+        }
+
+        /* --- 6. SIDEBAR & MODALS --- */
         .sidebar {
             position: fixed; top: 0; right: -100%; width: 400px; height: 100%;
             background: var(--paper-dark); z-index: 10001; 
@@ -180,7 +273,7 @@
             <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-family:'Oswald'; font-size:1.3rem;">
                 <span>TOTAL</span><span id="cartTotal" style="color:var(--neon);">₹0</span>
             </div>
-            <button class="add-btn" onclick="openCheckout()" style="background:var(--neon); color:#000;">PROCEED TO CHECKOUT</button>
+            <button class="add-btn primary-btn" onclick="openCheckout()">PROCEED TO CHECKOUT</button>
         </div>
     </div>
 
@@ -200,19 +293,19 @@
                     <input type="tel" id="cPhone" placeholder="Phone Number" required style="width:100%; padding:15px; margin-bottom:12px; background:#000; border:1px solid #333; color:white;">
                     <input type="email" id="cEmail" placeholder="Email Address" required style="width:100%; padding:15px; margin-bottom:12px; background:#000; border:1px solid #333; color:white;">
                     <textarea id="cAddress" placeholder="Full Address" required style="width:100%; padding:15px; margin-bottom:12px; background:#000; border:1px solid #333; color:white; height:80px; resize:none;"></textarea>
-                    <button type="submit" class="add-btn">NEXT: PAYMENT</button>
+                    <button type="submit" class="add-btn primary-btn">NEXT: PAYMENT</button>
                 </form>
             </div>
             
-            <!-- Step 2: Payment (WITH CLICK TO PAY) -->
+            <!-- Step 2: Payment -->
             <div id="step2" style="display:none; text-align:center;">
                 <p style="margin-bottom:15px; font-family:'Oswald';">Total Payable: <span id="payAmount" style="color:var(--neon)"></span></p>
                 
                 <!-- QR Code -->
                 <div id="qrcode" style="background:white; padding:12px; display:inline-block; border:4px solid var(--neon)"></div>
                 
-                <!-- MOBILE CLICK TO PAY BUTTON (Added Feature) -->
-                <a id="payBtnLink" href="#" target="_blank" class="add-btn" style="margin: 20px 0; background: #fff; color: #000; border: 2px solid var(--neon); font-weight: 900; box-shadow: 0 0 15px var(--neon);">
+                <!-- MOBILE CLICK TO PAY BUTTON -->
+                <a id="payBtnLink" href="#" target="_blank" class="add-btn primary-btn" style="margin: 20px 0; color: #000; font-weight:900;">
                     CLICK TO PAY (UPI APP)
                 </a>
 
@@ -222,7 +315,11 @@
                     <input type="file" id="receiptFile" accept="image/*" required style="margin-top:5px; color:#aaa; font-size:0.8rem; display:block; width:100%;">
                 </div>
                 
-                <button class="add-btn" onclick="submitOrder()" id="finalBtn" style="background:var(--neon); color:#000">CONFIRM ORDER</button>
+                <!-- Action Buttons -->
+                <div style="display:flex; gap:10px;">
+                    <button class="add-btn secondary-btn" onclick="goBackToStep1()">GO BACK</button>
+                    <button class="add-btn primary-btn" onclick="submitOrder()" id="finalBtn">CONFIRM ORDER</button>
+                </div>
             </div>
         </div>
     </div>
@@ -396,6 +493,11 @@
             document.getElementById('step2').style.display = 'block';
         }
 
+        function goBackToStep1() {
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step1').style.display = 'block';
+        }
+
         // --- SUBMIT FUNCTION ---
         async function submitOrder() {
             const btn = document.getElementById('finalBtn');
@@ -437,6 +539,8 @@
                     if(result.status === 'success') {
                         alert("Order Successfully Placed! ID: " + orderId);
                         cart = []; updateCart(); closeCheckout();
+                        document.getElementById('step1').style.display = 'block';
+                        document.getElementById('step2').style.display = 'none';
                     } else {
                         alert("Server Error: " + result.message);
                     }
