@@ -76,6 +76,7 @@
         .card {
             background: rgba(18, 26, 18, 0.95);
             border: 1px solid rgba(167, 243, 5, 0.1);
+            /* Static fold for cards */
             clip-path: polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px);
             transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
             position: relative;
@@ -101,13 +102,16 @@
         }
         .controls-row input { width: 70px; text-align: center; }
 
-        /* --- 4. PAPERY FOLDED BUTTONS --- */
+        /* --- 4. PAPERY TEXTURE BUTTONS + FOLD ANIMATION --- */
         .add-btn {
             width: 100%; 
             padding: 16px; 
+            
+            /* Antique Paper Styling */
             background-color: var(--parchment);
             color: var(--ink); 
             border: 1px solid var(--neon); 
+            
             font-family: 'Oswald'; 
             letter-spacing: 2px; 
             font-weight: 700;
@@ -116,11 +120,28 @@
             display: inline-block; 
             text-align: center;
             cursor: pointer;
-            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
-            background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 3px), url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.25'/%3E%3C/svg%3E");
+
+            /* INITIAL FOLDED SHAPE (Angled Corners) */
+            clip-path: polygon(
+                20px 0, 
+                100% 0, 
+                100% calc(100% - 20px), 
+                calc(100% - 20px) 100%, 
+                0 100%, 
+                0 20px
+            );
+            
+            /* Paper Texture & Grain */
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 3px),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.25'/%3E%3C/svg%3E");
+            
+            /* Unfold Animation */
             transition: clip-path 0.5s cubic-bezier(0.19, 1, 0.22, 1), transform 0.3s, background-color 0.3s, box-shadow 0.3s;
             position: relative;
         }
+
+        /* HOVER: UNFOLD to Rectangle */
         .add-btn:hover, .add-btn.primary-btn:hover {
             clip-path: polygon(0 0, 100% 0, 100% 100%, 100% 100%, 0 100%, 0 0);
             background-color: #f2ebd9;
@@ -128,10 +149,11 @@
             border-color: #fff;
             transform: translateY(-2px);
         }
+
         .add-btn.secondary-btn { background-color: #c7bea8; color: #333; border-color: var(--gold); }
         .add-btn.secondary-btn:hover { background-color: var(--gold); color: #000; }
 
-        /* --- 5. FLOATING CART --- */
+        /* --- 5. FLOATING CART (Matches Button Style) --- */
         .cart-floater {
             position: fixed; top: calc(var(--header-h) + 15px); right: 20px; z-index: 9000;
             background-color: var(--parchment); color: var(--ink);
@@ -148,27 +170,16 @@
 
         /* --- 6. NOTIFICATION TOAST --- */
         .toast {
-            position: fixed;
-            bottom: 30px;
-            right: -100%; /* Hidden off-screen */
-            background-color: var(--neon);
-            color: #000;
-            padding: 15px 25px;
-            font-family: 'Oswald', sans-serif;
-            font-weight: 700;
-            letter-spacing: 1px;
+            position: fixed; bottom: 30px; right: -100%;
+            background-color: var(--neon); color: #000;
+            padding: 15px 25px; font-family: 'Oswald', sans-serif; font-weight: 700; letter-spacing: 1px;
             z-index: 12000;
-            /* Folded Shape */
             clip-path: polygon(0 0, 95% 0, 100% 20%, 100% 100%, 5% 100%, 0 80%);
             box-shadow: 0 0 30px rgba(167, 243, 5, 0.5);
-            transition: right 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Bouncy slide */
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            transition: right 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            display: flex; align-items: center; gap: 10px;
         }
-        .toast.show {
-            right: 20px;
-        }
+        .toast.show { right: 20px; }
         .toast svg { width: 20px; height: 20px; }
 
         /* --- 7. SIDEBAR & MODALS --- */
@@ -227,7 +238,7 @@
     <!-- NOTIFICATION TOAST -->
     <div id="toast" class="toast">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-        <span>ITEM ADDED. CLICK CART TO CHECKOUT.</span>
+        <span>ITEM ADDED. CHECK CART.</span>
     </div>
 
     <!-- CART SIDEBAR -->
@@ -406,17 +417,14 @@
             if(ex) ex.qty += qty; else cart.push({ ...p, size, qty });
             
             updateCart();
-            showToast(); // Trigger Notification
+            showToast();
         }
 
-        // --- NEW TOAST FUNCTION ---
+        // --- TOAST NOTIFICATION ---
         function showToast() {
             const t = document.getElementById('toast');
             t.classList.add('show');
-            // Hide after 3 seconds
-            setTimeout(() => {
-                t.classList.remove('show');
-            }, 3000);
+            setTimeout(() => { t.classList.remove('show'); }, 3000);
         }
 
         function updateCart() {
@@ -460,14 +468,11 @@
             const total = cart.reduce((a,b) => a + (b.price*b.qty), 0);
             document.getElementById('payAmount').innerText = "₹" + total;
             
-            // GENERATE UPI LINK
             const upi = `upi://pay?pa=${UPI_ID}&pn=IshyaMerch&am=${total}&tn=Order`;
             
-            // UPDATE QR CODE
             document.getElementById('qrcode').innerHTML = "";
             new QRCode(document.getElementById("qrcode"), { text: upi, width: 160, height: 160 });
             
-            // UPDATE CLICK-TO-PAY BUTTON
             const payBtn = document.getElementById('payBtnLink');
             payBtn.href = upi;
             
@@ -500,10 +505,10 @@
                 const payload = {
                     orderId: orderId,
                     customerName: document.getElementById('cName').value,
-                    rollNumber: document.getElementById('cRoll').value || "N/A", // Handle Optional
+                    rollNumber: document.getElementById('cRoll').value || "N/A", // Optional
                     customerEmail: document.getElementById('cEmail').value,
                     customerPhone: document.getElementById('cPhone').value,
-                    address: document.getElementById('cAddress').value || "N/A", // Handle Optional
+                    address: document.getElementById('cAddress').value || "N/A", // Optional
                     totalPrice: total,
                     cart: cart,
                     receiptImage: fullBase64 
