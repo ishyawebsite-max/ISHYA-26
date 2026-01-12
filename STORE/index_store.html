@@ -76,7 +76,6 @@
         .card {
             background: rgba(18, 26, 18, 0.95);
             border: 1px solid rgba(167, 243, 5, 0.1);
-            /* Static fold for cards */
             clip-path: polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px);
             transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
             position: relative;
@@ -102,16 +101,13 @@
         }
         .controls-row input { width: 70px; text-align: center; }
 
-        /* --- 4. PAPERY FOLDED BUTTONS WITH ANIMATION --- */
+        /* --- 4. PAPERY FOLDED BUTTONS --- */
         .add-btn {
             width: 100%; 
             padding: 16px; 
-            
-            /* Antique Paper Styling */
             background-color: var(--parchment);
             color: var(--ink); 
             border: 1px solid var(--neon); 
-            
             font-family: 'Oswald'; 
             letter-spacing: 2px; 
             font-weight: 700;
@@ -120,97 +116,62 @@
             display: inline-block; 
             text-align: center;
             cursor: pointer;
-
-            /* INITIAL FOLDED SHAPE (Angled Corners) */
-            clip-path: polygon(
-                20px 0, 
-                100% 0, 
-                100% calc(100% - 20px), 
-                calc(100% - 20px) 100%, 
-                0 100%, 
-                0 20px
-            );
-            
-            /* Texture */
-            background-image: 
-                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 3px),
-                url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.25'/%3E%3C/svg%3E");
-            
-            /* The Animation Transition */
+            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 3px), url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.25'/%3E%3C/svg%3E");
             transition: clip-path 0.5s cubic-bezier(0.19, 1, 0.22, 1), transform 0.3s, background-color 0.3s, box-shadow 0.3s;
             position: relative;
         }
-
-        /* HOVER STATE: UNFOLD (Perfect Rectangle) */
         .add-btn:hover, .add-btn.primary-btn:hover {
-            /* Animate to full rectangle */
-            clip-path: polygon(
-                0 0, 
-                100% 0, 
-                100% 100%, 
-                100% 100%, 
-                0 100%, 
-                0 0
-            );
-            
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 100% 100%, 0 100%, 0 0);
             background-color: #f2ebd9;
             box-shadow: 0 0 25px var(--neon), inset 0 0 10px rgba(0,0,0,0.1);
             border-color: #fff;
             transform: translateY(-2px);
         }
+        .add-btn.secondary-btn { background-color: #c7bea8; color: #333; border-color: var(--gold); }
+        .add-btn.secondary-btn:hover { background-color: var(--gold); color: #000; }
 
-        .add-btn.secondary-btn {
-            background-color: #c7bea8;
-            color: #333;
-            border-color: var(--gold);
-        }
-        .add-btn.secondary-btn:hover {
-            background-color: var(--gold);
-            color: #000;
-        }
-
-        /* --- 5. FLOATING CART (Matches Button Animation) --- */
+        /* --- 5. FLOATING CART --- */
         .cart-floater {
             position: fixed; top: calc(var(--header-h) + 15px); right: 20px; z-index: 9000;
-            background-color: var(--parchment);
-            color: var(--ink);
-            padding: 12px 22px;
-            font-family: 'Oswald'; font-weight: 700; border: 2px solid var(--neon);
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            
-            background-image: 
-                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 3px),
-                url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.25'/%3E%3C/svg%3E");
-            
-            /* Initial Fold */
-            clip-path: polygon(
-                15px 0, 
-                100% 0, 
-                100% calc(100% - 15px), 
-                calc(100% - 15px) 100%, 
-                0 100%, 
-                0 15px
-            );
-
+            background-color: var(--parchment); color: var(--ink);
+            padding: 12px 22px; font-family: 'Oswald'; font-weight: 700; border: 2px solid var(--neon);
+            cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 3px), url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.25'/%3E%3C/svg%3E");
+            clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
             transition: clip-path 0.5s cubic-bezier(0.19, 1, 0.22, 1), transform 0.3s;
         }
-
-        /* Cart Hover: Unfold */
         .cart-floater:hover { 
-            transform: scale(1.05); 
-            box-shadow: 0 0 20px var(--neon);
-            clip-path: polygon(
-                0 0, 
-                100% 0, 
-                100% 100%, 
-                100% 100%, 
-                0 100%, 
-                0 0
-            );
+            transform: scale(1.05); box-shadow: 0 0 20px var(--neon);
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 100% 100%, 0 100%, 0 0);
         }
 
-        /* --- 6. SIDEBAR & MODALS --- */
+        /* --- 6. NOTIFICATION TOAST --- */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: -100%; /* Hidden off-screen */
+            background-color: var(--neon);
+            color: #000;
+            padding: 15px 25px;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+            z-index: 12000;
+            /* Folded Shape */
+            clip-path: polygon(0 0, 95% 0, 100% 20%, 100% 100%, 5% 100%, 0 80%);
+            box-shadow: 0 0 30px rgba(167, 243, 5, 0.5);
+            transition: right 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Bouncy slide */
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toast.show {
+            right: 20px;
+        }
+        .toast svg { width: 20px; height: 20px; }
+
+        /* --- 7. SIDEBAR & MODALS --- */
         .sidebar {
             position: fixed; top: 0; right: -100%; width: 400px; height: 100%;
             background: var(--paper-dark); z-index: 10001; 
@@ -231,6 +192,8 @@
             .sidebar { width: 100%; }
             .cart-floater { top: auto; bottom: 25px; right: 20px; }
             .grid { padding-bottom: 120px; }
+            .toast { bottom: 90px; right: -100%; font-size: 0.9rem; }
+            .toast.show { right: 10px; }
         }
     </style>
 </head>
@@ -261,6 +224,12 @@
         <div class="grid" id="productGrid"></div>
     </div>
 
+    <!-- NOTIFICATION TOAST -->
+    <div id="toast" class="toast">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        <span>ITEM ADDED. CLICK CART TO CHECKOUT.</span>
+    </div>
+
     <!-- CART SIDEBAR -->
     <div class="sidebar-overlay" id="sbOverlay" onclick="toggleCart()"></div>
     <div class="sidebar" id="sidebar">
@@ -288,11 +257,13 @@
             <!-- Step 1: Details -->
             <div id="step1">
                 <form onsubmit="goToPayment(event)">
-                    <input type="text" id="cName" placeholder="Full Name" required style="width:100%; padding:15px; margin-bottom:12px; background:#000; border:1px solid #333; color:white;">
-                    <input type="text" id="cRoll" placeholder="Roll Number" required style="width:100%; padding:15px; margin-bottom:12px; background:#000; border:1px solid #333; color:white;">
-                    <input type="tel" id="cPhone" placeholder="Phone Number" required style="width:100%; padding:15px; margin-bottom:12px; background:#000; border:1px solid #333; color:white;">
-                    <input type="email" id="cEmail" placeholder="Email Address" required style="width:100%; padding:15px; margin-bottom:12px; background:#000; border:1px solid #333; color:white;">
-                    <textarea id="cAddress" placeholder="Full Address" required style="width:100%; padding:15px; margin-bottom:12px; background:#000; border:1px solid #333; color:white; height:80px; resize:none;"></textarea>
+                    <input type="text" id="cName" placeholder="Full Name (Required)" required style="width:100%; padding:15px; margin-bottom:12px; background:#000; border:1px solid #333; color:white;">
+                    <!-- OPTIONAL FIELDS -->
+                    <input type="text" id="cRoll" placeholder="IMS Number (Optional)" style="width:100%; padding:15px; margin-bottom:12px; background:#000; border:1px solid #333; color:white;">
+                    <input type="tel" id="cPhone" placeholder="Phone Number (Required)" required style="width:100%; padding:15px; margin-bottom:12px; background:#000; border:1px solid #333; color:white;">
+                    <input type="email" id="cEmail" placeholder="Email Address (Required)" required style="width:100%; padding:15px; margin-bottom:12px; background:#000; border:1px solid #333; color:white;">
+                    <textarea id="cAddress" placeholder="Full Address (Optional)" style="width:100%; padding:15px; margin-bottom:12px; background:#000; border:1px solid #333; color:white; height:80px; resize:none;"></textarea>
+                    
                     <button type="submit" class="add-btn primary-btn">NEXT: PAYMENT</button>
                 </form>
             </div>
@@ -301,7 +272,6 @@
             <div id="step2" style="display:none; text-align:center;">
                 <p style="margin-bottom:15px; font-family:'Oswald';">Total Payable: <span id="payAmount" style="color:var(--neon)"></span></p>
                 
-                <!-- QR Code -->
                 <div id="qrcode" style="background:white; padding:12px; display:inline-block; border:4px solid var(--neon)"></div>
                 
                 <!-- MOBILE CLICK TO PAY BUTTON -->
@@ -378,7 +348,7 @@
 
         // --- 2. CORE LOGIC ---
         // !!! REPLACE WITH YOUR DEPLOYED SCRIPT URL !!!
-        const API = "https://script.google.com/macros/s/AKfycbxpERF04YBoeR9B-wet2Rl5XmFIDPSxr49VpqM2gjgvocngbPzIGSCZwczU2pvYxXVkmQ/exec"; 
+        const API = "https://script.google.com/macros/s/AKfycbwCDxMQV5w7fhPVFgkH45V7XnF4tMKgooBZ5flj0I-1OduMgAstx4C-ilnQrIyqXTVz0w/exec"; 
         
         const UPI_ID = "8113099230@upi";
         let products = [];
@@ -434,7 +404,19 @@
 
             const ex = cart.find(i => i.id === p.id && i.size === size);
             if(ex) ex.qty += qty; else cart.push({ ...p, size, qty });
+            
             updateCart();
+            showToast(); // Trigger Notification
+        }
+
+        // --- NEW TOAST FUNCTION ---
+        function showToast() {
+            const t = document.getElementById('toast');
+            t.classList.add('show');
+            // Hide after 3 seconds
+            setTimeout(() => {
+                t.classList.remove('show');
+            }, 3000);
         }
 
         function updateCart() {
@@ -518,10 +500,10 @@
                 const payload = {
                     orderId: orderId,
                     customerName: document.getElementById('cName').value,
-                    rollNumber: document.getElementById('cRoll').value,
+                    rollNumber: document.getElementById('cRoll').value || "N/A", // Handle Optional
                     customerEmail: document.getElementById('cEmail').value,
                     customerPhone: document.getElementById('cPhone').value,
-                    address: document.getElementById('cAddress').value,
+                    address: document.getElementById('cAddress').value || "N/A", // Handle Optional
                     totalPrice: total,
                     cart: cart,
                     receiptImage: fullBase64 
