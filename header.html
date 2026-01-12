@@ -1,4 +1,4 @@
-<!-- ISHYA AERO / REFINED LIGHT FLUID HEADER -->
+<!-- ISHYA AERO / STICKY GLASS HEADER -->
 <style>
     :root {
         --ishya-gold: #f0d57a;
@@ -6,62 +6,62 @@
         --ishya-peach: #ffb08e;
         --ishya-creme: #fef9c3;
         --ishya-white: #ffffff;
-        --ishya-dark: rgba(10, 12, 18, 0.75);
-        --ishya-glass-tint: rgba(255, 255, 255, 0.08); /* The subtle whitening */
-        --anim-fluid: cubic-bezier(0.4, 0, 0.2, 1);
-        --bar-height: 65px; 
+        --ishya-dark-aero: rgba(5, 8, 15, 0.6); /* Translucent dark base */
+        --ishya-glass-bright: rgba(255, 255, 255, 0.12); /* Light whitening */
+        --anim-fluid: cubic-bezier(0.16, 1, 0.3, 1);
+        --bar-height: 75px; 
     }
 
     body { margin: 0; background-color: #05050a; }
 
-    /* 1. CONTENT SPACER - Pushes page content down */
+    /* 1. CONTENT SPACER */
     .ishya-header-spacer {
         display: block;
         width: 100%;
         height: var(--bar-height);
     }
 
-    /* 2. AERO BACKDROP WITH SUBTLE FLUIDS */
+    /* 2. AERO BACKDROP WITH LIGHT FLUIDS */
     .ishya-nav-backdrop {
         position: fixed;
         top: 0; left: 0;
         width: 100%; height: var(--bar-height);
-        background: var(--ishya-dark);
-        backdrop-filter: blur(25px) saturate(140%);
-        -webkit-backdrop-filter: blur(25px) saturate(140%);
+        background: var(--ishya-dark-aero);
+        backdrop-filter: blur(35px) saturate(160%);
+        -webkit-backdrop-filter: blur(35px) saturate(160%);
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         z-index: 9997;
         overflow: hidden;
     }
 
-    /* Subtle Whitening Tint Overlay */
-    .ishya-nav-backdrop::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(180deg, var(--ishya-glass-tint) 0%, transparent 100%);
-        pointer-events: none;
-    }
-
-    /* LIGHT FLUID LAYER - Reduced density & subtle movement */
+    /* Subtle Light Fluid Layer */
     .ishya-fluid-layer {
         position: absolute;
-        inset: -20%;
+        inset: -30%;
         z-index: -1;
-        opacity: 0.25; /* Very light */
-        filter: blur(50px);
+        opacity: 0.2; /* Toned down density as requested */
+        filter: blur(60px);
         background: 
-            radial-gradient(circle at 20% 30%, var(--ishya-green) 0%, transparent 40%),
-            radial-gradient(circle at 80% 70%, var(--ishya-gold) 0%, transparent 40%),
+            radial-gradient(circle at 15% 25%, var(--ishya-green) 0%, transparent 40%),
+            radial-gradient(circle at 85% 75%, var(--ishya-gold) 0%, transparent 40%),
             radial-gradient(circle at 50% 50%, var(--ishya-peach) 0%, transparent 35%),
-            radial-gradient(circle at 10% 80%, var(--ishya-creme) 0%, transparent 30%);
-        animation: fluidDrift 25s ease-in-out infinite alternate;
+            radial-gradient(circle at 30% 85%, var(--ishya-creme) 0%, transparent 30%);
+        animation: fluidDrift 30s ease-in-out infinite alternate;
         will-change: transform;
     }
 
     @keyframes fluidDrift {
-        from { transform: translate(0, 0) rotate(0deg) scale(1); }
-        to { transform: translate(5%, 2%) rotate(5deg) scale(1.1); }
+        from { transform: translate(0, 0) scale(1); }
+        to { transform: translate(4%, 3%) scale(1.15); }
+    }
+
+    /* Top Whitening Glow */
+    .ishya-nav-backdrop::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0; height: 1px;
+        background: linear-gradient(90deg, transparent, var(--ishya-glass-bright), transparent);
+        z-index: 2;
     }
 
     /* 3. NAV CONTAINER PILL */
@@ -71,36 +71,40 @@
         top: 10px;
         left: 50%;
         transform: translateX(-50%);
-        width: 45px; 
-        height: 45px;
-        background: rgba(255, 255, 255, 0.05);
+        width: 56px; /* Increased to fit larger logo */
+        height: 56px;
+        background: rgba(255, 255, 255, 0.04); /* Highly translucent */
         border: 1px solid var(--ishya-gold);
-        border-radius: 25px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        border-radius: 30px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.6);
         overflow: hidden;
         cursor: pointer;
-        will-change: width, height, top;
+        will-change: width, height, background;
         transition: 
-            width 0.5s var(--anim-fluid),
-            height 0.5s var(--anim-fluid),
-            top 0.4s var(--anim-fluid),
-            border-radius 0.3s ease;
+            width 0.6s var(--anim-fluid),
+            height 0.6s var(--anim-fluid),
+            background 0.4s ease,
+            border-radius 0.4s ease;
     }
 
-    /* LOGO */
+    /* LOGO - Increased Size */
     .ishya-logo-btn {
         position: absolute;
-        top: 0; left: 0; width: 100%; height: 45px;
+        top: 0; left: 0; width: 100%; height: 56px;
         display: flex; justify-content: center; align-items: center;
-        transition: opacity 0.2s ease;
+        transition: opacity 0.3s ease, transform 0.3s ease;
     }
-    .ishya-logo-btn img { height: 24px; filter: drop-shadow(0 0 5px var(--ishya-green)); }
+    .ishya-logo-btn img { 
+        height: 38px; /* Increased Size */
+        width: auto;
+        filter: drop-shadow(0 0 10px var(--ishya-green));
+    }
 
     /* MENU GRID */
     .ishya-menu-grid {
         display: flex; width: 100%; height: 100%;
         align-items: center; justify-content: space-evenly;
-        opacity: 0; pointer-events: none; padding: 0 10px;
+        opacity: 0; pointer-events: none;
         box-sizing: border-box;
     }
 
@@ -108,65 +112,75 @@
         display: flex; flex-direction: column; 
         align-items: center; justify-content: center;
         text-decoration: none; color: #fff;
-        padding: 5px; min-width: 80px;
-        transition: transform 0.2s ease, opacity 0.2s ease;
+        padding: 8px; min-width: 90px;
+        transition: transform 0.3s var(--anim-fluid);
     }
 
     .ishya-link svg {
-        width: 20px; height: 20px;
+        width: 24px; height: 24px;
         stroke: var(--ishya-green);
-        fill: none; stroke-width: 2;
-        margin-bottom: 4px;
-        transition: stroke 0.3s ease;
+        fill: none; stroke-width: 1.8;
+        margin-bottom: 5px;
+        transition: stroke 0.3s ease, transform 0.3s ease;
     }
 
     .ishya-link span {
-        font-size: 9px; font-weight: 800;
-        letter-spacing: 0.8px; text-transform: uppercase;
+        font-size: 10px; font-weight: 800;
+        letter-spacing: 1px; text-transform: uppercase;
         color: var(--ishya-creme); opacity: 0.8;
     }
 
-    /* 4. EXPANDED STATE (Desktop) */
+    /* 4. EXPANDED STATE (Translucent & Sticky) */
     .ishya-nav-container.expanded {
-        width: 800px; height: 54px;
-        border-radius: 10px;
-        background: rgba(0, 0, 0, 0.4);
-        border-color: rgba(255,255,255,0.1);
-        top: 5px;
+        width: 880px; 
+        height: 68px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.03); /* Ultra translucent expanded menu */
+        border-color: rgba(255, 255, 255, 0.15);
+        top: 4px;
     }
-    .ishya-nav-container.expanded .ishya-logo-btn { opacity: 0; pointer-events: none; }
-    .ishya-nav-container.expanded .ishya-menu-grid { opacity: 1; pointer-events: auto; }
 
-    .ishya-link:hover svg { stroke: var(--ishya-gold); transform: translateY(-2px); }
-    .ishya-link:hover span { opacity: 1; color: #fff; }
+    .ishya-nav-container.expanded .ishya-logo-btn { 
+        opacity: 0; 
+        transform: scale(0.8);
+        pointer-events: none; 
+    }
+    .ishya-nav-container.expanded .ishya-menu-grid { 
+        opacity: 1; 
+        pointer-events: auto; 
+    }
 
-    /* 5. MOBILE OPTIMIZATION (No jitter, Origami focus) */
+    .ishya-link:hover { transform: translateY(-3px); }
+    .ishya-link:hover svg { stroke: var(--ishya-gold); }
+    .ishya-link:hover span { opacity: 1; color: #fff; text-shadow: 0 0 10px var(--ishya-gold); }
+
+    /* 5. MOBILE OPTIMIZATION */
     @media screen and (max-width: 900px) {
-        .ishya-nav-container { top: 10px; width: 45px; height: 45px; }
+        .ishya-nav-container { top: 10px; width: 56px; height: 56px; }
 
         .ishya-nav-container.expanded {
-            width: 92%; height: auto; min-height: 350px;
-            top: 10px; border-radius: 20px;
-            padding-bottom: 25px;
+            width: 94%; height: auto; min-height: 380px;
+            top: 10px; border-radius: 24px;
+            background: rgba(10, 15, 20, 0.9); /* Darker on mobile for readability */
+            padding-bottom: 30px;
         }
 
         .ishya-nav-container.expanded .ishya-menu-grid {
             display: grid; grid-template-columns: repeat(2, 1fr);
-            gap: 15px; padding: 65px 15px 0 15px;
+            gap: 15px; padding: 75px 15px 0 15px;
         }
 
         .ishya-link {
-            background: rgba(255,255,255,0.03);
+            background: rgba(255,255,255,0.04);
             padding: 25px 10px;
-            /* Subtler Origami Fold Effect */
             clip-path: polygon(0 0, 100% 0, 100% 88%, 88% 100%, 0 100%);
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.06);
         }
 
+        /* Keep logo visible as a header inside the mobile menu */
         .ishya-nav-container.expanded .ishya-logo-btn {
-            opacity: 1; height: 50px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            background: rgba(255,255,255,0.02);
+            opacity: 1; transform: scale(1); height: 60px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
     }
 </style>
@@ -182,7 +196,7 @@
         <div class="ishya-logo-btn">
             <img src="/ISHYA-26/Logo Ishya.ico" alt="ISHYA" 
                  onerror="this.style.display='none'; document.getElementById('ishyaFallback').style.display='block';">
-            <span id="ishyaFallback" style="display:none; color:var(--ishya-gold); font-size:11px; font-weight:bold;">ISHYA</span>
+            <span id="ishyaFallback" style="display:none; color:var(--ishya-gold); font-size:14px; font-weight:bold; letter-spacing:2px;">ISHYA</span>
         </div>
 
         <div class="ishya-menu-grid">
@@ -195,15 +209,15 @@
                 <span>Events</span>
             </a>
             <a href="/ISHYA-26/merch.html" class="ishya-link">
-                <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><circle cx="12" cy="12" r="3"/><path d="M9 6a3 3 0 1 0 6 0"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M9 6a3 3 0 1 0 6 0"/><circle cx="12" cy="13" r="3"/></svg>
                 <span>Merch</span>
             </a>
             <a href="/ISHYA-26/sponsors.html" class="ishya-link">
-                <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 <span>Sponsors</span>
             </a>
             <a href="/ISHYA-26/team.html" class="ishya-link">
-                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/></svg>
                 <span>Team</span>
             </a>
             <a href="/ISHYA-26/results.html" class="ishya-link">
@@ -219,19 +233,30 @@
         const nav = document.getElementById('ishyaHeader');
         let isExpanded = false;
 
-        const toggleNav = (forceState) => {
-            isExpanded = forceState !== undefined ? forceState : !isExpanded;
+        const toggleNav = (state) => {
+            isExpanded = (state !== undefined) ? state : !isExpanded;
             nav.classList.toggle('expanded', isExpanded);
         };
 
-        nav.addEventListener('mouseenter', () => { if(window.innerWidth > 900) toggleNav(true); });
-        nav.addEventListener('mouseleave', () => { if(window.innerWidth > 900) toggleNav(false); });
-        nav.addEventListener('click', (e) => {
-            if (e.target.closest('a')) return;
-            toggleNav();
+        // Desktop Hover functionality (Optional, but usually expected)
+        nav.addEventListener('mouseenter', () => { 
+            if(window.innerWidth > 900 && !isExpanded) nav.classList.add('expanded'); 
         });
+        nav.addEventListener('mouseleave', () => { 
+            if(window.innerWidth > 900 && !isExpanded) nav.classList.remove('expanded'); 
+        });
+
+        // Sticky Click functionality
+        nav.addEventListener('click', (e) => {
+            if (e.target.closest('a')) return; // Allow links to be clicked
+            toggleNav(); // This "latches" it open
+        });
+
+        // Close when clicking anywhere outside
         document.addEventListener('click', (e) => {
-            if (!nav.contains(e.target) && isExpanded) toggleNav(false);
+            if (!nav.contains(e.target) && isExpanded) {
+                toggleNav(false);
+            }
         });
     })();
 </script>
