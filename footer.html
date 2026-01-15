@@ -1,3 +1,6 @@
+<!-- Font Awesome (Ensures icons load) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
 <style>
     :root {
         --footer-bg: #010801; 
@@ -8,13 +11,16 @@
     }
 
     .footer-container {
-        background-color: var(--footer-bg);
+        background-color: var(--footer-bg) !important;
         padding: 80px 20px 0 20px;
         position: relative;
         border-top: 3px solid var(--neon-green);
-        box-shadow: 0 -15px 40px rgba(167, 243, 5, 0.15);
-        color: white;
+        box-shadow: 0 -15px 40px rgba(167, 243, 5, 0.2);
+        color: white !important;
         font-family: 'Montserrat', sans-serif;
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .footer-limit {
@@ -28,7 +34,9 @@
         font-size: 3.5rem;
         color: var(--gold-footer);
         margin-bottom: 60px;
-        letter-spacing: 1px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        text-shadow: 0 0 10px rgba(167, 243, 5, 0.4);
     }
 
     .info-grid {
@@ -39,69 +47,80 @@
         margin-bottom: 50px;
     }
 
-    .addr { font-size: 1.1rem; line-height: 1.8; font-weight: 600; }
+    .addr { 
+        font-size: 1.1rem; 
+        line-height: 1.8; 
+        font-weight: 600;
+        color: white !important;
+    }
 
-    /* --- Social Media Icon Styling Refined --- */
+    /* --- RE-FIXED SOCIAL MEDIA ICONS --- */
     .soc-flex { 
         display: flex; 
         justify-content: center; 
-        gap: 15px; 
+        gap: 15px;
+        list-style: none;
+        padding: 0;
     }
 
     .soc-btn {
-        width: 55px; 
-        height: 50px;
-        background: #111; 
-        color: white;
-        display: flex; 
-        align-items: center; 
-        justify-content: center;
-        text-decoration: none;
-        /* Trapezoid fold */
-        clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
-        border-bottom: 3px solid var(--neon-green);
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        width: 55px !important; 
+        height: 50px !important;
+        background: #111 !important; 
+        color: white !important;
+        display: flex !important; 
+        align-items: center !important; 
+        justify-content: center !important;
+        text-decoration: none !important;
+        
+        /* THE ORIGAMI SHAPE */
+        clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+        border-bottom: 3px solid var(--neon-green) !important;
+        transition: all 0.3s ease !important;
+        position: relative;
     }
 
-    /* Target the Font Awesome Icon specifically */
     .soc-btn i {
-        font-size: 1.4rem;
-        transition: transform 0.3s ease;
-        /* Counter-act the clip-path visually if needed */
-        margin-top: 2px; 
+        font-size: 1.4rem !important;
+        color: white !important;
+        display: inline-block;
+        font-style: normal;
     }
 
     .soc-btn:hover {
-        transform: scale(1.25);
-        background: var(--neon-green);
-        color: black;
-        box-shadow: 0 0 20px var(--neon-green);
+        transform: scale(1.2) translateY(-5px) !important;
+        background: var(--neon-green) !important;
+        box-shadow: 0 0 20px var(--neon-green) !important;
     }
 
     .soc-btn:hover i {
-        transform: scale(1.1);
+        color: black !important; /* Icon turns black when background is neon green */
     }
 
-    .cont-right { text-align: right; font-size: 1.2rem; line-height: 1.6; }
-    .cont-right a { color: white; text-decoration: none; font-weight: 600; }
-    .cont-right a:hover { color: var(--neon-green); }
+    /* --- CONTACT AND GRIEVANCE --- */
+    .cont-right { 
+        text-align: right; 
+        font-size: 1.2rem; 
+        line-height: 1.6;
+        color: white !important;
+    }
+    
+    .cont-right a { color: white !important; text-decoration: none; font-weight: 600; }
+    .cont-right a:hover { color: var(--neon-green) !important; }
 
     .griev-box { text-align: center; margin-bottom: 60px; }
-    .griev-box h3 { font-size: 1.4rem; margin-bottom: 10px; font-weight: 400; }
-    .griev-link { color: var(--link-blue); text-decoration: underline; font-size: 1.8rem; font-weight: bold; }
+    .griev-box h3 { font-size: 1.4rem; margin-bottom: 10px; font-weight: 400; color: white !important; }
+    .griev-link { color: var(--link-blue) !important; text-decoration: underline; font-size: 1.8rem; font-weight: bold; }
+    .griev-link:hover { color: var(--neon-green) !important; }
 
+    /* --- MAP --- */
     .map-frame {
         width: 100%; 
         height: 500px; 
         background: #000;
-        /* Origami Chamfered Corner */
         clip-path: polygon(50px 0%, 100% 0, 100% 100%, 0 100%, 0 50px);
         border-top: 2px solid var(--map-dark);
         overflow: hidden;
-    }
-
-    iframe {
-        filter: contrast(1.1) brightness(0.9);
     }
 
     @media (max-width: 850px) {
@@ -124,11 +143,11 @@
                 Kerala, India.
             </div>
 
-            <div class="social-col">
-                    <a href="https://www.youtube.com/@IshyaIISERTVM/" class="social-btn"><i class="fab fa-youtube"></i></a>
-                    <a href="http://facebook.com/ishya.iisertvm" class="social-btn"><i class="fab fa-facebook-f"></i></a>
-                    <a href="http://twitter.com/ishya_iiser" class="social-btn"><i class="fab fa-x-twitter"></i></a>
-                    <a href="http://instagram.com/ishyaiiser" class="social-btn"><i class="fab fa-instagram"></i></a>
+            <div class="soc-flex">
+                <a href="https://www.youtube.com/@IshyaIISERTVM/" class="social-btn"><i class="fab fa-youtube"></i></a>
+                <a href="http://facebook.com/ishya.iisertvm" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+                <a href="http://twitter.com/ishya_iiser" class="social-btn"><i class="fab fa-x-twitter"></i></a>
+                <a href="http://instagram.com/ishyaiiser" class="social-btn"><i class="fab fa-instagram"></i></a>
             </div>
 
             <div class="cont-right">
@@ -136,11 +155,16 @@
                 <a href="mailto:ishya@iisertvm.ac.in">ishya@iisertvm.ac.in</a>
             </div>
         </div>
+
+        <div class="griev-box">
+            <h3>Facing Any Problems? Let Us Hear You</h3>
+            <a href="#" class="griev-link">Grievance Redressal</a>
+        </div>
     </div>
 
     <div class="map-frame">
         <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6562.278375261178!2d77.13519762242566!3d8.683001054717769!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b05bec780ab70fd%3A0xc960a94d0cef086f!2sIndian%20Institute%20of%20Science%20Education%20and%20Research%20Thiruvananthapuram!5e1!3m2!1sen!2sin!4v1768454289149!5m2!1sen!2sin&maptype=satellite"  
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6562.278375261178!2d77.13519762242566!3d8.683001054717769!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b05bec780ab70fd%3A0xc960a94d0cef086f!2sIndian%20Institute%20of%20Science%20Education%20and%20Research%20Thiruvananthapuram!5e1!3m2!1sen!2sin!4v1768454289149!5m2!1sen!2sin&maptype=satellite"   
             width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
         </iframe>
     </div>
