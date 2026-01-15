@@ -279,17 +279,18 @@
         }, 1000);
     </script>
 
-    <!-- This is where the footer will appear -->
-    <div id="footer-placeholder"></div>
+  <div id="footer-placeholder"></div>
 
-    <!-- Script to load the footer -->
+    <!-- 2. JAVASCRIPT TO CALL THE FOOTER -->
     <script>
         fetch('footer.html')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('footer-placeholder').innerHTML = data;
-            });
+            })
+            .catch(error => console.error('Error loading the footer:', error));
     </script>
+
 </body>
 </html>
 </body>
