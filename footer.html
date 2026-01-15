@@ -1,43 +1,36 @@
-<!-- 
-  NOTE: This file contains both the styles and the HTML for the footer.
-  You can call this into your index.html using JavaScript fetch.
--->
-
 <style>
     :root {
-        --bg-black: #010801; /* Deepest green-black */
-        --neon-green: #39FF14;
-        --dark-emerald: #052205;
-        --gold-text: #e2c08d;
+        --footer-bg: #010801; 
+        --neon-green: #a7f305; 
+        --map-dark: #052205;
+        --gold-footer: #e2c08d;
         --link-blue: #3b82f6;
     }
 
-    /* Footer Container with Neon Top Fold */
     .footer-container {
-        background-color: var(--bg-black);
+        background-color: var(--footer-bg);
         padding: 80px 20px 0 20px;
         position: relative;
         border-top: 3px solid var(--neon-green);
-        box-shadow: 0 -15px 40px rgba(57, 255, 20, 0.15);
+        box-shadow: 0 -15px 40px rgba(167, 243, 5, 0.15);
         color: white;
         font-family: 'Montserrat', sans-serif;
     }
 
-    .content-limit {
+    .footer-limit {
         max-width: 1200px;
         margin: 0 auto;
     }
 
-    .header-title {
+    .f-header {
         text-align: center;
         font-family: 'Playfair Display', serif;
         font-size: 3.5rem;
-        color: var(--gold-text);
+        color: var(--gold-footer);
         margin-bottom: 60px;
         letter-spacing: 1px;
     }
 
-    /* Main Information Grid */
     .info-grid {
         display: grid;
         grid-template-columns: 1.2fr 0.6fr 1.2fr;
@@ -46,124 +39,59 @@
         margin-bottom: 50px;
     }
 
-    .address-col {
-        font-size: 1.1rem;
-        line-height: 1.8;
-        font-weight: 600;
-    }
+    .addr { font-size: 1.1rem; line-height: 1.8; font-weight: 600; }
 
-    /* Social Buttons - Origami Trapezoid Fold */
-    .social-col {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-    }
+    .soc-flex { display: flex; justify-content: center; gap: 15px; }
 
-    .social-btn {
-        width: 50px;
-        height: 50px;
-        background: #111;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .soc-btn {
+        width: 50px; height: 50px;
+        background: #111; color: white;
+        display: flex; align-items: center; justify-content: center;
         text-decoration: none;
         clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
         border-bottom: 2px solid var(--neon-green);
         transition: transform 0.3s ease, background 0.3s ease;
     }
 
-    /* Expand Animation on Hover */
-    .social-btn:hover {
-        transform: scale(1.25);
+    .soc-btn:hover {
+        transform: scale(1.3);
         background: var(--neon-green);
         color: black;
-        box-shadow: 0 0 20px var(--neon-green);
     }
 
-    .contact-col {
-        text-align: right;
-        font-size: 1.2rem;
-        line-height: 1.6;
-    }
+    .cont-right { text-align: right; font-size: 1.2rem; line-height: 1.6; }
+    .cont-right a { color: white; text-decoration: none; font-weight: 600; }
+    .cont-right a:hover { color: var(--neon-green); }
 
-    .contact-col a {
-        color: white;
-        text-decoration: none;
-        font-weight: 600;
-        transition: 0.3s;
-    }
+    .griev-box { text-align: center; margin-bottom: 60px; }
+    .griev-box h3 { font-size: 1.4rem; margin-bottom: 10px; font-weight: 400; }
+    .griev-link { color: var(--link-blue); text-decoration: underline; font-size: 1.8rem; font-weight: bold; }
 
-    .contact-col a:hover {
-        color: var(--neon-green);
-        text-shadow: 0 0 10px var(--neon-green);
-    }
-
-    /* Grievance Section */
-    .grievance-wrap {
-        text-align: center;
-        margin-bottom: 60px;
-    }
-
-    .grievance-wrap h3 {
-        font-size: 1.5rem;
-        margin-bottom: 10px;
-        font-weight: 400;
-    }
-
-    .grievance-link {
-        color: var(--link-blue);
-        text-decoration: underline;
-        font-size: 1.8rem;
-        font-weight: bold;
-        transition: 0.3s;
-    }
-
-    .grievance-link:hover {
-        color: var(--neon-green);
-        text-shadow: 0 0 15px var(--neon-green);
-    }
-
-    /* Map Box - Final Element with Origami Chamfer */
-    .map-box {
-        width: 100%;
-        height: 500px;
-        background: #000;
-        position: relative;
+    .map-frame {
+        width: 100%; height: 500px; background: #000;
         clip-path: polygon(50px 0%, 100% 0, 100% 100%, 0 100%, 0 50px);
-        border-top: 2px solid var(--dark-emerald);
+        border-top: 2px solid var(--map-dark);
     }
 
-    iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-        filter: contrast(1.1) brightness(0.9);
-    }
-
-    /* Responsive adjustments */
     @media (max-width: 850px) {
         .info-grid { grid-template-columns: 1fr; text-align: center; gap: 40px; }
-        .contact-col { text-align: center; }
-        .header-title { font-size: 2.5rem; }
-        .map-box { height: 350px; clip-path: none; }
+        .cont-right { text-align: center; }
+        .f-header { font-size: 2.5rem; }
     }
 </style>
 
 <footer class="footer-container">
-    <div class="content-limit">
-        <h1 class="header-title">Contact Us</h1>
+    <div class="footer-limit">
+        <h1 class="f-header">Contact Us</h1>
 
         <div class="info-grid">
-            <!-- Left: Address -->
-            <div class="address-col">
+            <div class="addr">
                 IISER Thiruvananthapuram,<br>
                 Maruthamala PO, Vithura,<br>
                 Thiruvananthapuram - 695551,<br>
                 Kerala, India.
             </div>
 
-            <!-- Center: Socials (Expand Animation) -->
             <div class="social-col">
                     <a href="https://www.youtube.com/@IshyaIISERTVM/" class="social-btn"><i class="fab fa-youtube"></i></a>
                     <a href="http://facebook.com/ishya.iisertvm" class="social-btn"><i class="fab fa-facebook-f"></i></a>
@@ -171,25 +99,18 @@
                     <a href="http://instagram.com/ishyaiiser" class="social-btn"><i class="fab fa-instagram"></i></a>
             </div>
 
-            <!-- Right: Contact -->
-            <div class="contact-col">
-                +91 9074566956 <br>
+            <div class="cont-right">
+                 +91 9074566956 <br>
                 <a href="mailto:ishya@iisertvm.ac.in">ishya@iisertvm.ac.in</a>
             </div>
         </div>
 
-        <div class="grievance-wrap">
-            <h3>Facing Any Problems? Let Us Hear You</h3>
-            <a href="#" class="grievance-link">Grievance Redressal</a>
-        </div>
     </div>
 
-    <!-- Final Satellite Map Section -->
-    <div class="map-box">
+    <div class="map-frame">
         <iframe 
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6562.278375261178!2d77.13519762242566!3d8.683001054717769!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b05bec780ab70fd%3A0xc960a94d0cef086f!2sIndian%20Institute%20of%20Science%20Education%20and%20Research%20Thiruvananthapuram!5e1!3m2!1sen!2sin!4v1768454289149!5m2!1sen!2sin&maptype=satellite" 
-            allowfullscreen="" 
-            loading="lazy">
+            width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
         </iframe>
     </div>
 </footer>
