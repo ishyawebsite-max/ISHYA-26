@@ -1,1 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Origami Neon IISER TVM Footer</title>
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-black: #010801; /* Deepest green-black */
+            --neon-green: #39FF14;
+            --dark-emerald: #052205;
+            --gold-text: #e2c08d;
+            --link-blue: #3b82f6;
+        }
 
+        body { 
+            margin: 0; 
+            background: #000; 
+            font-family: 'Montserrat', sans-serif; 
+            color: white; 
+        }
+
+        .footer-container {
+            background-color: var(--bg-black);
+            padding: 80px 20px 0 20px; /* Zero bottom padding as map is the end */
+            position: relative;
+            border-top: 3px solid var(--neon-green);
+            /* Subtle neon flame glow at the top fold */
+            box-shadow: 0 -15px 40px rgba(57, 255, 20, 0.15);
+        }
+
+        .content-limit {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-title {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            color: var(--gold-text);
+            margin-bottom: 60px;
+            letter-spacing: 1px;
+        }
+
+        /* Information Grid - Accurate Replica of your image */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.6fr 1.2fr;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .address-col {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            font-weight: 600;
+        }
+
+        /* Social Buttons - Origami Trapezoid with Expand Animation */
+        .social-col {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .social-btn {
+            width: 50px;
+            height: 50px;
+            background: #111;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            /* Geometric Origami Fold Shape */
+            clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+            border-bottom: 2px solid var(--neon-green);
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .social-btn:hover {
+            transform: scale(1.25); /* Expand Animation */
+            background: var(--neon-green);
+            color: black;
+            box-shadow: 0 0 20px var(--neon-green);
+        }
+
+        .contact-col {
+            text-align: right;
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .contact-col a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .contact-col a:hover {
+            color: var(--neon-green);
+            text-shadow: 0 0 10px var(--neon-green);
+        }
+
+        /* Middle Grievance Section */
+        .grievance-wrap {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .grievance-wrap h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            font-weight: 400;
+        }
+
+        .grievance-link {
+            color: var(--link-blue);
+            text-decoration: underline;
+            font-size: 1.8rem;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .grievance-link:hover {
+            color: var(--neon-green);
+            text-shadow: 0 0 15px var(--neon-green);
+        }
+
+        /* Map Section - The Final Element */
+        .map-box {
+            width: 100%;
+            height: 500px;
+            background: #000;
+            position: relative;
+            /* Clean Origami "Chamfered" Corners */
+            clip-path: polygon(50px 0%, 100% 0, 100% 100%, 0 100%, 0 50px);
+            border-top: 2px solid var(--dark-emerald);
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            /* High-tech satellite filter */
+            filter: contrast(1.1) brightness(0.9);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 850px) {
+            .info-grid { grid-template-columns: 1fr; text-align: center; gap: 40px; }
+            .contact-col { text-align: center; }
+            .header-title { font-size: 2.5rem; }
+            .map-box { height: 350px; clip-path: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <footer class="footer-container">
+        <div class="content-limit">
+            <h1 class="header-title">Contact Us</h1>
+
+            <!-- Info Replica Grid -->
+            <div class="info-grid">
+                <div class="address-col">
+                    IISER Thiruvananthapuram,<br>
+                    Maruthamala PO, Vithura,<br>
+                    Thiruvananthapuram - 695551,<br>
+                    Kerala, India.
+                </div>
+
+                <div class="social-col">
+                    <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-x-twitter"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
+                </div>
+
+                <div class="contact-col">
+                    +91 9074566956 <br>
+                    <a href="mailto:ishya@iisertvm.ac.in">ishya@iisertvm.ac.in</a>
+                </div>
+            </div>
+
+
+        <!-- Satellite Map - End of Footer -->
+        <div class="map-box">
+            <!-- Specific pointer on IISER TVM Vithura Campus -->
+            <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3944.3524!2d77.1472!3d8.6749!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b05b0d000000001%3A0x1234567890abcdef!2sIISER%20Thiruvananthapuram!5e1!3m2!1sen!2sin!4v1715700000000!5m2!1sen!2sin&maptype=satellite" 
+                allowfullscreen="" 
+                loading="lazy">
+            </iframe>
+        </div>
+    </footer>
+
+</body>
+</html>
