@@ -6,46 +6,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coming Soon | ISHYA 2026</title>
     
+    <!-- Fonts & Icons (Required for Footer Icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Poppins:wght@300;400;600&family=Playfair+Display:wght@700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
 
     <style>
         /* --- Origami Flames Theme Variables --- */
         :root {
-            --neon-green: #a7f305;      /* Vibrant green from the logo */
-            --flame-dark: #1b4d0a;      /* Deep green for shadows */
-            --origami-gold: #f5e9b3;    /* Crystalline gold/white */
-            --bg-black: #080a08;        /* Near black */
+            --neon-green: #a7f305;      
+            --flame-dark: #1b4d0a;      
+            --origami-gold: #f5e9b3;    
+            --bg-black: #080a08;        
             --glow: rgba(167, 243, 5, 0.4);
         }
 
         body, html {
             margin: 0;
             padding: 0;
-            height: 100%;
             width: 100%;
             font-family: 'Poppins', sans-serif;
             background-color: var(--bg-black);
-            overflow: hidden;
+            /* CHANGED: Removed overflow hidden so we can scroll to the footer */
+            overflow-x: hidden; 
             color: white;
+            scroll-behavior: smooth;
         }
 
-        /* --- Animated Flame/Smoke Background --- */
         .fire-wrapper {
-            position: absolute;
+            position: fixed; /* Changed to fixed so it stays behind as you scroll */
             width: 100%;
             height: 100%;
             background: radial-gradient(circle at bottom, #142b08 0%, #080a08 70%);
-            z-index: 0;
+            z-index: -1;
         }
 
-        /* Abstract "Folded" Flames (moving polygons) */
         .flame-particle {
             position: absolute;
             bottom: -100px;
             background: var(--neon-green);
-            clip-path: polygon(50% 0%, 100% 100%, 0% 100%); /* Triangle/Origami shape */
+            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
             opacity: 0.3;
             filter: blur(8px);
             animation: rise 8s infinite ease-in;
@@ -57,9 +58,8 @@
             100% { transform: translateY(-120vh) scale(0.5) rotate(360deg); opacity: 0; }
         }
 
-        /* --- Content Container --- */
         .content {
-            height: 100%;
+            min-height: 100vh; /* Changed from height to min-height */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -67,10 +67,9 @@
             text-align: center;
             position: relative;
             z-index: 2;
-            padding: 20px;
+            padding: 40px 20px;
         }
         
-        /* --- Logo Styling with Neon Aura --- */
         .logo-container {
             position: relative;
             margin-bottom: 2rem;
@@ -85,7 +84,6 @@
             filter: drop-shadow(0 0 15px var(--neon-green));
         }
 
-        /* Neon Flare behind logo */
         .logo-container::after {
             content: '';
             position: absolute;
@@ -106,7 +104,6 @@
             100% { opacity: 0.3; scale: 1.2; }
         }
         
-        /* --- Typography --- */
         h1 {
             font-family: 'Oswald', sans-serif;
             font-size: 5rem;
@@ -129,7 +126,6 @@
             opacity: 0;
         }
 
-        /* --- Origami-Style Countdown --- */
         #countdown {
             display: flex;
             gap: 2rem;
@@ -142,7 +138,6 @@
             position: relative;
             background: rgba(255, 255, 255, 0.05);
             padding: 15px 20px;
-            /* Folded corner effect */
             clip-path: polygon(0 0, 80% 0, 100% 20%, 100% 100%, 0 100%);
             border-left: 2px solid var(--neon-green);
             min-width: 80px;
@@ -163,7 +158,6 @@
             margin-top: 5px;
         }
 
-        /* --- Origami CTA Button --- */
         .cta-button {
             margin-top: 3.5rem;
             padding: 15px 50px;
@@ -176,7 +170,7 @@
             letter-spacing: 3px;
             position: relative;
             transition: 0.4s;
-            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); /* Folded slant */
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
             animation: foldIn 1s ease-out 1.2s forwards;
             opacity: 0;
         }
@@ -188,13 +182,11 @@
             transform: translateY(-5px);
         }
 
-        /* Fold Animation */
         @keyframes foldIn {
             0% { transform: perspective(1000px) rotateX(-90deg); opacity: 0; }
             100% { transform: perspective(1000px) rotateX(0deg); opacity: 1; }
         }
         
-        /* Mobile Tweaks */
         @media (max-width: 768px) {
             h1 { font-size: 2.5rem; }
             #countdown { gap: 0.5rem; }
@@ -238,21 +230,21 @@
         <a href="https://ishyawebsite-max.github.io/ISHYA-26/ROOMS/index.html" class="cta-button">Book Rooms</a>
     </div>
 
+    <!-- Container for footer -->
+    <div id="footer-placeholder"></div>
+
     <script>
         // Generate Background Flame Particles
         const container = document.getElementById('fireContainer');
         for (let i = 0; i < 30; i++) {
             const particle = document.createElement('div');
             particle.classList.add('flame-particle');
-            
-            // Randomize position and animation
             const size = Math.random() * 60 + 20;
             particle.style.width = size + 'px';
             particle.style.height = size + 'px';
             particle.style.left = Math.random() * 100 + '%';
             particle.style.animationDelay = Math.random() * 8 + 's';
             particle.style.animationDuration = (Math.random() * 5 + 5) + 's';
-            
             container.appendChild(particle);
         }
 
@@ -266,23 +258,17 @@
         setInterval(function() {
             const now = new Date().getTime();
             const distance = countDownDate - now;
-            
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            
             daysEl.innerHTML = String(days).padStart(2, '0');
             hoursEl.innerHTML = String(hours).padStart(2, '0');
             minutesEl.innerHTML = String(minutes).padStart(2, '0');
             secondsEl.innerHTML = String(seconds).padStart(2, '0');
         }, 1000);
-    </script>
 
-  <div id="footer-placeholder"></div>
-
-    <!-- 2. JAVASCRIPT TO CALL THE FOOTER -->
-    <script>
+        // Fetch Footer
         fetch('footer.html')
             .then(response => response.text())
             .then(data => {
@@ -291,7 +277,5 @@
             .catch(error => console.error('Error loading the footer:', error));
     </script>
 
-</body>
-</html>
 </body>
 </html>
