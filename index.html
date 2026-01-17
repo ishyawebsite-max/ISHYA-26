@@ -15,7 +15,7 @@
     <style>
         /* --- Origami Flames Theme Variables --- */
         :root {
-            --neon-green: #FF4B33;      
+            --neon-red: #FF4B33;      
             --flame-dark: #FFA500;      
             --origami-gold: #f5e9b3;    
             --bg-black: #080a08;        
@@ -45,7 +45,7 @@
         .flame-particle {
             position: absolute;
             bottom: -100px;
-            background: var(--neon-green);
+            background: var(--neon-red);
             clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
             opacity: 0.3;
             filter: blur(8px);
@@ -81,7 +81,7 @@
             height: auto;
             position: relative;
             z-index: 5;
-            filter: drop-shadow(0 0 15px var(--neon-green));
+            filter: drop-shadow(0 0 15px var(--neon-red));
         }
 
         .logo-container::after {
@@ -92,7 +92,7 @@
             transform: translate(-50%, -50%);
             width: 200px;
             height: 200px;
-            background: var(--neon-green);
+            background: var(--neon-red);
             filter: blur(60px);
             opacity: 0.2;
             border-radius: 50%;
@@ -139,7 +139,7 @@
             background: rgba(255, 255, 255, 0.05);
             padding: 15px 20px;
             clip-path: polygon(0 0, 80% 0, 100% 20%, 100% 100%, 0 100%);
-            border-left: 2px solid var(--neon-green);
+            border-left: 2px solid var(--neon-red);
             min-width: 80px;
         }
 
@@ -147,7 +147,7 @@
             font-family: 'Oswald', sans-serif;
             font-size: 3.5rem;
             display: block;
-            color: var(--neon-green);
+            color: var(--neon-red);
             line-height: 1;
         }
 
@@ -162,8 +162,8 @@
             margin-top: 3.5rem;
             padding: 15px 50px;
             background: transparent;
-            color: var(--neon-green);
-            border: 1px solid var(--neon-green);
+            color: var(--neon-red);
+            border: 1px solid var(--neon-red);
             text-decoration: none;
             font-family: 'Oswald', sans-serif;
             text-transform: uppercase;
@@ -176,7 +176,7 @@
         }
 
         .cta-button:hover {
-            background: var(--neon-green);
+            background: var(--neon-red);
             color: var(--bg-black);
             box-shadow: 0 0 30px var(--glow);
             transform: translateY(-5px);
