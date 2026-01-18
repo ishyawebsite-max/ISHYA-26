@@ -208,7 +208,7 @@
             }
     
             .section-title h2 {
-                font-family: 'Jim Nightshade';
+                font-family: 'Michroma';
                 font-size: 3rem;
                 color: var(--text-secondary);
                 text-transform: uppercase;
@@ -254,19 +254,24 @@
                 border: 1px solid rgba(216, 212, 207, 0.2);
                 border-radius: 20px;
                 padding: 20px;
+                padding-top: 40px;
                 text-align: center;
                 transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
                 overflow: hidden;
                 cursor: pointer;
                 animation: fadeInUp 0.6s ease-out both;
-                max-width: 300px;
-                max-height: 300px;
+                max-width: 400px;
+                max-height: 400px;
+                min-height: 400px;
+                min-width: 400px;
             }
 
             .team-card img {
                 object-fit: cover;
                 size: contain;
                 position: center;
+                border-radius: 50%;
+                width: 70%;
             }
 
             .team-card:nth-child(1) {
@@ -331,8 +336,8 @@
     
             /* --- Team Member Avatar --- */
             .member-avatar {
-                width: 120px;
-                height: 120px;
+                width: 170px;
+                height: 170px;
                 margin: 0 auto 20px;
                 border-radius: 50%;
                 background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
@@ -638,8 +643,8 @@
             }
     
             .leadership-avatar {
-                width: 150px;
-                height: 150px;
+                width: 200px;
+                height: 200px;
                 margin: 0 auto 20px;
                 border-radius: 50%;
                 background: conic-gradient(from 0deg, var(--primary-color), var(--accent-purple), var(--secondary-color), var(--primary-color));
@@ -904,14 +909,14 @@
                 }
     
                 .member-avatar {
-                    width: 100px;
-                    height: 100px;
+                    width: 170px;
+                    height: 170px;
                     font-size: 40px;
                 }
     
                 .leadership-avatar {
-                    width: 120px;
-                    height: 120px;
+                    width: 210px;
+                    height: 210px;
                     font-size: 50px;
                 }
     
@@ -1025,14 +1030,16 @@
                        
                         <div class="team-grid">
                             <div class="team-card">
-                                <img src="https://static.wixstatic.com/media/2304ec_fc68e10cf0d849e29233b0170c44b874~mv2.jpg/v1/crop/x_0,y_0,w_3060,h_2894/fill/w_426,h_402,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/20230731_104021.jpg" alt="">
-                            </div>
-                                <div class="team-card">
-                                <div class="leadership-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                                <div class="leadership-name" style="color: var(--text-secondary)";>Dummy</div>
+                                <div class="leadership-avatar"><img src="https://static.wixstatic.com/media/2304ec_fc68e10cf0d849e29233b0170c44b874~mv2.jpg/v1/crop/x_0,y_0,w_3060,h_2894/fill/w_426,h_402,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/20230731_104021.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="leadership-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Dummy</div>
                                 <div class="leadership-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
-                                <p class="leadership-bio">Leading the vision of ISHYA with passion and excellence. Dedicated to
-                                    creating an unforgettable cultural experience for everyone.</p>
+                               
+                            </div>
+                            <div class="team-card">
+                                <div class="leadership-avatar"><img src="https://static.wixstatic.com/media/2304ec_fc68e10cf0d849e29233b0170c44b874~mv2.jpg/v1/crop/x_0,y_0,w_3060,h_2894/fill/w_426,h_402,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/20230731_104021.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="leadership-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Dummy</div>
+                                <div class="leadership-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
+                               
                             </div>
                         </div>
                     </div>
