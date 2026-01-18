@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Team</title>
         <link rel="stylesheet" href="style.css">
-        <link href="bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <link href="https://fonts.googleapis.com/css2?family=Fontdiner+Swanky&display=swap" rel="stylesheet">
@@ -99,6 +99,84 @@
                     transform: translate(30px, 30px);
                 }
             }
+
+            /* From Uiverse.io by Cobp */ 
+            .card-container {
+              width: 260px;
+              background: linear-gradient(
+                to top right,
+                #975af4,
+                #2f7cf8 40%,
+                #78aafa 65%,
+                #934cff 100%
+              );
+              padding: 4px;
+              border-radius: 32px;
+              display: flex;
+              flex-direction: column;
+            }
+            .card-container .title-card {
+              display: flex;
+              align-items: center;
+              padding: 0px 18px;
+              justify-content: center;
+              color: #fff;
+            }
+            .card-container .title-card p {
+              font-size: 14px;
+              font-weight: 600;
+              font-style: italic;
+              text-shadow: 2px 2px 6px #2975ee;
+              text-align: center;
+            }
+
+            .card-container .card-content {
+              width: 100%;
+              height: 100%;
+              background-color: #161a20;
+              border-radius: 30px;
+              color: #838383;
+              font-size: 12px;
+              padding: 18px;
+              display: flex;
+              flex-direction: column;
+              gap: 14px;
+            }
+            .card-container .card-content .title {
+              font-weight: 600;
+              color: #bab9b9;
+            }
+            .card-container .card-content .plain :nth-child(1) {
+              font-size: 36px;
+              color: #fff;
+            }
+            .card-container .card-content .card-btn {
+              background: linear-gradient(
+                4deg,
+                #975af4,
+                #2f7cf8 40%,
+                #78aafa 65%,
+                #934cff 100%
+              );
+              padding: 8px;
+              border: none;
+              width: 100%;
+              border-radius: 8px;
+              color: white;
+              font-size: 12px;
+              transition: all 0.3s ease-in-out;
+              cursor: pointer;
+              box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.6);
+            }
+            .card-container .card-content .card-btn:hover {
+              color: #ffffff;
+              text-shadow: 0 0 8px #fff;
+              transform: scale(1.03);
+            }
+            .card-container .card-content .card-btn:active {
+              transform: scale(1);
+            }
+
     
             /* --- Main Container --- */
             .container {
@@ -151,8 +229,9 @@
             .team-grid {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                gap: 40px;
+                gap: 30px;
                 margin-bottom: 80px;
+                justify-items: center;
             }
     
             /* --- Team Card --- */
@@ -168,6 +247,8 @@
                 overflow: hidden;
                 cursor: pointer;
                 animation: fadeInUp 0.6s ease-out both;
+                max-width: 300px;
+                max-height: 450px;
             }
     
             .team-card:nth-child(1) {
@@ -226,9 +307,8 @@
                 /*background: rgba(159, 166, 176, 0.9);*/
                 border-color: rgba(64, 66, 67, 0.5);
                 transform: translateY(-20px);
-                box-shadow:
-                    0 20px 60px rgba(212, 198, 133, 0.2),
-                    inset 0 1px 0 rgba(212, 198, 133, 0.1);
+                box-shadow: 0px 0px 20px 1px #ffbb763f;
+                border: 1px solid rgba(255, 255, 255, 0.454);
             }
     
             /* --- Team Member Avatar --- */
@@ -376,29 +456,101 @@
                 background-attachment: fixed;
             }
             .finance-section.department-section{
-                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('Images_BG/finance.jpeg');
+                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url("C:/Users/adity/Documents/GitHub/ISHYA 26/ISHYA-26/Images_BG/finance.jpeg");
                 background-size: cover;
                 background-position: center;
                 background-attachment: fixed;
             }
-            .creative-section.department-section{
+            .content-section.department-section{
                 background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_980,h_551,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg');
                 background-size: cover;
                 background-position: center;
                 background-attachment: fixed;
             }
+            .design-section.department-section{
+                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_980,h_551,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+            }            
+            .anchoring-section.department-section{
+                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('/ISHYA-26/Images_BG/anchoring.png');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+            }
+            .hospitality-section.department-section{
+                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_980,h_551,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+            }
+            .informals-section.department-section{
+                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_980,h_551,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+            }
+            .judges-section.department-section{
+                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_980,h_551,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+            }            
             .events-section.department-section{
                 background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://tse3.mm.bing.net/th/id/OIP.xR2aF0RsXzz3GQKDT6uKCQHaEN?rs=1&pid=ImgDetMain&o=7&rm=3');
                 background-size: cover;
                 background-position: center;
                 background-attachment: fixed;
             }
-            .marketing-section.department-section{
+            .media-section.department-section{
                 background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://tse3.mm.bing.net/th/id/OIP.mznYV7PY4P5nX_ZzU89JcgHaE8?rs=1&pid=ImgDetMain&o=7&rm=3');
                 background-size: cover;
                 background-position: center;
                 background-attachment: fixed;
             }
+           .merchandise-section.department-section{
+                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_980,h_551,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+            }
+            .production-section.department-section{
+                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_980,h_551,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+            }  
+            .proshow-section.department-section{
+                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_980,h_551,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+            }  
+            .outreach-section.department-section{
+                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_980,h_551,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+            }                                
+            .sponsorship-section.department-section{
+                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_980,h_551,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+            }
+            .stalls-section.department-section{
+                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_980,h_551,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+            }
+            .trsansport-section.department-section{
+                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_980,h_551,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+            }            
             .technical-section.department-section{
                 background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://i.ytimg.com/vi/NijChtRbLAY/hqdefault.jpg');
                 background-size: cover;
@@ -851,7 +1003,7 @@
                             <h2>Finance</h2>
                             <div class="line"></div>
                         </div>
-                        
+                       
                         <div class="team-grid">
                             <div class="leadership-card">
                                 <div class="leadership-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
@@ -869,7 +1021,31 @@
                             </div>
                         </div>
                     </div>
-    
+                    
+                    <!-- Anchoring Section -->
+                    <div class="anchoring-section department-section">
+                        <div class="section-title">
+                            <h2>Anchoring</h2>
+                            <div class="line"></div>
+                        </div>
+                       
+                        <div class="team-grid">
+                            <div class="leadership-card">
+                                <div class="leadership-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="leadership-name" style="color: var(--text-secondary)";>Dummy</div>
+                                <div class="leadership-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>
+                                <p class="leadership-bio">Leading the vision of ISHYA with passion and excellence. Dedicated to
+                                    creating an unforgettable cultural experience for everyone.</p>
+                            </div>
+                                <div class="leadership-card">
+                                <div class="leadership-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="leadership-name" style="color: var(--text-secondary)";>Dummy</div>
+                                <div class="leadership-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
+                                <p class="leadership-bio">Leading the vision of ISHYA with passion and excellence. Dedicated to
+                                    creating an unforgettable cultural experience for everyone.</p>
+                            </div>
+                        </div>
+                    </div>    
                     <!-- Creative Department -->
                     <div class="creative-section department-section">
                         <div class="department-header">
