@@ -241,7 +241,7 @@
                 backdrop-filter: blur(10px);
                 border: 1px solid rgba(216, 212, 207, 0.2);
                 border-radius: 20px;
-                padding: 30px;
+                padding: 0px;
                 text-align: center;
                 transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
                 overflow: hidden;
@@ -250,7 +250,13 @@
                 max-width: 300px;
                 max-height: 450px;
             }
-    
+
+            .team-card img {
+                object-fit: cover;
+                size: contain;
+                position: center;
+            }
+
             .team-card:nth-child(1) {
                 animation-delay: 0.1s;
             }
@@ -1005,14 +1011,10 @@
                         </div>
                        
                         <div class="team-grid">
-                            <div class="leadership-card">
-                                <div class="leadership-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                                <div class="leadership-name" style="color: var(--text-secondary)";>Dummy</div>
-                                <div class="leadership-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>
-                                <p class="leadership-bio">Leading the vision of ISHYA with passion and excellence. Dedicated to
-                                    creating an unforgettable cultural experience for everyone.</p>
+                            <div class="team-card">
+                                <img src="https://static.wixstatic.com/media/2304ec_fc68e10cf0d849e29233b0170c44b874~mv2.jpg/v1/crop/x_0,y_0,w_3060,h_2894/fill/w_426,h_402,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/20230731_104021.jpg" alt="">
                             </div>
-                                <div class="leadership-card">
+                                <div class="team-card">
                                 <div class="leadership-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
                                 <div class="leadership-name" style="color: var(--text-secondary)";>Dummy</div>
                                 <div class="leadership-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
