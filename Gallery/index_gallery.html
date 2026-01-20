@@ -13,7 +13,7 @@
             --fire: #ff3c00;
             --ember: #ffaa00;
             --bg: #050505;
-            --paper: #e6b800; /* Gold Paper Color */
+            --paper: #e6b800;
         }
 
         body {
@@ -26,17 +26,50 @@
 
         #emberCanvas { position: fixed; top: 0; left: 0; z-index: -1; }
 
+        /* --- MAIN TITLE --- */
+        .page-header {
+            text-align: center;
+            margin-top: 80px;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 20;
+        }
+
+        .main-title {
+            font-family: 'Cinzel', serif;
+            font-size: 5rem;
+            margin: 0;
+            background: linear-gradient(to bottom, #fff 20%, var(--ember) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(255, 60, 0, 0.4);
+            letter-spacing: 5px;
+            opacity: 0; /* Hidden for animation */
+        }
+
+        .subtitle {
+            font-family: 'Manrope', sans-serif;
+            color: var(--fire);
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-top: 10px;
+            opacity: 0; /* Hidden for animation */
+        }
+
+        /* --- GALLERY CONTAINER --- */
         .container {
             max-width: 1000px;
-            margin: 100px auto;
+            margin: 0 auto;
             position: relative;
             padding: 40px 20px;
         }
 
+        /* Center Glowing Timeline */
         .container::before {
-            content: ''; position: absolute; left: 50%; top:0; bottom:0;
-            width: 1px; background: linear-gradient(to bottom, transparent, var(--fire), transparent);
-            box-shadow: 0 0 10px var(--fire);
+            content: ''; position: absolute; left: 50%; top: 0; bottom: 0;
+            width: 1px; background: linear-gradient(to bottom, transparent, var(--fire), var(--ember), transparent);
+            box-shadow: 0 0 15px var(--fire);
         }
 
         .row {
@@ -101,24 +134,22 @@
             box-shadow: 0 0 5px var(--fire);
         }
 
-        /* --- NEW MODAL: PAPER WRAPPER --- */
+        /* --- PAPER GATE MODAL --- */
         .modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95);
             z-index: 9999; display: none;
             justify-content: center; align-items: center;
-            perspective: 3000px; /* Deep 3D */
+            perspective: 3000px;
         }
 
         .wrapper-container {
             width: 90vw; max-width: 900px;
-            /* Height set by JS */
             position: relative;
             transform-style: preserve-3d;
             visibility: hidden;
             box-shadow: 0 0 100px rgba(255, 60, 0, 0.2);
         }
 
-        /* The Full Image (Hidden behind gates initially) */
         .full-img {
             width: 100%; height: 100%;
             object-fit: contain;
@@ -126,10 +157,9 @@
             background: #000;
         }
 
-        /* The Paper Gates */
         .gate {
-            position: absolute; top: 0; height: 100%; width: 50.1%; /* Slight overlap */
-            background: linear-gradient(135deg, #d4af37, #aa8c2c); /* Gold Paper */
+            position: absolute; top: 0; height: 100%; width: 50.1%;
+            background: linear-gradient(135deg, #d4af37, #aa8c2c);
             z-index: 10;
             transform-style: preserve-3d;
             backface-visibility: hidden;
@@ -137,26 +167,15 @@
             display: flex; align-items: center; justify-content: center;
         }
 
-        /* Paper Texture pattern */
         .gate::before {
             content: ''; position: absolute; inset: 0;
             background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C92AC' fill-opacity='0.1' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
             opacity: 0.5;
         }
 
-        .gate-left { 
-            left: 0; 
-            transform-origin: left center; 
-            border-right: 1px solid rgba(0,0,0,0.2);
-        }
-        
-        .gate-right { 
-            right: 0; 
-            transform-origin: right center;
-            border-left: 1px solid rgba(0,0,0,0.2);
-        }
+        .gate-left { left: 0; transform-origin: left center; border-right: 1px solid rgba(0,0,0,0.2); }
+        .gate-right { right: 0; transform-origin: right center; border-left: 1px solid rgba(0,0,0,0.2); }
 
-        /* Fake Wax Seal / Lock */
         .seal {
             width: 60px; height: 60px;
             background: radial-gradient(circle, var(--fire), #a00);
@@ -164,10 +183,11 @@
             border: 3px solid var(--ember);
             position: absolute;
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            right: -30px; z-index: 20;
         }
-        .gate-left .seal { right: -30px; z-index: 20; } /* Attached to left gate */
 
         @media (max-width: 768px) {
+            .main-title { font-size: 3rem; }
             .row { flex-direction: column !important; align-items: flex-start; margin-bottom: 100px; }
             .card-wrapper { width: 90%; margin-left: 30px; }
             .container::before, .dot { left: 10px; }
@@ -178,22 +198,21 @@
 <body>
 
 <canvas id="emberCanvas"></canvas>
+
+<!-- TITLE SECTION -->
+<header class="page-header">
+    <h1 class="main-title">GALLERY</h1>
+    <div class="subtitle">Memories in Flame</div>
+</header>
+
 <div class="container" id="galleryRoot"></div>
 
 <!-- Wrapper Modal -->
 <div class="modal" id="modal" onclick="closeWrapper()">
     <div class="wrapper-container" id="wrapBox">
-        
         <img class="full-img" id="modalImg" src="">
-        
-        <!-- Left Paper Gate -->
-        <div class="gate gate-left">
-            <div class="seal"></div>
-        </div>
-        
-        <!-- Right Paper Gate -->
+        <div class="gate gate-left"><div class="seal"></div></div>
         <div class="gate gate-right"></div>
-
     </div>
 </div>
 
@@ -201,8 +220,13 @@
     // --- 1. CONFIG ---
     const API_URL = 'https://script.google.com/macros/s/AKfycbzuOEfCRHEBMA216pJ3oJYaVED2ohOCxAw_XNCbFlf8CK9r-j3K--BXGxcVDOeQHxKJug/exec'; 
 
-    // --- 2. INIT ---
+    // --- 2. INIT & TITLE ANIMATION ---
     async function init() {
+        // Animate Title
+        const tl = gsap.timeline();
+        tl.to(".main-title", { opacity: 1, y: 0, duration: 1.5, ease: "power3.out" })
+          .to(".subtitle", { opacity: 1, y: 0, duration: 1, ease: "power3.out" }, "-=1");
+
         try {
             const req = await fetch(API_URL);
             const data = await req.json();
@@ -232,20 +256,16 @@
                     <div class="meta"><div class="title">${item.eventName}</div></div>
 
                     <div class="stack-container">
-                        <!-- Bottom -->
                         <div class="stack-card card-c" style="z-index: 1;"><img src="${img3}"></div>
-                        <!-- Middle -->
                         <div class="stack-card card-b" style="z-index: 2;"><img src="${img2}"></div>
-                        <!-- Top -->
                         <div class="stack-card card-a" style="z-index: 3;"><img src="${img1}"></div>
-
                         <div class="prog-bar"></div>
                     </div>
                 </div>
                 <div style="width: 45%"></div>
             `;
             
-            // Initial GSAP Set
+            // Set initial stack visual
             const cA = row.querySelector('.card-a');
             const cB = row.querySelector('.card-b');
             const cC = row.querySelector('.card-c');
@@ -258,11 +278,11 @@
             wrapper.dataset.offset = 0;
 
             root.appendChild(row);
-            gsap.from(row, { opacity: 0, y: 50, duration: 1, delay: i * 0.2 });
+            gsap.from(row, { opacity: 0, y: 50, duration: 1, delay: 0.5 + (i * 0.2) });
         });
     }
 
-    // --- 3. STACK ANIMATION (Pull Up) ---
+    // --- 3. STACK ANIMATION (PULL UP EFFECT) ---
     let intervals = {};
 
     function startStackAnim(elem) {
@@ -270,7 +290,7 @@
         const images = JSON.parse(elem.dataset.imgs);
         if(images.length <= 1) return;
 
-        // Visual expansion
+        // Visual hover state
         gsap.to(elem.querySelector('.card-b'), { rotation: 2, x: 5, duration: 0.3 });
         gsap.to(elem.querySelector('.card-c'), { rotation: -2, x: -5, duration: 0.3 });
 
@@ -298,14 +318,14 @@
 
         const tl = gsap.timeline();
 
-        // Lift Top Card
+        // 1. Top Card Lifts Up & Fades
         tl.to(cA, { y: -60, opacity: 0, scale: 1.05, duration: 0.6, ease: "power2.in" });
 
-        // Pull Up Bottom Cards
+        // 2. Middle & Bottom Cards Pull Up
         tl.to(cB, { y: 0, scale: 1, filter: "brightness(1)", zIndex: 3, duration: 0.6, ease: "power2.out" }, "<");
         tl.to(cC, { y: 15, scale: 0.95, filter: "brightness(0.6)", zIndex: 2, duration: 0.6, ease: "power2.out" }, "<");
 
-        // Reset Old Top to Bottom
+        // 3. Reset Old Top to Bottom
         tl.set(cA, { y: 30, scale: 0.9, filter: "brightness(0.4)", opacity: 1, zIndex: 1 });
         
         tl.add(() => {
@@ -337,10 +357,9 @@
         const gLeft = document.querySelector('.gate-left');
         const gRight = document.querySelector('.gate-right');
 
-        // Set Image
         img.src = url;
 
-        // Calc Aspect Ratio
+        // Calc size
         const ratio = h / w;
         let finalW = Math.min(window.innerWidth * 0.9, 900);
         let finalH = finalW * ratio;
@@ -349,35 +368,25 @@
         box.style.width = finalW + 'px';
         box.style.height = finalH + 'px';
 
-        // Show Modal
         modal.style.display = 'flex';
         box.style.visibility = 'visible';
 
-        // Initial Closed State
+        // Set Closed State
         gsap.set(box, { scale: 0.5, opacity: 0 });
-        gsap.set(gLeft, { rotationY: 0 }); // Closed
-        gsap.set(gRight, { rotationY: 0 }); // Closed
-        gsap.set(img, { scale: 0.9, opacity: 0 }); // Image hidden inside
+        gsap.set(gLeft, { rotationY: 0 }); 
+        gsap.set(gRight, { rotationY: 0 }); 
+        gsap.set(img, { scale: 0.9, opacity: 0 });
 
-        // Animate Open
         const tl = gsap.timeline();
-
-        // 1. Appear
         tl.to(box, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.2)" });
-
-        // 2. Open Gates (Unwrap)
         tl.to(gLeft, { rotationY: -120, duration: 1.5, ease: "power3.inOut" }, "+=0.1");
         tl.to(gRight, { rotationY: 120, duration: 1.5, ease: "power3.inOut" }, "<");
-
-        // 3. Image Pops out slightly
         tl.to(img, { scale: 1, opacity: 1, duration: 0.5 }, "-=1.0");
     }
 
     function closeWrapper() {
         const modal = document.getElementById('modal');
         const box = document.getElementById('wrapBox');
-        
-        // Animate Close
         gsap.to(box, { scale: 0.5, opacity: 0, duration: 0.3, onComplete: () => {
             modal.style.display = 'none';
         }});
