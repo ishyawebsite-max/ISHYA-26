@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inferno Gallery | Ultimate</title>
+    <title>Inferno | Origami Slideshow</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Manrope:wght@300;600&display=swap" rel="stylesheet">
     
@@ -31,6 +31,7 @@
             padding: 40px 20px;
         }
 
+        /* Timeline Graphics */
         .gallery-container::before {
             content: ''; position: absolute; left: 50%; top:0; bottom:0;
             width: 1px; background: linear-gradient(to bottom, transparent, var(--fire), transparent);
@@ -44,18 +45,18 @@
         .event-row:nth-child(even) { flex-direction: row-reverse; }
 
         .center-dot {
-            position: absolute; left: 50%; width: 12px; height: 12px;
+            position: absolute; left: 50%; width: 14px; height: 14px;
             background: var(--ember); border-radius: 50%;
             transform: translate(-50%, 0);
-            box-shadow: 0 0 15px var(--fire); z-index: 5;
+            box-shadow: 0 0 20px var(--fire); z-index: 5;
         }
 
-        /* --- INTERACTIVE CARD GROUP --- */
+        /* --- CARD GROUP --- */
         .card-group {
             width: 45%;
             position: relative;
             cursor: pointer;
-            perspective: 1500px;
+            perspective: 2000px; /* Deep perspective for the 3D flap */
         }
 
         .text-content {
@@ -67,57 +68,66 @@
         .title {
             font-family: 'Cinzel', serif; font-size: 1.4rem;
             color: var(--ember); text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(255, 60, 0, 0.4);
         }
 
+        /* --- STACK AREA --- */
         .stack-area {
             position: relative;
             width: 100%;
             aspect-ratio: 16/10;
+            transform-style: preserve-3d; /* Crucial */
         }
 
-        /* PHOTO LAYERS */
+        /* Static Layers */
         .photo-layer {
             position: absolute; top: 0; left: 0;
             width: 100%; height: 100%;
             border-radius: 8px;
             background-size: cover; background-position: center;
-            border: 1px solid rgba(255, 60, 0, 0.2);
-            transition: background-image 0.4s ease-in-out; /* Smooth slide fade */
+            border: 1px solid rgba(255, 60, 0, 0.3);
+            /* We remove transition here because GSAP handles it manually now */
         }
 
-        .layer-1 { z-index: 3; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .layer-2 { z-index: 2; transform: scale(0.95) translateY(8px) rotate(-2deg); filter: brightness(0.6); }
-        .layer-3 { z-index: 1; transform: scale(0.9) translateY(16px) rotate(2deg); filter: brightness(0.4); }
+        .layer-1 { z-index: 5; } /* Top Card */
+        .layer-2 { z-index: 2; transform: scale(0.95) translateY(10px) rotate(-2deg); filter: brightness(0.6); }
+        .layer-3 { z-index: 1; transform: scale(0.9) translateY(20px) rotate(2deg); filter: brightness(0.4); }
+
+        /* --- THE ORIGAMI FLAP (The Magic Part) --- */
+        .origami-flap {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border-radius: 8px;
+            background-size: cover; background-position: center;
+            border: 1px solid var(--ember);
+            z-index: 10;
+            transform-origin: top center; /* Hinge from top */
+            transform: rotateX(-100deg); /* Start folded UP and away */
+            opacity: 0;
+            box-shadow: 0 -20px 40px rgba(0,0,0,0.8); /* Shadow behind the flap */
+            pointer-events: none;
+        }
 
         /* Progress Bar */
         .progress-line {
-            position: absolute; bottom: 0; left: 0; height: 3px;
-            background: var(--fire); width: 0%; z-index: 4;
+            position: absolute; bottom: -10px; left: 0; height: 2px;
+            background: var(--fire); width: 0%; 
             transition: width 0.3s;
+            box-shadow: 0 0 5px var(--fire);
         }
 
-        /* --- ORIGAMI MODAL --- */
+        /* --- MODAL --- */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95);
             z-index: 9999; display: none;
             justify-content: center; align-items: center; perspective: 2000px;
         }
-
-        .fold-container {
-            width: 90vw; max-width: 800px; height: 60vh;
-            position: relative; transform-style: preserve-3d; visibility: hidden;
-        }
-
-        .fold-part {
-            position: absolute; left: 0; width: 100%;
-            background-size: 100% auto; background-color: #000;
-            overflow: hidden; backface-visibility: hidden;
-        }
-
+        .fold-container { width: 90vw; max-width: 800px; height: 60vh; position: relative; transform-style: preserve-3d; visibility: hidden; }
+        .fold-part { position: absolute; left: 0; width: 100%; background-size: 100% auto; background-color: #000; overflow: hidden; backface-visibility: hidden; }
         .fold-top { height: 33.4%; top: 0; transform-origin: bottom center; background-position: top center; z-index: 3; border-bottom: 1px solid #333; }
         .fold-mid { height: 33.4%; top: 33.3%; background-position: center center; z-index: 2; }
         .fold-btm { height: 33.4%; top: 66.6%; transform-origin: top center; background-position: bottom center; z-index: 3; border-top: 1px solid #333; }
-
         .fold-shadow { position: absolute; inset: 0; background: black; opacity: 0; pointer-events: none; }
 
         @media (max-width: 768px) {
@@ -133,7 +143,6 @@
 <canvas id="emberCanvas"></canvas>
 <div class="gallery-container" id="galleryRoot"></div>
 
-<!-- Origami Modal -->
 <div class="modal-overlay" id="modal" onclick="closeOrigami()">
     <div class="fold-container" id="foldWrap">
         <div class="fold-part fold-top"><div class="fold-shadow"></div></div>
@@ -159,7 +168,11 @@
             const row = document.createElement('div');
             row.className = 'event-row';
             
-            // We attach the full image list to the DOM element for the slideshow logic
+            // Generate Layers
+            const img1 = item.images[0];
+            const img2 = item.images[1] || img1;
+            const img3 = item.images[2] || img1;
+
             row.innerHTML = `
                 <div class="center-dot"></div>
                 <div class="card-group" 
@@ -173,142 +186,167 @@
                     </div>
 
                     <div class="stack-area">
-                        <div class="photo-layer layer-3" style="background-image: url('${item.images[2] || item.images[0]}')"></div>
-                        <div class="photo-layer layer-2" style="background-image: url('${item.images[1] || item.images[0]}')"></div>
-                        <div class="photo-layer layer-1" style="background-image: url('${item.images[0]}')"></div>
+                        <!-- The Flap for Transitions -->
+                        <div class="origami-flap"></div>
+
+                        <!-- Static Layers -->
+                        <div class="photo-layer layer-3" style="background-image: url('${img3}')"></div>
+                        <div class="photo-layer layer-2" style="background-image: url('${img2}')"></div>
+                        <div class="photo-layer layer-1" style="background-image: url('${img1}')"></div>
+                        
                         <div class="progress-line"></div>
                     </div>
                 </div>
                 <div style="width: 45%"></div>
             `;
             
-            // Store image data directly on the element for easy access
             const group = row.querySelector('.card-group');
             group.dataset.images = JSON.stringify(item.images);
-            group.dataset.index = 0; // Current view index
-
+            group.dataset.index = 0; 
             root.appendChild(row);
-            
-            // Entrance Animation
             gsap.from(row, { opacity: 0, y: 50, duration: 1, delay: i * 0.2 });
         });
     }
 
-    // --- SLIDESHOW + SHUFFLE LOGIC ---
+    // --- ADVANCED ORIGAMI SLIDESHOW ENGINE ---
     let intervals = {};
+    let isAnimating = {}; // Prevent double clicks or glitches
 
     function startSlideshow(elem) {
         const id = elem.id;
         const images = JSON.parse(elem.dataset.images);
-        const l1 = elem.querySelector('.layer-1');
-        const l2 = elem.querySelector('.layer-2');
-        const l3 = elem.querySelector('.layer-3');
-        const bar = elem.querySelector('.progress-line');
-
-        // 1. GSAP Fan Out Animation (Visual feedback)
-        gsap.to(l2, { x: 40, rotation: 5, brightness: 1, duration: 0.4 });
-        gsap.to(l3, { x: -40, rotation: -5, brightness: 1, duration: 0.4 });
-
         if (images.length <= 1) return;
 
-        // 2. Start Cycling Interval
+        // Initial "Fan Out" Visual
+        fanStack(elem, true);
+
+        // Start Loop
         intervals[id] = setInterval(() => {
-            let idx = parseInt(elem.dataset.index);
-            idx = (idx + 1) % images.length; // Loop around
-            elem.dataset.index = idx;
-
-            // Shift images: Top becomes current, 2nd becomes next, 3rd becomes next+1
-            const next1 = images[idx];
-            const next2 = images[(idx + 1) % images.length];
-            const next3 = images[(idx + 2) % images.length];
-
-            l1.style.backgroundImage = `url(${next1})`;
-            l2.style.backgroundImage = `url(${next2})`;
-            l3.style.backgroundImage = `url(${next3})`;
-
-            // Progress Bar
-            bar.style.width = ((idx + 1) / images.length * 100) + '%';
-
-        }, 1200); // Change image every 1.2 seconds
+            performOrigamiTransition(elem, images);
+        }, 1500); // 1.5s per slide
     }
 
     function stopSlideshow(elem) {
         const id = elem.id;
         clearInterval(intervals[id]);
+        fanStack(elem, false); // Fan back in
         elem.querySelector('.progress-line').style.width = '0%';
-
-        // Reset positions
-        gsap.to(elem.querySelectorAll('.photo-layer'), { x: 0, rotation: 0, duration: 0.4 });
-        // Reset brightness defaults
-        gsap.to(elem.querySelector('.layer-2'), { rotation: -2, scale: 0.95, brightness: 0.6, y: 8 });
-        gsap.to(elem.querySelector('.layer-3'), { rotation: 2, scale: 0.9, brightness: 0.4, y: 16 });
     }
 
-    // --- CLICK TO OPEN ORIGAMI ---
+    function fanStack(elem, expand) {
+        const l2 = elem.querySelector('.layer-2');
+        const l3 = elem.querySelector('.layer-3');
+        if(expand) {
+            gsap.to(l2, { x: 30, rotation: 4, brightness: 0.8, duration: 0.4 });
+            gsap.to(l3, { x: -30, rotation: -4, brightness: 0.6, duration: 0.4 });
+        } else {
+            // Reset to default stack
+            gsap.to(l2, { x: 0, rotation: -2, brightness: 0.6, y: 10, scale: 0.95, duration: 0.4 });
+            gsap.to(l3, { x: 0, rotation: 2, brightness: 0.4, y: 20, scale: 0.9, duration: 0.4 });
+        }
+    }
+
+    function performOrigamiTransition(elem, images) {
+        const id = elem.id;
+        if (isAnimating[id]) return; // Throttle
+        isAnimating[id] = true;
+
+        let currentIndex = parseInt(elem.dataset.index);
+        let nextIndex = (currentIndex + 1) % images.length;
+        elem.dataset.index = nextIndex;
+
+        const flap = elem.querySelector('.origami-flap');
+        const l1 = elem.querySelector('.layer-1');
+        const l2 = elem.querySelector('.layer-2');
+        const l3 = elem.querySelector('.layer-3');
+        const bar = elem.querySelector('.progress-line');
+
+        // 1. Setup Flap: Put the NEW image on the flap
+        const nextImg = images[nextIndex];
+        flap.style.backgroundImage = `url(${nextImg})`;
+
+        // 2. Prepare Flap Position (Hinged up at -120deg)
+        gsap.set(flap, { rotationX: -120, opacity: 0.5, zIndex: 100 });
+
+        const tl = gsap.timeline({
+            onComplete: () => {
+                // 4. SWAP: The flap is now flat covering L1.
+                // We instantly update L1 to be the new image, and hide the flap.
+                l1.style.backgroundImage = `url(${nextImg})`;
+                
+                // Update stack layers for consistency
+                l2.style.backgroundImage = `url(${images[(nextIndex + 1) % images.length]})`;
+                l3.style.backgroundImage = `url(${images[(nextIndex + 2) % images.length]})`;
+                
+                // Hide flap instantly
+                gsap.set(flap, { opacity: 0 });
+                isAnimating[id] = false;
+            }
+        });
+
+        // 3. ANIMATION: Slam the flap down
+        // "elastic.out(1, 0.4)" gives it that heavy paper "SLAP" effect
+        tl.to(flap, { 
+            rotationX: 0, 
+            opacity: 1, 
+            duration: 0.9, 
+            ease: "elastic.out(1, 0.5)" 
+        });
+
+        // Slight bounce of the underlying stack when flap hits (Impact)
+        tl.to([l1, l2, l3], { y: "+=5", duration: 0.1, yoyo: true, repeat: 1 }, "-=0.7");
+
+        // Update Progress Bar
+        bar.style.width = ((nextIndex + 1) / images.length * 100) + '%';
+    }
+
+    // --- MODAL LOGIC (Same as before) ---
     function triggerModal(elem) {
         const images = JSON.parse(elem.dataset.images);
-        const idx = parseInt(elem.dataset.index); // Get the CURRENTLY visible image
-        
-        // Use high-res for modal
-        const currentUrl = images[idx].replace('=s800', '=s2000'); 
-        openOrigami(currentUrl);
+        const idx = parseInt(elem.dataset.index);
+        const url = images[idx].replace('=s800', '=s2000');
+        openOrigami(url);
     }
 
-    // --- ORIGAMI ANIMATION (GSAP) ---
     function openOrigami(url) {
         const modal = document.getElementById('modal');
         const wrap = document.getElementById('foldWrap');
         const parts = document.querySelectorAll('.fold-part');
-        const shadows = document.querySelectorAll('.fold-shadow');
-
-        // Apply Image
         parts.forEach(p => p.style.backgroundImage = `url(${url})`);
 
         modal.style.display = 'flex';
         wrap.style.visibility = 'visible';
-
-        // Reset State
-        gsap.set('.fold-top', { rotationX: -90, brightness: 0.4 });
-        gsap.set('.fold-btm', { rotationX: 90, brightness: 0.4 });
+        
+        gsap.set('.fold-top', { rotationX: -90, brightness: 0.3 });
+        gsap.set('.fold-btm', { rotationX: 90, brightness: 0.3 });
         gsap.set(wrap, { scale: 0.5, opacity: 0 });
-        gsap.set(shadows, { opacity: 0.5 });
-
-        // Sequence
+        
         const tl = gsap.timeline();
         tl.to(wrap, { scale: 1, opacity: 1, duration: 0.4 })
-          .to('.fold-top', { rotationX: 0, duration: 1, ease: "elastic.out(1, 0.7)" })
-          .to('.fold-btm', { rotationX: 0, duration: 1, ease: "elastic.out(1, 0.7)" }, "-=0.8")
-          .to(shadows, { opacity: 0, duration: 0.5 }, "-=0.5");
+          .to('.fold-top', { rotationX: 0, brightness: 1, duration: 1.2, ease: "elastic.out(1, 0.6)" })
+          .to('.fold-btm', { rotationX: 0, brightness: 1, duration: 1.2, ease: "elastic.out(1, 0.6)" }, "-=1.0");
     }
 
     function closeOrigami() {
-        const modal = document.getElementById('modal');
-        const wrap = document.getElementById('foldWrap');
-        gsap.to(wrap, { scale: 0.5, opacity: 0, duration: 0.3, onComplete: () => {
-            modal.style.display = 'none';
+        gsap.to('#foldWrap', { scale: 0.5, opacity: 0, duration: 0.3, onComplete: () => {
+            document.getElementById('modal').style.display = 'none';
         }});
     }
 
-    // --- FIRE BACKGROUND ---
+    // --- PARTICLES ---
     const canvas = document.getElementById('emberCanvas');
     const ctx = canvas.getContext('2d');
     let pts = [];
     const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
     window.onresize = resize; resize();
-
     class Pt {
         constructor() { this.reset(); }
-        reset() {
-            this.x = Math.random() * canvas.width; this.y = canvas.height + 20;
-            this.v = Math.random() * 2 + 1; this.r = Math.random() * 2; this.o = Math.random();
-        }
-        update() { this.y -= this.v; this.o -= 0.01; if(this.o <= 0) this.reset(); }
-        draw() { ctx.fillStyle = `rgba(255, 60, 0, ${this.o})`; ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, 7); ctx.fill(); }
+        reset() { this.x=Math.random()*canvas.width; this.y=canvas.height+10; this.v=Math.random()*2+1; this.o=Math.random(); }
+        draw() { this.y-=this.v; this.o-=0.01; if(this.o<=0)this.reset(); ctx.fillStyle=`rgba(255,60,0,${this.o})`; ctx.beginPath(); ctx.arc(this.x,this.y,Math.random()*2,0,7); ctx.fill(); }
     }
-    function anim() { ctx.clearRect(0,0,canvas.width,canvas.height); if(pts.length<50) pts.push(new Pt()); pts.forEach(p=>{p.update();p.draw()}); requestAnimationFrame(anim); }
+    function anim() { ctx.clearRect(0,0,canvas.width,canvas.height); if(pts.length<50) pts.push(new Pt()); pts.forEach(p=>p.draw()); requestAnimationFrame(anim); }
     anim();
     init();
 </script>
-
 </body>
 </html>
