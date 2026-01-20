@@ -6,14 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coming Soon | ISHYA 2026</title>
     
-    <!-- Fonts & Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
-        /* --- Fire & Origami Theme Variables --- */
         :root {
             --neon-red: #FF3300;      
             --flame-orange: #FF6600;    
@@ -22,644 +20,155 @@
         }
 
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
+            margin: 0; padding: 0; width: 100%;
             font-family: 'Poppins', sans-serif;
             background-color: var(--bg-black);
-            overflow-x: hidden; 
-            color: white;
+            overflow-x: hidden; color: white;
             scroll-behavior: smooth;
         }
 
-        /* Fullscreen fire container */
         .fire-wrapper {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at bottom, #2b0500 0%, #050505 80%);
-            z-index: 0;
-            overflow: hidden;
-            pointer-events: none;
+            z-index: 0; overflow: hidden; pointer-events: none;
         }
 
-        /* Individual Fire Particle */
         .flame-particle {
-            position: absolute;
-            bottom: -50px;
-            /* Origami-style triangle shape */
+            position: absolute; bottom: -50px;
             clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
-            opacity: 0;
-            filter: blur(1px);
-            mix-blend-mode: screen; /* Makes particles glow against the black */
+            opacity: 0; filter: blur(1px);
+            mix-blend-mode: screen;
             animation: rise-and-flicker 5s infinite ease-in;
         }
 
         @keyframes rise-and-flicker {
-            0% { 
-                transform: translateY(0) scale(1) rotate(0deg); 
-                opacity: 0; 
-            }
+            0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 0; }
             10% { opacity: 0.8; }
-            50% {
-                transform: translateY(-40vh) scale(1.4) rotate(180deg) translateX(30px);
-                opacity: 0.6;
-            }
-            100% { 
-                transform: translateY(-110vh) scale(0.2) rotate(360deg) translateX(-30px); 
-                opacity: 0; 
-            }
+            50% { transform: translateY(-40vh) scale(1.4) rotate(180deg) translateX(30px); opacity: 0.6; }
+            100% { transform: translateY(-110vh) scale(0.2) rotate(360deg) translateX(-30px); opacity: 0; }
         }
 
-        /* Main UI Container */
         .content {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            position: relative;
-            z-index: 10; /* Ensures text is above fire */
-            padding: 40px 20px;
+            min-height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            position: relative; z-index: 10; padding: 40px 20px;
         }
         
-        .logo-container {
-            position: relative;
-            margin-bottom: 2rem;
-            animation: foldIn 1.2s ease-out forwards;
-        }
+        .logo-container { margin-bottom: 2rem; animation: foldIn 1.2s ease-out forwards; }
+        .logo { width: 180px; height: auto; filter: drop-shadow(0 0 20px var(--neon-red)); }
 
-        .logo {
-            width: 180px;
-            height: auto;
-            position: relative;
-            z-index: 5;
-            filter: drop-shadow(0 0 20px var(--neon-red));
-        }
-
-        /* Pulsing glow behind logo */
-        .logo-container::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 250px;
-            height: 250px;
-            background: var(--neon-red);
-            filter: blur(80px);
-            opacity: 0.3;
-            border-radius: 50%;
-            animation: pulse 3s infinite alternate;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.2; scale: 0.8; }
-            100% { opacity: 0.5; scale: 1.2; }
-        }
-        
         h1 {
-            font-family: 'Oswald', sans-serif;
-            font-size: clamp(3rem, 10vw, 5.5rem);
-            margin: 0;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 10px;
+            font-family: 'Oswald', sans-serif; font-size: clamp(3rem, 10vw, 5.5rem);
+            margin: 0; color: #fff; text-transform: uppercase; letter-spacing: 10px;
             text-shadow: 0 0 15px var(--neon-red), 0 0 30px var(--flame-orange);
-            animation: foldIn 1s ease-out 0.3s forwards;
-            opacity: 0;
+            animation: foldIn 1s ease-out 0.3s forwards; opacity: 0;
         }
         
         p {
-            font-size: 1.2rem;
-            color: #d1d1d1;
-            max-width: 500px;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            margin-top: 10px;
-            animation: foldIn 1s ease-out 0.6s forwards;
-            opacity: 0;
+            font-size: 1.2rem; color: #d1d1d1; letter-spacing: 5px;
+            text-transform: uppercase; margin-top: 10px;
+            animation: foldIn 1s ease-out 0.6s forwards; opacity: 0;
         }
 
-        /* Countdown Grid */
-        #countdown {
-            display: flex;
-            gap: 1.5rem;
-            margin-top: 3rem;
-            animation: foldIn 1s ease-out 0.9s forwards;
-            opacity: 0;
-        }
-
+        #countdown { display: flex; gap: 1.5rem; margin-top: 3rem; animation: foldIn 1s ease-out 0.9s forwards; opacity: 0; }
         .timer-unit {
-            background: rgba(255, 60, 0, 0.1);
-            padding: 15px 20px;
+            background: rgba(255, 60, 0, 0.1); padding: 15px 20px;
             clip-path: polygon(0 0, 80% 0, 100% 20%, 100% 100%, 0 100%);
-            border-left: 3px solid var(--neon-red);
-            min-width: 90px;
-            backdrop-filter: blur(10px);
+            border-left: 3px solid var(--neon-red); min-width: 90px; backdrop-filter: blur(10px);
         }
 
-        .timer-unit span {
-            font-family: 'Oswald', sans-serif;
-            font-size: 3.5rem;
-            display: block;
-            color: #fff;
-            text-shadow: 0 0 10px var(--neon-red);
-            line-height: 1;
-        }
+        .timer-unit span { font-family: 'Oswald', sans-serif; font-size: 3.5rem; display: block; color: #fff; text-shadow: 0 0 10px var(--neon-red); line-height: 1; }
+        .timer-unit .label { font-size: 0.75rem; text-transform: uppercase; color: var(--flame-yellow); margin-top: 5px; font-weight: 600; }
 
-        .timer-unit .label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: var(--flame-yellow);
-            margin-top: 5px;
-            font-weight: 600;
-        }
-
-        /* Button */
         .cta-button {
-            margin-top: 4rem;
-            padding: 15px 50px;
-            background: transparent;
-            color: #fff;
-            border: 2px solid var(--neon-red);
-            text-decoration: none;
-            font-family: 'Oswald', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            transition: 0.4s;
+            margin-top: 4rem; padding: 15px 50px; border: 2px solid var(--neon-red);
+            color: #fff; text-decoration: none; font-family: 'Oswald', sans-serif;
+            text-transform: uppercase; letter-spacing: 4px; transition: 0.4s;
             clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
-            animation: foldIn 1s ease-out 1.2s forwards;
-            opacity: 0;
+            animation: foldIn 1s ease-out 1.2s forwards; opacity: 0;
         }
+        .cta-button:hover { background: var(--neon-red); box-shadow: 0 0 40px var(--neon-red); transform: translateY(-5px); color: #000; }
 
-        .cta-button:hover {
-            background: var(--neon-red);
-            box-shadow: 0 0 40px var(--neon-red);
-            transform: translateY(-5px);
-            color: #000;
-        }
-
-        @keyframes foldIn {
-            0% { transform: perspective(1000px) rotateX(-90deg); opacity: 0; }
-            100% { transform: perspective(1000px) rotateX(0deg); opacity: 1; }
-        }
+        @keyframes foldIn { 0% { transform: perspective(1000px) rotateX(-90deg); opacity: 0; } 100% { transform: perspective(1000px) rotateX(0deg); opacity: 1; } }
         
-        /* Mobile Adjustments */
-        @media (max-width: 768px) {
-            #countdown { gap: 0.5rem; }
-            .timer-unit { min-width: 60px; padding: 10px; }
-            .timer-unit span { font-size: 2rem; }
-            .logo { width: 130px; }
-        }
+        @media (max-width: 768px) { #countdown { gap: 0.5rem; } .timer-unit { min-width: 60px; padding: 10px; } .timer-unit span { font-size: 2rem; } }
     </style>
 </head>
 <body>
 
-    <!-- Animated Background Layer -->
     <div class="fire-wrapper" id="fireContainer"></div>
 
-    <!-- Content Layer -->
     <div class="content">
-        <div class="logo-container">
-            <img src="Logo Ishya.ico" alt="Ishya Logo" class="logo">
-        </div>
-
+        <div class="logo-container"><img src="Logo Ishya.ico" alt="Ishya Logo" class="logo"></div>
         <h1>ISHYA 2026</h1>
         <p>The unfolding begins</p>
         
         <div id="countdown">
-            <div class="timer-unit">
-                <span id="days">00</span>
-                <div class="label">Days</div>
-            </div>
-            <div class="timer-unit">
-                <span id="hours">00</span>
-                <div class="label">Hours</div>
-            </div>
-            <div class="timer-unit">
-                <span id="minutes">00</span>
-                <div class="label">Mins</div>
-            </div>
-            <div class="timer-unit">
-                <span id="seconds">00</span>
-                <div class="label">Secs</div>
-            </div>
+            <div class="timer-unit"><span id="days">00</span><div class="label">Days</div></div>
+            <div class="timer-unit"><span id="hours">00</span><div class="label">Hours</div></div>
+            <div class="timer-unit"><span id="minutes">00</span><div class="label">Mins</div></div>
+            <div class="timer-unit"><span id="seconds">00</span><div class="label">Secs</div></div>
         </div>
-
         <a href="https://ishyawebsite-max.github.io/ISHYA-26/ROOMS/index.html" class="cta-button">Book Rooms</a>
     </div>
 
     <div id="footer-placeholder"></div>
 
     <script>
-        /** FIRE PARTICLE ENGINE **/
+        // 1. FIRE PARTICLES
         const container = document.getElementById('fireContainer');
         const fireColors = ['#FF3300', '#FF6600', '#FFCC00', '#FF0000'];
 
         function createParticle() {
             const particle = document.createElement('div');
             particle.classList.add('flame-particle');
-            
-            // Randomize size
             const size = Math.random() * 20 + 10;
             particle.style.width = size + 'px';
             particle.style.height = (size * 1.5) + 'px';
-            
-            // Random horizontal position
             particle.style.left = Math.random() * 100 + '%';
-            
-            // Random speed/delay
             particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
-            particle.style.animationDelay = (Math.random() * 2) + 's';
-            
-            // Color and Glow
             const color = fireColors[Math.floor(Math.random() * fireColors.length)];
             particle.style.background = color;
             particle.style.boxShadow = `0 0 20px ${color}`;
-            
             container.appendChild(particle);
-
-            // Cleanup
-            setTimeout(() => {
-                particle.remove();
-            }, 7000);
+            setTimeout(() => particle.remove(), 7000);
         }
-
-        // Start with a burst of particles
-        for (let i = 0; i < 40; i++) {
-            setTimeout(createParticle, i * 150);
-        }
-
-        // Keep spawning new ones indefinitely
         setInterval(createParticle, 150);
 
+        // 2. FIXED COUNTDOWN LOGIC
+        // Using ISO Format (YYYY-MM-DD) for maximum browser compatibility
+        const targetDate = new Date("2026-03-13T00:00:00").getTime();
 
-        /** COUNTDOWN LOGIC **/
-        const countDownDate = new Date("Mar 13, 2026 00:00:00").getTime();
-        const daysEl = document.getElementById("days");
-        const hoursEl = document.getElementById("hours");
-        const minutesEl = document.getElementById("minutes");
-        const secondsEl = document.getElementById("seconds");
-
-        setInterval(function() {
+        function updateCountdown() {
             const now = new Date().getTime();
-            const distance = countDownDate - now;
-            
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            
-            daysEl.innerHTML = String(days).padStart(2, '0');
-            hoursEl.innerHTML = String(hours).padStart(2, '0');
-            minutesEl.innerHTML = String(minutes).padStart(2, '0');
-            secondsEl.innerHTML = String(seconds).padStart(2, '0');
-        }, 1000);
+            const distance = targetDate - now;
 
-        /** FOOTER FETCH **/
+            if (distance < 0) {
+                document.getElementById("countdown").innerHTML = "EVENT STARTED";
+                return;
+            }
+
+            const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = String(d).padStart(2, '0');
+            document.getElementById("hours").innerText = String(h).padStart(2, '0');
+            document.getElementById("minutes").innerText = String(m).padStart(2, '0');
+            document.getElementById("seconds").innerText = String(s).padStart(2, '0');
+        }
+
+        // Run immediately so it doesn't show 00 on load
+        updateCountdown(); 
+        // Then update every second
+        setInterval(updateCountdown, 1000);
+
+        // 3. FOOTER
         fetch('footer.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('footer-placeholder').innerHTML = data;
-            })
-            .catch(error => console.error('Error loading footer:', error));
+            .then(res => res.text())
+            .then(data => document.getElementById('footer-placeholder').innerHTML = data)
+            .catch(err => console.log("Footer not found, ignoring."));
     </script>
-
-</body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
-    <link rel="shortcut icon" type="image/x-icon" href="Logo Ishya.ico">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coming Soon | ISHYA 2026</title>
-    
-    <!-- Fonts & Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
-    <style>
-        /* --- Fire & Origami Theme Variables --- */
-        :root {
-            --neon-red: #FF3300;      
-            --flame-orange: #FF6600;    
-            --flame-yellow: #FFCC00;    
-            --bg-black: #080a08;        
-        }
-
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-black);
-            overflow-x: hidden; 
-            color: white;
-            scroll-behavior: smooth;
-        }
-
-        /* Fullscreen fire container */
-        .fire-wrapper {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at bottom, #2b0500 0%, #050505 80%);
-            z-index: 0;
-            overflow: hidden;
-            pointer-events: none;
-        }
-
-        /* Individual Fire Particle */
-        .flame-particle {
-            position: absolute;
-            bottom: -50px;
-            /* Origami-style triangle shape */
-            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
-            opacity: 0;
-            filter: blur(1px);
-            mix-blend-mode: screen; /* Makes particles glow against the black */
-            animation: rise-and-flicker 5s infinite ease-in;
-        }
-
-        @keyframes rise-and-flicker {
-            0% { 
-                transform: translateY(0) scale(1) rotate(0deg); 
-                opacity: 0; 
-            }
-            10% { opacity: 0.8; }
-            50% {
-                transform: translateY(-40vh) scale(1.4) rotate(180deg) translateX(30px);
-                opacity: 0.6;
-            }
-            100% { 
-                transform: translateY(-110vh) scale(0.2) rotate(360deg) translateX(-30px); 
-                opacity: 0; 
-            }
-        }
-
-        /* Main UI Container */
-        .content {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            position: relative;
-            z-index: 10; /* Ensures text is above fire */
-            padding: 40px 20px;
-        }
-        
-        .logo-container {
-            position: relative;
-            margin-bottom: 2rem;
-            animation: foldIn 1.2s ease-out forwards;
-        }
-
-        .logo {
-            width: 180px;
-            height: auto;
-            position: relative;
-            z-index: 5;
-            filter: drop-shadow(0 0 20px var(--neon-red));
-        }
-
-        /* Pulsing glow behind logo */
-        .logo-container::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 250px;
-            height: 250px;
-            background: var(--neon-red);
-            filter: blur(80px);
-            opacity: 0.3;
-            border-radius: 50%;
-            animation: pulse 3s infinite alternate;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.2; scale: 0.8; }
-            100% { opacity: 0.5; scale: 1.2; }
-        }
-        
-        h1 {
-            font-family: 'Oswald', sans-serif;
-            font-size: clamp(3rem, 10vw, 5.5rem);
-            margin: 0;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 10px;
-            text-shadow: 0 0 15px var(--neon-red), 0 0 30px var(--flame-orange);
-            animation: foldIn 1s ease-out 0.3s forwards;
-            opacity: 0;
-        }
-        
-        p {
-            font-size: 1.2rem;
-            color: #d1d1d1;
-            max-width: 500px;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            margin-top: 10px;
-            animation: foldIn 1s ease-out 0.6s forwards;
-            opacity: 0;
-        }
-
-        /* Countdown Grid */
-        #countdown {
-            display: flex;
-            gap: 1.5rem;
-            margin-top: 3rem;
-            animation: foldIn 1s ease-out 0.9s forwards;
-            opacity: 0;
-        }
-
-        .timer-unit {
-            background: rgba(255, 60, 0, 0.1);
-            padding: 15px 20px;
-            clip-path: polygon(0 0, 80% 0, 100% 20%, 100% 100%, 0 100%);
-            border-left: 3px solid var(--neon-red);
-            min-width: 90px;
-            backdrop-filter: blur(10px);
-        }
-
-        .timer-unit span {
-            font-family: 'Oswald', sans-serif;
-            font-size: 3.5rem;
-            display: block;
-            color: #fff;
-            text-shadow: 0 0 10px var(--neon-red);
-            line-height: 1;
-        }
-
-        .timer-unit .label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: var(--flame-yellow);
-            margin-top: 5px;
-            font-weight: 600;
-        }
-
-        /* Button */
-        .cta-button {
-            margin-top: 4rem;
-            padding: 15px 50px;
-            background: transparent;
-            color: #fff;
-            border: 2px solid var(--neon-red);
-            text-decoration: none;
-            font-family: 'Oswald', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            transition: 0.4s;
-            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
-            animation: foldIn 1s ease-out 1.2s forwards;
-            opacity: 0;
-        }
-
-        .cta-button:hover {
-            background: var(--neon-red);
-            box-shadow: 0 0 40px var(--neon-red);
-            transform: translateY(-5px);
-            color: #000;
-        }
-
-        @keyframes foldIn {
-            0% { transform: perspective(1000px) rotateX(-90deg); opacity: 0; }
-            100% { transform: perspective(1000px) rotateX(0deg); opacity: 1; }
-        }
-        
-        /* Mobile Adjustments */
-        @media (max-width: 768px) {
-            #countdown { gap: 0.5rem; }
-            .timer-unit { min-width: 60px; padding: 10px; }
-            .timer-unit span { font-size: 2rem; }
-            .logo { width: 130px; }
-        }
-    </style>
-</head>
-<body>
-
-    <!-- Animated Background Layer -->
-    <div class="fire-wrapper" id="fireContainer"></div>
-
-    <!-- Content Layer -->
-    <div class="content">
-        <div class="logo-container">
-            <img src="Logo Ishya.ico" alt="Ishya Logo" class="logo">
-        </div>
-
-        <h1>ISHYA 2026</h1>
-        <p>The unfolding begins</p>
-        
-        <div id="countdown">
-            <div class="timer-unit">
-                <span id="days">00</span>
-                <div class="label">Days</div>
-            </div>
-            <div class="timer-unit">
-                <span id="hours">00</span>
-                <div class="label">Hours</div>
-            </div>
-            <div class="timer-unit">
-                <span id="minutes">00</span>
-                <div class="label">Mins</div>
-            </div>
-            <div class="timer-unit">
-                <span id="seconds">00</span>
-                <div class="label">Secs</div>
-            </div>
-        </div>
-
-        <a href="https://ishyawebsite-max.github.io/ISHYA-26/ROOMS/index.html" class="cta-button">Book Rooms</a>
-    </div>
-
-    <div id="footer-placeholder"></div>
-
-    <script>
-        /** FIRE PARTICLE ENGINE **/
-        const container = document.getElementById('fireContainer');
-        const fireColors = ['#FF3300', '#FF6600', '#FFCC00', '#FF0000'];
-
-        function createParticle() {
-            const particle = document.createElement('div');
-            particle.classList.add('flame-particle');
-            
-            // Randomize size
-            const size = Math.random() * 20 + 10;
-            particle.style.width = size + 'px';
-            particle.style.height = (size * 1.5) + 'px';
-            
-            // Random horizontal position
-            particle.style.left = Math.random() * 100 + '%';
-            
-            // Random speed/delay
-            particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
-            particle.style.animationDelay = (Math.random() * 2) + 's';
-            
-            // Color and Glow
-            const color = fireColors[Math.floor(Math.random() * fireColors.length)];
-            particle.style.background = color;
-            particle.style.boxShadow = `0 0 20px ${color}`;
-            
-            container.appendChild(particle);
-
-            // Cleanup
-            setTimeout(() => {
-                particle.remove();
-            }, 7000);
-        }
-
-        // Start with a burst of particles
-        for (let i = 0; i < 40; i++) {
-            setTimeout(createParticle, i * 150);
-        }
-
-        // Keep spawning new ones indefinitely
-        setInterval(createParticle, 150);
-
-
-        /** COUNTDOWN LOGIC **/
-        const countDownDate = new Date("Mar 13, 2026 00:00:00").getTime();
-        const daysEl = document.getElementById("days");
-        const hoursEl = document.getElementById("hours");
-        const minutesEl = document.getElementById("minutes");
-        const secondsEl = document.getElementById("seconds");
-
-        setInterval(function() {
-            const now = new Date().getTime();
-            const distance = countDownDate - now;
-            
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            
-            daysEl.innerHTML = String(days).padStart(2, '0');
-            hoursEl.innerHTML = String(hours).padStart(2, '0');
-            minutesEl.innerHTML = String(minutes).padStart(2, '0');
-            secondsEl.innerHTML = String(seconds).padStart(2, '0');
-        }, 1000);
-
-        /** FOOTER FETCH **/
-        fetch('footer.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('footer-placeholder').innerHTML = data;
-            })
-            .catch(error => console.error('Error loading footer:', error));
-    </script>
-
 </body>
 </html>
