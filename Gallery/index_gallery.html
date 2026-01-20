@@ -3,352 +3,360 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inferno | Origami Gallery</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Outfit:wght@300;600&display=swap" rel="stylesheet">
+    <title>Inferno Gallery | Pro</title>
+    
+    <!-- GSAP for Professional Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Manrope:wght@300;600&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --fire: #ff4d00;
-            --ember: #ffcc00;
+            --fire: #ff3c00;
+            --ember: #ffaa00;
             --bg: #050505;
-            --card-bg: #111;
+            --card-ratio: 16/10;
         }
 
         body {
             background-color: var(--bg);
             color: white;
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Manrope', sans-serif;
             margin: 0;
             overflow-x: hidden;
         }
 
-        #bgCanvas { position: fixed; top: 0; left: 0; z-index: -1; }
+        #emberCanvas { position: fixed; top: 0; left: 0; z-index: -1; }
 
-        .timeline-container {
-            max-width: 1000px;
+        .gallery-container {
+            max-width: 1100px;
             margin: 100px auto;
             position: relative;
-            padding: 20px;
+            padding: 40px 20px;
         }
 
-        /* Glowing Center Line */
-        .timeline-container::before {
-            content: ''; position: absolute; left: 50%; transform: translateX(-50%);
-            width: 2px; height: 100%; top: 0;
-            background: linear-gradient(to bottom, transparent, var(--fire), var(--ember), transparent);
-            box-shadow: 0 0 15px var(--fire);
+        /* Center Timeline Line */
+        .gallery-container::before {
+            content: ''; position: absolute; left: 50%; top:0; bottom:0;
+            width: 1px; background: linear-gradient(to bottom, transparent, var(--fire), transparent);
+            box-shadow: 0 0 10px var(--fire);
         }
 
-        .node {
+        .event-row {
             display: flex; justify-content: space-between; align-items: center;
-            width: 100%; margin-bottom: 100px; position: relative;
+            width: 100%; margin-bottom: 150px; position: relative;
+            opacity: 0; /* Hidden initially for scroll reveal */
         }
-        .node:nth-child(even) { flex-direction: row-reverse; }
+        .event-row:nth-child(even) { flex-direction: row-reverse; }
 
-        .node-dot {
-            position: absolute; left: 50%; transform: translateX(-50%);
-            width: 20px; height: 20px; background: var(--ember);
-            border-radius: 50%; box-shadow: 0 0 20px var(--fire); z-index: 5;
+        .center-dot {
+            position: absolute; left: 50%; width: 12px; height: 12px;
+            background: var(--ember); border-radius: 50%;
+            transform: translate(-50%, 0);
+            box-shadow: 0 0 15px var(--fire); z-index: 5;
         }
 
-        /* --- STACKED CARD DESIGN --- */
-        .card-wrapper {
+        /* --- THE REAL STACK --- */
+        .card-group {
             width: 45%;
             position: relative;
             cursor: pointer;
-            perspective: 1000px;
+            perspective: 1500px; /* Essential for 3D feel */
         }
 
-        .event-title {
-            font-family: 'Cinzel', serif; color: var(--ember);
-            font-size: 1.2rem; margin-bottom: 10px; text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        .text-content {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .event-row:nth-child(even) .text-content { text-align: right; }
+
+        .title {
+            font-family: 'Cinzel', serif; font-size: 1.5rem;
+            background: linear-gradient(45deg, var(--ember), #fff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-transform: uppercase; letter-spacing: 1px;
         }
 
-        /* The Visual "Paper Stack" Effect */
-        .photo-stack {
+        .stack-area {
             position: relative;
             width: 100%;
-            aspect-ratio: 16/10;
+            aspect-ratio: var(--card-ratio);
         }
 
-        /* Fake photos behind the main one */
-        .photo-stack::before, .photo-stack::after {
-            content: ''; position: absolute; inset: 0;
-            background: #222; border: 1px solid #444; border-radius: 8px;
-            transition: transform 0.4s ease;
-            z-index: 0;
-        }
-        
-        .photo-stack::before { transform: rotate(-3deg); }
-        .photo-stack::after { transform: rotate(3deg); }
-
-        /* Fan out effect on hover */
-        .card-wrapper:hover .photo-stack::before { transform: rotate(-6deg) translateX(-5px); }
-        .card-wrapper:hover .photo-stack::after { transform: rotate(6deg) translateX(5px); }
-
-        /* The Main Image Container */
-        .current-photo-box {
-            position: absolute; inset: 0;
-            background: #000;
-            border: 1px solid var(--fire);
+        /* The Layers of Images */
+        .photo-layer {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             border-radius: 8px;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255, 60, 0, 0.2);
+            transform-origin: center bottom;
+            transition: box-shadow 0.3s;
+        }
+
+        /* Default Positioning for Stack Look */
+        .layer-1 { z-index: 3; transform: scale(1); }
+        .layer-2 { z-index: 2; transform: scale(0.95) translateY(10px) rotate(-3deg); filter: brightness(0.7); }
+        .layer-3 { z-index: 1; transform: scale(0.9) translateY(20px) rotate(3deg); filter: brightness(0.5); }
+
+        .card-group:hover .layer-1 { box-shadow: 0 20px 50px rgba(255, 60, 0, 0.3); }
+
+        /* --- THE PRO ORIGAMI MODAL --- */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 9999;
+            display: none;
+            justify-content: center; align-items: center;
+            perspective: 2000px;
+        }
+
+        .fold-container {
+            width: 90vw; max-width: 800px;
+            /* Height is dynamic based on JS calculation */
+            height: 60vh; 
+            position: relative;
+            transform-style: preserve-3d;
+            visibility: hidden; /* Hidden until calc is done */
+        }
+
+        /* The 3 Folding Parts */
+        .fold-part {
+            position: absolute; left: 0; width: 100%;
+            background-size: 100% auto; /* Fit width */
+            background-repeat: no-repeat;
+            background-color: #000;
             overflow: hidden;
+            backface-visibility: hidden; /* Crucial for clean 3D */
+            transform-style: preserve-3d;
+        }
+
+        /* Top Third */
+        .fold-top {
+            height: 33.4%; top: 0;
+            transform-origin: bottom center;
+            background-position: top center;
+            z-index: 3;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Middle Third */
+        .fold-mid {
+            height: 33.4%; top: 33.3%;
+            background-position: center center;
             z-index: 2;
         }
 
-        .current-photo-box img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            opacity: 0; transition: opacity 0.5s;
-            position: absolute; top:0; left:0;
-        }
-        .current-photo-box img.active { opacity: 1; }
-
-        /* Image Counter Badge */
-        .stack-badge {
-            position: absolute; top: 10px; right: 10px;
-            background: rgba(0,0,0,0.8); color: var(--ember);
-            padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;
-            border: 1px solid var(--fire); z-index: 10;
-        }
-
-        /* Progress Bar for Sliding */
-        .slide-progress {
-            position: absolute; bottom: 0; left: 0; height: 3px;
-            background: var(--fire); width: 0%;
-            transition: width 0.3s linear;
-            z-index: 10;
-        }
-
-        /* --- COMPLEX ORIGAMI MODAL --- */
-        .modal {
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,0.95);
-            display: none; justify-content: center; align-items: center;
-            z-index: 9999;
-            perspective: 2500px; /* Deep 3D space */
-        }
-
-        .origami-stage {
-            width: 90%; max-width: 800px;
-            height: 60vh; /* Adjust based on image ratio */
-            position: relative;
-            transform-style: preserve-3d;
-        }
-
-        /* The 4 Folding Segments */
-        .fold-slice {
-            width: 100%; height: 25%; /* 4 slices = 25% each */
-            position: absolute; left: 0;
-            background-size: 100% 400%; /* Stretch image across slices */
-            background-repeat: no-repeat;
-            transform-origin: top;
-            transform-style: preserve-3d;
-            transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
-            background-color: #000;
+        /* Bottom Third */
+        .fold-btm {
+            height: 33.4%; top: 66.6%;
+            transform-origin: top center;
+            background-position: bottom center;
+            z-index: 3;
             border-top: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* Initial Folded State (Zig-Zag) */
-        .modal:not(.open) .fold-slice { opacity: 0; }
-        
-        .modal.open { display: flex; }
-
-        /* Positioning Logic */
-        .s1 { top: 0; background-position: 0% 0%; }
-        
-        /* Each slice hangs off the previous one in 3D space */
-        .s2 { top: 100%; background-position: 0% 33.33%; transform-origin: top; }
-        .s3 { top: 100%; background-position: 0% 66.66%; transform-origin: top; }
-        .s4 { top: 100%; background-position: 0% 100%; transform-origin: top; }
-
-        /* The Fold Animation Classes */
-        /* Closed State */
-        .origami-stage.folded .s1 { transform: rotateX(60deg); }
-        .origami-stage.folded .s2 { transform: rotateX(-120deg); }
-        .origami-stage.folded .s3 { transform: rotateX(120deg); }
-        .origami-stage.folded .s4 { transform: rotateX(-120deg); }
-
-        /* Open State (Flat) */
-        .origami-stage.unfolded .s1 { transform: rotateX(0deg); }
-        .origami-stage.unfolded .s2 { transform: rotateX(0deg); }
-        .origami-stage.unfolded .s3 { transform: rotateX(0deg); }
-        .origami-stage.unfolded .s4 { transform: rotateX(0deg); }
+        /* Shadows for realism during fold */
+        .fold-shadow {
+            position: absolute; inset: 0;
+            background: black; opacity: 0;
+            pointer-events: none;
+        }
 
         @media (max-width: 768px) {
-            .node { flex-direction: row !important; justify-content: flex-start; padding-left: 40px; }
-            .card-wrapper { width: 90%; }
-            .timeline-container::before, .node-dot { left: 20px; }
-            .origami-stage { height: 40vh; }
+            .event-row { flex-direction: column !important; align-items: flex-start; }
+            .card-group { width: 100%; margin-left: 30px; }
+            .gallery-container::before { left: 10px; }
+            .center-dot { left: 10px; }
+            .text-content { text-align: left !important; margin-left: 30px; }
         }
     </style>
 </head>
 <body>
 
-<canvas id="bgCanvas"></canvas>
+<canvas id="emberCanvas"></canvas>
 
-<div class="timeline-container" id="gallery"></div>
+<div class="gallery-container" id="galleryRoot"></div>
 
-<!-- Origami Modal Structure -->
-<div class="modal" id="modal" onclick="foldAndClose()">
-    <div class="origami-stage folded" id="stage">
-        <!-- These slices will be painted with the image via JS -->
-        <div class="fold-slice s1">
-            <div class="fold-slice s2">
-                <div class="fold-slice s3">
-                    <div class="fold-slice s4"></div>
-                </div>
-            </div>
+<!-- Origami Modal -->
+<div class="modal-overlay" id="modal" onclick="closeOrigami()">
+    <div class="fold-container" id="foldWrap">
+        
+        <div class="fold-part fold-top">
+            <div class="fold-shadow"></div>
         </div>
+        
+        <div class="fold-part fold-mid"></div>
+        
+        <div class="fold-part fold-btm">
+            <div class="fold-shadow"></div>
+        </div>
+
     </div>
 </div>
 
 <script>
-    /* --- CONFIGURATION --- */
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzuOEfCRHEBMA216pJ3oJYaVED2ohOCxAw_XNCbFlf8CK9r-j3K--BXGxcVDOeQHxKJug/exec'; 
+    // 1. CONFIG
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzuOEfCRHEBMA216pJ3oJYaVED2ohOCxAw_XNCbFlf8CK9r-j3K--BXGxcVDOeQHxKJug/exec'; 
 
-    /* --- 1. FETCH DATA --- */
-    async function initGallery() {
+    // 2. FETCH
+    async function init() {
         try {
-            const res = await fetch(APPS_SCRIPT_URL);
-            const data = await res.json();
-            renderTimeline(data);
-        } catch (e) {
-            console.error("Data Load Error:", e);
-        }
+            const req = await fetch(API_URL);
+            const data = await req.json();
+            render(data);
+        } catch (e) { console.error(e); }
     }
 
-    function renderTimeline(events) {
-        const container = document.getElementById('gallery');
-        events.forEach(ev => {
-            const count = ev.images.length;
-            const card = document.createElement('div');
-            card.className = 'node';
-            card.innerHTML = `
-                <div class="node-dot"></div>
-                <div class="card-wrapper" 
-                     onmouseenter="playStack(this, ${count})" 
-                     onmouseleave="stopStack(this)"
-                     onclick="unfoldOrigami('${ev.images[0]}')">
+    function render(data) {
+        const root = document.getElementById('galleryRoot');
+        
+        data.forEach((item, i) => {
+            // Get first 3 images for the stack. 
+            // If < 3 images, reuse existing ones to maintain the "Stack" visual
+            const img1 = item.images[0];
+            const img2 = item.images[1] || item.images[0];
+            const img3 = item.images[2] || item.images[0];
+
+            const row = document.createElement('div');
+            row.className = 'event-row';
+            row.innerHTML = `
+                <div class="center-dot"></div>
+                
+                <div class="card-group" 
+                     onmouseenter="shuffleStack(this)" 
+                     onclick="openOrigami('${img1.replace("=s800", "=s2000")}')"> <!-- Pass High Res URL -->
                     
-                    <div class="event-title">${ev.eventName}</div>
-                    
-                    <!-- The Stack Visual -->
-                    <div class="photo-stack">
-                        <div class="current-photo-box">
-                            ${ev.images.map((src, i) => 
-                                `<img src="${src}" class="${i===0?'active':''}" loading="lazy">`
-                            ).join('')}
-                            <div class="slide-progress"></div>
-                        </div>
+                    <div class="text-content">
+                        <div class="title">${item.eventName}</div>
                     </div>
 
-                    ${count > 1 ? `<div class="stack-badge">+${count} Images</div>` : ''}
+                    <div class="stack-area">
+                        <!-- REAL IMAGES STACKED -->
+                        <div class="photo-layer layer-3" style="background-image: url('${img3}')"></div>
+                        <div class="photo-layer layer-2" style="background-image: url('${img2}')"></div>
+                        <div class="photo-layer layer-1" style="background-image: url('${img1}')"></div>
+                    </div>
                 </div>
+
                 <div style="width: 45%"></div>
             `;
-            container.appendChild(card);
+            root.appendChild(row);
+
+            // Animate row entrance
+            gsap.to(row, { opacity: 1, y: 0, duration: 1, delay: i * 0.2 });
         });
     }
 
-    /* --- 2. SLIDING STACK ANIMATION --- */
-    let activeInterval;
-    
-    function playStack(wrapper, count) {
-        if (count <= 1) return;
-        const imgs = wrapper.querySelectorAll('img');
-        const bar = wrapper.querySelector('.slide-progress');
-        let idx = 0;
+    // 3. HOVER SHUFFLE ANIMATION (GSAP)
+    function shuffleStack(element) {
+        const l1 = element.querySelector('.layer-1');
+        const l2 = element.querySelector('.layer-2');
+        const l3 = element.querySelector('.layer-3');
+
+        const tl = gsap.timeline();
+
+        // Physically fan them out smoothly
+        tl.to(l2, { x: 40, rotation: 5, brightness: 1, duration: 0.3, ease: "power2.out" }, 0)
+          .to(l3, { x: -40, rotation: -5, brightness: 1, duration: 0.3, ease: "power2.out" }, 0);
         
-        // Reset
-        imgs.forEach(img => img.classList.remove('active'));
-        imgs[0].classList.add('active');
-
-        activeInterval = setInterval(() => {
-            imgs[idx].classList.remove('active');
-            idx = (idx + 1) % count;
-            imgs[idx].classList.add('active');
-            
-            // Progress Bar Animation
-            let pct = ((idx + 1) / count) * 100;
-            bar.style.width = pct + '%';
-        }, 800);
+        // Return to stack after a brief moment
+        tl.to([l2, l3], { x: 0, duration: 0.4, ease: "back.out(1.7)", delay: 0.1 });
     }
 
-    function stopStack(wrapper) {
-        clearInterval(activeInterval);
-        wrapper.querySelector('.slide-progress').style.width = '0%';
-    }
-
-    /* --- 3. ADVANCED ORIGAMI UNFOLD --- */
-    function unfoldOrigami(imgSrc) {
+    // 4. PROFESSIONAL ORIGAMI UNFOLD
+    function openOrigami(url) {
         const modal = document.getElementById('modal');
-        const stage = document.getElementById('stage');
-        const slices = document.querySelectorAll('.fold-slice');
-        
-        // 1. Set the image to all slices
-        // Use high-res for modal (replace s800 with s0 or s2000)
-        const highRes = imgSrc.replace('=s800', '=s2000');
-        
-        slices.forEach(slice => {
-            slice.style.backgroundImage = `url(${highRes})`;
-        });
+        const wrap = document.getElementById('foldWrap');
+        const top = document.querySelector('.fold-top');
+        const mid = document.querySelector('.fold-mid');
+        const btm = document.querySelector('.fold-btm');
+        const shadows = document.querySelectorAll('.fold-shadow');
 
-        // 2. Show Modal
-        modal.classList.add('open');
+        // Set Images
+        top.style.backgroundImage = `url(${url})`;
+        mid.style.backgroundImage = `url(${url})`;
+        btm.style.backgroundImage = `url(${url})`;
 
-        // 3. Trigger Unfold Animation (Small delay to allow CSS display:flex to apply)
-        setTimeout(() => {
-            stage.classList.remove('folded');
-            stage.classList.add('unfolded');
-        }, 100);
+        modal.style.display = 'flex';
+        wrap.style.visibility = 'visible';
+
+        // INITIAL STATE: Folded Completely
+        gsap.set(top, { rotationX: -90, brightness: 0.5 });
+        gsap.set(btm, { rotationX: 90, brightness: 0.5 });
+        gsap.set(wrap, { scale: 0.8, opacity: 0 });
+        gsap.set(shadows, { opacity: 0.5 }); // Dark shadows when folded
+
+        // ANIMATION SEQUENCE
+        const tl = gsap.timeline();
+
+        // 1. Fade in & Scale up slightly
+        tl.to(wrap, { scale: 1, opacity: 1, duration: 0.4 });
+
+        // 2. Unfold Top (Elastic physics)
+        tl.to(top, { 
+            rotationX: 0, 
+            duration: 1.2, 
+            ease: "elastic.out(1, 0.5)" 
+        }, "-=0.2");
+
+        // 3. Unfold Bottom
+        tl.to(btm, { 
+            rotationX: 0, 
+            duration: 1.2, 
+            ease: "elastic.out(1, 0.5)" 
+        }, "-=1.1");
+
+        // 4. Remove shadows as it opens (Lighting effect)
+        tl.to(shadows, { opacity: 0, duration: 0.8 }, "-=1.2");
     }
 
-    function foldAndClose() {
-        const stage = document.getElementById('stage');
+    function closeOrigami() {
         const modal = document.getElementById('modal');
+        const wrap = document.getElementById('foldWrap');
         
-        // 1. Fold back up
-        stage.classList.remove('unfolded');
-        stage.classList.add('folded');
-
-        // 2. Hide modal after animation finishes
-        setTimeout(() => {
-            modal.classList.remove('open');
-        }, 1200);
+        // Reverse animation
+        gsap.to(wrap, { scale: 0.8, opacity: 0, duration: 0.3, onComplete: () => {
+            modal.style.display = 'none';
+        }});
     }
 
-    /* --- 4. FIRE BACKGROUND --- */
-    const canvas = document.getElementById('bgCanvas');
+    // 5. BACKGROUND PARTICLES
+    const canvas = document.getElementById('emberCanvas');
     const ctx = canvas.getContext('2d');
-    let p = [];
+    let pts = [];
     const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
     window.onresize = resize; resize();
 
-    class Spark {
+    class Pt {
         constructor() { this.reset(); }
         reset() {
             this.x = Math.random() * canvas.width;
-            this.y = canvas.height + 10;
-            this.v = Math.random() * 2 + 1;
-            this.s = Math.random() * 2;
-            this.o = 1;
+            this.y = canvas.height + 50;
+            this.v = Math.random() * 1.5 + 0.5;
+            this.r = Math.random() * 2;
+            this.o = Math.random() * 0.8;
+        }
+        update() {
+            this.y -= this.v; this.o -= 0.005;
+            if(this.o <= 0) this.reset();
         }
         draw() {
-            this.y -= this.v; this.o -= 0.01;
-            if(this.o <= 0) this.reset();
-            ctx.fillStyle = `rgba(255, 100, 0, ${this.o})`;
-            ctx.beginPath(); ctx.arc(this.x, this.y, this.s, 0, 7); ctx.fill();
+            ctx.fillStyle = `rgba(255, 60, 0, ${this.o})`;
+            ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI*2); ctx.fill();
         }
     }
-    
-    function loop() {
+
+    function anim() {
         ctx.clearRect(0,0,canvas.width,canvas.height);
-        if(p.length < 60) p.push(new Spark());
-        p.forEach(s => s.draw());
-        requestAnimationFrame(loop);
+        if(pts.length < 80) pts.push(new Pt());
+        pts.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(anim);
     }
-    loop();
-    initGallery();
+    anim();
+    init();
 </script>
 
 </body>
