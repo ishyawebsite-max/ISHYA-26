@@ -569,7 +569,7 @@
                 background-position: center;
                 background-attachment: fixed;
             }
-            .trsansport-section.department-section{
+            .transport-section.department-section{
                 background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_980,h_551,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg');
                 background-size: cover;
                 background-position: center;
@@ -581,7 +581,12 @@
                 background-position: center;
                 background-attachment: fixed;
             }
-               
+            .advisory-section.department-section{
+                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('C:/Users/adity/Documents/GitHub/ISHYA 26/ISHYA-26/Images_BG/website.png');
+                background-size: contain;
+                background-position: center;
+                background-attachment: fixed;
+            }
             .department-header {
                 text-align: center;
                 margin-bottom: 40px;
@@ -606,7 +611,7 @@
             }
     
             /* --- Leadership Card --- */
-            .leadership-card {
+            .team-card {
                 background: linear-gradient(135deg, rgba(212, 198, 133, 0.1), rgba(139, 92, 246, 0.1));
                 border: 1px solid rgba(55, 54, 46, 0.3);
                 border-radius: 20px;
@@ -619,7 +624,7 @@
                 overflow: hidden;
             }
     
-            .leadership-card::before {
+            .team-card::before {
                 content: '';
                 position: absolute;
                 top: 0;
@@ -632,17 +637,17 @@
                 pointer-events: none;
             }
     
-            .leadership-card:hover {
+            .team-card:hover {
                 transform: translateY(-15px);
                 border-color: rgba(177, 155, 172, 0.6);
                 box-shadow: 0 20px 60px rgba(212, 198, 133, 0.15);
             }
     
-            .leadership-card:hover::before {
+            .team-card:hover::before {
                 opacity: 1;
             }
     
-            .leadership-avatar {
+            .element-avatar {
                 width: 200px;
                 height: 200px;
                 margin: 0 auto 20px;
@@ -658,19 +663,19 @@
                 position: relative;
             }
     
-            .leadership-card:hover .leadership-avatar {
+            .team-card:hover .element-avatar {
                 transform: scale(1.15) rotateY(10deg);
                 box-shadow: 0 20px 60px rgba(212, 198, 133, 0.4);
             }
     
-            .leadership-name {
+            .element-name {
                 font-size: 1.6rem;
                 font-weight: 700;
                 color: var(--primary-color);
                 margin-bottom: 8px;
             }
     
-            .leadership-title {
+            .element-title {
                 font-size: 1.1rem;
                 color: var(--secondary-color);
                 text-transform: uppercase;
@@ -679,7 +684,7 @@
                 margin-bottom: 15px;
             }
     
-            .leadership-bio {
+            .element-bio {
                 color: var(--text-muted);
                 line-height: 1.7;
                 max-width: 500px;
@@ -914,7 +919,7 @@
                     font-size: 40px;
                 }
     
-                .leadership-avatar {
+                .element-avatar {
                     width: 210px;
                     height: 210px;
                     font-size: 50px;
@@ -948,7 +953,7 @@
                     font-size: 1.2rem;
                 }
     
-                .leadership-card {
+                .team-card {
                     padding: 25px;
                 }
             }
@@ -976,7 +981,7 @@
                    
                     <div class="stats-section section-title">    
                         <div class="section-title">
-                            <h2 class="aurora-textnew" style="font-family: Texturina; size: 100px;">The ISHYA Family</h2>
+                            <h2 class="aurora-textnew" style="font-family: 'Michroma'; size: 100px;">The ISHYA Family</h2>
                             <div class="line"></div>
                         </div>
                         <div class="stat-card">
@@ -1004,19 +1009,43 @@
                         </div>
                         
                         <div class="team-grid">
-                            <div class="leadership-card">
-                                <div class="leadership-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                                <div class="leadership-name" style="color: var(--text-secondary)";>Dummy</div>
-                                <div class="leadership-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>
-                                <p class="leadership-bio">Leading the vision of ISHYA with passion and excellence. Dedicated to
-                                    creating an unforgettable cultural experience for everyone.</p>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
                             </div>
-                                <div class="leadership-card">
-                                <div class="leadership-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                                <div class="leadership-name" style="color: var(--text-secondary)";>Dummy</div>
-                                <div class="leadership-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
-                                <p class="leadership-bio">Leading the vision of ISHYA with passion and excellence. Dedicated to
-                                    creating an unforgettable cultural experience for everyone.</p>
+                                <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>                               
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advisory Section -->
+                    <div class="advisory-section department-section">
+                        <div>
+                            <p><br><br></p>
+                        </div>
+                        <div class="section-title">
+                            <h2>Advisory Committee</h2>                            
+                        </div>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>                               
                             </div>
                         </div>
                     </div>
@@ -1030,15 +1059,15 @@
                        
                         <div class="team-grid">
                             <div class="team-card">
-                                <div class="leadership-avatar"><img src="https://static.wixstatic.com/media/2304ec_fc68e10cf0d849e29233b0170c44b874~mv2.jpg/v1/crop/x_0,y_0,w_3060,h_2894/fill/w_426,h_402,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/20230731_104021.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                                <div class="leadership-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Dummy</div>
-                                <div class="leadership-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
+                                <div class="element-avatar"><img src="https://static.wixstatic.com/media/2304ec_fc68e10cf0d849e29233b0170c44b874~mv2.jpg/v1/crop/x_0,y_0,w_3060,h_2894/fill/w_426,h_402,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/20230731_104021.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
                                
                             </div>
                             <div class="team-card">
-                                <div class="leadership-avatar"><img src="https://static.wixstatic.com/media/2304ec_fc68e10cf0d849e29233b0170c44b874~mv2.jpg/v1/crop/x_0,y_0,w_3060,h_2894/fill/w_426,h_402,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/20230731_104021.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                                <div class="leadership-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Dummy</div>
-                                <div class="leadership-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
+                                <div class="element-avatar"><img src="https://static.wixstatic.com/media/2304ec_fc68e10cf0d849e29233b0170c44b874~mv2.jpg/v1/crop/x_0,y_0,w_3060,h_2894/fill/w_426,h_402,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/20230731_104021.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
                                
                             </div>
                         </div>
@@ -1053,15 +1082,15 @@
                        
                         <div class="team-grid">
                             <div class="team-card">
-                                <div class="leadership-avatar"><img src="https://static.wixstatic.com/media/2304ec_fc68e10cf0d849e29233b0170c44b874~mv2.jpg/v1/crop/x_0,y_0,w_3060,h_2894/fill/w_426,h_402,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/20230731_104021.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                                <div class="leadership-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Dummy</div>
-                                <div class="leadership-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
+                                <div class="element-avatar"><img src="https://static.wixstatic.com/media/2304ec_fc68e10cf0d849e29233b0170c44b874~mv2.jpg/v1/crop/x_0,y_0,w_3060,h_2894/fill/w_426,h_402,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/20230731_104021.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
                                
                             </div>
                             <div class="team-card">
-                                <div class="leadership-avatar"><img src="https://static.wixstatic.com/media/2304ec_fc68e10cf0d849e29233b0170c44b874~mv2.jpg/v1/crop/x_0,y_0,w_3060,h_2894/fill/w_426,h_402,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/20230731_104021.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                                <div class="leadership-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Dummy</div>
-                                <div class="leadership-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
+                                <div class="element-avatar"><img src="https://static.wixstatic.com/media/2304ec_fc68e10cf0d849e29233b0170c44b874~mv2.jpg/v1/crop/x_0,y_0,w_3060,h_2894/fill/w_426,h_402,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/20230731_104021.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
                                
                             </div>
                         </div>
@@ -1379,7 +1408,7 @@
             }, observerOptions);
     
             // Observe all team cards
-            document.querySelectorAll('.team-card, .leadership-card, .stat-card').forEach(card => {
+            document.querySelectorAll('.team-card, .team-card, .stat-card').forEach(card => {
                 observer.observe(card);
             });
     
