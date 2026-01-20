@@ -1,1 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eternal Flame Gallery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Raleway:wght@300;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --fire-glow: #ff4d00;
+            --fire-bright: #ffcc00;
+            --bg-dark: #0a0a0a;
+            --card-bg: rgba(20, 20, 20, 0.8);
+        }
 
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: 'Raleway', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Fire Ember Background Animation */
+        canvas#embers {
+            position: fixed;
+            top: 0; left: 0;
+            z-index: -1;
+        }
+
+        .timeline-container {
+            position: relative;
+            max-width: 1200px;
+            margin: 100px auto;
+            padding: 20px;
+        }
+
+        /* Central Fire Line */
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background: linear-gradient(to bottom, transparent, var(--fire-glow), var(--fire-bright), transparent);
+            top: 0; bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+            box-shadow: 0 0 15px var(--fire-glow);
+        }
+
+        .event-node {
+            padding: 10px 40px;
+            position: relative;
+            width: 40%;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease-out;
+        }
+
+        .event-node.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .left { left: 0; text-align: right; }
+        .right { left: 50%; text-align: left; }
+
+        .event-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 77, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            position: relative;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .event-card:hover {
+            transform: scale(1.03);
+            border-color: var(--fire-bright);
+            box-shadow: 0 0 20px rgba(255, 77, 0, 0.2);
+        }
+
+        .event-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: var(--fire-bright);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Image Stack Preview */
+        .image-stack {
+            position: relative;
+            height: 200px;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .image-stack img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0; left: 0;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .image-stack img.active {
+            opacity: 1;
+        }
+
+        /* Origami Modal Animation */
+        .modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            perspective: 1000px;
+        }
+
+        .origami-content {
+            width: 80%;
+            max-width: 800px;
+            transform-style: preserve-3d;
+            transform: rotateX(-90deg);
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal.open .origami-content {
+            transform: rotateX(0deg);
+        }
+
+        .modal img {
+            width: 100%;
+            border: 5px solid var(--fire-bright);
+        }
+
+        @media (max-width: 768px) {
+            .timeline-container::after { left: 31px; }
+            .event-node { width: 100%; left: 0; text-align: left; padding-left: 70px; }
+            .right { left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="embers"></canvas>
+
+<div class="timeline-container" id="timeline">
+    <!-- Events injected here -->
+</div>
+
+<div class="modal" id="modal" onclick="closeModal()">
+    <div class="origami-content">
+        <img id="modalImg" src="" alt="Full View">
+    </div>
+</div>
+
+<script>
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbylQ1ZjDSZu3RBBpJ-Jff3aQpcksRHUT-ih5GRL0H9Fvhq-mbBLqG-anf9pnH3-pX_GXA/exec';
+
+    // 1. Fetch Data from Google Sheets
+    async function loadGallery() {
+        try {
+            const response = await fetch(SHEET_URL);
+            const data = await response.json();
+            renderTimeline(data);
+        } catch (e) {
+            console.error("Error loading sheet data", e);
+        }
+    }
+
+    function renderTimeline(events) {
+        const container = document.getElementById('timeline');
+        events.forEach((event, index) => {
+            const side = index % 2 === 0 ? 'left' : 'right';
+            const node = document.createElement('div');
+            node.className = `event-node ${side}`;
+            
+            node.innerHTML = `
+                <div class="event-card" onmouseenter="startSlide(this)" onmouseleave="stopSlide(this)" onclick="openOrigami('${event.images[0]}')">
+                    <div class="event-name">${event.eventName}</div>
+                    <div class="image-stack">
+                        ${event.images.map((src, i) => `<img src="${src}" class="${i === 0 ? 'active' : ''}">`).join('')}
+                    </div>
+                </div>
+            `;
+            container.appendChild(node);
+            
+            // Intersection Observer for fade-in effect
+            setTimeout(() => node.classList.add('visible'), index * 200);
+        });
+    }
+
+    // 2. Hover Slide Logic (Optimized for Mobile via touch events)
+    let slideInterval;
+    function startSlide(card) {
+        const images = card.querySelectorAll('img');
+        let current = 0;
+        if (images.length <= 1) return;
+        
+        slideInterval = setInterval(() => {
+            images[current].classList.remove('active');
+            current = (current + 1) % images.length;
+            images[current].classList.add('active');
+        }, 800);
+    }
+
+    function stopSlide(card) {
+        clearInterval(slideInterval);
+    }
+
+    // 3. Origami Animation Logic
+    function openOrigami(src) {
+        const modal = document.getElementById('modal');
+        const modalImg = document.getElementById('modalImg');
+        modalImg.src = src;
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('open'), 10);
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('modal');
+        modal.classList.remove('open');
+        setTimeout(() => modal.style.display = 'none', 600);
+    }
+
+    // 4. Background Ember Animation
+    const canvas = document.getElementById('embers');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function initEmbers() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        for(let i=0; i<50; i++) particles.push(new Particle());
+    }
+
+    class Particle {
+        constructor() {
+            this.reset();
+        }
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = canvas.height + Math.random() * 100;
+            this.size = Math.random() * 3 + 1;
+            this.speedY = Math.random() * 1 + 0.5;
+            this.speedX = Math.random() * 2 - 1;
+            this.opacity = Math.random() * 0.5 + 0.5;
+        }
+        update() {
+            this.y -= this.speedY;
+            this.x += this.speedX;
+            if (this.y < 0) this.reset();
+        }
+        draw() {
+            ctx.fillStyle = `rgba(255, 80, 0, ${this.opacity})`;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', initEmbers);
+    initEmbers();
+    animate();
+    loadGallery();
+</script>
+
+</body>
+</html>
