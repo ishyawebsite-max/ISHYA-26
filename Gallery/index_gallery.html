@@ -44,7 +44,7 @@
             -webkit-text-fill-color: transparent;
             text-shadow: 0 10px 30px rgba(255, 60, 0, 0.4);
             letter-spacing: 5px;
-            opacity: 0; /* Hidden for animation */
+            opacity: 0;
         }
 
         .subtitle {
@@ -54,7 +54,7 @@
             letter-spacing: 3px;
             text-transform: uppercase;
             margin-top: 10px;
-            opacity: 0; /* Hidden for animation */
+            opacity: 0;
         }
 
         /* --- GALLERY CONTAINER --- */
@@ -65,7 +65,6 @@
             padding: 40px 20px;
         }
 
-        /* Center Glowing Timeline */
         .container::before {
             content: ''; position: absolute; left: 50%; top: 0; bottom: 0;
             width: 1px; background: linear-gradient(to bottom, transparent, var(--fire), var(--ember), transparent);
@@ -199,7 +198,6 @@
 
 <canvas id="emberCanvas"></canvas>
 
-<!-- TITLE SECTION -->
 <header class="page-header">
     <h1 class="main-title">GALLERY</h1>
     <div class="subtitle">Memories in Flame</div>
@@ -207,7 +205,6 @@
 
 <div class="container" id="galleryRoot"></div>
 
-<!-- Wrapper Modal -->
 <div class="modal" id="modal" onclick="closeWrapper()">
     <div class="wrapper-container" id="wrapBox">
         <img class="full-img" id="modalImg" src="">
@@ -220,9 +217,8 @@
     // --- 1. CONFIG ---
     const API_URL = 'https://script.google.com/macros/s/AKfycbzuOEfCRHEBMA216pJ3oJYaVED2ohOCxAw_XNCbFlf8CK9r-j3K--BXGxcVDOeQHxKJug/exec'; 
 
-    // --- 2. INIT & TITLE ANIMATION ---
+    // --- 2. INIT ---
     async function init() {
-        // Animate Title
         const tl = gsap.timeline();
         tl.to(".main-title", { opacity: 1, y: 0, duration: 1.5, ease: "power3.out" })
           .to(".subtitle", { opacity: 1, y: 0, duration: 1, ease: "power3.out" }, "-=1");
@@ -233,6 +229,17 @@
             renderGallery(data);
         } catch (e) { console.error(e); }
     }
+
+    // --- INTERSECTION OBSERVER (Auto-Play on Scroll) ---
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                startStackAnim(entry.target);
+            } else {
+                stopStackAnim(entry.target);
+            }
+        });
+    }, { threshold: 0.5 }); // Start when 50% visible
 
     function renderGallery(data) {
         const root = document.getElementById('galleryRoot');
@@ -247,10 +254,9 @@
 
             row.innerHTML = `
                 <div class="dot"></div>
+                <!-- Removed onmouseenter/leave, kept onclick -->
                 <div class="card-wrapper" 
                      id="card-${i}"
-                     onmouseenter="startStackAnim(this)" 
-                     onmouseleave="stopStackAnim(this)"
                      onclick="openTopImage(this)">
                     
                     <div class="meta"><div class="title">${item.eventName}</div></div>
@@ -265,7 +271,6 @@
                 <div style="width: 45%"></div>
             `;
             
-            // Set initial stack visual
             const cA = row.querySelector('.card-a');
             const cB = row.querySelector('.card-b');
             const cC = row.querySelector('.card-c');
@@ -279,28 +284,39 @@
 
             root.appendChild(row);
             gsap.from(row, { opacity: 0, y: 50, duration: 1, delay: 0.5 + (i * 0.2) });
+
+            // Attach Auto-Play Observer
+            observer.observe(wrapper);
         });
     }
 
-    // --- 3. STACK ANIMATION (PULL UP EFFECT) ---
+    // --- 3. STACK ANIMATION (Auto Triggered) ---
     let intervals = {};
 
     function startStackAnim(elem) {
         const id = elem.id;
         const images = JSON.parse(elem.dataset.imgs);
         if(images.length <= 1) return;
+        
+        // Prevent duplicate intervals if already running
+        if(intervals[id]) return;
 
-        // Visual hover state
-        gsap.to(elem.querySelector('.card-b'), { rotation: 2, x: 5, duration: 0.3 });
-        gsap.to(elem.querySelector('.card-c'), { rotation: -2, x: -5, duration: 0.3 });
+        // Visual Active State (Expand slightly)
+        gsap.to(elem.querySelector('.card-b'), { rotation: 2, x: 5, duration: 0.5 });
+        gsap.to(elem.querySelector('.card-c'), { rotation: -2, x: -5, duration: 0.5 });
 
         intervals[id] = setInterval(() => { cycleStack(elem, images); }, 3000); 
     }
 
     function stopStackAnim(elem) {
         const id = elem.id;
-        clearInterval(intervals[id]);
-        gsap.to([elem.querySelector('.card-b'), elem.querySelector('.card-c')], { rotation: 0, x: 0, duration: 0.3 });
+        if(intervals[id]) {
+            clearInterval(intervals[id]);
+            intervals[id] = null;
+        }
+        
+        // Return to resting state
+        gsap.to([elem.querySelector('.card-b'), elem.querySelector('.card-c')], { rotation: 0, x: 0, duration: 0.5 });
         elem.querySelector('.prog-bar').style.width = '0%';
     }
 
@@ -371,7 +387,6 @@
         modal.style.display = 'flex';
         box.style.visibility = 'visible';
 
-        // Set Closed State
         gsap.set(box, { scale: 0.5, opacity: 0 });
         gsap.set(gLeft, { rotationY: 0 }); 
         gsap.set(gRight, { rotationY: 0 }); 
