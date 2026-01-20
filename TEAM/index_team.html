@@ -471,7 +471,8 @@
                 margin-left: -50vw;
                 margin-right: -50vw;
                 padding: 50px;
-                min-height: 100vh;
+                height: 100vh;
+                box-sizing: border-box;
             }
             .leadership-section.department-section{
                 background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('../Images_BG/leadership.png');
@@ -492,13 +493,19 @@
                 background-attachment: fixed;
             }
             .design-section.department-section{
-                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_980,h_551,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg');
+                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('');
                 background-size: contain;
                 background-position: center;
                 background-attachment: fixed;
             }            
             .anchoring-section.department-section{
                 background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('../Images_BG/anchoring.png');
+                background-size: contain;
+                background-position: center;
+                background-attachment: fixed;
+            }
+            .socialmedia-section.department-section{
+                background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('.');
                 background-size: contain;
                 background-position: center;
                 background-attachment: fixed;
@@ -714,9 +721,11 @@
                 gap: 50px;
                 
                 /*Borders --- */
-                padding: 200px 20px;
+                padding: 50px 20px;
                 margin-bottom: 0px;
                 border-radius: 0;
+                height: 100vh;
+                box-sizing: border-box;
 
                 /*auto scroll*/
                 scroll-snap-align: start;
@@ -957,6 +966,29 @@
                     padding: 25px;
                 }
             }
+
+            #scroll-down-btn {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                background: var(--primary-color);
+                color: white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                z-index: 1000;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            }
+
+            #scroll-down-btn:hover {
+                background: var(--secondary-color);
+                transform: scale(1.1);
+            }
         </style>
     </head>
     
@@ -1003,11 +1035,12 @@
     
                     <!-- Leadership Section -->
                     <div class="leadership-section department-section">
+                        <br><br>
                         <div class="section-title">
                             <h2>Leadership</h2>
                             <div class="line"></div>
                         </div>
-                        
+                        <br>
                         <div class="team-grid">
                             <div class="team-card">
                                 <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
@@ -1024,9 +1057,7 @@
 
                     <!-- Advisory Section -->
                     <div class="advisory-section department-section">
-                        <div>
-                            <p><br><br></p>
-                        </div>
+                        <br><br>
                         <div class="section-title">
                             <h2>Advisory Committee</h2>                            
                         </div>
@@ -1051,12 +1082,386 @@
                         </div>
                     </div>
 
+                    <!-- Decoration Section -->
+                    <div class="decoration-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Decoration Team</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>                               
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Design Section -->
+                    <div class="design-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Design Team</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>                               
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Events Section -->
+                    <div class="events-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Events Team</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>                               
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hospitality Section -->
+                    <div class="hospitality-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Hospitality Team</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>                               
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Informals Section -->
+                    <div class="informals-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>ISHYA Informals Team</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>                               
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Judges Section -->
+                    <div class="judges-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Judges Management Team</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>                               
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Media Section -->
+                    <div class="media-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Media Team</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>                               
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Merchandise Section -->
+                    <div class="merchandise-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Merchandise Team</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>                               
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sponsorship Section -->
+                    <div class="sponsorship-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Sponsorship Team</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>                               
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PR and Outreach Section -->
+                    <div class="outreach-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>PR and Outreach Team</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>                               
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Media Section -->
+                    <div class="socialmedia-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Social Media Team</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convenor - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>                               
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Anchoring Section -->
+                    <div class="anchoring-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Content and Anchoring Team</h2>
+                            <div class="line"></div>
+                        </div>
+                        <br>
+
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://static.wixstatic.com/media/2304ec_fc68e10cf0d849e29233b0170c44b874~mv2.jpg/v1/crop/x_0,y_0,w_3060,h_2894/fill/w_426,h_402,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/20230731_104021.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
+                               
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://static.wixstatic.com/media/2304ec_fc68e10cf0d849e29233b0170c44b874~mv2.jpg/v1/crop/x_0,y_0,w_3060,h_2894/fill/w_426,h_402,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/20230731_104021.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
+                               
+                            </div>
+                        </div>
+                    </div>  
+
+                   <!-- Production Section -->
+                    <div class="production-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Production Team</h2>
+                            <div class="line"></div>
+                        </div>
+                        <br>
+
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://static.wixstatic.com/media/2304ec_fc68e10cf0d849e29233b0170c44b874~mv2.jpg/v1/crop/x_0,y_0,w_3060,h_2894/fill/w_426,h_402,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/20230731_104021.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
+                               
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://static.wixstatic.com/media/2304ec_fc68e10cf0d849e29233b0170c44b874~mv2.jpg/v1/crop/x_0,y_0,w_3060,h_2894/fill/w_426,h_402,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/20230731_104021.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
+                               
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Proshow and crowd management Section -->
+                    <div class="proshow-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Proshow and Crowd Management Team</h2>
+                            <div class="line"></div>
+                        </div>
+                        <br>
+
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://static.wixstatic.com/media/2304ec_fc68e10cf0d849e29233b0170c44b874~mv2.jpg/v1/crop/x_0,y_0,w_3060,h_2894/fill/w_426,h_402,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/20230731_104021.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
+                               
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://static.wixstatic.com/media/2304ec_fc68e10cf0d849e29233b0170c44b874~mv2.jpg/v1/crop/x_0,y_0,w_3060,h_2894/fill/w_426,h_402,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/20230731_104021.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
+                               
+                            </div>
+                        </div>
+                    </div>  
+
                     <!-- Finance Section -->
                     <div class="finance-section department-section">
+                        <br><br>
                         <div class="section-title">
                             <h2>Finance</h2>
                             <div class="line"></div>
                         </div>
+                        <br>
                        
                         <div class="team-grid">
                             <div class="team-card">
@@ -1073,210 +1478,40 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Anchoring Section -->
-                    <div class="anchoring-section department-section">
-                        <div class="section-title">
-                            <h2>Anchoring</h2>
-                            <div class="line"></div>
-                        </div>
-                       
-                        <div class="team-grid">
-                            <div class="team-card">
-                                <div class="element-avatar"><img src="https://static.wixstatic.com/media/2304ec_fc68e10cf0d849e29233b0170c44b874~mv2.jpg/v1/crop/x_0,y_0,w_3060,h_2894/fill/w_426,h_402,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/20230731_104021.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Dummy</div>
-                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
-                               
-                            </div>
-                            <div class="team-card">
-                                <div class="element-avatar"><img src="https://static.wixstatic.com/media/2304ec_fc68e10cf0d849e29233b0170c44b874~mv2.jpg/v1/crop/x_0,y_0,w_3060,h_2894/fill/w_426,h_402,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/20230731_104021.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Dummy</div>
-                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
-                               
-                            </div>
-                        </div>
-                    </div>    
-                    <!-- Creative Department -->
-                    <div class="creative-section department-section">
-                        <div class="department-header">
-                            <h3>Creative & Design</h3>
-                            <div class="line"></div>
-                        </div>
-                        <div class="team-grid">
-                            <div class="team-card">
-                                <div class="member-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                                <div class="member-name">Creative Lead</div>
-                                <div class="member-role">Design Head</div>
-                                <p class="member-bio">Crafting visual masterpieces that bring ISHYA to life. Visionary
-                                    designer
-                                    with passion for aesthetics.</p>
-                                <div class="social-links">
-                                    <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
-                                    <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                                </div>
-                            </div>
-                            <div class="team-card">
-                                <div class="member-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                                <div class="member-name">UI/UX Designer</div>
-                                <div class="member-role">Interface Designer</div>
-                                <p class="member-bio">Creating seamless digital experiences. Focused on user-centered design
-                                    and
-                                    innovation.</p>
-                                <div class="social-links">
-                                    <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
-                                    <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                                </div>
-                            </div>
-                            <div class="team-card">
-                                <div class="member-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                                <div class="member-name">Brand Strategist</div>
-                                <div class="member-role">Brand Manager</div>
-                                <p class="member-bio">Building the ISHYA brand identity. Strategist with a keen eye for
-                                    market
-                                    trends.</p>
-                                <div class="social-links">
-                                    <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
-                                    <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-    
-                    <!-- Events Department -->
-                    <div class="events-section department-section">
-                        <div class="department-header">
-                            <h3>Events & Management</h3>
-                            <div class="line"></div>
-                        </div>
-                        <div class="team-grid">
-                            <div class="team-card">
-                                <div class="member-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                                <div class="member-name">Events Coordinator</div>
-                                <div class="member-role">Event Head</div>
-                                <p class="member-bio">Orchestrating unforgettable cultural moments. Expert in logistics and
-                                    entertainment coordination.</p>
-                                <div class="social-links">
-                                    <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
-                                    <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                                </div>
-                            </div>
-                            <div class="team-card">
-                                <div class="member-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                                <div class="member-name">Entertainment Manager</div>
-                                <div class="member-role">Performances Lead</div>
-                                <p class="member-bio">Curating world-class performances and entertainment experiences for
-                                    all
-                                    attendees.</p>
-                                <div class="social-links">
-                                    <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
-                                    <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                                </div>
-                            </div>
-                            <div class="team-card">
-                                <div class="member-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                                <div class="member-name">Logistics Manager</div>
-                                <div class="member-role">Operations Lead</div>
-                                <p class="member-bio">Ensuring smooth operations and seamless execution of all events and
-                                    activities.</p>
-                                <div class="social-links">
-                                    <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
-                                    <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-    
-                    <!-- Marketing Department -->
-                    <div class="marketing-section department-section">
-                        <div class="department-header">
-                            <h3>Marketing & Outreach</h3>
-                            <div class="line"></div>
-                        </div>
-                        <div class="team-grid">
-                            <div class="team-card">
-                                <div class="member-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                                <div class="member-name">Social Media Head</div>
-                                <div class="member-role">Digital Marketer</div>
-                                <p class="member-bio">Building online presence and engaging with our vibrant community
-                                    across
-                                    all platforms.</p>
-                                <div class="social-links">
-                                    <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
-                                    <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                                </div>
-                            </div>
-                            <div class="team-card">
-                                <div class="member-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                                <div class="member-name">PR & Communications</div>
-                                <div class="member-role">Communications Lead</div>
-                                <p class="member-bio">Managing media relations and crafting compelling narratives about
-                                    ISHYA's
-                                    mission.</p>
-                                <div class="social-links">
-                                    <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
-                                    <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                                </div>
-                            </div>
-                            <div class="team-card">
-                                <div class="member-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                                <div class="member-name">Sponsorship Lead</div>
-                                <div class="member-role">Partnerships Manager</div>
-                                <p class="member-bio">Building strategic partnerships and securing sponsorships for the
-                                    fest's
-                                    success.</p>
-                                <div class="social-links">
-                                    <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
-                                    <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-    
-                    <!-- Technical Department -->
+
+                    <!-- Website Section -->
                     <div class="technical-section department-section">
-                        <div class="department-header">
-                            <h3>Technical & Support</h3>
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Website Team</h2>
                             <div class="line"></div>
                         </div>
+                        <br>
+
                         <div class="team-grid">
                             <div class="team-card">
-                                <div class="member-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                                <div class="member-name">Tech Lead</div>
-                                <div class="member-role">Tech Manager</div>
-                                <p class="member-bio">Ensuring seamless technical operations and cutting-edge technology
-                                    integration.</p>
-                                <div class="social-links">
-                                    <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
-                                    <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                                </div>
+                                <div class="element-avatar"><img src="https://static.wixstatic.com/media/2304ec_fc68e10cf0d849e29233b0170c44b874~mv2.jpg/v1/crop/x_0,y_0,w_3060,h_2894/fill/w_426,h_402,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/20230731_104021.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
+                               
                             </div>
                             <div class="team-card">
-                                <div class="member-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                                <div class="member-name">A/V Technical</div>
-                                <div class="member-role">Audio-Visual Head</div>
-                                <p class="member-bio">Managing audio, video, and lighting to create immersive visual
-                                    experiences.</p>
-                                <div class="social-links">
-                                    <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
-                                    <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                                </div>
-                            </div>
-                            <div class="team-card">
-                                <div class="member-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
-                                <div class="member-name">Support Team Lead</div>
-                                <div class="member-role">Support Manager</div>
-                                <p class="member-bio">Providing excellent support and ensuring every team member is equipped
-                                    for
-                                    success.</p>
-                                <div class="social-links">
-                                    <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
-                                    <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                                </div>
+                                <div class="element-avatar"><img src="https://static.wixstatic.com/media/2304ec_fc68e10cf0d849e29233b0170c44b874~mv2.jpg/v1/crop/x_0,y_0,w_3060,h_2894/fill/w_426,h_402,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/20230731_104021.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Dummy</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co-Convenor - ISHYA 26</div>
+                               
                             </div>
                         </div>
-                    </div>
+                    </div>  
+                    
+  
+                    
+
                 </div>
             </main>
+        </div>
+        <div id="scroll-down-btn" onclick="scrollToNextSection()">
+            <i class="fas fa-chevron-down"></i>
         </div>
         <script src="script.js"></script>
         <script>
@@ -1448,6 +1683,32 @@
     
             if (statsSection) {
                 statsObserver.observe(statsSection);
+            }
+
+            function scrollToNextSection() {
+                const sections = document.querySelectorAll('.stats-section, .department-section');
+                let currentIndex = -1;
+                const scrollY = window.scrollY;
+                for (let i = 0; i < sections.length; i++) {
+                    const rect = sections[i].getBoundingClientRect();
+                    if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
+                        currentIndex = i;
+                        break;
+                    }
+                }
+                if (currentIndex === -1) {
+                    // If no section is in view, find the closest
+                    for (let i = 0; i < sections.length; i++) {
+                        const rect = sections[i].getBoundingClientRect();
+                        if (rect.top > 0) {
+                            currentIndex = i - 1;
+                            break;
+                        }
+                    }
+                    if (currentIndex < 0) currentIndex = 0;
+                }
+                const nextIndex = (currentIndex + 1) % sections.length;
+                sections[nextIndex].scrollIntoView({ behavior: 'smooth' });
             }
         </script>
         <script>
