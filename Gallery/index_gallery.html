@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inferno Gallery | Origami Experience</title>
+    <title>Inferno Gallery | Origami Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Outfit:wght@300;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --fire: #ff4d00;
             --ember: #ffcc00;
-            --bg: #080808;
-            --card-bg: rgba(20, 20, 20, 0.85);
-            --transition: cubic-bezier(0.4, 0, 0.2, 1);
+            --bg: #050505;
+            --card-bg: rgba(15, 15, 15, 0.9);
         }
 
         body {
@@ -22,18 +21,16 @@
             overflow-x: hidden;
         }
 
-        /* --- FIRE BACKGROUND --- */
         #bgCanvas {
             position: fixed;
             top: 0; left: 0;
             z-index: -1;
-            filter: blur(1px);
         }
 
-        /* --- TIMELINE STRUCTURE --- */
+        /* --- TIMELINE --- */
         .timeline {
-            max-width: 1100px;
-            margin: 100px auto;
+            max-width: 1000px;
+            margin: 80px auto;
             position: relative;
             padding: 20px;
         }
@@ -43,8 +40,7 @@
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
-            width: 2px;
-            height: 100%;
+            width: 2px; height: 100%;
             background: linear-gradient(to bottom, transparent, var(--fire), var(--ember), transparent);
             box-shadow: 0 0 15px var(--fire);
         }
@@ -54,63 +50,54 @@
             justify-content: space-between;
             align-items: center;
             width: 100%;
-            margin-bottom: 120px;
+            margin-bottom: 80px;
             position: relative;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s var(--transition);
         }
-
-        .node.reveal { opacity: 1; transform: translateY(0); }
 
         .node:nth-child(even) { flex-direction: row-reverse; }
 
         .node-dot {
             position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 18px; height: 18px;
+            left: 50%; transform: translateX(-50%);
+            width: 16px; height: 16px;
             background: var(--ember);
             border-radius: 50%;
             box-shadow: 0 0 15px var(--fire);
             z-index: 5;
         }
 
-        /* --- FLEXIBLE CARDS --- */
+        /* --- THE CARD (FIXED IMAGE CUTOFF) --- */
         .card {
             width: 44%;
             background: var(--card-bg);
-            border: 1px solid rgba(255, 77, 0, 0.2);
-            border-radius: 15px;
+            border: 1px solid rgba(255, 77, 0, 0.3);
+            border-radius: 12px;
             padding: 15px;
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(10px);
             cursor: pointer;
-            transition: all 0.3s var(--transition);
-            position: relative;
-            z-index: 2;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .card:hover {
-            transform: translateY(-8px);
+            transform: scale(1.03);
             border-color: var(--ember);
-            box-shadow: 0 15px 40px rgba(255, 77, 0, 0.25);
+            box-shadow: 0 0 30px rgba(255, 77, 0, 0.3);
         }
 
         .event-title {
             font-family: 'Cinzel', serif;
             color: var(--ember);
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             margin-bottom: 12px;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         .img-stack {
             position: relative;
             width: 100%;
-            aspect-ratio: 16 / 9; /* Makes all boxes uniform height */
-            background: #111;
-            border-radius: 10px;
+            aspect-ratio: 16 / 10;
+            background: #000; /* Black bars if image is a different ratio */
+            border-radius: 8px;
             overflow: hidden;
         }
 
@@ -118,57 +105,76 @@
             position: absolute;
             inset: 0;
             width: 100%; height: 100%;
-            object-fit: cover;
+            /* CHANGE: contain ensures the whole image is visible, no cutoffs */
+            object-fit: contain; 
             opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+            transition: opacity 0.5s ease;
         }
 
         .img-stack img.active { opacity: 1; }
 
-        /* --- ORIGAMI MODAL --- */
+        /* --- REAL ORIGAMI MODAL --- */
         .modal {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.96);
+            background: rgba(0,0,0,0.95);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            perspective: 2000px; /* Required for Origami 3D */
+            perspective: 2000px;
         }
 
-        .origami-wrapper {
-            width: 85%;
-            max-width: 900px;
+        .origami-container {
+            width: 80%;
+            max-width: 800px;
+            position: relative;
             transform-style: preserve-3d;
-            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            /* Starts folded */
-            transform: rotateX(-90deg) translateY(-100px);
-            opacity: 0;
+            transition: transform 0.8s ease;
         }
 
-        .modal.open { display: flex; }
-        .modal.open .origami-wrapper {
-            transform: rotateX(0deg) translateY(0);
-            opacity: 1;
-        }
-
-        .origami-wrapper img {
+        /* Split Panels for Folding Effect */
+        .panel {
             width: 100%;
-            display: block;
-            border: 3px solid var(--ember);
-            box-shadow: 0 0 50px rgba(255, 77, 0, 0.4);
-            object-fit: contain;
-            max-height: 85vh;
+            height: 50%;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #000;
+            border: 2px solid var(--fire);
         }
 
-        /* --- RESPONSIVE MOBILE --- */
+        .panel-top {
+            transform-origin: bottom;
+            transform: rotateX(-90deg); /* Folded up */
+            border-bottom: none;
+        }
+
+        .panel-bottom {
+            transform-origin: top;
+            transform: rotateX(90deg); /* Folded down */
+            border-top: none;
+        }
+
+        .panel img {
+            width: 100%;
+            height: 200%; /* Image is twice the height of panel */
+            object-fit: contain;
+            position: absolute;
+        }
+
+        .panel-bottom img { top: -100%; } /* Shows the bottom half */
+
+        /* Opening States */
+        .modal.open { display: flex; }
+        .modal.open .panel-top { transform: rotateX(0deg); }
+        .modal.open .panel-bottom { transform: rotateX(0deg); }
+
         @media (max-width: 768px) {
             .timeline::before { left: 20px; transform: none; }
             .node { flex-direction: row !important; justify-content: flex-start; padding-left: 50px; }
             .card { width: 90%; }
-            .node-dot { left: 20px; transform: translateX(-50%); }
-            .img-stack { aspect-ratio: 4/3; }
+            .node-dot { left: 20px; }
         }
     </style>
 </head>
@@ -176,142 +182,101 @@
 
 <canvas id="bgCanvas"></canvas>
 
-<div class="timeline" id="gallery-container">
-    <!-- Items dynamically injected here -->
-</div>
+<div class="timeline" id="gallery"></div>
 
-<!-- 3D Origami Modal -->
-<div class="modal" id="origamiModal" onclick="closeOrigami()">
-    <div class="origami-wrapper">
-        <img id="modalImg" src="" alt="Full Resolution">
+<!-- Origami Modal -->
+<div class="modal" id="modal" onclick="closeModal()">
+    <div class="origami-container" id="origami">
+        <div class="panel panel-top"><img id="imgTop" src=""></div>
+        <div class="panel panel-bottom"><img id="imgBottom" src=""></div>
     </div>
 </div>
 
 <script>
-    // 1. YOUR CONNECTION SETTINGS
-    // Replace with your Google Apps Script Web App URL
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzuOEfCRHEBMA216pJ3oJYaVED2ohOCxAw_XNCbFlf8CK9r-j3K--BXGxcVDOeQHxKJug/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzuOEfCRHEBMA216pJ3oJYaVED2ohOCxAw_XNCbFlf8CK9r-j3K--BXGxcVDOeQHxKJug/exec';
 
-    // 2. FETCH AND RENDER
-    async function fetchGallery() {
+    async function init() {
         try {
-            const response = await fetch(APPS_SCRIPT_URL);
-            const data = await response.json();
-            renderTimeline(data);
-        } catch (error) {
-            console.error("Connection Error:", error);
-        }
+            const res = await fetch(API_URL);
+            const data = await res.json();
+            render(data);
+        } catch (e) { console.error(e); }
     }
 
-    function renderTimeline(events) {
-        const container = document.getElementById('gallery-container');
-        events.forEach((event, index) => {
-            const node = document.createElement('div');
-            node.className = 'node';
-            
-            node.innerHTML = `
+    function render(data) {
+        const container = document.getElementById('gallery');
+        data.forEach((item, idx) => {
+            const div = document.createElement('div');
+            div.className = 'node';
+            div.innerHTML = `
                 <div class="node-dot"></div>
-                <div class="card" 
-                     onmouseenter="startHoverCycle(this)" 
-                     onmouseleave="stopHoverCycle(this)"
-                     onclick="openOrigami('${event.images[0]}')">
-                    <div class="event-title">${event.eventName}</div>
+                <div class="card" onmouseenter="startCycle(this)" onmouseleave="stopCycle(this)" onclick="openOrigami('${item.images[0]}')">
+                    <div class="event-title">${item.eventName}</div>
                     <div class="img-stack">
-                        ${event.images.map((src, i) => `
-                            <img src="${src}" class="${i === 0 ? 'active' : ''}" loading="lazy">
-                        `).join('')}
+                        ${item.images.map((img, i) => `<img src="${img}" class="${i===0?'active':''}">`).join('')}
                     </div>
                 </div>
-                <div style="width: 44%;"></div> <!-- Spacer -->
+                <div style="width:44%"></div>
             `;
-            container.appendChild(node);
-            
-            // Trigger Fade-in animation
-            setTimeout(() => node.classList.add('reveal'), index * 150);
+            container.appendChild(div);
         });
     }
 
-    // 3. IMAGE STACK CYCLING
-    let cycleInterval;
-    function startHoverCycle(card) {
-        const images = card.querySelectorAll('img');
-        if (images.length < 2) return;
-        let count = 0;
-        cycleInterval = setInterval(() => {
-            images[count].classList.remove('active');
-            count = (count + 1) % images.length;
-            images[count].classList.add('active');
-        }, 900); // Cycles every 0.9s
+    // Hover Logic
+    let interval;
+    function startCycle(card) {
+        const imgs = card.querySelectorAll('img');
+        let i = 0;
+        interval = setInterval(() => {
+            imgs[i].classList.remove('active');
+            i = (i + 1) % imgs.length;
+            imgs[i].classList.add('active');
+        }, 800);
     }
+    function stopCycle() { clearInterval(interval); }
 
-    function stopHoverCycle() {
-        clearInterval(cycleInterval);
-    }
-
-    // 4. ORIGAMI ANIMATION LOGIC
-    function openOrigami(imgSrc) {
-        const modal = document.getElementById('origamiModal');
-        const modalImg = document.getElementById('modalImg');
-        
-        // Use s2000 for the modal to get high resolution
-        modalImg.src = imgSrc.replace('=s800', '=s2000');
+    // Origami Logic
+    function openOrigami(src) {
+        const modal = document.getElementById('modal');
+        // We use the same image for both top and bottom panels
+        document.getElementById('imgTop').src = src;
+        document.getElementById('imgBottom').src = src;
         
         modal.classList.add('open');
     }
 
-    function closeOrigami() {
-        const modal = document.getElementById('origamiModal');
-        modal.classList.remove('open');
+    function closeModal() {
+        document.getElementById('modal').classList.remove('open');
     }
 
-    // 5. FIRE BACKGROUND ANIMATION
+    // Background Embers
     const canvas = document.getElementById('bgCanvas');
     const ctx = canvas.getContext('2d');
-    let particles = [];
-
-    function initParticles() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        particles = [];
-        for (let i = 0; i < 60; i++) particles.push(new Particle());
-    }
-
-    class Particle {
+    let pts = [];
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    class Pt {
         constructor() { this.reset(); }
         reset() {
             this.x = Math.random() * canvas.width;
             this.y = canvas.height + 10;
-            this.size = Math.random() * 2 + 1;
-            this.speedY = Math.random() * 1.5 + 0.5;
-            this.speedX = (Math.random() - 0.5) * 1.5;
-            this.life = 1;
-        }
-        update() {
-            this.y -= this.speedY;
-            this.x += this.speedX;
-            this.life -= 0.004;
-            if (this.life <= 0) this.reset();
+            this.s = Math.random() * 2;
+            this.v = Math.random() * 2 + 1;
+            this.a = 1;
         }
         draw() {
-            ctx.fillStyle = `rgba(255, 90, 0, ${this.life})`;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fill();
+            this.y -= this.v; this.a -= 0.005;
+            if (this.a <= 0) this.reset();
+            ctx.fillStyle = `rgba(255, 80, 0, ${this.a})`;
+            ctx.beginPath(); ctx.arc(this.x, this.y, this.s, 0, 7); ctx.fill();
         }
     }
-
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => { p.update(); p.draw(); });
-        requestAnimationFrame(animate);
+    function anim() {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        if(pts.length < 50) pts.push(new Pt());
+        pts.forEach(p => p.draw());
+        requestAnimationFrame(anim);
     }
-
-    window.addEventListener('resize', initParticles);
-    initParticles();
-    animate();
-
-    // Start fetching
-    fetchGallery();
+    window.onresize = resize; resize(); anim(); init();
 </script>
 </body>
 </html>
