@@ -209,23 +209,41 @@
     <script>
         // REPLACE THIS WITH YOUR DEPLOYED WEB APP URL
         // const APPSCRIPT_URL = 'YOUR_GOOGLE_APPSCRIPT_WEB_APP_URL_HERE';
-      const APPSCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxJ2YEiC2XpdybHFTZkgjuCT9OQKkWBXmaYUiVf1D1yQkYbZikvAQF0BsODcsFVImo_3A/exec';
-
+      const APPSCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx7EeJQaCSYSe1A2DktQ0Pl5U5ysqntVjbS3GArrD-NsPiusseLT4xEPT5e8Bl6H2AHBg/exec';
+        
         async function fetchEvents() {
             try {
-                const response = await fetch(APPSCRIPT_URL);
+                // We add 'redirect: "follow"' and "text/plain" to satisfy Google's redirect dance
+                const response = await fetch(APPSCRIPT_URL, {
+                    method: "GET", 
+                    redirect: "follow",
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8",
+                    },
+                });
+                
                 const data = await response.json();
+                
+                // Debugging: Log data to see if we got it
+                console.log("Data received:", data); 
+        
+                if (data.result === "error") {
+                    throw new Error(data.error);
+                }
+        
                 renderEvents(data);
                 
-                // Once data is ready, trigger the unfolding animation
+                // Trigger animation
                 setTimeout(() => {
-                    document.getElementById('loader-text').style.display = 'none';
+                    const loader = document.getElementById('loader-text');
+                    if(loader) loader.style.display = 'none';
                     document.body.classList.add('is-open');
                 }, 500); 
-
+        
             } catch (error) {
                 console.error('Error fetching data:', error);
-                document.getElementById('loader-text').innerText = "Error: The flames died out.";
+                const loader = document.getElementById('loader-text');
+                if(loader) loader.innerText = "Error: " + error.message;
             }
         }
 
