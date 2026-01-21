@@ -1,1 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events | Flames in the Fold</title>
+    <style>
+        :root {
+            --bg-color: #050505;
+            --paper-color: #f0f0f0;
+            --text-color: #222;
+            --flame-green: #00ff41;
+            --crease-color: #d1d1d1;
+        }
 
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            font-family: 'Courier New', Courier, monospace; /* Typewriter feel */
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            perspective: 1500px; /* Essential for 3D effect */
+        }
+
+        /* --- THE SCENE --- */
+        #origami-container {
+            position: relative;
+            width: 80vw;
+            max-width: 1000px;
+            height: 80vh;
+            transform-style: preserve-3d;
+            transition: all 1.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+
+        /* --- THE FOLDING FLAPS (The "Complex" Origami) --- */
+        .fold-segment {
+            position: absolute;
+            background-color: var(--paper-color);
+            width: 50%;
+            height: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backface-visibility: hidden; /* Hide back when folded */
+            transform-origin: center center;
+            transition: all 1.2s ease-in-out;
+            z-index: 10;
+            
+            /* Initial "Folded" State: Clustered in center */
+            box-shadow: 0 0 15px var(--flame-green);
+            border: 1px solid var(--crease-color);
+        }
+
+        /* Positioning the 4 quadrants */
+        .seg-tl { top: 0; left: 0; transform-origin: 100% 100%; transform: rotate3d(1, 1, 0, -160deg); }
+        .seg-tr { top: 0; right: 0; transform-origin: 0% 100%; transform: rotate3d(-1, 1, 0, -160deg); }
+        .seg-bl { bottom: 0; left: 0; transform-origin: 100% 0%; transform: rotate3d(1, -1, 0, -160deg); }
+        .seg-br { bottom: 0; right: 0; transform-origin: 0% 0%; transform: rotate3d(-1, -1, 0, -160deg); }
+
+        /* The glowing core when folded */
+        .core-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background: var(--flame-green);
+            filter: blur(20px);
+            animation: pulse-flame 1.5s infinite alternate;
+            z-index: 1;
+        }
+
+        @keyframes pulse-flame {
+            from { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1.5); }
+        }
+
+        /* --- THE UNFOLDED PAPER (Content) --- */
+        #paper-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--paper-color);
+            /* Crease patterns using gradients */
+            background-image: 
+                linear-gradient(to right, transparent 49%, var(--crease-color) 50%, transparent 51%),
+                linear-gradient(to bottom, transparent 49%, var(--crease-color) 50%, transparent 51%);
+            background-size: 100% 100%; /* Cross in middle */
+            
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
+            padding: 40px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 1s ease 0.5s; /* Delay appearance until unfolded */
+        }
+
+        /* --- STATE: OPEN --- */
+        body.is-open .seg-tl { transform: rotate3d(0, 0, 0, 0deg); }
+        body.is-open .seg-tr { transform: rotate3d(0, 0, 0, 0deg); }
+        body.is-open .seg-bl { transform: rotate3d(0, 0, 0, 0deg); }
+        body.is-open .seg-br { transform: rotate3d(0, 0, 0, 0deg); }
+        
+        body.is-open .core-glow { opacity: 0; transition: opacity 0.5s; }
+        
+        body.is-open #paper-content {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        /* Remove shadows from segments when flat so they blend */
+        body.is-open .fold-segment { box-shadow: none; border-color: transparent; }
+
+        /* --- CONTENT STYLING --- */
+        h1 {
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            border-bottom: 2px solid var(--text-color);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .event-card {
+            border: 1px solid #333;
+            padding: 15px;
+            background: rgba(255,255,255,0.8);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px) rotate(1deg);
+            box-shadow: 5px 5px 0px var(--flame-green);
+        }
+
+        .btn-register {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 15px;
+            background: black;
+            color: var(--flame-green);
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .btn-register:hover {
+            background: var(--flame-green);
+            color: black;
+        }
+        
+        /* Loading Text */
+        #loader-text {
+            position: absolute;
+            bottom: 10%;
+            width: 100%;
+            text-align: center;
+            color: var(--flame-green);
+            font-family: monospace;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+    </style>
+</head>
+<body>
+
+    <div id="loader-text">Summoning Event Data...</div>
+
+    <!-- This container holds the folding logic -->
+    <div id="origami-container">
+        
+        <!-- The glowing center inside the fold -->
+        <div class="core-glow"></div>
+
+        <!-- The 4 segments that unfold -->
+        <!-- We use these to mask the content initially -->
+        <div class="fold-segment seg-tl"></div>
+        <div class="fold-segment seg-tr"></div>
+        <div class="fold-segment seg-bl"></div>
+        <div class="fold-segment seg-br"></div>
+
+        <!-- The Actual Content Paper (Sits behind segments initially) -->
+        <div id="paper-content">
+            <h1>Events</h1>
+            <div class="events-grid" id="grid">
+                <!-- Javascript will inject cards here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // REPLACE THIS WITH YOUR DEPLOYED WEB APP URL
+        // const APPSCRIPT_URL = 'YOUR_GOOGLE_APPSCRIPT_WEB_APP_URL_HERE';
+      const APPSCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyPhl_ytIJUz4Y58BQQoVYnahmei6hOh9YLiIp1dg1K-08q1zUOJ5G-q2QhfnOBqDqhFQ/exec';
+
+        async function fetchEvents() {
+            try {
+                const response = await fetch(APPSCRIPT_URL);
+                const data = await response.json();
+                renderEvents(data);
+                
+                // Once data is ready, trigger the unfolding animation
+                setTimeout(() => {
+                    document.getElementById('loader-text').style.display = 'none';
+                    document.body.classList.add('is-open');
+                }, 500); 
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById('loader-text').innerText = "Error: The flames died out.";
+            }
+        }
+
+        function renderEvents(events) {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+
+            events.forEach(evt => {
+                const card = document.createElement('div');
+                card.className = 'event-card';
+                card.innerHTML = `
+                    <h3>${evt.EventName}</h3>
+                    <p style="font-size:0.9em; color:#555;">${evt.Date} | ${evt.Venue}</p>
+                    <p>${evt.Description}</p>
+                    <a href="${evt.RegisterLink}" target="_blank" class="btn-register">Register</a>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Start the process
+        fetchEvents();
+    </script>
+</body>
+</html>
