@@ -3,252 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Events | Flames in the Fold</title>
+    <title>IGNITE | GREEN FLAME</title>
+    
+    <!-- External Assets -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@900&family=Outfit:wght@300;400;700&display=swap" rel="stylesheet">
+
     <style>
-        :root {
-            --bg-color: #050505;
-            --paper-color: #f8f8f8;
-            --text-color: #1a1a1a;
-            --flame-green: #00ff41;
-            --crease-color: #e0e0e0;
+        :root { --neon: #00ff66; --bg: #010402; }
+        body { background: var(--bg); color: white; font-family: 'Outfit', sans-serif; overflow-x: hidden; }
+        .font-huge { font-family: 'Unbounded', sans-serif; }
+
+        /* Liquid Plasma Layer (WebGL-lite) */
+        #plasma-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; pointer-events: none; mix-blend-mode: screen; filter: blur(15px);
         }
 
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            font-family: 'Courier New', Courier, monospace;
-            overflow: hidden; /* Prevent body scroll, use paper scroll */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            perspective: 2000px;
+        /* Bento Grid Architecture */
+        .bento-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(0, 255, 102, 0.05);
+            border-radius: 35px;
+            clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); /* Closed initially */
+            transition: border 0.4s ease, background 0.4s ease, transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
         }
+        .bento-card:hover { border-color: var(--neon); background: rgba(0, 255, 102, 0.04); }
 
-        /* --- THE SCENE --- */
-        #origami-container {
-            position: relative;
-            width: 90vw;
-            max-width: 900px;
-            height: 85vh;
-            transform-style: preserve-3d;
-            transition: all 1.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+        .image-container { overflow: hidden; border-radius: 25px; height: 280px; position: relative; background: #000; }
+        .image-container img { width: 100%; height: 100%; object-fit: cover; opacity: 0.3; filter: grayscale(1); transition: 0.8s ease; }
+        .bento-card:hover img { opacity: 0.9; filter: grayscale(0); transform: scale(1.05); }
+
+        /* Category System */
+        .pill {
+            padding: 10px 25px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.1);
+            font-size: 10px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
+            transition: 0.3s;
         }
+        .pill.active { background: var(--neon); color: #000; border-color: var(--neon); box-shadow: 0 0 30px rgba(0, 255, 102, 0.4); }
 
-        /* --- THE FOLDING FLAPS --- */
-        .fold-segment {
-            position: absolute;
-            background-color: var(--paper-color);
-            width: 50%;
-            height: 50%;
-            backface-visibility: hidden;
-            transition: all 1.2s ease-in-out;
-            z-index: 10;
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
-            border: 0.5px solid var(--crease-color);
-            pointer-events: none; /* Let clicks pass through to content when open */
-        }
-
-        .seg-tl { top: 0; left: 0; transform-origin: 100% 100%; transform: rotate3d(1, 1, 0, -170deg); }
-        .seg-tr { top: 0; right: 0; transform-origin: 0% 100%; transform: rotate3d(-1, 1, 0, -170deg); }
-        .seg-bl { bottom: 0; left: 0; transform-origin: 100% 0%; transform: rotate3d(1, -1, 0, -170deg); }
-        .seg-br { bottom: 0; right: 0; transform-origin: 0% 0%; transform: rotate3d(-1, -1, 0, -170deg); }
-
-        .core-glow {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60px;
-            height: 60px;
-            background: var(--flame-green);
-            filter: blur(25px);
-            animation: pulse-flame 1.5s infinite alternate;
-            z-index: 1;
-        }
-
-        @keyframes pulse-flame {
-            from { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
-            to { opacity: 0.9; transform: translate(-50%, -50%) scale(1.6); }
-        }
-
-        /* --- THE UNFOLDED CONTENT --- */
-        #paper-content {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--paper-color);
-            background-image: 
-                linear-gradient(to right, transparent 49.5%, var(--crease-color) 50%, transparent 50.5%),
-                linear-gradient(to bottom, transparent 49.5%, var(--crease-color) 50%, transparent 50.5%);
-            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
-            padding: 40px;
-            box-sizing: border-box;
-            overflow-y: auto; /* Allow scrolling for many events */
-            opacity: 0;
-            transform: scale(0.9);
-            transition: all 1s ease 0.4s;
-        }
-
-        /* --- STATE: OPEN --- */
-        body.is-open .fold-segment { 
-            transform: rotate3d(0, 0, 0, 0deg); 
-            opacity: 0; /* Hide segments to show content clearly */
-        }
-        body.is-open .core-glow { opacity: 0; }
-        body.is-open #paper-content { opacity: 1; transform: scale(1); }
+        .neon-glow { text-shadow: 0 0 50px rgba(0, 255, 102, 0.6); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
         
-        /* --- CONTENT STYLING --- */
-        h1 {
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 6px;
-            border-bottom: 2px solid var(--text-color);
-            margin-bottom: 30px;
-            padding-bottom: 10px;
-            color: var(--text-color);
-        }
-
-        .events-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            padding-bottom: 50px; /* Space at bottom */
-        }
-
-        .event-card {
-            border: 1px solid #ccc;
-            padding: 20px;
-            background: white;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .event-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 8px 8px 0px var(--flame-green);
-            border-color: black;
-        }
-
-        .event-card h3 { margin: 0 0 10px 0; color: #000; text-transform: uppercase; }
-        .event-card p { font-size: 0.9rem; line-height: 1.4; color: #444; }
-
-        .btn-register {
-            display: block;
-            margin-top: 15px;
-            padding: 10px;
-            background: black;
-            color: var(--flame-green);
-            text-decoration: none;
-            text-align: center;
-            font-weight: bold;
-            font-size: 0.8rem;
-            transition: 0.2s;
-        }
-
-        .btn-register:hover {
-            background: var(--flame-green);
-            color: black;
-        }
-        
-        #loader-text {
-            position: absolute;
-            bottom: 5%; width: 100%;
-            text-align: center;
-            color: var(--flame-green);
-            animation: blink 1s infinite;
-            z-index: 100;
-        }
-        @keyframes blink { 50% { opacity: 0.3; } }
-
+        /* Shimmer loading */
+        .skeleton { background: linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%); background-size: 200% 100%; animation: shimmer 2s infinite; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
     </style>
 </head>
 <body>
 
-    <div id="loader-text">READING THE FOLDS...</div>
+    <canvas id="plasma-canvas"></canvas>
 
-    <div id="origami-container">
-        <div class="core-glow"></div>
-        <div class="fold-segment seg-tl"></div>
-        <div class="fold-segment seg-tr"></div>
-        <div class="fold-segment seg-bl"></div>
-        <div class="fold-segment seg-br"></div>
+    <header class="pt-32 pb-16 px-8 md:px-24">
+        <h1 class="font-huge text-[18vw] leading-[0.75] uppercase tracking-tighter text-[#00ff66] neon-glow select-none">
+            Events
+        </h1>
+    </header>
 
-        <div id="paper-content">
-            <h1>Events</h1>
-            <div class="events-grid" id="grid">
-                <!-- Data Injected Here -->
-            </div>
+    <main class="px-8 md:px-24 pb-60">
+        <!-- Dynamic Filter Section -->
+        <div id="filter-nav" class="flex gap-4 mb-24 overflow-x-auto no-scrollbar py-2">
+            <div class="h-10 w-32 skeleton rounded-full"></div>
+            <div class="h-10 w-24 skeleton rounded-full"></div>
         </div>
-    </div>
+
+        <!-- The Event Engine Output -->
+        <div id="grid-mount" class="grid grid-cols-1 md:grid-cols-12 gap-10">
+            <!-- Loading states will show here first -->
+            <div class="col-span-12 py-32 text-center opacity-10 font-huge text-2xl tracking-[1em]">INITIALIZING_FLAME_DATA...</div>
+        </div>
+    </main>
 
     <script>
-        // 1. YOUR DEPLOYED URL
-        const APPSCRIPT_URL = 'https://script.google.com/macros/s/AKfycbziFepV2K3K74He8Nc5YD-k1at9nqMg4EvQwgkAkChJ4CIZDpJQYtkgDNyxOmpwEyr6Qw/exec';
+        /** 
+         * SETTINGS: Paste your Web App URL here 
+         */
+        const FLAME_API = "https://script.google.com/macros/s/AKfycbzbDkVef-nvTxVa53wiPQMT6C0JLxo08fJ-aIqa9axXOwzuBriHiM_sw_5KMQvd7BcYdQ/exec";
+
+        // 1. LIQUID PLASMA TRAIL PHYSICS
+        const canvas = document.getElementById('plasma-canvas');
+        const ctx = canvas.getContext('2d');
+        let points = [];
+        const maxPoints = 50;
         
-        async function fetchEvents() {
-            const loader = document.getElementById('loader-text');
+        const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+        window.addEventListener('resize', resize); resize();
+
+        window.addEventListener('mousemove', (e) => {
+            points.push({ x: e.clientX, y: e.clientY, opacity: 1, r: 25 });
+            if (points.length > maxPoints) points.shift();
+        });
+
+        function animatePlasma() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (points.length < 2) { requestAnimationFrame(animatePlasma); return; }
+
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+
+            for (let i = 1; i < points.length; i++) {
+                const p = points[i];
+                // Smooth line using quadratic curves for "liquid" feel
+                const xc = (points[i].x + points[i - 1].x) / 2;
+                const yc = (points[i].y + points[i - 1].y) / 2;
+                ctx.quadraticCurveTo(points[i - 1].x, points[i - 1].y, xc, yc);
+            }
+
+            ctx.shadowBlur = 50;
+            ctx.shadowColor = '#00ff66';
+            ctx.strokeStyle = 'rgba(0, 255, 102, 0.4)';
+            ctx.lineWidth = 20;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+
+            requestAnimationFrame(animatePlasma);
+        }
+        animatePlasma();
+
+        // 2. DATA ORCHESTRATION
+        let _EVENT_STORE = [];
+        const lenis = new Lenis();
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+
+        async function fetchSystem() {
             try {
-                const response = await fetch(APPSCRIPT_URL, {
-                    method: "GET",
-                    redirect: "follow"
-                });
+                const res = await fetch(FLAME_API);
+                _EVENT_STORE = await res.json();
                 
-                const data = await response.json();
-        
-                if (data.result === "error") throw new Error(data.error);
-                
-                if (data.length === 0) {
-                    document.getElementById('grid').innerHTML = "<p>No upcoming events found.</p>";
-                } else {
-                    renderEvents(data);
-                }
-                
-                // Success - Open Origami
-                loader.style.display = 'none';
-                document.body.classList.add('is-open');
-        
-            } catch (error) {
-                console.error('Error:', error);
-                loader.innerText = "Error: " + error.message;
-                loader.style.animation = "none";
-                loader.style.color = "red";
+                setupNavigation(_EVENT_STORE);
+                renderEngine(_EVENT_STORE);
+            } catch (err) {
+                console.error("Flame System Error:", err);
+                document.getElementById('grid-mount').innerHTML = `<p class="col-span-12 text-center text-red-500 font-bold">Failed to sync with Flame Engine. Check Web App URL.</p>`;
             }
         }
 
-        function renderEvents(events) {
-            const grid = document.getElementById('grid');
-            grid.innerHTML = '';
+        function setupNavigation(data) {
+            const nav = document.getElementById('filter-nav');
+            // Dynamically grab all unique categories from the sheet data
+            const categories = ['All', ...new Set(data.map(e => e.EventCategory).filter(Boolean))];
+            
+            nav.innerHTML = categories.map(cat => `
+                <button onclick="handleFilter('${cat}', this)" class="pill ${cat==='All'?'active':''} hover:scale-110">
+                    ${cat}
+                </button>
+            `).join('');
+        }
 
-            events.forEach(evt => {
-                // Note: Headers are converted to lowercase/nospaces by code.gs
-                // "Event Name" -> evt.eventname
-                // "Register Link" -> evt.registerlink
+        function renderEngine(data) {
+            const mount = document.getElementById('grid-mount');
+            mount.innerHTML = '';
+
+            data.forEach((ev, i) => {
+                // Advanced Bento Layout Logic: 7/5 column split alternating
+                const colSpan = (i % 3 === 0) ? 'md:col-span-8' : 'md:col-span-4';
                 
                 const card = document.createElement('div');
-                card.className = 'event-card';
+                card.className = `bento-card ${colSpan} p-10 flex flex-col justify-between min-h-[580px]`;
                 
-                const name = evt.eventname || "Untitled Event";
-                const date = evt.date || "TBA";
-                const venue = evt.venue || "TBA";
-                const desc = evt.description || "";
-                const link = evt.registerlink || "";
-
                 card.innerHTML = `
                     <div>
-                        <h3>${name}</h3>
-                        <p><strong>${date}</strong><br>${venue}</p>
-                        <p>${desc}</p>
+                        <div class="image-container mb-10">
+                            <img src="${ev.ImageURL || 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=1000'}" alt="${ev.EventName}">
+                            <div class="absolute top-4 left-4 bg-[#00ff6622] backdrop-blur-md px-4 py-1.5 rounded-full text-[9px] font-black text-[#00ff66] border border-[#00ff6644] uppercase tracking-widest">
+                                ${ev.EventCategory}
+                            </div>
+                        </div>
+                        <h2 class="font-huge text-4xl mb-4 leading-none uppercase group-hover:text-[#00ff66] transition-colors">${ev.EventName}</h2>
+                        <p class="text-white/40 text-sm leading-relaxed max-w-sm line-clamp-3 font-light">${ev.Description}</p>
                     </div>
-                    ${link ? `<a href="${link}" target="_blank" class="btn-register">Register</a>` : ''}
+
+                    <div class="mt-12 flex justify-between items-end border-t border-white/5 pt-8">
+                        <div class="space-y-1">
+                            <p class="text-[9px] uppercase tracking-widest text-white/20 font-bold">Details</p>
+                            <p class="text-xs text-white/80 font-bold">${ev.Venue}</p>
+                            <p class="text-[10px] text-white/50">${ev.Date} — ${ev.Time}</p>
+                        </div>
+                        <a href="${ev.RegisterLink}" target="_blank" class="px-10 py-5 bg-white text-black font-black uppercase text-[10px] rounded-2xl hover:bg-[#00ff66] transition-all transform hover:-translate-y-2">
+                            Register
+                        </a>
+                    </div>
                 `;
-                grid.appendChild(card);
+                mount.appendChild(card);
+            });
+
+            // "Unfolding" entry animation
+            gsap.to(".bento-card", {
+                clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+                duration: 1.5,
+                stagger: 0.1,
+                ease: "expo.inOut"
             });
         }
 
-        window.onload = fetchEvents;
+        function handleFilter(cat, btn) {
+            // UI Toggle
+            document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+
+            const filtered = cat === 'All' ? _EVENT_STORE : _EVENT_STORE.filter(item => item.EventCategory === cat);
+            
+            // "Close" existing cards before showing new ones
+            gsap.to(".bento-card", {
+                clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)",
+                duration: 0.5,
+                stagger: 0.05,
+                onComplete: () => renderEngine(filtered)
+            });
+        }
+
+        window.onload = fetchSystem;
     </script>
 </body>
 </html>
