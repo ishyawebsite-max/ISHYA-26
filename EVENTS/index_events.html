@@ -3,221 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IGNITE | GREEN FLAME</title>
+    <title>EVENTS | GREEN FLAME</title>
     
-    <!-- External Assets -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@900&family=Outfit:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@900&family=Outfit:wght@300;500;800&display=swap" rel="stylesheet">
 
     <style>
         :root { --neon: #00ff66; --bg: #010402; }
         body { background: var(--bg); color: white; font-family: 'Outfit', sans-serif; overflow-x: hidden; }
         .font-huge { font-family: 'Unbounded', sans-serif; }
 
-        /* Liquid Plasma Layer (WebGL-lite) */
+        /* Liquid Plasma Layer */
         #plasma-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; pointer-events: none; mix-blend-mode: screen; filter: blur(15px);
+            z-index: -1; pointer-events: none; mix-blend-mode: screen; filter: blur(8px);
         }
+
+        /* Buffering / Loader */
+        #loader {
+            position: fixed; inset: 0; z-index: 200; background: var(--bg);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .spinner {
+            width: 60px; height: 60px; border: 4px solid rgba(0, 255, 102, 0.1);
+            border-top: 4px solid var(--neon); border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         /* Bento Grid Architecture */
         .bento-card {
             background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(30px);
+            backdrop-filter: blur(25px);
             border: 1px solid rgba(0, 255, 102, 0.05);
             border-radius: 35px;
-            clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); /* Closed initially */
-            transition: border 0.4s ease, background 0.4s ease, transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+            transition: border 0.4s ease, background 0.4s ease;
         }
         .bento-card:hover { border-color: var(--neon); background: rgba(0, 255, 102, 0.04); }
 
-        .image-container { overflow: hidden; border-radius: 25px; height: 280px; position: relative; background: #000; }
-        .image-container img { width: 100%; height: 100%; object-fit: cover; opacity: 0.3; filter: grayscale(1); transition: 0.8s ease; }
-        .bento-card:hover img { opacity: 0.9; filter: grayscale(0); transform: scale(1.05); }
+        .image-box { border-radius: 25px; height: 260px; overflow: hidden; background: #000; }
+        .image-box img { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; filter: grayscale(1); transition: 0.8s; }
+        .bento-card:hover img { opacity: 1; filter: grayscale(0); transform: scale(1.05); }
 
-        /* Category System */
-        .pill {
+        /* Popup Modal */
+        #modal {
+            display: none; position: fixed; inset: 0; z-index: 100;
+            background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(15px);
+            align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-body {
+            width: 100%; max-width: 1000px; height: 85vh; background: #050a06;
+            border: 1px solid var(--neon); border-radius: 30px; overflow: hidden;
+        }
+        iframe { width: 100%; height: calc(100% - 60px); border: none; background: white; }
+
+        .nav-btn {
             padding: 10px 25px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.1);
             font-size: 10px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
             transition: 0.3s;
         }
-        .pill.active { background: var(--neon); color: #000; border-color: var(--neon); box-shadow: 0 0 30px rgba(0, 255, 102, 0.4); }
-
-        .neon-glow { text-shadow: 0 0 50px rgba(0, 255, 102, 0.6); }
+        .nav-btn.active { background: var(--neon); color: #000; box-shadow: 0 0 20px rgba(0, 255, 102, 0.4); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        
-        /* Shimmer loading */
-        .skeleton { background: linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%); background-size: 200% 100%; animation: shimmer 2s infinite; }
-        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
     </style>
 </head>
 <body>
 
+    <!-- Buffering Circle -->
+    <div id="loader"><div class="spinner"></div></div>
+
     <canvas id="plasma-canvas"></canvas>
 
+    <!-- Registration Popup -->
+    <div id="modal" onclick="closePopup()">
+        <div class="modal-body" onclick="event.stopPropagation()">
+            <div class="h-[60px] flex items-center justify-between px-8 bg-[#0a150c]">
+                <span class="text-[10px] font-black uppercase text-[#00ff66] tracking-widest">Registration</span>
+                <div class="flex gap-6">
+                    <a id="external-link" href="#" target="_blank" class="text-[10px] uppercase font-bold text-white/40 hover:text-white">New Tab ↗</a>
+                    <button onclick="closePopup()" class="font-bold text-white">CLOSE ✕</button>
+                </div>
+            </div>
+            <iframe id="frame" src=""></iframe>
+        </div>
+    </div>
+
     <header class="pt-32 pb-16 px-8 md:px-24">
-        <h1 class="font-huge text-[18vw] leading-[0.75] uppercase tracking-tighter text-[#00ff66] neon-glow select-none">
-            Events
-        </h1>
+        <h1 class="font-huge text-[18vw] leading-[0.75] uppercase tracking-tighter text-[#00ff66] select-none">Events</h1>
     </header>
 
     <main class="px-8 md:px-24 pb-60">
-        <!-- Dynamic Filter Section -->
-        <div id="filter-nav" class="flex gap-4 mb-24 overflow-x-auto no-scrollbar py-2">
-            <div class="h-10 w-32 skeleton rounded-full"></div>
-            <div class="h-10 w-24 skeleton rounded-full"></div>
-        </div>
-
-        <!-- The Event Engine Output -->
-        <div id="grid-mount" class="grid grid-cols-1 md:grid-cols-12 gap-10">
-            <!-- Loading states will show here first -->
-            <div class="col-span-12 py-32 text-center opacity-10 font-huge text-2xl tracking-[1em]">INITIALIZING_FLAME_DATA...</div>
-        </div>
+        <div id="nav" class="flex gap-4 mb-20 overflow-x-auto no-scrollbar py-2"></div>
+        <div id="grid" class="grid grid-cols-1 md:grid-cols-12 gap-8"></div>
     </main>
 
     <script>
-        /** 
-         * SETTINGS: Paste your Web App URL here 
-         */
-        const FLAME_API = "https://script.google.com/macros/s/AKfycbwhQGf4N35pA9INrPu2HvZMUrMDdaIHicm6zJYyzKxvsZcH5sdVye4_hSk-5p_ttPXRGQ/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbzGoW4YpLqaUmfrugTBmKX1_s3fd2w-WRkqe9xaFdFCY_IaQ3wNzqv73fynl5TBPVOLFQ/exec";
 
-        // 1. LIQUID PLASMA TRAIL PHYSICS
+        // 1. FLEETING PLASMA (FASTER FADE)
         const canvas = document.getElementById('plasma-canvas');
         const ctx = canvas.getContext('2d');
         let points = [];
-        const maxPoints = 50;
-        
         const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
         window.addEventListener('resize', resize); resize();
-
         window.addEventListener('mousemove', (e) => {
-            points.push({ x: e.clientX, y: e.clientY, opacity: 1, r: 25 });
-            if (points.length > maxPoints) points.shift();
+            points.push({ x: e.clientX, y: e.clientY, life: 1 });
         });
 
-        function animatePlasma() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (points.length < 2) { requestAnimationFrame(animatePlasma); return; }
-
-            ctx.beginPath();
-            ctx.moveTo(points[0].x, points[0].y);
-
-            for (let i = 1; i < points.length; i++) {
+        function drawPlasma() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            for(let i=0; i<points.length; i++){
                 const p = points[i];
-                // Smooth line using quadratic curves for "liquid" feel
-                const xc = (points[i].x + points[i - 1].x) / 2;
-                const yc = (points[i].y + points[i - 1].y) / 2;
-                ctx.quadraticCurveTo(points[i - 1].x, points[i - 1].y, xc, yc);
+                ctx.fillStyle = `rgba(0, 255, 102, ${p.life})`;
+                ctx.beginPath(); ctx.arc(p.x, p.y, 8, 0, Math.PI*2); ctx.fill();
+                p.life -= 0.05; // Fades out in ~20 frames
+                if(p.life <= 0) points.splice(i, 1);
             }
-
-            ctx.shadowBlur = 50;
-            ctx.shadowColor = '#00ff66';
-            ctx.strokeStyle = 'rgba(0, 255, 102, 0.4)';
-            ctx.lineWidth = 20;
-            ctx.lineCap = 'round';
-            ctx.stroke();
-
-            requestAnimationFrame(animatePlasma);
+            requestAnimationFrame(drawPlasma);
         }
-        animatePlasma();
+        drawPlasma();
 
-        // 2. DATA ORCHESTRATION
-        let _EVENT_STORE = [];
-        const lenis = new Lenis();
-        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-        requestAnimationFrame(raf);
+        // 2. MODAL CONTROLS
+        function openPopup(url) {
+            if(!url || url === "#") return;
+            document.getElementById('frame').src = url;
+            document.getElementById('external-link').href = url;
+            document.getElementById('modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        function closePopup() {
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('frame').src = "";
+            document.body.style.overflow = 'auto';
+        }
 
-        async function fetchSystem() {
+        // 3. ENGINE
+        let store = [];
+        async function fetchEvents() {
             try {
-                const res = await fetch(FLAME_API);
-                _EVENT_STORE = await res.json();
-                
-                setupNavigation(_EVENT_STORE);
-                renderEngine(_EVENT_STORE);
-            } catch (err) {
-                console.error("Flame System Error:", err);
-                document.getElementById('grid-mount').innerHTML = `<p class="col-span-12 text-center text-red-500 font-bold">Failed to sync with Flame Engine. Check Web App URL.</p>`;
+                const r = await fetch(API_URL);
+                store = await r.json();
+                renderFilters(store);
+                renderGrid(store);
+            } finally {
+                gsap.to("#loader", { opacity: 0, duration: 0.5, onComplete: () => document.getElementById('loader').remove() });
             }
         }
 
-        function setupNavigation(data) {
-            const nav = document.getElementById('filter-nav');
-            // Dynamically grab all unique categories from the sheet data
-            const categories = ['All', ...new Set(data.map(e => e.EventCategory).filter(Boolean))];
-            
-            nav.innerHTML = categories.map(cat => `
-                <button onclick="handleFilter('${cat}', this)" class="pill ${cat==='All'?'active':''} hover:scale-110">
-                    ${cat}
-                </button>
-            `).join('');
+        function renderFilters(data) {
+            const nav = document.getElementById('nav');
+            const cats = ['All', ...new Set(data.map(d => d.EventCategory))];
+            nav.innerHTML = cats.map(c => `<button onclick="applyFilter('${c}', this)" class="nav-btn ${c==='All'?'active':''}">${c}</button>`).join('');
         }
 
-        function renderEngine(data) {
-            const mount = document.getElementById('grid-mount');
-            mount.innerHTML = '';
-
+        function renderGrid(data) {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
             data.forEach((ev, i) => {
-                // Advanced Bento Layout Logic: 7/5 column split alternating
-                const colSpan = (i % 3 === 0) ? 'md:col-span-8' : 'md:col-span-4';
-                
-                const card = document.createElement('div');
-                card.className = `bento-card ${colSpan} p-10 flex flex-col justify-between min-h-[580px]`;
-                
-                card.innerHTML = `
+                const col = (i % 3 === 0) ? 'md:col-span-8' : 'md:col-span-4';
+                const el = document.createElement('div');
+                el.className = `bento-card ${col} p-10 flex flex-col justify-between min-h-[550px]`;
+                el.innerHTML = `
                     <div>
-                        <div class="image-container mb-10">
-                            <img src="${ev.ImageURL || 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=1000'}" alt="${ev.EventName}">
-                            <div class="absolute top-4 left-4 bg-[#00ff6622] backdrop-blur-md px-4 py-1.5 rounded-full text-[9px] font-black text-[#00ff66] border border-[#00ff6644] uppercase tracking-widest">
-                                ${ev.EventCategory}
-                            </div>
+                        <div class="image-box mb-8">
+                            <img src="${ev.ImageURL || 'https://via.placeholder.com/800x600?text=Event'}">
                         </div>
-                        <h2 class="font-huge text-4xl mb-4 leading-none uppercase group-hover:text-[#00ff66] transition-colors">${ev.EventName}</h2>
-                        <p class="text-white/40 text-sm leading-relaxed max-w-sm line-clamp-3 font-light">${ev.Description}</p>
+                        <span class="text-[9px] font-black uppercase text-[#00ff66] tracking-[2px]">${ev.EventCategory}</span>
+                        <h2 class="font-huge text-4xl mb-4 leading-none uppercase">${ev.EventName}</h2>
+                        <p class="text-white/40 text-sm line-clamp-3">${ev.Description}</p>
                     </div>
-
                     <div class="mt-12 flex justify-between items-end border-t border-white/5 pt-8">
-                        <div class="space-y-1">
-                            <p class="text-[9px] uppercase tracking-widest text-white/20 font-bold">Details</p>
-                            <p class="text-xs text-white/80 font-bold">${ev.Venue}</p>
-                            <p class="text-[10px] text-white/50">${ev.Date} — ${ev.Time}</p>
-                        </div>
-                        <a href="${ev.RegisterLink}" target="_blank" class="px-10 py-5 bg-white text-black font-black uppercase text-[10px] rounded-2xl hover:bg-[#00ff66] transition-all transform hover:-translate-y-2">
-                            Register
-                        </a>
+                        <div class="text-[10px] text-white/20 uppercase font-bold">${ev.Venue} <br> ${ev.Date}</div>
+                        <button onclick="openPopup('${ev.RegisterLink}')" class="px-10 py-4 bg-white text-black font-black uppercase text-[10px] rounded-2xl hover:bg-[#00ff66] transition-all">Register</button>
                     </div>
                 `;
-                mount.appendChild(card);
+                grid.appendChild(el);
             });
-
-            // "Unfolding" entry animation
-            gsap.to(".bento-card", {
-                clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
-                duration: 1.5,
-                stagger: 0.1,
-                ease: "expo.inOut"
-            });
+            gsap.to(".bento-card", { clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)", duration: 1.2, stagger: 0.1 });
         }
 
-        function handleFilter(cat, btn) {
-            // UI Toggle
-            document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+        function applyFilter(cat, btn) {
+            document.querySelectorAll('.nav-btn').forEach(p => p.classList.remove('active'));
             btn.classList.add('active');
-
-            const filtered = cat === 'All' ? _EVENT_STORE : _EVENT_STORE.filter(item => item.EventCategory === cat);
-            
-            // "Close" existing cards before showing new ones
-            gsap.to(".bento-card", {
-                clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)",
-                duration: 0.5,
-                stagger: 0.05,
-                onComplete: () => renderEngine(filtered)
-            });
+            const filtered = cat === 'All' ? store : store.filter(d => d.EventCategory === cat);
+            renderGrid(filtered);
         }
 
-        window.onload = fetchSystem;
+        window.onload = fetchEvents;
     </script>
 </body>
 </html>
