@@ -15,23 +15,23 @@
         body { background: var(--bg); color: white; font-family: 'Outfit', sans-serif; overflow-x: hidden; }
         .font-huge { font-family: 'Unbounded', sans-serif; }
 
-        /* Liquid Plasma Layer */
-        #plasma-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; pointer-events: none; mix-blend-mode: screen; filter: blur(8px);
-        }
-
-        /* Buffering / Loader */
+        /* Buffering Overlay */
         #loader {
-            position: fixed; inset: 0; z-index: 200; background: var(--bg);
+            position: fixed; inset: 0; z-index: 999; background: var(--bg);
             display: flex; align-items: center; justify-content: center;
         }
         .spinner {
-            width: 60px; height: 60px; border: 4px solid rgba(0, 255, 102, 0.1);
+            width: 50px; height: 50px; border: 4px solid rgba(0, 255, 102, 0.1);
             border-top: 4px solid var(--neon); border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 0.8s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Plasma Layer */
+        #plasma-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; pointer-events: none; mix-blend-mode: screen; filter: blur(10px);
+        }
 
         /* Bento Grid Architecture */
         .bento-card {
@@ -40,12 +40,12 @@
             border: 1px solid rgba(0, 255, 102, 0.05);
             border-radius: 35px;
             clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
-            transition: border 0.4s ease, background 0.4s ease;
+            transition: 0.4s ease;
         }
         .bento-card:hover { border-color: var(--neon); background: rgba(0, 255, 102, 0.04); }
 
         .image-box { border-radius: 25px; height: 260px; overflow: hidden; background: #000; }
-        .image-box img { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; filter: grayscale(1); transition: 0.8s; }
+        .image-box img { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; filter: grayscale(1); transition: 0.8s ease; }
         .bento-card:hover img { opacity: 1; filter: grayscale(0); transform: scale(1.05); }
 
         /* Popup Modal */
@@ -76,15 +76,12 @@
 
     <canvas id="plasma-canvas"></canvas>
 
-    <!-- Registration Popup -->
+    <!-- Popup Modal -->
     <div id="modal" onclick="closePopup()">
         <div class="modal-body" onclick="event.stopPropagation()">
             <div class="h-[60px] flex items-center justify-between px-8 bg-[#0a150c]">
                 <span class="text-[10px] font-black uppercase text-[#00ff66] tracking-widest">Registration</span>
-                <div class="flex gap-6">
-                    <a id="external-link" href="#" target="_blank" class="text-[10px] uppercase font-bold text-white/40 hover:text-white">New Tab ↗</a>
-                    <button onclick="closePopup()" class="font-bold text-white">CLOSE ✕</button>
-                </div>
+                <button onclick="closePopup()" class="font-bold text-white hover:text-[#00ff66]">CLOSE ✕</button>
             </div>
             <iframe id="frame" src=""></iframe>
         </div>
@@ -100,9 +97,9 @@
     </main>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbzGoW4YpLqaUmfrugTBmKX1_s3fd2w-WRkqe9xaFdFCY_IaQ3wNzqv73fynl5TBPVOLFQ/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbym4_gPbWluauk0c3kIKdj0CFRm4hTlo9jmh8AgGsUmVt-PphqRfRaByIJLDaz-2c0BwA/exec";
 
-        // 1. FLEETING PLASMA (FASTER FADE)
+        // 1. FLEETING PLASMA (FASTER DECAY)
         const canvas = document.getElementById('plasma-canvas');
         const ctx = canvas.getContext('2d');
         let points = [];
@@ -112,34 +109,20 @@
             points.push({ x: e.clientX, y: e.clientY, life: 1 });
         });
 
-        function drawPlasma() {
+        function draw() {
             ctx.clearRect(0,0,canvas.width,canvas.height);
             for(let i=0; i<points.length; i++){
                 const p = points[i];
                 ctx.fillStyle = `rgba(0, 255, 102, ${p.life})`;
                 ctx.beginPath(); ctx.arc(p.x, p.y, 8, 0, Math.PI*2); ctx.fill();
-                p.life -= 0.05; // Fades out in ~20 frames
+                p.life -= 0.08; // Very fleeting
                 if(p.life <= 0) points.splice(i, 1);
             }
-            requestAnimationFrame(drawPlasma);
+            requestAnimationFrame(draw);
         }
-        drawPlasma();
+        draw();
 
-        // 2. MODAL CONTROLS
-        function openPopup(url) {
-            if(!url || url === "#") return;
-            document.getElementById('frame').src = url;
-            document.getElementById('external-link').href = url;
-            document.getElementById('modal').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
-        function closePopup() {
-            document.getElementById('modal').style.display = 'none';
-            document.getElementById('frame').src = "";
-            document.body.style.overflow = 'auto';
-        }
-
-        // 3. ENGINE
+        // 2. MODAL & DATA
         let store = [];
         async function fetchEvents() {
             try {
@@ -168,22 +151,33 @@
                 el.innerHTML = `
                     <div>
                         <div class="image-box mb-8">
-                            <img src="${ev.ImageURL || 'https://via.placeholder.com/800x600?text=Event'}">
+                            <img src="${ev.ImageURL || 'https://via.placeholder.com/800x600'}">
                         </div>
                         <span class="text-[9px] font-black uppercase text-[#00ff66] tracking-[2px]">${ev.EventCategory}</span>
                         <h2 class="font-huge text-4xl mb-4 leading-none uppercase">${ev.EventName}</h2>
                         <p class="text-white/40 text-sm line-clamp-3">${ev.Description}</p>
                     </div>
                     <div class="mt-12 flex justify-between items-end border-t border-white/5 pt-8">
-                        <div class="text-[10px] text-white/20 uppercase font-bold">${ev.Venue} <br> ${ev.Date}</div>
+                        <div class="text-[10px] text-white/20 uppercase font-bold">${ev.Venue} <br> ${ev.Date} @ ${ev.Time}</div>
                         <button onclick="openPopup('${ev.RegisterLink}')" class="px-10 py-4 bg-white text-black font-black uppercase text-[10px] rounded-2xl hover:bg-[#00ff66] transition-all">Register</button>
                     </div>
                 `;
                 grid.appendChild(el);
             });
-            gsap.to(".bento-card", { clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)", duration: 1.2, stagger: 0.1 });
+            gsap.to(".bento-card", { clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)", duration: 1, stagger: 0.1 });
         }
 
+        function openPopup(url) {
+            if(!url || url === "#") return;
+            document.getElementById('frame').src = url;
+            document.getElementById('modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        function closePopup() {
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('frame').src = "";
+            document.body.style.overflow = 'auto';
+        }
         function applyFilter(cat, btn) {
             document.querySelectorAll('.nav-btn').forEach(p => p.classList.remove('active'));
             btn.classList.add('active');
