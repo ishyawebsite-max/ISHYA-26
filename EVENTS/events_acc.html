@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events | Flames in the Fold</title>
+    <!-- Importing Fonts: 'Cinzel' for headers (Elegant/Sharp) and 'Lato' for body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- CORE VARIABLES --- */
+        :root {
+            --paper-color: #fdfbf7;
+            --paper-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            --ash-bg: #1a1a1a;
+            --fire-glow: #ff4500; /* OrangeRed */
+            --fire-core: #ffae00; /* Gold */
+            --text-on-paper: #2c2c2c;
+            --text-on-ash: #f0f0f0;
+        }
+
+        /* --- GLOBAL STYLES --- */
+        body {
+            background-color: var(--ash-bg);
+            font-family: 'Lato', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            /* Subtle ember texture in background */
+            background-image: radial-gradient(circle at 50% 50%, #2a2a2a 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Cinzel', serif;
+            margin: 0;
+        }
+
+        /* --- HEADER SECTION --- */
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--fire-core);
+            text-shadow: 0 0 10px var(--fire-glow);
+        }
+
+        header h1 {
+            font-size: 3rem;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #ccc;
+            font-style: italic;
+        }
+
+        /* --- LOADING SPINNER --- */
+        #loader {
+            text-align: center;
+            color: var(--paper-color);
+            margin-top: 50px;
+            font-size: 1.2rem;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* --- ACCORDION CONTAINER --- */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px 100px 20px;
+        }
+
+        /* --- THE PAPER STRIP (Closed State) --- */
+        .event-card {
+            background: var(--paper-color);
+            margin-bottom: 15px;
+            border-radius: 2px;
+            box-shadow: var(--paper-shadow);
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            
+            /* The "Fold" styling */
+            border-left: 6px solid var(--fire-glow); 
+        }
+
+        .event-card:hover {
+            transform: translateX(5px); /* Slide out slightly like pulling a paper from a stack */
+        }
+
+        /* The Header of the Card (Always Visible) */
+        .card-header {
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .event-title {
+            font-size: 1.4rem;
+            color: var(--text-on-paper);
+            font-weight: 700;
+        }
+
+        .event-category {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .toggle-icon {
+            font-size: 1.5rem;
+            transition: transform 0.4s ease;
+            color: var(--fire-glow);
+        }
+
+        /* --- THE FIRE INTERIOR (Open State) --- */
+        .card-body {
+            max-height: 0; /* Hidden by default */
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            background: linear-gradient(to bottom, #2b1100, #0a0a0a);
+            color: var(--text-on-ash);
+            position: relative;
+        }
+
+        /* This creates the inner glow animation */
+        .card-body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--fire-glow), var(--fire-core), var(--fire-glow));
+            opacity: 0.8;
+            box-shadow: 0 0 15px var(--fire-glow);
+            animation: flicker 2s infinite alternate;
+        }
+
+        .body-content {
+            padding: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            opacity: 0; /* Fade in effect */
+            transform: translateY(-10px);
+            transition: all 0.4s ease 0.1s;
+        }
+
+        /* When the card has the class 'active' */
+        .event-card.active .card-body {
+            /* max-height is handled by JS for smooth animation */
+        }
+
+        .event-card.active .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .event-card.active .body-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- CONTENT STYLING --- */
+        .event-image {
+            flex: 1 1 200px;
+            max-width: 300px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid var(--fire-glow);
+            box-shadow: 0 0 10px rgba(255, 69, 0, 0.2);
+        }
+
+        .event-info {
+            flex: 2 1 300px;
+        }
+
+        .info-row {
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .icon {
+            margin-right: 10px;
+            color: var(--fire-core);
+        }
+
+        .description {
+            margin: 15px 0;
+            line-height: 1.6;
+            color: #ccc;
+        }
+
+        /* Register Button */
+        .register-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 25px;
+            background: transparent;
+            border: 2px solid var(--fire-core);
+            color: var(--fire-core);
+            text-decoration: none;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .register-btn:hover {
+            background: var(--fire-glow);
+            border-color: var(--fire-glow);
+            color: white;
+            box-shadow: 0 0 15px var(--fire-glow);
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes flicker {
+            0% { opacity: 0.6; box-shadow: 0 0 5px var(--fire-glow); }
+            100% { opacity: 1; box-shadow: 0 0 20px var(--fire-core); }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            .event-image {
+                max-width: 100%;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Events</h1>
+        <p>Unfold the details. Ignite the passion.</p>
+    </header>
+
+    <div id="loader">Unfolding the paper...</div>
+
+    <div class="container" id="events-container">
+        <!-- Events will be injected here by JavaScript -->
+    </div>
+
+    <script>
+        // ---------------------------------------------------------
+        // CONFIGURATION
+        // ---------------------------------------------------------
+        
+        // PASTE YOUR DEPLOYED WEB APP URL HERE
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbym4_gPbWluauk0c3kIKdj0CFRm4hTlo9jmh8AgGsUmVt-PphqRfRaByIJLDaz-2c0BwA/exec'; 
+
+        // ---------------------------------------------------------
+        // LOGIC
+        // ---------------------------------------------------------
+
+        async function fetchEvents() {
+            try {
+                const response = await fetch(SCRIPT_URL);
+                const data = await response.json();
+                
+                // Hide Loader
+                document.getElementById('loader').style.display = 'none';
+
+                if(data.status === 'success') {
+                    renderEvents(data.data);
+                } else {
+                    console.error('Error fetching data:', data);
+                    document.getElementById('loader').innerText = "Failed to load events.";
+                    document.getElementById('loader').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+                document.getElementById('loader').innerText = "Connection error. Please try again.";
+            }
+        }
+
+        function renderEvents(events) {
+            const container = document.getElementById('events-container');
+
+            events.forEach(event => {
+                // Destructuring the object keys based on your headers
+                const { EventName, Description, Date, Time, Venue, ImageURL, RegisterLink, EventCategory } = event;
+
+                // Create Card
+                const card = document.createElement('div');
+                card.classList.add('event-card');
+
+                // Fallback image if empty
+                const imgDisplay = ImageURL ? ImageURL : 'https://via.placeholder.com/400x300/333/ff4500?text=Flames+in+the+Fold';
+
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div>
+                            <div class="event-title">${EventName}</div>
+                            <div class="event-category">${EventCategory}</div>
+                        </div>
+                        <div class="toggle-icon">▼</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="body-content">
+                            <img src="${imgDisplay}" alt="${EventName}" class="event-image">
+                            <div class="event-info">
+                                <div class="info-row"><span class="icon">📅</span> ${Date}</div>
+                                <div class="info-row"><span class="icon">⏰</span> ${Time}</div>
+                                <div class="info-row"><span class="icon">📍</span> ${Venue}</div>
+                                <p class="description">${Description}</p>
+                                <a href="${RegisterLink}" target="_blank" class="register-btn">Register Now</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Add Click Event for Accordion
+                card.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const body = this.querySelector('.card-body');
+                    
+                    if (this.classList.contains('active')) {
+                        body.style.maxHeight = body.scrollHeight + "px";
+                    } else {
+                        body.style.maxHeight = 0;
+                    }
+                });
+
+                container.appendChild(card);
+            });
+        }
+
+        // Initialize
+        fetchEvents();
+
+    </script>
+</body>
+</html>
