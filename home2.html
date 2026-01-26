@@ -286,8 +286,8 @@
             birdGroup.add(wL); birdGroup.add(wR); birdGroup.rotation.x=0.2;
 
             // 4. LIGHTS
-            const amb = new THREE.AmbientLight(0xffffff, 0.6); scene.add(amb);
-            const spot = new THREE.SpotLight(0xffffff, 5); spot.position.set(5, 10, 5); spot.castShadow = true; scene.add(spot);
+            const amb = new THREE.AmbientLight(0xffffff, 0.4); scene.add(amb);
+            const spot = new THREE.SpotLight(0xffffff, 3); spot.position.set(5, 10, 5); spot.castShadow = true; scene.add(spot);
             const accentLight = new THREE.PointLight(0x00ff66, 3, 20); accentLight.position.set(4, 0, 4); scene.add(accentLight);
 
             // 5. ANIMATIONS & SCROLL
