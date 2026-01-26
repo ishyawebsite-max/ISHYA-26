@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ISHYA '26 | THE ETERNAL FOLD</title>
+    <title>ISHYA '26 | WHERE DREAMS UNFOLD</title>
     
     <!-- FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,11 +48,6 @@
         /* --- UI ELEMENTS --- */
         main { position: relative; z-index: 10; opacity: 0; transition: opacity 1s ease; }
         
-        /* Loading Status */
-        #status-msg {
-            position: fixed; bottom: 20px; right: 20px; color: #333; font-size: 10px; z-index: 9999; font-family: monospace;
-        }
-
         /* Cursor */
         #cursor {
             position: fixed; width: 12px; height: 12px; background: var(--neon);
@@ -66,19 +61,32 @@
             transition: 0.1s ease-out;
         }
 
-        /* --- SECTIONS --- */
-        section {
-            min-height: 100vh; padding: 0 10vw; position: relative;
+        /* --- HERO & LOGO --- */
+        #hero { 
+            align-items: center; text-align: center; height: 100vh; position: relative;
             display: flex; flex-direction: column; justify-content: center;
         }
+        
+        /* The Real Image that fades in */
+        #real-logo {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px; /* Adjust based on your logo size preference */
+            max-width: 80vw;
+            opacity: 0; /* Hidden initially */
+            z-index: 5; /* Above canvas, below text */
+            pointer-events: none;
+            mix-blend-mode: screen; /* Helps blend with dark background */
+        }
 
-        /* HERO */
-        #hero { align-items: center; text-align: center; }
-        .hero-content { margin-top: 20vh; pointer-events: none; }
+        .hero-content { position: relative; z-index: 20; pointer-events: none; margin-top: 10vh; }
+        
         .hero-meta {
             font-family: var(--font-body); letter-spacing: 4px; color: var(--emerald); 
             margin-bottom: 20px; font-size: 0.9rem; border: 1px solid var(--emerald);
             padding: 8px 24px; border-radius: var(--radius-pill); display: inline-block;
+            background: rgba(0,0,0,0.3); backdrop-filter: blur(5px);
         }
         .hero-title {
             font-family: var(--font-display); font-size: 8vw; line-height: 0.85;
@@ -87,15 +95,18 @@
             margin-bottom: 30px;
         }
         .hero-title .highlight { color: var(--paper); -webkit-text-stroke: 0; }
+        
         .scroll-pill {
             margin-top: 50px; padding: 10px 30px; background: rgba(255,255,255,0.05);
             border-radius: var(--radius-pill); font-size: 0.8rem; letter-spacing: 2px;
             animation: bounce 2s infinite; display: inline-block;
+            backdrop-filter: blur(5px);
         }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(10px); } }
 
-        /* GENESIS */
+        /* --- GENESIS --- */
         .editorial-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 5vw; align-items: center; }
+        section { min-height: 100vh; padding: 0 10vw; position: relative; display: flex; flex-direction: column; justify-content: center; }
         .section-title { font-family: var(--font-display); font-size: 4rem; line-height: 1; margin-bottom: 30px; }
         .section-title em { font-family: var(--font-serif); font-style: italic; color: var(--neon); }
         .text-block {
@@ -111,7 +122,7 @@
         }
         .stat span { display: block; font-family: var(--font-display); font-size: 1.5rem; color: var(--emerald); }
 
-        /* EVENTS */
+        /* --- EVENTS --- */
         .event-showcase { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 50px; }
         .event-item {
             aspect-ratio: 3/4; border: 1px solid #333; padding: 30px; 
@@ -129,7 +140,7 @@
         }
         .event-item:hover .btn-pill { background: var(--emerald); color: var(--void); }
 
-        /* LINEUP */
+        /* --- LINEUP --- */
         .marquee-wrapper {
             width: 100%; overflow: hidden; white-space: nowrap; margin-bottom: 50px;
             border-top: 1px solid #333; border-bottom: 1px solid #333; padding: 20px 0;
@@ -147,7 +158,7 @@
         }
         .artist-card:hover { border-color: var(--magma); color: var(--paper); }
 
-        /* FOOTER */
+        /* --- FOOTER --- */
         .footer-section {
             background: #080808; border-radius: 100px 100px 0 0;
             padding: 10vh 0; text-align: center; align-items: center;
@@ -162,22 +173,24 @@
         .socials { margin-top: 30px; display: flex; gap: 20px; justify-content: center; font-size: 1.2rem; }
         .socials a { color: #888; text-decoration: none; transition: 0.3s; }
         .socials a:hover { color: var(--neon); }
+
+        #status-msg { position: fixed; bottom: 20px; right: 20px; color: #444; font-size: 10px; z-index: 9999; font-family: monospace; }
     </style>
 </head>
 <body>
 
-    <!-- 3D CANVAS -->
     <canvas id="webgl"></canvas>
-    
-    <!-- UI LAYERS -->
     <div id="noise-overlay"></div>
     <div id="cursor"></div>
     <div id="cursor-follow"></div>
-    <div id="status-msg">INITIALIZING SYSTEM...</div>
+    <div id="status-msg">INITIALIZING...</div>
 
     <main id="smooth-wrapper">
         <!-- HERO -->
         <section id="hero">
+            <!-- THE REAL LOGO IMAGE (Starts hidden) -->
+            <img src="logo.png" id="real-logo" alt="ISHYA Logo">
+
             <div class="hero-content">
                 <div class="hero-meta">MARCH 21-23</div>
                 <h1 class="hero-title">WHERE<br><span class="highlight">DREAMS</span><br>UNFOLD</h1>
@@ -192,7 +205,7 @@
                 <div class="col-right">
                     <h2 class="section-title">THE <br><em>GENESIS</em></h2>
                     <div class="text-block">
-                        <p>Like a single sheet of paper holding infinite potential, <strong>Ishya</strong> transforms with every fold.</p>
+                        <p>Like a single sheet of paper holding infinite potential, <strong>Ishya</strong> transforms with every fold.</p> 
                     </div>
                     <div class="stat-row">
                         <div class="stat"><span>15</span>Years</div>
@@ -226,7 +239,7 @@
         <!-- LINEUP -->
         <section id="lineup">
             <div class="marquee-wrapper">
-                <div class="marquee-text">MASALA COFFEE • FUNKIE • DJ SNAKE • THE LOCAL TRAIN • AGAM •</div>
+                <div class="marquee-text">MASALA COFFEE • FUNKIE • DJ SNAKE • THE LOCAL TRAIN • AGAM • MASALA COFFEE • FUNKIE • DJ SNAKE •</div>
             </div>
             <div class="artist-card hover-target">HEADLINER REVEAL</div>
         </section>
@@ -313,9 +326,8 @@
     </script>
 
     <script type="module">
-        // --- 0. CONFIGURATION ---
-        // Change this to your file path.
-        const LOGO_PATH = 'LogoIshya.png'; 
+        // --- CONFIGURATION ---
+        const LOGO_PATH = 'logo.png'; 
 
         import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
         import { EffectComposer } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/postprocessing/EffectComposer.js';
@@ -339,7 +351,7 @@
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
         camera.position.set(0, 0, 16);
 
-        // --- PAPER TEXTURE ---
+        // --- ASSETS ---
         const createPaperTexture = () => {
             const s = 1024; const c = document.createElement('canvas'); c.width = s; c.height = s;
             const ctx = c.getContext('2d'); ctx.fillStyle = '#e5e5e5'; ctx.fillRect(0, 0, s, s);
@@ -352,7 +364,7 @@
         };
         const paperTex = createPaperTexture();
 
-        // --- MAIN INITIALIZATION ---
+        // --- INIT ---
         function initSystem(pointsData) {
             document.getElementById('status-msg').style.display = 'none';
 
@@ -407,15 +419,21 @@
             bloom.strength = 0.4; bloom.radius = 0.2; bloom.threshold = 0.85; 
             composer.addPass(bloom);
 
+            // INTRO TIMELINE (Morph -> Fade In Real Logo)
             const introTl = gsap.timeline();
             introTl.to(pMat.uniforms.uMorph, { value: 1, duration: 3.0, ease: "power2.inOut", delay: 0.5 })
-                   .to('main', { opacity: 1, duration: 1 });
+                   .to('main', { opacity: 1, duration: 1 })
+                   .to('#real-logo', { opacity: 1, duration: 1.5 }, "-=0.5"); // FADE IN REAL LOGO
 
+            // SCROLL TIMELINE (Fade Out Real Logo -> Explode -> Bird)
             const transformTl = gsap.timeline({ scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: 1 }});
-            transformTl.to(pMat.uniforms.uExplode, { value: 1, duration: 1 })
-                       .call(() => { birdGroup.visible = true; }, null, "<0.2")
-                       .fromTo(birdGroup.scale, {x:0, y:0, z:0}, {x:1, y:1, z:1, duration: 0.8}, "<");
+            transformTl
+                .to('#real-logo', { opacity: 0, duration: 0.1 }) // HIDE REAL LOGO INSTANTLY ON SCROLL
+                .to(pMat.uniforms.uExplode, { value: 1, duration: 1 })
+                .call(() => { birdGroup.visible = true; }, null, "<0.2")
+                .fromTo(birdGroup.scale, {x:0, y:0, z:0}, {x:1, y:1, z:1, duration: 0.8}, "<");
 
+            // FLIGHT
             const flightTl = gsap.timeline({ scrollTrigger: { trigger: "body", start: "top top", end: "bottom bottom", scrub: 1.5 }});
             flightTl.to(birdGroup.position, { x: -3.5, y: -1, z: 2 }).to(birdGroup.rotation, { y: 0.6, x: 0.1 }, "<").to(accentLight.color, { r:0, g:1, b:0.4 }, "<");
             flightTl.to(birdGroup.position, { x: 3.5, y: -2, z: 1 }).to(birdGroup.rotation, { y: -0.6, x: 0.3 }, "<").to(accentLight.color, { r:0.8, g:1, b:0 }, "<");
@@ -440,9 +458,8 @@
             animate();
         }
 
-        // --- LOADER ---
+        // --- LOADER (FALLBACK + IMAGE) ---
         function generateTextLogo() {
-            // Fallback if image fails or is missing
             const c = document.createElement('canvas'); const ctx = c.getContext('2d');
             const w=400; const h=400; c.width=w; c.height=h;
             ctx.fillStyle='#000'; ctx.fillRect(0,0,w,h);
@@ -470,12 +487,12 @@
             const w = 400; const h = 400; 
             const c = document.createElement('canvas'); c.width = w; c.height = h;
             const ctx = c.getContext('2d');
-            ctx.drawImage(img, 0, 0, w, h); // Draw Image
+            ctx.drawImage(img, 0, 0, w, h);
             initSystem(processCanvas(c, w, h));
         };
 
         img.onerror = () => {
-            console.warn("Logo file not found. Using fallback text.");
+            console.warn("Logo not found. Using fallback.");
             document.getElementById('status-msg').innerText = "USING FALLBACK LOGO";
             initSystem(generateTextLogo());
         };
