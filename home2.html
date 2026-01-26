@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ISHYA '26 | WHERE DREAMS UNFOLD</title>
+    <title>ISHYA '26 | THE ETERNAL FOLD</title>
     
     <!-- FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,169 +11,60 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- VARIABLES --- */
         :root {
             --void: #050505;
             --paper: #e6e6e6;
             --neon: #ccff00;
             --emerald: #00ff66;
             --magma: #ff3300;
-            
             --font-display: 'Syncopate', sans-serif;
             --font-body: 'Space Grotesk', sans-serif;
             --font-serif: 'Cormorant Garamond', serif;
-
             --radius-xl: 40px;
             --radius-md: 20px;
             --radius-pill: 100px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+        body { background: var(--void); color: var(--paper); font-family: var(--font-body); overflow-x: hidden; width: 100vw; }
 
-        body {
-            background: var(--void);
-            color: var(--paper);
-            font-family: var(--font-body);
-            overflow-x: hidden;
-            width: 100vw;
-        }
-
-        /* --- LAYERS --- */
         #webgl { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
-        #noise-overlay {
-            position: fixed; inset: 0; z-index: 900; pointer-events: none; opacity: 0.05;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-        }
+        #noise-overlay { position: fixed; inset: 0; z-index: 900; pointer-events: none; opacity: 0.05; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 
-        /* --- UI ELEMENTS --- */
         main { position: relative; z-index: 10; opacity: 0; transition: opacity 1s ease; }
-        
-        /* Cursor */
-        #cursor {
-            position: fixed; width: 12px; height: 12px; background: var(--neon);
-            border-radius: 50%; pointer-events: none; z-index: 9999;
-            transform: translate(-50%, -50%); mix-blend-mode: difference;
-        }
-        #cursor-follow {
-            position: fixed; width: 50px; height: 50px; 
-            border: 1px solid rgba(255,255,255,0.2); border-radius: 50%;
-            pointer-events: none; z-index: 9998; transform: translate(-50%, -50%);
-            transition: 0.1s ease-out;
-        }
+        #cursor { position: fixed; width: 12px; height: 12px; background: var(--neon); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); mix-blend-mode: difference; }
+        #cursor-follow { position: fixed; width: 50px; height: 50px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); transition: 0.1s ease-out; }
 
-        /* --- HERO & LOGO --- */
-        #hero { 
-            align-items: center; text-align: center; height: 100vh; position: relative;
-            display: flex; flex-direction: column; justify-content: center;
-        }
-        
-        /* The Real Image that fades in */
-        #real-logo {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 300px; /* Adjust based on your logo size preference */
-            max-width: 80vw;
-            opacity: 0; /* Hidden initially */
-            z-index: 5; /* Above canvas, below text */
-            pointer-events: none;
-            mix-blend-mode: screen; /* Helps blend with dark background */
-        }
-
-        .hero-content { position: relative; z-index: 20; pointer-events: none; margin-top: 10vh; }
-        
-        .hero-meta {
-            font-family: var(--font-body); letter-spacing: 4px; color: var(--emerald); 
-            margin-bottom: 20px; font-size: 0.9rem; border: 1px solid var(--emerald);
-            padding: 8px 24px; border-radius: var(--radius-pill); display: inline-block;
-            background: rgba(0,0,0,0.3); backdrop-filter: blur(5px);
-        }
-        .hero-title {
-            font-family: var(--font-display); font-size: 8vw; line-height: 0.85;
-            text-transform: uppercase; color: transparent;
-            -webkit-text-stroke: 1px rgba(255,255,255,0.8);
-            margin-bottom: 30px;
-        }
+        section { min-height: 100vh; padding: 0 10vw; position: relative; display: flex; flex-direction: column; justify-content: center; }
+        #hero { align-items: center; text-align: center; }
+        .hero-content { margin-top: 20vh; pointer-events: none; }
+        .hero-meta { font-family: var(--font-body); letter-spacing: 4px; color: var(--emerald); margin-bottom: 20px; font-size: 0.9rem; border: 1px solid var(--emerald); padding: 8px 24px; border-radius: var(--radius-pill); display: inline-block; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); }
+        .hero-title { font-family: var(--font-display); font-size: 8vw; line-height: 0.85; text-transform: uppercase; color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.8); margin-bottom: 30px; }
         .hero-title .highlight { color: var(--paper); -webkit-text-stroke: 0; }
-        
-        .scroll-pill {
-            margin-top: 50px; padding: 10px 30px; background: rgba(255,255,255,0.05);
-            border-radius: var(--radius-pill); font-size: 0.8rem; letter-spacing: 2px;
-            animation: bounce 2s infinite; display: inline-block;
-            backdrop-filter: blur(5px);
-        }
+        .scroll-pill { margin-top: 50px; padding: 10px 30px; background: rgba(255,255,255,0.05); border-radius: var(--radius-pill); font-size: 0.8rem; letter-spacing: 2px; animation: bounce 2s infinite; display: inline-block; backdrop-filter: blur(5px); }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(10px); } }
 
-        /* --- GENESIS --- */
         .editorial-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 5vw; align-items: center; }
-        section { min-height: 100vh; padding: 0 10vw; position: relative; display: flex; flex-direction: column; justify-content: center; }
         .section-title { font-family: var(--font-display); font-size: 4rem; line-height: 1; margin-bottom: 30px; }
         .section-title em { font-family: var(--font-serif); font-style: italic; color: var(--neon); }
-        .text-block {
-            font-size: 1.15rem; line-height: 1.6; color: #bbb;
-            background: rgba(20,20,20,0.6); padding: 40px;
-            border-radius: var(--radius-xl); border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-        }
+        .text-block { font-size: 1.15rem; line-height: 1.6; color: #bbb; background: rgba(20,20,20,0.6); padding: 40px; border-radius: var(--radius-xl); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
         .stat-row { display: flex; gap: 30px; margin-top: 30px; }
-        .stat {
-            background: #111; padding: 15px 25px; border-radius: var(--radius-md);
-            text-align: center; border: 1px solid #333; min-width: 100px;
-        }
+        .stat { background: #111; padding: 15px 25px; border-radius: var(--radius-md); text-align: center; border: 1px solid #333; min-width: 100px; }
         .stat span { display: block; font-family: var(--font-display); font-size: 1.5rem; color: var(--emerald); }
 
-        /* --- EVENTS --- */
         .event-showcase { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 50px; }
-        .event-item {
-            aspect-ratio: 3/4; border: 1px solid #333; padding: 30px; 
-            display: flex; flex-direction: column; justify-content: space-between;
-            transition: 0.5s; background: rgba(255,255,255,0.02);
-            border-radius: var(--radius-xl); position: relative; overflow: hidden;
-        }
+        .event-item { aspect-ratio: 3/4; border: 1px solid #333; padding: 30px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.5s; background: rgba(255,255,255,0.02); border-radius: var(--radius-xl); position: relative; overflow: hidden; }
         .event-item:hover { background: rgba(255,255,255,0.05); border-color: var(--neon); transform: translateY(-10px); }
-        .event-num { font-family: var(--font-display); font-size: 3rem; color: #333; opacity: 0.5; }
         .event-info h3 { font-family: var(--font-display); font-size: 1.8rem; margin-bottom: 10px; color: var(--paper); }
-        .btn-pill {
-            margin-top: 20px; padding: 10px 20px; border: 1px solid var(--emerald);
-            color: var(--emerald); border-radius: var(--radius-pill); text-align: center;
-            text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem; transition: 0.3s;
-        }
+        .btn-pill { margin-top: 20px; padding: 10px 20px; border: 1px solid var(--emerald); color: var(--emerald); border-radius: var(--radius-pill); text-align: center; text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem; transition: 0.3s; }
         .event-item:hover .btn-pill { background: var(--emerald); color: var(--void); }
 
-        /* --- LINEUP --- */
-        .marquee-wrapper {
-            width: 100%; overflow: hidden; white-space: nowrap; margin-bottom: 50px;
-            border-top: 1px solid #333; border-bottom: 1px solid #333; padding: 20px 0;
-        }
-        .marquee-text {
-            font-family: var(--font-display); font-size: 4rem; color: #333;
-            animation: scroll 20s linear infinite; display: inline-block;
-        }
-        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .artist-card {
-            height: 400px; background: #111; border-radius: var(--radius-xl);
-            display: flex; align-items: center; justify-content: center;
-            border: 1px solid #333; font-family: var(--font-display); font-size: 2rem;
-            color: #555; position: relative; overflow: hidden;
-        }
-        .artist-card:hover { border-color: var(--magma); color: var(--paper); }
-
-        /* --- FOOTER --- */
-        .footer-section {
-            background: #080808; border-radius: 100px 100px 0 0;
-            padding: 10vh 0; text-align: center; align-items: center;
-        }
-        .footer-logo { font-family: var(--font-display); font-size: 15vw; color: #151515; line-height: 0.8; }
-        .contact-block {
-            margin-top: -5vw; position: relative; z-index: 2;
-            background: rgba(255,255,255,0.05); backdrop-filter: blur(10px);
-            padding: 40px 60px; border-radius: var(--radius-xl); border: 1px solid #333;
-            display: inline-block;
-        }
-        .socials { margin-top: 30px; display: flex; gap: 20px; justify-content: center; font-size: 1.2rem; }
-        .socials a { color: #888; text-decoration: none; transition: 0.3s; }
+        .footer-section { background: #080808; border-radius: 100px 100px 0 0; padding: 10vh 0; text-align: center; }
+        .footer-logo { font-family: var(--font-display); font-size: 15vw; color: #121212; line-height: 0.8; }
+        .contact-block { margin-top: -5vw; position: relative; z-index: 2; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); padding: 40px 60px; border-radius: var(--radius-xl); border: 1px solid #333; display: inline-block; }
+        .socials { margin-top: 30px; display: flex; gap: 20px; justify-content: center; }
+        .socials a { color: #888; text-decoration: none; transition: 0.3s; font-size: 1.2rem; }
         .socials a:hover { color: var(--neon); }
-
         #status-msg { position: fixed; bottom: 20px; right: 20px; color: #444; font-size: 10px; z-index: 9999; font-family: monospace; }
     </style>
 </head>
@@ -183,14 +74,10 @@
     <div id="noise-overlay"></div>
     <div id="cursor"></div>
     <div id="cursor-follow"></div>
-    <div id="status-msg">INITIALIZING...</div>
+    <div id="status-msg">INITIALIZING SYSTEMS...</div>
 
     <main id="smooth-wrapper">
-        <!-- HERO -->
         <section id="hero">
-            <!-- THE REAL LOGO IMAGE (Starts hidden) -->
-            <img src="logo.png" id="real-logo" alt="ISHYA Logo">
-
             <div class="hero-content">
                 <div class="hero-meta">MARCH 21-23</div>
                 <h1 class="hero-title">WHERE<br><span class="highlight">DREAMS</span><br>UNFOLD</h1>
@@ -198,14 +85,13 @@
             </div>
         </section>
 
-        <!-- GENESIS -->
         <section id="origin">
             <div class="editorial-layout">
                 <div class="col-left"></div>
                 <div class="col-right">
                     <h2 class="section-title">THE <br><em>GENESIS</em></h2>
                     <div class="text-block">
-                        <p>Like a single sheet of paper holding infinite potential, <strong>Ishya</strong> transforms with every fold.</p> 
+                        <p>Like a single sheet of paper holding infinite potential, <strong>Ishya</strong> transforms with every fold.</p>
                     </div>
                     <div class="stat-row">
                         <div class="stat"><span>15</span>Years</div>
@@ -215,43 +101,22 @@
             </div>
         </section>
 
-        <!-- EVENTS -->
         <section id="events">
-            <div style="text-align: center; margin-bottom: 20px;">
-                <h2 class="section-title">THE STAGES</h2>
-            </div>
+            <div style="text-align: center; margin-bottom: 20px;"><h2 class="section-title">THE STAGES</h2></div>
             <div class="event-showcase">
-                <div class="event-item hover-target">
-                    <div class="event-num">01</div>
-                    <div class="event-info"><h3>MUDHRA</h3><p>Classical Dance</p><div class="btn-pill">Explore</div></div>
-                </div>
-                <div class="event-item hover-target">
-                    <div class="event-num">02</div>
-                    <div class="event-info"><h3>RHAPSODY</h3><p>Battle of Bands</p><div class="btn-pill">Explore</div></div>
-                </div>
-                <div class="event-item hover-target">
-                    <div class="event-num">03</div>
-                    <div class="event-info"><h3>PANACHE</h3><p>Fashion Show</p><div class="btn-pill">Explore</div></div>
-                </div>
+                <div class="event-item hover-target"><div class="event-num">01</div><div class="event-info"><h3>MUDHRA</h3><p>Classical Dance</p><div class="btn-pill">Explore</div></div></div>
+                <div class="event-item hover-target"><div class="event-num">02</div><div class="event-info"><h3>RHAPSODY</h3><p>Battle of Bands</p><div class="btn-pill">Explore</div></div></div>
+                <div class="event-item hover-target"><div class="event-num">03</div><div class="event-info"><h3>PANACHE</h3><p>Fashion Show</p><div class="btn-pill">Explore</div></div></div>
             </div>
         </section>
 
-        <!-- LINEUP -->
-        <section id="lineup">
-            <div class="marquee-wrapper">
-                <div class="marquee-text">MASALA COFFEE • FUNKIE • DJ SNAKE • THE LOCAL TRAIN • AGAM • MASALA COFFEE • FUNKIE • DJ SNAKE •</div>
-            </div>
-            <div class="artist-card hover-target">HEADLINER REVEAL</div>
-        </section>
-
-        <!-- FOOTER -->
         <footer class="footer-section">
             <div class="footer-content">
-                <h2 class="footer-logo">ISHYA</h2>
+                <h2 class="footer-">ISHYA</h2>
                 <div class="contact-block">
                     <p style="font-weight: bold; margin-bottom: 10px; color: #fff;">IISER Thiruvananthapuram</p>
                     <p style="color: #888;">ishya@iisertvm.ac.in</p>
-                    <div class="socials"><a href="#">IG</a> <a href="#">YT</a> <a href="#">X</a></div>
+                    <div class="socials"><a href="#"><i class="fab fa-instagram"></i></a> <a href="#"><i class="fab fa-youtube"></i></a> <a href="#"><i class="fab fa-twitter"></i></a></div>
                 </div>
             </div>
         </footer>
@@ -260,8 +125,9 @@
     <!-- SHADER PHYSICS -->
     <script type="x-shader/x-vertex" id="vParticles">
         attribute vec3 targetPos; attribute float aRandom;
-        uniform float uTime; uniform float uMorph; uniform float uExplode;
+        uniform float uTime; uniform float uMorph; uniform float uExplode; uniform float uParticleOpacity;
         varying vec3 vColor;
+        varying float vOpacity;
         
         vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
         vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
@@ -290,7 +156,6 @@
 
         void main() {
             vec3 firePos = position;
-            // VORTEX PHYSICS
             float t = uTime * 1.5;
             float n = snoise(vec2(firePos.x * 0.5, t + firePos.y * 0.2));
             firePos.y += mod(t * (4.0 + aRandom), 15.0);
@@ -298,8 +163,8 @@
             firePos.x += n * 2.0 * (0.5 + firePos.y * 0.1); 
             firePos.z += snoise(vec2(firePos.z, t)) * 2.0;
 
-            vec3 logoPos = targetPos;
-            vec3 pos = mix(firePos, logoPos, smoothstep(0., 1., uMorph));
+            vec3 Pos = targetPos;
+            vec3 pos = mix(firePos, Pos, smoothstep(0., 1., uMorph));
             
             if(uExplode > 0.0) {
                 vec3 dir = normalize(pos);
@@ -311,24 +176,23 @@
             gl_PointSize = (3.0 + aRandom * 4.0) * (20.0 / -mvPosition.z);
 
             vec3 cFire = mix(vec3(1.0, 0.05, 0.0), vec3(1.0, 0.5, 0.0), aRandom);
-            vec3 cLogo = mix(vec3(0.0, 1.0, 0.5), vec3(0.8, 1.0, 0.8), aRandom);
-            vColor = mix(cFire, cLogo, uMorph);
+            vec3 c = mix(vec3(0.0, 1.0, 0.5), vec3(0.8, 1.0, 0.8), aRandom);
+            vColor = mix(cFire, c, uMorph);
+            vOpacity = uParticleOpacity;
             if(uExplode > 0.0) vColor *= (1.0 - uExplode);
         }
     </script>
     <script type="x-shader/x-fragment" id="fParticles">
         varying vec3 vColor;
+        varying float vOpacity;
         void main() {
             if(length(gl_PointCoord - vec2(0.5)) > 0.5) discard;
-            float alpha = 1.0 - smoothstep(0.3, 0.5, length(gl_PointCoord - vec2(0.5)));
+            float alpha = (1.0 - smoothstep(0.3, 0.5, length(gl_PointCoord - vec2(0.5)))) * vOpacity;
             gl_FragColor = vec4(vColor, alpha);
         }
     </script>
 
     <script type="module">
-        // --- CONFIGURATION ---
-        const LOGO_PATH = 'LogoIshya.png'; 
-
         import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
         import { EffectComposer } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/postprocessing/EffectComposer.js';
         import { RenderPass } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/postprocessing/RenderPass.js';
@@ -339,12 +203,12 @@
 
         gsap.registerPlugin(ScrollTrigger);
 
+        const LOGO_PATH = 'LogoIshya.png'; 
         const canvas = document.getElementById('webgl');
         const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.shadowMap.enabled = true;
-        renderer.toneMapping = THREE.ReinhardToneMapping;
 
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x050505, 0.02);
@@ -352,6 +216,7 @@
         camera.position.set(0, 0, 16);
 
         // --- ASSETS ---
+        const textureLoader = new THREE.TextureLoader();
         const createPaperTexture = () => {
             const s = 1024; const c = document.createElement('canvas'); c.width = s; c.height = s;
             const ctx = c.getContext('2d'); ctx.fillStyle = '#e5e5e5'; ctx.fillRect(0, 0, s, s);
@@ -364,15 +229,15 @@
         };
         const paperTex = createPaperTexture();
 
-        // --- INIT ---
-        function initSystem(pointsData) {
+        // --- CORE SYSTEM INIT ---
+        function initSystem(logoData, logoTexture) {
             document.getElementById('status-msg').style.display = 'none';
 
             // 1. PARTICLES
             const pGeo = new THREE.BufferGeometry();
-            const count = pointsData.length / 3;
+            const count = logoData.length / 3;
             const posArr = new Float32Array(count * 3);
-            const targetArr = new Float32Array(pointsData);
+            const targetArr = new Float32Array(logoData);
             const randArr = new Float32Array(count);
             for (let i = 0; i < count; i++) {
                 posArr[i * 3] = (Math.random() - 0.5) * 3;
@@ -386,13 +251,26 @@
             const pMat = new THREE.ShaderMaterial({
                 vertexShader: document.getElementById('vParticles').textContent,
                 fragmentShader: document.getElementById('fParticles').textContent,
-                uniforms: { uTime: { value: 0 }, uMorph: { value: 0 }, uExplode: { value: 0 } },
+                uniforms: { uTime: { value: 0 }, uMorph: { value: 0 }, uExplode: { value: 0 }, uParticleOpacity: { value: 1.0 } },
                 transparent: true, blending: THREE.AdditiveBlending, depthWrite: false
             });
             const particles = new THREE.Points(pGeo, pMat);
             scene.add(particles);
 
-            // 2. BIRD
+            // 2. SOLID LOGO (The "Advanced" part)
+            const solidMat = new THREE.MeshStandardMaterial({ 
+                map: logoTexture, 
+                transparent: true, 
+                opacity: 0, 
+                roughness: 0.5,
+                metalness: 0.2
+            });
+            const solidGeo = new THREE.PlaneGeometry(12, 12); // Matches particle scale
+            const solidLogo = new THREE.Mesh(solidGeo, solidMat);
+            solidLogo.position.set(0, 0, 0.1); // Slightly in front of particles
+            scene.add(solidLogo);
+
+            // 3. BIRD (Matte Paper)
             const birdGroup = new THREE.Group(); birdGroup.visible = false; scene.add(birdGroup);
             const paperMat = new THREE.MeshStandardMaterial({
                 color: 0xe5e5e5, map: paperTex, bumpMap: paperTex, bumpScale: 0.04,
@@ -407,33 +285,35 @@
             const wR=new THREE.Mesh(wGeo, paperMat); wR.position.set(0.9,0,0); wR.castShadow=true;
             birdGroup.add(wL); birdGroup.add(wR); birdGroup.rotation.x=0.2;
 
-            // 3. LIGHTS
+            // 4. LIGHTS
             const amb = new THREE.AmbientLight(0xffffff, 0.6); scene.add(amb);
             const spot = new THREE.SpotLight(0xffffff, 5); spot.position.set(5, 10, 5); spot.castShadow = true; scene.add(spot);
             const accentLight = new THREE.PointLight(0x00ff66, 3, 20); accentLight.position.set(4, 0, 4); scene.add(accentLight);
 
-            // 4. ANIMATION
+            // 5. ANIMATIONS & SCROLL
             const composer = new EffectComposer(renderer);
             composer.addPass(new RenderPass(scene, camera));
             const bloom = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85); 
             bloom.strength = 0.4; bloom.radius = 0.2; bloom.threshold = 0.85; 
             composer.addPass(bloom);
 
-            // INTRO TIMELINE (Morph -> Fade In Real Logo)
+            // Intro: Fire -> Logo Snap -> SOLIDIFY
             const introTl = gsap.timeline();
-            introTl.to(pMat.uniforms.uMorph, { value: 1, duration: 3.0, ease: "power2.inOut", delay: 0.5 })
-                   .to('main', { opacity: 1, duration: 1 })
-                   .to('#real-logo', { opacity: 1, duration: 1.5 }, "-=0.5"); // FADE IN REAL LOGO
+            introTl.to(pMat.uniforms.uMorph, { value: 1, duration: 3.0, ease: "power3.inOut", delay: 0.5 })
+                   .to(solidMat, { opacity: 1, duration: 1.5, ease: "power2.in" }, "-=1.0") // Fade in high-res logo
+                   .to(pMat.uniforms.uParticleOpacity, { value: 0.2, duration: 1.5 }, "<") // Dim particles
+                   .to('main', { opacity: 1, duration: 1 }, "-=0.5");
 
-            // SCROLL TIMELINE (Fade Out Real Logo -> Explode -> Bird)
+            // Scroll Triggered Transformation
             const transformTl = gsap.timeline({ scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: 1 }});
             transformTl
-                .to('#real-logo', { opacity: 0, duration: 0.1 }) // HIDE REAL LOGO INSTANTLY ON SCROLL
+                .to(solidMat, { opacity: 0, duration: 0.1 }) // Instantly hide solid logo on scroll
+                .to(pMat.uniforms.uParticleOpacity, { value: 1.0, duration: 0.1 }, "<") // Bring particles back to full
                 .to(pMat.uniforms.uExplode, { value: 1, duration: 1 })
                 .call(() => { birdGroup.visible = true; }, null, "<0.2")
                 .fromTo(birdGroup.scale, {x:0, y:0, z:0}, {x:1, y:1, z:1, duration: 0.8}, "<");
 
-            // FLIGHT
+            // Flight
             const flightTl = gsap.timeline({ scrollTrigger: { trigger: "body", start: "top top", end: "bottom bottom", scrub: 1.5 }});
             flightTl.to(birdGroup.position, { x: -3.5, y: -1, z: 2 }).to(birdGroup.rotation, { y: 0.6, x: 0.1 }, "<").to(accentLight.color, { r:0, g:1, b:0.4 }, "<");
             flightTl.to(birdGroup.position, { x: 3.5, y: -2, z: 1 }).to(birdGroup.rotation, { y: -0.6, x: 0.3 }, "<").to(accentLight.color, { r:0.8, g:1, b:0 }, "<");
@@ -458,27 +338,7 @@
             animate();
         }
 
-        // --- LOADER (FALLBACK + IMAGE) ---
-        function generateTextLogo() {
-            const c = document.createElement('canvas'); const ctx = c.getContext('2d');
-            const w=400; const h=400; c.width=w; c.height=h;
-            ctx.fillStyle='#000'; ctx.fillRect(0,0,w,h);
-            ctx.fillStyle='#fff'; ctx.font='900 80px Syncopate'; ctx.textAlign='center'; ctx.fillText('ISHYA',w/2,h/2);
-            ctx.beginPath(); ctx.arc(w/2, h/2, 140, 0, Math.PI*2); ctx.strokeStyle='#fff'; ctx.lineWidth=10; ctx.stroke();
-            return processCanvas(c, w, h);
-        }
-
-        function processCanvas(canvas, w, h) {
-            const data = canvas.getContext('2d').getImageData(0,0,w,h).data;
-            const points = [];
-            for (let y = 0; y < h; y += 3) {
-                for (let x = 0; x < w; x += 3) {
-                    if (data[(y * w + x) * 4] > 128) points.push((x / w - 0.5) * 12, -(y / h - 0.5) * 12, 0);
-                }
-            }
-            return points;
-        }
-
+        // --- LOADERS ---
         const img = new Image();
         img.crossOrigin = "Anonymous";
         img.src = LOGO_PATH;
@@ -488,14 +348,20 @@
             const c = document.createElement('canvas'); c.width = w; c.height = h;
             const ctx = c.getContext('2d');
             ctx.drawImage(img, 0, 0, w, h);
-            initSystem(processCanvas(c, w, h));
+            const pixels = ctx.getImageData(0,0,w,h).data;
+            const points = [];
+            for (let y = 0; y < h; y += 3) {
+                for (let x = 0; x < w; x += 3) {
+                    if (pixels[(y * w + x) * 4 + 3] > 128) points.push((x / w - 0.5) * 12, -(y / h - 0.5) * 12, 0);
+                }
+            }
+            // Load as Three.js texture for solidifying
+            textureLoader.load(LOGO_PATH, (tex) => {
+                initSystem(points, tex);
+            });
         };
 
-        img.onerror = () => {
-            console.warn("Logo not found. Using fallback.");
-            document.getElementById('status-msg').innerText = "USING FALLBACK LOGO";
-            initSystem(generateTextLogo());
-        };
+        img.onerror = () => { document.getElementById('status-msg').innerText = "LOGO ERROR: PLEASE RUN LOCAL SERVER"; };
 
         const lenis = new Lenis(); function raf(time) { lenis.raf(time); requestAnimationFrame(raf); } requestAnimationFrame(raf);
         window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
