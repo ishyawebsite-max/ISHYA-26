@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Booking System</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- CSS Connection -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Google Identity Services (Login) -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <!-- Custom Background Style -->
+    <style>
+        body {
+            /* Fallback color if image fails */
+            background-color: #000F52; 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Application Container -->
+    <div id="app">
+
+        <header>
+            <h1>Room Booking System</h1>
+            <div id="auth-container">
+                <!-- Login Button injected here by JS -->
+            </div>
+        </header>
+
+        <main>
+            <!-- Step 1: Room Selection -->
+            <section id="room-selection" class="step active">
+                <h2>Our Services</h2>
+                <div id="room-list" class="card-container">
+                    <!-- Rooms injected here by JS -->
+                </div>
+            </section>
+
+            <!-- Step 2: Date and Time Selection -->
+            <section id="schedule-selection" class="step">
+                <button class="back-btn" data-target="room-selection">&larr; Back to Rooms</button>
+                <h2 id="schedule-title">Schedule your service</h2>
+                
+                <div class="schedule-container">
+                    <!-- Calendar Side -->
+                    <div id="calendar-container">
+                        <h3>Select a Date</h3>
+                        <div class="calendar-header">
+                            <button id="prev-month">&lt;</button>
+                            <span id="month-year"></span>
+                            <button id="next-month">&gt;</button>
+                        </div>
+                        <div class="calendar-grid"></div>
+                    </div>
+
+                    <!-- Time Slots Side -->
+                    <div id="timeslot-container">
+                        <h3>Available Time Slots for <span id="selected-date-display"></span></h3>
+                        
+                        <div id="timeslot-grid">
+                            <!-- Slots injected here by JS -->
+                        </div>
+                        
+                        <p class="info-text">You can select multiple slots.</p>
+                        
+                        <!-- LEGEND -->
+                        <div class="timeslot-legend">
+                            <div class="legend-item">
+                                <div class="legend-color-box" style="border: 1px solid var(--accent-color);"></div>
+                                <span>Available</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color-box" style="border: 1px dashed var(--waitlist-color);"></div>
+                                <span>Waitlist</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color-box" style="background-color: var(--booked-color);"></div>
+                                <span>Booked</span>
+                            </div>
+                        </div>
+
+                        <button id="proceed-to-booking-btn" class="cta-btn" disabled>Book Selected Slots</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <!-- Loading Spinner -->
+        <div id="loader" class="hidden">
+            <div class="spinner"></div>
+        </div>
+        
+        <!-- Booking Form Modal -->
+        <div id="booking-modal" class="modal-wrapper hidden">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h3>Booking Form</h3>
+                <div id="booking-summary"></div>
+                <form id="booking-form">
+                    <div class="form-group">
+                        <label for="user-name">Team Head Name</label>
+                        <input type="text" id="user-name" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="user-email">Email</label>
+                        <input type="text" id="user-email" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="participants">Number of Participants *</label>
+                        <input type="number" id="participants" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="notes">Paragraph / Notes</label>
+                        <textarea id="notes" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="cta-btn">Confirm Booking</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- My Bookings Modal -->
+        <div id="my-bookings-modal" class="modal-wrapper hidden">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h3>My Bookings</h3>
+                <div id="user-bookings-list">
+                    <!-- User bookings injected here -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MAIN LOGIC SCRIPT -->
+    <script src="scriptv5.js"></script>
+
+</body>
+</html>
