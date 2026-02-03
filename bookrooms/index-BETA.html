@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Booking System</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- this is the script for header -->
+     <style>
+        body{
+            background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('https://tse3.mm.bing.net/th/id/OIP.xR2aF0RsXzz3GQKDT6uKCQHaEN?rs=1&pid=ImgDetMain&o=7&rm=3');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-color: black;
+        }
+     </style>
+    
+
+</head>
+<body>
+                 
+
+    <div id="app">
+
+        <header>
+            <h1>Room Booking System</h1>
+            <div id="auth-container"></div>
+        </header>
+       
+
+        <main>
+            <!-- Step 1: Room Selection -->
+            <section id="room-selection" class="step active">
+                <h2>Our Services</h2>
+                <div id="room-list" class="card-container">
+                    <!-- Rooms will be loaded here by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Step 2: Date and Time Selection -->
+            <section id="schedule-selection" class="step">
+                <button class="back-btn" data-target="room-selection">&larr; Back to Rooms</button>
+                <h2 id="schedule-title">Schedule your service</h2>
+                <div class="schedule-container">
+                    <div id="calendar-container">
+                        <h3>Select a Date</h3>
+                        <div class="calendar-header">
+                            <button id="prev-month">&lt;</button>
+                            <span id="month-year"></span>
+                            <button id="next-month">&gt;</button>
+                        </div>
+                        <div class="calendar-grid"></div>
+                    </div>
+                    <div id="timeslot-container">
+                        <h3>Available Time Slots for <span id="selected-date-display"></span></h3>
+                        <div id="timeslot-grid">
+                            <!-- Time slots will be loaded here -->
+                        </div>
+                        <p class="info-text">You can select multiple slots.</p>
+                        
+                        <!-- --- NEW: Time Slot Legend --- -->
+                        <div class="timeslot-legend">
+                            <div class="legend-item">
+                                <div class="legend-color-box" style="border: 1px solid var(--accent-color);"></div>
+                                <span>Available</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color-box" style="border: 1px dashed var(--waitlist-color);"></div>
+                                <span>Waitlist</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color-box" style="background-color: var(--booked-color);"></div>
+                                <span>Booked</span>
+                            </div>
+                            <br>
+                        </div>
+                        <!-- --- END: Time Slot Legend --- -->
+                        
+                        <button id="proceed-to-booking-btn" class="cta-btn" disabled>Book Selected Slots</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <!-- Loading Spinner -->
+        <div id="loader" class="hidden">
+            <div class="spinner"></div>
+        </div>
+        
+        <!-- Modals -->
+        <div id="booking-modal" class="modal-wrapper hidden">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h3>Booking Form</h3>
+                <div id="booking-summary"></div>
+                <form id="booking-form">
+                    <div class="form-group">
+                        <label for="user-name">Team Head Name</label>
+                        <input type="text" id="user-name" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="user-email">Email</label>
+                        <input type="text" id="user-email" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="participants">Number of Participants *</label>
+                        <input type="number" id="participants" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="notes">Paragraph / Notes</label>
+                        <textarea id="notes" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="cta-btn">Confirm Booking</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="my-bookings-modal" class="modal-wrapper hidden">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h3>My Bookings</h3>
+                <div id="user-bookings-list">
+                    <!-- User's bookings will be listed here -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="scriptv5.js"></script>
+    <!-- ADD THIS AT THE BOTTOM OF YOUR PAGES BEFORE </body> -->
+<script>
+    fetch('/ISHYA-26/header.html')
+        .then(response => response.text())
+        .then(data => {
+            // Create a temporary container
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = data;
+
+            // Extract the script tag from the loaded HTML
+            const script = tempDiv.querySelector('script');
+            
+            // Insert the HTML at the very top of the body (First Child)
+            document.body.prepend(tempDiv);
+            
+            // Execute the extracted script manually
+            if (script) {
+                const newScript = document.createElement('script');
+                newScript.textContent = script.textContent;
+                document.body.appendChild(newScript);
+            }
+        })
+        .catch(err => console.error('Error loading header:', err));
+</script>
+    <!-- 3. The loader script is added here, at the end -->
+</body>
+</html>
