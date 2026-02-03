@@ -1,4 +1,4 @@
-/* --- COMPLETE & FINAL style.css (WITH UI UPGRADES & ANIMATIONS) --- */
+/* --- COMPLETE & FINAL style.css (FIXED TEXT VISIBILITY) --- */
 :root {
     --bg-color: #0d1117;
     --primary-color: #161b22;
@@ -12,7 +12,7 @@
     --font-family: 'Poppins', sans-serif;
 }
 
-/* --- NEW: Keyframe Animations --- */
+/* --- Keyframe Animations --- */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -21,76 +21,128 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: var(--font-family); background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
 #app { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+
 header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; flex-wrap: wrap; gap: 1rem; }
 h1, h2, h3 { color: white; font-weight: 600; }
 h2 { text-align: center; margin-bottom: 2rem; font-size: 2rem; }
+
 .step { display: none; }
-.step.active { 
-    display: block; 
-    animation: fadeIn 0.5s ease-in-out; /* --- UPDATED: Fade-in effect --- */
-}
+.step.active { display: block; animation: fadeIn 0.5s ease-in-out; }
+
 .card-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
 .room-card { background-color: var(--primary-color); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; }
-.room-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.25); } /* --- UPDATED: Enhanced hover --- */
+.room-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
 .room-card img { width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid var(--border-color); }
 .room-card-content { padding: 1.5rem; }
 .room-card-content h3 { margin-bottom: 0.5rem; }
 .room-card-content p { color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem; }
+
 .cta-btn, .back-btn { display: inline-block; background-color: var(--accent-color); color: var(--bg-color); border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 600; text-decoration: none; transition: background-color 0.3s ease, transform 0.2s ease; }
-.cta-btn:hover, .back-btn:hover { background-color: var(--accent-hover); transform: translateY(-2px); } /* --- UPDATED: Button hover effect --- */
+.cta-btn:hover, .back-btn:hover { background-color: var(--accent-hover); transform: translateY(-2px); }
 .cta-btn:disabled { background-color: #555; cursor: not-allowed; transform: none; }
 .back-btn { background-color: transparent; border: 1px solid var(--border-color); color: var(--text-color); margin-bottom: 1.5rem; }
+
 .schedule-container { display: flex; gap: 2rem; flex-wrap: wrap; }
 #calendar-container, #timeslot-container { flex: 1; min-width: 300px; background: var(--primary-color); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border-color); }
+
 .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
 .calendar-header button { background: none; border: none; color: var(--accent-color); font-size: 1.5rem; cursor: pointer; transition: color 0.2s; }
 .calendar-header button:hover { color: var(--accent-hover); }
 #month-year { font-weight: 600; font-size: 1.2rem; }
+
 .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
 .calendar-grid div { padding: 10px 5px; border-radius: 4px; }
 .calendar-day-name { font-weight: 600; color: var(--text-secondary); font-size: 0.8rem;}
-.calendar-day { cursor: pointer; transition: background-color 0.2s, color 0.2s; } /* --- UPDATED: Smoother transition --- */
+.calendar-day { cursor: pointer; transition: background-color 0.2s, color 0.2s; }
 .calendar-day:hover, .calendar-day.today { background-color: var(--border-color); }
 .calendar-day.selected { background-color: var(--accent-color); color: var(--bg-color); font-weight: 600; }
 .calendar-day.disabled { color: var(--text-secondary); cursor: not-allowed; opacity: 0.5; }
+
 #timeslot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 10px; margin-top: 1rem; }
 .timeslot-btn { padding: 10px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); border-radius: 5px; cursor: pointer; transition: all 0.2s; font-weight: 500;}
 
-/* ALL SLOT STYLES */
-.timeslot-btn.available { border-style: solid; border-color: var(--accent-color); color: var(--accent-color); } /* --- UPDATED: Available is now gold --- */
+/* SLOT STYLES */
+.timeslot-btn.available { border-style: solid; border-color: var(--accent-color); color: var(--accent-color); }
 .timeslot-btn.available:hover { background: rgba(240, 185, 11, 0.1); }
 .timeslot-btn.selected { background-color: var(--accent-color); border-color: var(--accent-color); color: var(--bg-color); font-weight: 600; transform: scale(1.05); }
 .timeslot-btn.waitlist { border: 1px dashed var(--waitlist-color); color: var(--waitlist-color); }
 .timeslot-btn.waitlist:hover { background: rgba(56, 139, 253, 0.15); }
 .timeslot-btn.booked { background-color: var(--booked-color); border-color: var(--booked-color); color: rgba(255, 255, 255, 0.4); text-decoration: line-through; cursor: not-allowed; }
 
-/* --- NEW: Legend Styles --- */
+/* Legend Styles */
 .timeslot-legend { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border-color); }
 .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
 .legend-color-box { width: 15px; height: 15px; border-radius: 3px; }
 
 .info-text { font-size: 0.8rem; color: var(--text-secondary); text-align: center; margin: 1rem 0; }
+
 .modal-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 1rem; transition: opacity 0.3s ease; }
-.modal-wrapper.hidden { opacity: 0; pointer-events: none; } /* --- UPDATED: Smooth modal transition --- */
+.modal-wrapper.hidden { opacity: 0; pointer-events: none; }
 .modal-content { background: var(--primary-color); padding: 2rem; border-radius: 8px; width: 100%; max-width: 500px; position: relative; border: 1px solid var(--border-color); max-height: 90vh; overflow-y: auto; transition: transform 0.3s ease; transform: scale(0.95); }
-.modal-wrapper:not(.hidden) .modal-content { transform: scale(1); } /* --- UPDATED: Smooth modal transition --- */
+.modal-wrapper:not(.hidden) .modal-content { transform: scale(1); }
 .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; }
+
 #booking-form .form-group { margin-bottom: 1rem; }
 #booking-form label { display: block; margin-bottom: 5px; color: var(--text-secondary); }
 #booking-form input, #booking-form textarea { width: 100%; padding: 10px; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 5px; color: var(--text-color); }
 #booking-form input:disabled { background: #222; }
 #booking-summary { background: var(--bg-color); padding: 1rem; border-radius: 5px; margin-bottom: 1.5rem; }
-#user-bookings-list .booking-item { background: var(--bg-color); padding: 1rem; border-radius: 5px; margin-bottom: 1rem; border-left: 4px solid var(--accent-color); }
-#user-bookings-list .booking-item[data-status="Waitlisted"] { border-color: var(--waitlist-color); }
-#user-bookings-list .booking-item[data-status="Canceled"] { border-color: #555; opacity: 0.6; }
+
+/* --- FIXED: USER BOOKINGS VISIBILITY --- */
+#user-bookings-list .booking-item { 
+    background: var(--primary-color); /* Changed from bg-color for better contrast */
+    padding: 1.2rem; 
+    border-radius: 8px; 
+    margin-bottom: 1rem; 
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--accent-color); 
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Forces the Heading (Room Name) to be white */
+#user-bookings-list .booking-item h3 {
+    color: #ffffff !important;
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+}
+
+/* Forces the Date/Time Text to be Light Gray */
+#user-bookings-list .booking-item p {
+    color: #e6e6e6 !important; /* High contrast light gray */
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+}
+
+/* Status-specific border colors */
+#user-bookings-list .booking-item[data-status="Waitlisted"] { border-left-color: var(--waitlist-color); }
+#user-bookings-list .booking-item[data-status="Canceled"] { border-left-color: #555; opacity: 0.7; }
+
+/* Cancel Button Style inside the card */
+#user-bookings-list .booking-item button {
+    background-color: transparent;
+    border: 1px solid #ff4444;
+    color: #ff4444;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    transition: all 0.2s;
+}
+#user-bookings-list .booking-item button:hover {
+    background-color: #ff4444;
+    color: white;
+}
+/* ------------------------------------- */
+
 #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 9999; }
 .spinner { border: 5px solid var(--border-color); border-top: 5px solid var(--accent-color); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 .hidden { display: none !important; }
+
 #auth-container button { background: var(--primary-color); border: 1px solid var(--border-color); color: var(--text-color); padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-left: 10px; }
 #auth-container #user-profile { display: flex; align-items: center; gap: 10px; }
 #auth-container img { width: 32px; height: 32px; border-radius: 50%; }
 
-/* --- START: MOBILE OPTIMIZATION --- */
+/* MOBILE OPTIMIZATION */
 @media (max-width: 768px) { #app { padding: 1rem; } header { flex-direction: column; align-items: flex-start; } h1 { font-size: 1.8rem; } .schedule-container { flex-direction: column; } #timeslot-grid { grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); } .modal-content { padding: 1.5rem; } }
-/* --- END: MOBILE OPTIMIZATION --- */
