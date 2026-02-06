@@ -7,13 +7,13 @@
 
     <!-- FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Foldit:wght@600;800;900&family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;500;700&family=Cormorant+Garamond:ital,wght@1,300;1,600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Foldit:wght@600;800;900&family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
     :root {
         /* --- COLORS --- */
-        --bg-dark: #051408;       /* Rich Dark Green Base */
+        --bg-dark: #051408;       
         --accent-gold: #D6C26A;   
         --accent-olive: #6B7540;  
         --accent-green: #4D8F48;  
@@ -23,7 +23,6 @@
         --font-display: 'Syncopate', sans-serif;
         --font-fold: 'Foldit', display;
         --font-body: 'Space Grotesk', sans-serif;
-        --font-serif: 'Cormorant Garamond', serif;
         --font-tech: 'Share Tech Mono', monospace;
     }
 
@@ -39,57 +38,74 @@
     }
 
     /* --- LAYERS --- */
-    
-    /* 1. The Swirling Green Background */
-    #animated-bg {
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
-        z-index: -10; 
-        background-color: var(--bg-dark); 
-        pointer-events: none;
-    }
-    
-    /* 2. WebGL (Particles & Logo) */
-    #webgl { 
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-        z-index: -1; 
-        pointer-events: none; 
-    }
-    
-    /* 3. Gradient Overlay (for text readability) */
-    #bg-overlay {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: radial-gradient(circle at center, transparent 0%, rgba(5, 20, 8, 0.8) 100%);
-        z-index: -5; pointer-events: none;
-    }
+    #animated-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; background-color: var(--bg-dark); pointer-events: none; }
+    #webgl { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+    #bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, transparent 0%, rgba(5, 20, 8, 0.85) 100%); z-index: -5; pointer-events: none; }
 
-    /* 4. Content */
     main { position: relative; z-index: 10; will-change: opacity; }
     
-    /* --- UTILITIES --- */
+    /* --- UTILITIES & GLASSMORPHISM --- */
     section { min-height: 100vh; padding: 0 5vw; position: relative; display: flex; align-items: center; justify-content: center; }
-    .section-layout { width: 100%; max-width: 1400px; display: flex; align-items: center; justify-content: space-between; }
-    .perch-title { font-family: var(--font-fold); font-size: 3rem; color: var(--accent-gold); opacity: 0.9; text-shadow: 0 0 20px rgba(0,0,0,0.8); }
-    .perch-subtitle { font-family: var(--font-tech); font-size: 1rem; color: var(--accent-green); letter-spacing: 2px; background: rgba(6,6,6,0.6); padding: 5px 10px; display: inline-block; border: 1px solid var(--accent-olive); }
-    .cta-btn { display: inline-block; margin-top: 30px; padding: 15px 40px; background: rgba(24, 28, 16, 0.6); border: 1px solid var(--accent-green); color: var(--accent-gold); font-family: var(--font-display); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: all 0.3s ease; text-decoration: none; position: relative; overflow: hidden; }
-    .cta-btn:hover { color: #fff; border-color: var(--accent-gold); box-shadow: 0 0 20px rgba(77, 143, 72, 0.4); }
+    
+    .glass-panel {
+        background: rgba(24, 28, 16, 0.4) !important;
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(214, 194, 106, 0.2);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(77, 143, 72, 0.1);
+    }
+
+    .section-layout { width: 100%; max-width: 1600px; display: flex; align-items: center; justify-content: space-between; }
+    
+    .perch-title { 
+        font-family: var(--font-fold); font-size: clamp(3rem, 6vw, 5rem); 
+        color: var(--accent-gold); opacity: 0.9; text-shadow: 0 0 20px rgba(0,0,0,0.8); 
+        line-height: 1; margin-bottom: 10px;
+    }
+    .perch-subtitle { 
+        font-family: var(--font-tech); font-size: 1rem; color: var(--accent-green); 
+        letter-spacing: 2px; padding: 5px 10px; display: inline-block; 
+        background: rgba(0,0,0,0.5); border: 1px solid var(--accent-olive); 
+    }
+    
+    .cta-btn { 
+        display: inline-block; margin-top: 30px; padding: 15px 40px; 
+        background: rgba(24, 28, 16, 0.6); border: 1px solid var(--accent-green); 
+        color: var(--accent-gold); font-family: var(--font-display); 
+        font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; 
+        cursor: pointer; transition: all 0.3s ease; text-decoration: none; position: relative; overflow: hidden; 
+    }
+    .cta-btn:hover { color: #fff; border-color: var(--accent-gold); box-shadow: 0 0 20px rgba(77, 143, 72, 0.4); background: rgba(77, 143, 72, 0.2); }
 
     /* --- HERO --- */
-    #hero { flex-direction: column; text-align: center; padding-top: 65vh; padding-bottom: 20vh; }
+    #hero { flex-direction: column; text-align: center; padding-top: 60vh; padding-bottom: 20vh; }
     .hero-content { pointer-events: none; width: 100%; position: relative; z-index: 20; }
-    .hero-title { perspective: 1000px; font-family: var(--font-fold); font-size: clamp(2.5rem, 8vw, 7rem); line-height: 0.9; text-transform: uppercase; color: var(--text-light); margin-bottom: 1vh; font-weight: 900; }
-    .hero-title .letter { display: inline-block; white-space: pre; transform-style: preserve-3d; opacity: 0; color: #fff; text-shadow: 0 0 30px rgba(77, 143, 72, 0.6); }
-    .hero-date { perspective: 1000px; font-family: var(--font-display); font-weight: 700; font-size: clamp(1rem, 3vw, 1.5rem); color: var(--accent-gold); letter-spacing: 3px; text-transform: uppercase; margin-top: 2vh; }
-    .hero-date .date-char { display: inline-block; transform-style: preserve-3d; opacity: 0; }
-    .hero-countdown { display: flex; justify-content: center; gap: 15px; margin-top: 30px; font-family: var(--font-tech); color: var(--accent-green); opacity: 0; }
-    .time-block { display: flex; flex-direction: column; align-items: center; padding: 10px 10px; background: rgba(24, 28, 16, 0.8); border: 1px solid var(--accent-olive); border-radius: 5px; min-width: 70px; backdrop-filter: blur(5px); }
-    .time-block span { font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1; text-shadow: 0 0 10px rgba(77, 143, 72, 0.6); }
-
-    /* --- SECTIONS --- */
-    .chat-question { align-self: flex-start; background: rgba(24, 28, 16, 0.85); border: 1px solid var(--accent-green); color: var(--accent-gold); padding: 15px 30px; font-family: var(--font-display); font-size: 1rem; border-radius: 20px 20px 20px 0; transform: translateY(20px); backdrop-filter: blur(10px); }
-    .origami-sheet { background: #e6e6e6; color: #111; padding: 40px; border-radius: 2px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); border: 1px solid #999; }
-    .sheet-content h3 { font-family: var(--font-display); font-size: 1.8rem; margin-bottom: 20px; color: var(--accent-olive); border-bottom: 2px solid var(--accent-gold); }
     
+    .hero-title { 
+        perspective: 1000px; font-family: var(--font-fold); 
+        font-size: clamp(3rem, 10vw, 8rem); line-height: 0.9; text-transform: uppercase; 
+        background: linear-gradient(to bottom, #ffffff 10%, #D6C26A 60%, #8a7c40 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 0 25px rgba(214, 194, 106, 0.4));
+        margin-bottom: 1vh; font-weight: 900; 
+    }
+    .hero-title .letter { display: inline-block; white-space: pre; transform-style: preserve-3d; opacity: 0; }
+    
+    .hero-date { 
+        perspective: 1000px; font-family: var(--font-display); font-weight: 700; 
+        font-size: clamp(1rem, 3vw, 1.5rem); color: var(--accent-gold); 
+        letter-spacing: 3px; text-transform: uppercase; margin-top: 2vh; 
+    }
+    .hero-date .date-char { display: inline-block; transform-style: preserve-3d; opacity: 0; }
+    
+    .hero-countdown { display: flex; justify-content: center; gap: 15px; margin-top: 40px; font-family: var(--font-tech); color: var(--accent-green); opacity: 0; }
+    .time-block { 
+        display: flex; flex-direction: column; align-items: center; padding: 15px 20px; 
+        border-radius: 8px; min-width: 80px; 
+    }
+    .time-block span { font-size: clamp(2rem, 5vw, 3rem); line-height: 1; text-shadow: 0 0 10px rgba(77, 143, 72, 0.6); }
+
+    /* --- SECTIONS LAYOUT --- */
     .layout-content-right { flex-direction: row; }
     .layout-content-right .perch-zone { width: 40%; text-align: left; padding-right: 50px; }
     .layout-content-right .content-zone { width: 60%; }
@@ -97,42 +113,92 @@
     .layout-content-left .perch-zone { width: 40%; text-align: right; padding-left: 50px; }
     .layout-content-left .content-zone { width: 60%; }
 
-    /* MEMORIES */
-    .image-marquee-container { width: 100%; padding: 20px 0; overflow: hidden; background: rgba(24, 28, 16, 0.7); backdrop-filter: blur(5px); border-top: 1px solid var(--accent-green); border-bottom: 1px solid var(--accent-green); transform: rotate(-2deg) scale(1.05); }
-    .image-marquee-track { display: flex; gap: 15px; width: max-content; animation: scrollImages 40s linear infinite; }
-    .image-marquee-item { width: 300px; height: 200px; border-radius: 4px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); filter: grayscale(100%); transition: 0.3s; }
-    .image-marquee-item:hover { filter: grayscale(0%); transform: scale(1.02); border-color: var(--accent-gold); }
-    .image-marquee-item img { width: 100%; height: 100%; object-fit: cover; }
-    @keyframes scrollImages { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-300px * 5 - 75px)); } }
+    /* SECTION 1: ABOUT */
+    .chat-question { 
+        align-self: flex-start; 
+        color: var(--accent-gold); padding: 20px 40px; font-family: var(--font-display); 
+        font-size: 1.2rem; border-radius: 30px 30px 30px 0; 
+        transform: translateY(20px); margin-bottom: 20px; 
+    }
+    .origami-sheet { 
+        background: #f0f0f0; color: #111; padding: 50px; border-radius: 4px; 
+        box-shadow: 0 20px 60px rgba(0,0,0,0.8); border: 1px solid #999; 
+    }
+    .sheet-content h3 { font-family: var(--font-display); font-size: 2rem; margin-bottom: 20px; color: var(--accent-olive); border-bottom: 2px solid var(--accent-gold); }
+    .sheet-content p { font-size: 1.2rem; line-height: 1.6; }
 
-    /* ROCKETS */
-    .rocket-formation-wrapper { display: flex; gap: 30px; justify-content: center; }
-    .rocket-card { position: relative; width: 220px; height: 320px; transform-style: preserve-3d; opacity: 0; }
+    /* SECTION 2: MEMORIES (UPDATED FOR 15+ IMAGES LOOP) */
+    .image-marquee-container { width: 100%; padding: 30px 0; overflow: hidden; transform: rotate(-2deg) scale(1.05); }
+    /* Gap is 20px. Width is 400px. Total Item Width = 420px. 15 Unique Items = 6300px Travel Distance */
+    .image-marquee-track { display: flex; gap: 20px; width: max-content; animation: scrollImages 80s linear infinite; }
+    
+    .image-marquee-item { 
+        width: 400px; height: 260px; 
+        border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); 
+        filter: grayscale(100%); transition: 0.4s; 
+    }
+    .image-marquee-item:hover { filter: grayscale(0%); transform: scale(1.03); border-color: var(--accent-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .image-marquee-item img { width: 100%; height: 100%; object-fit: cover; }
+    
+    @keyframes scrollImages { 
+        0% { transform: translateX(0); } 
+        100% { transform: translateX(calc(-420px * 15)); } 
+    }
+
+    /* SECTION 3: ROCKETS */
+    .rocket-formation-wrapper { display: flex; gap: 40px; justify-content: center; }
+    .rocket-card { 
+        position: relative; 
+        width: 280px; height: 400px; 
+        transform-style: preserve-3d; opacity: 0; 
+    }
     .flap { position: absolute; top: 0; width: 50%; height: 100%; background: #f4f4f4; border: 1px solid #ccc; }
     .flap.left { left: 0; transform-origin: right center; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 90%); border-radius: 4px 0 0 4px; }
     .flap.right { right: 0; transform-origin: left center; clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%); border-radius: 0 4px 4px 0;}
     .rocket-content { position: absolute; inset: 0; display: flex; flex-direction: column; background: #ddd; opacity: 0; overflow: hidden; border-radius: 4px; }
-    .rocket-img { width: 100%; height: 65%; object-fit: cover; filter: grayscale(100%); }
-    .rocket-text { padding: 10px; height: 35%; display: flex; flex-direction: column; justify-content: space-between; background: #e0e0e0; }
-    
-    /* PROSHOWS */
-    .proshow-container { display: flex; justify-content: center; gap: 3vw; }
-    .proshow-card-wrapper { width: 300px; height: 450px; perspective: 1500px; }
-    .proshow-card { width: 100%; height: 100%; position: relative; background: var(--bg-dark); clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); box-shadow: 0 0 30px rgba(77, 143, 72, 0.1); transition: transform 0.1s linear; }
-    .proshow-media { position: absolute; inset: 5px; overflow: hidden; clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px); }
-    .proshow-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); }
-    .proshow-content-layer { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; padding: 20px; display: flex; flex-direction: column; justify-content: flex-end; background: linear-gradient(0deg, var(--bg-green-dark) 15%, transparent 60%); pointer-events: none; }
-    
-    .footer-section { background: rgba(24, 28, 16, 0.95); border-radius: 50px 50px 0 0; padding: 10vh 0 5vh; text-align: center; border-top: 1px solid var(--accent-olive); backdrop-filter: blur(10px); }
+    .rocket-img { width: 100%; height: 70%; object-fit: cover; filter: grayscale(100%); }
+    .rocket-text { padding: 15px; height: 30%; display: flex; flex-direction: column; justify-content: space-between; background: #e0e0e0; }
+    .rocket-title { font-size: 1.3rem; font-weight: 800; color: #000; }
+
+    /* SECTION 4: PROSHOWS */
+    .proshow-container { display: flex; justify-content: center; gap: 4vw; }
+    .proshow-card-wrapper { width: 360px; height: 540px; perspective: 1500px; }
+    .proshow-card { 
+        width: 100%; height: 100%; position: relative; background: var(--bg-dark); 
+        clip-path: polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px); 
+        transition: transform 0.2s ease-out; cursor: pointer;
+    }
+    .card-border { position: absolute; inset: 0; z-index: 10; pointer-events: none; border: 1px solid var(--accent-olive); clip-path: polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px); transform: translateZ(20px); }
+    .proshow-media { position: absolute; inset: 5px; overflow: hidden; clip-path: polygon(28px 0, 100% 0, 100% calc(100% - 28px), calc(100% - 28px) 100%, 0 100%, 0 28px); }
+    .proshow-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.5s; }
+    .proshow-card:hover .proshow-img { filter: grayscale(0%); }
+    .proshow-content-layer { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; padding: 30px; display: flex; flex-direction: column; justify-content: flex-end; background: linear-gradient(0deg, var(--bg-green-dark) 20%, transparent 70%); pointer-events: none; }
+    .proshow-artist { font-size: 3rem; margin-bottom: 5px; text-shadow: 2px 2px 0px #000; line-height: 0.9; }
+
+    /* FOOTER */
+    .footer-section { background: rgba(24, 28, 16, 0.95); border-radius: 50px 50px 0 0; padding: 10vh 0 5vh; text-align: center; border-top: 1px solid var(--accent-olive); backdrop-filter: blur(10px); margin-top: 10vh; }
     .footer-logo { font-family: var(--font-fold); font-size: 15vw; color: transparent; -webkit-text-stroke: 1px #333; line-height: 0.8; opacity: 0.6; transition: 0.5s; }
     .footer-logo:hover { color: var(--accent-olive); opacity: 1; text-shadow: 0 0 30px var(--accent-green); }
 
+    /* --- MOBILE OPTIMIZATION --- */
     @media (max-width: 900px) {
-        .section-layout { flex-direction: column !important; gap: 40px; }
+        section { padding: 0 20px; box-sizing: border-box; }
+        .section-layout { flex-direction: column !important; gap: 40px; width: 100%; }
         .layout-content-right .perch-zone, .layout-content-left .perch-zone { width: 100%; text-align: center; padding: 0; order: 1; margin-bottom: 20px; }
         .layout-content-right .content-zone, .layout-content-left .content-zone { width: 100%; order: 2; }
-        .rocket-formation-wrapper, .proshow-container { flex-direction: column; }
-        .rocket-card { width: 80vw; }
+        .perch-title { font-size: 2.5rem; }
+        .sheet-content h3 { font-size: 1.5rem; }
+        .sheet-content p { font-size: 1rem; }
+        .rocket-formation-wrapper, .proshow-container { flex-direction: column; align-items: center; gap: 30px; }
+        .rocket-card { width: 85vw; height: 50vh; max-height: 450px; }
+        .proshow-card-wrapper { width: 90vw; height: 60vh; max-height: 500px; }
+        .image-marquee-item { width: 70vw; height: 250px; }
+        .image-marquee-container { width: 120%; margin-left: -10%; } 
+        .hero-countdown { gap: 10px; }
+        .time-block { padding: 10px; min-width: 60px; }
+        .time-block span { font-size: 1.8rem; }
+        .origami-sheet { padding: 25px; }
+        .chat-question { width: 100%; text-align: center; padding: 15px; font-size: 1rem; }
     }
 </style>
 </head>
@@ -156,10 +222,10 @@
             <h2 class="hero-date"><span class="date-char">M</span><span class="date-char">A</span><span class="date-char">R</span><span class="date-char">C</span><span class="date-char">H</span><span class="date-char"> </span><span class="date-char">1</span><span class="date-char">3</span><span class="date-char"> </span><span class="date-char">-</span><span class="date-char"> </span><span class="date-char">1</span><span class="date-char">5</span></h2>
             
             <div id="countdown" class="hero-countdown">
-                <div class="time-block"><span id="days">00</span><span class="label">Days</span></div>
-                <div class="time-block"><span id="hours">00</span><span class="label">Hrs</span></div>
-                <div class="time-block"><span id="minutes">00</span><span class="label">Min</span></div>
-                <div class="time-block"><span id="seconds">00</span><span class="label">Sec</span></div>
+                <div class="time-block glass-panel"><span id="days">00</span><span class="label">Days</span></div>
+                <div class="time-block glass-panel"><span id="hours">00</span><span class="label">Hrs</span></div>
+                <div class="time-block glass-panel"><span id="minutes">00</span><span class="label">Min</span></div>
+                <div class="time-block glass-panel"><span id="seconds">00</span><span class="label">Sec</span></div>
             </div>
             
             <div style="margin-top: 5vh; opacity: 0;" class="fade-in-up"><p style="font-family: var(--font-tech); color: #fff; font-size: 0.8rem; letter-spacing: 2px;">SCROLL TO FOLLOW THE GUIDE</p></div>
@@ -175,7 +241,7 @@
             </div>
             <div class="content-zone">
                 <div class="dialogue-wrapper">
-                    <div class="chat-question">WHAT IS ISHYA?</div>
+                    <div class="chat-question glass-panel">WHAT IS ISHYA?</div>
                     <div class="origami-answer-container">
                         <div class="origami-sheet">
                             <div class="sheet-content">
@@ -190,7 +256,7 @@
         </div>
     </section>
 
-    <!-- SECTION 2 -->
+    <!-- SECTION 2: MEMORIES (15 IMAGES) -->
     <section id="memories">
         <div class="section-layout layout-content-left">
             <div class="perch-zone">
@@ -198,13 +264,41 @@
                 <div class="perch-subtitle">MOMENTS FROZEN</div>
             </div>
             <div class="content-zone">
-                <div class="image-marquee-container">
+                <div class="image-marquee-container glass-panel">
                     <div class="image-marquee-track">
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&q=60" alt="Memory" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1470229722913-7c0d2dbbafd3?w=500&q=60" alt="Memory" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500&q=60" alt="Memory" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?w=500&q=60" alt="Memory" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=500&q=60" alt="Memory" loading="lazy"></div>
+                        <!-- SET 1 (15 Images) -->
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1470229722913-7c0d2dbbafd3?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1459749411177-287ce51261df?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1506157786151-b8491531f436?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1514924013411-cbf25faa35ad?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=500&q=60" loading="lazy"></div>
+                        
+                        <!-- SET 2 (Duplicate for Loop) -->
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1470229722913-7c0d2dbbafd3?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1459749411177-287ce51261df?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1506157786151-b8491531f436?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1514924013411-cbf25faa35ad?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=500&q=60" loading="lazy"></div>
                     </div>
                 </div>
                 <div style="text-align: center;"><a href="#" class="cta-btn">VIEW GALLERY</a></div>
@@ -245,14 +339,14 @@
             <div class="content-zone">
                 <div class="proshow-container">
                     <div class="proshow-card-wrapper" id="proshow-wrapper-1">
-                        <div class="proshow-card" id="proshow-1">
+                        <div class="proshow-card glass-panel" id="proshow-1">
                             <div class="card-border"></div>
                             <div class="proshow-media"><img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1920&auto=format&fit=crop" class="proshow-img" alt="Artist 1" loading="lazy"></div>
                             <div class="proshow-content-layer"><div class="proshow-day">DAY 01</div><h3 class="proshow-artist">MASALA<br>COFFEE</h3><div class="proshow-genre">FOLK ROCK</div></div>
                         </div>
                     </div>
                     <div class="proshow-card-wrapper" id="proshow-wrapper-2">
-                        <div class="proshow-card" id="proshow-2">
+                        <div class="proshow-card glass-panel" id="proshow-2">
                             <div class="card-border"></div>
                             <div class="proshow-media"><img src="https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=1920&auto=format&fit=crop" class="proshow-img" alt="Artist 2" loading="lazy"></div>
                             <div class="proshow-content-layer"><div class="proshow-day">DAY 02</div><h3 class="proshow-artist">JONITA<br>GANDHI</h3><div class="proshow-genre">BOLLYWOOD POP</div></div>
@@ -284,21 +378,16 @@
     void main() { 
         vec3 firePos = position; 
         float t = uTime * 1.0; 
-        // Noise for fire effect
         float noise = snoise(vec2(firePos.x * 0.5, t + firePos.y * 0.2)); 
         firePos.y += mod(t * (3.0 + aRandom), 18.0); 
         if(firePos.y > 7.0) firePos.y -= 18.0; 
         firePos.x += noise * 1.5 * (0.5 + firePos.y * 0.1); 
-        
         float progress = smoothstep(0.0, 1.0, uProgress); 
         vec3 pos = mix(firePos, targetPos, progress); 
-        
         vec3 cFire = mix(vec3(0.24, 0.26, 0.14), vec3(0.3, 0.56, 0.28), aRandom); 
         vec3 cLogo = mix(vec3(0.84, 0.76, 0.41), vec3(0.3, 0.56, 0.28), aRandom);
-        
         vColor = mix(cFire, cLogo, progress); 
         if(uExplode > 0.0) { pos += normalize(pos) * uExplode * 60.0; vColor *= (1.0 - uExplode); } 
-        
         vOpacity = uParticleOpacity; 
         vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0); 
         gl_Position = projectionMatrix * mvPosition; 
@@ -320,71 +409,53 @@
     gsap.registerPlugin(ScrollTrigger);
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 800;
 
-    const CONFIG = { LOGO_PATH: 'logo.png', PARTICLE_DENSITY: isMobile ? 8 : 4, LOGO_SCALE: isMobile ? 8 : 12, LOGO_Y_OFFSET: 1.8 };
+    // INCREASED DENSITY FOR HIGH RES LOGO
+    const CONFIG = { LOGO_PATH: 'logo.png', PARTICLE_DENSITY: isMobile ? 12 : 8, LOGO_SCALE: isMobile ? 8 : 12, LOGO_Y_OFFSET: 1.8 };
 
     const canvas = document.getElementById('webgl'); 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); 
     renderer.setSize(window.innerWidth, window.innerHeight); 
     renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2)); 
-    renderer.setClearColor(0x000000, 0); // Transparent clear color is CRITICAL
+    renderer.setClearColor(0x000000, 0);
 
     const scene = new THREE.Scene(); 
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100); 
     camera.position.set(0, 0, 16); 
     const clock = new THREE.Clock(); 
 
-    // --- LOAD IMAGE AND GENERATE PARTICLES FROM IT ---
     function loadAndProcessLogo(url) { 
         return new Promise((resolve) => { 
-            const img = new Image(); 
-            img.crossOrigin = "Anonymous"; 
-            img.src = url; 
-            
+            const img = new Image(); img.crossOrigin = "Anonymous"; img.src = url; 
             img.onload = () => { 
-                const w = 300; const h = 300; 
-                const c = document.createElement('canvas'); 
-                c.width = w; c.height = h; 
-                const ctx = c.getContext('2d'); 
-                ctx.drawImage(img, 0, 0, w, h); 
-                
-                const pixels = ctx.getImageData(0,0,w,h).data; 
-                const points = []; 
+                // INCREASED INTERNAL RESOLUTION TO 1024x1024
+                const w = 1024; const h = 1024; const c = document.createElement('canvas'); c.width = w; c.height = h; 
+                const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0, w, h); 
+                const pixels = ctx.getImageData(0,0,w,h).data; const points = []; 
                 for (let y = 0; y < h; y += CONFIG.PARTICLE_DENSITY) { 
                     for (let x = 0; x < w; x += CONFIG.PARTICLE_DENSITY) { 
-                        // If pixel is not transparent, create a particle target
-                        if (pixels[(y * w + x) * 4 + 3] > 128) { 
-                            points.push( (x / w - 0.5) * CONFIG.LOGO_SCALE, (-(y / h - 0.5) * CONFIG.LOGO_SCALE) + CONFIG.LOGO_Y_OFFSET, 0 ); 
-                        } 
+                        if (pixels[(y * w + x) * 4 + 3] > 128) points.push( (x / w - 0.5) * CONFIG.LOGO_SCALE, (-(y / h - 0.5) * CONFIG.LOGO_SCALE) + CONFIG.LOGO_Y_OFFSET, 0 ); 
                     } 
                 } 
-                // Return both the texture and the points array
                 const texture = new THREE.CanvasTexture(c);
+                texture.minFilter = THREE.LinearFilter; // BETTER FILTERING
                 resolve({ texture: texture, points: new Float32Array(points) }); 
             }; 
-
-            // FALLBACK IF LOGO.PNG IS MISSING (Draw text instead)
             img.onerror = () => { 
-                console.warn("logo.png not found, using fallback"); 
                 const w = 512; const h = 512; const c = document.createElement('canvas'); c.width = w; c.height = h; const ctx = c.getContext('2d');
                 ctx.font = "bold 100px sans-serif"; ctx.fillStyle="white"; ctx.textAlign="center"; ctx.fillText("ISHYA", w/2, h/2);
-                const texture = new THREE.CanvasTexture(c);
-                const points = [];
-                // Simple random points as fallback target
-                for(let i=0; i<1000; i++) points.push((Math.random()-0.5)*5, (Math.random()-0.5)*5 + 1.8, 0);
-                resolve({ texture: texture, points: new Float32Array(points) }); 
+                const points = []; for(let i=0; i<1000; i++) points.push((Math.random()-0.5)*5, (Math.random()-0.5)*5 + 1.8, 0);
+                resolve({ texture: new THREE.CanvasTexture(c), points: new Float32Array(points) }); 
             }; 
         }); 
     }
 
     let birdMaterial;
 
-    // Initialize System
     loadAndProcessLogo(CONFIG.LOGO_PATH).then((data) => { 
         const particles = createParticles(data.points.length / 3, data.points);
         const solidLogo = createSolidLogo(data.texture); 
         const bird = createBird();
         setupLights();
-        
         setupAnimations(particles, solidLogo, bird);
         setupEventListeners();
         setupInteractiveElements();
@@ -394,8 +465,7 @@
             const t = clock.getElapsedTime(); 
             particles.material.uniforms.uTime.value = t; 
             if (bird.group.visible) { const flap = Math.sin(t * 8); bird.wingL.rotation.z = flap * 0.4 + 0.1; bird.wingR.rotation.z = -flap * 0.4 - 0.1; } 
-            renderer.render(scene, camera); 
-            requestAnimationFrame(animate); 
+            renderer.render(scene, camera); requestAnimationFrame(animate); 
         };
         animate();
     });
@@ -409,12 +479,10 @@
     }
 
     function createSolidLogo(texture) { 
-        // Create the mesh but initially invisible (opacity 0)
         const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, opacity: 0 }); 
         const logoMesh = new THREE.Mesh(new THREE.PlaneGeometry(CONFIG.LOGO_SCALE, CONFIG.LOGO_SCALE), material); 
         logoMesh.position.set(0, CONFIG.LOGO_Y_OFFSET, 0.1); 
-        scene.add(logoMesh); 
-        return logoMesh; 
+        scene.add(logoMesh); return logoMesh; 
     }
 
     function createBird() {
@@ -426,41 +494,33 @@
         const wGeo=new THREE.BufferGeometry(); wGeo.setAttribute('position', new THREE.Float32BufferAttribute(vWing,3)); wGeo.computeVertexNormals();
         group.add(new THREE.Mesh(bGeo, birdMaterial));
         const wingL=new THREE.Mesh(wGeo, birdMaterial); wingL.position.set(-0.9,0,0); wingL.scale.x=-1; const wingR=new THREE.Mesh(wGeo, birdMaterial); wingR.position.set(0.9,0,0);
-        group.add(wingL, wingR); group.rotation.x=0.2; return { group, wingL, wingR };
+        group.add(wingL, wingR); group.rotation.x=0.2; 
+        
+        const birdLight = new THREE.PointLight(0xD6C26A, 1.5, 15);
+        birdLight.position.set(0, 0.5, 0);
+        group.add(birdLight);
+
+        return { group, wingL, wingR };
     }
 
     function setupLights() { scene.add(new THREE.AmbientLight(0xffffff, 0.4)); const spot = new THREE.SpotLight(0xD6C26A, 2.0); spot.position.set(5, 10, 5); scene.add(spot); const back = new THREE.DirectionalLight(0x4D8F48, 1.2); back.position.set(-5, 5, -5); scene.add(back); }
 
     function setupAnimations(particles, solidLogo, bird) {
-        const pMat = particles.material;
-        const sMat = solidLogo.material;
-
+        const pMat = particles.material; const sMat = solidLogo.material;
         gsap.fromTo('main', { opacity: 0 }, { opacity: 1, duration: 2, ease: "power2.out", delay: 0.5 });
         const introTl = gsap.timeline({delay: 0.5, onComplete: () => {gsap.to(".hero-countdown", {opacity:1, duration:1})} });
         
-        // --- INTRO SEQUENCE: FIRE -> SOLID LOGO ---
-        // 1. Particles move from chaotic fire to Logo shape
         introTl.to(pMat.uniforms.uProgress, { value: 1.0, duration: 4.0, ease: "power2.inOut" })
-        // 2. Crossfade: Particles fade OUT, Solid Logo fades IN
                .to(pMat.uniforms.uParticleOpacity, { value: 0, duration: 0.8 }, "-=1.0")
                .to(sMat, { opacity: 1, duration: 0.8 }, "<") 
-               
-        // Text Animations
                .fromTo(gsap.utils.toArray('.hero-title .letter'), { opacity: 0, rotationX: -95, scaleY: 0, transformOrigin: "50% 100%" }, { opacity: 1, rotationX: 0, scaleY: 1, duration: 1.5, ease: "elastic.out(1, 0.6)", stagger: 0.04 }, "<+0.2")
                .fromTo(gsap.utils.toArray('.hero-date .date-char'), { opacity: 0, rotationX: 95, scaleY: 0, transformOrigin: "50% 0%" }, { opacity: 1, rotationX: 0, scaleY: 1, duration: 1.2, ease: "back.out(1.7)", stagger: 0.03 }, "<+0.1")
                .to('.fade-in-up', { opacity: 1, y: 0, duration: 1 }, "-=1");
 
-        // --- SCROLL SEQUENCE: SOLID LOGO -> BLAST -> BIRD ---
         const heroTl = gsap.timeline({ scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: 1 }});
-        
-        heroTl
-              // 1. Solid Logo fades out immediately
-              .to(sMat, { opacity: 0, duration: 0.1 }) 
-              // 2. Particles fade back in
+        heroTl.to(sMat, { opacity: 0, duration: 0.1 }) 
               .to(pMat.uniforms.uParticleOpacity, { value: 1, duration: 0.1 }, "<")
-              // 3. Particles Explode outwards
               .to(pMat.uniforms.uExplode, { value: 1, duration: 1 }) 
-              // 4. Bird appears and flies in
               .call(() => { bird.group.visible = true; }, null, "<0.1") 
               .fromTo(bird.group.scale, {x:0, y:0, z:0}, {x:1, y:1, z:1, duration: 0.8}, "<");
 
@@ -488,6 +548,7 @@
             if(isMobile) { tl.fromTo(rockets, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1, stagger: 0.2 }).to({}, { duration: 3 }).to(rockets, { opacity: 0, y: -50, duration: 0.5 }); return; }
             const flapsLeft = rockets.map(r => r.querySelector('.flap.left')); const flapsRight = rockets.map(r => r.querySelector('.flap.right')); const contents = rockets.map(r => r.querySelector('.rocket-content'));
             tl.set(rockets, { opacity: 1, z: -800, rotationY: 0, scale: 0.5 }).set(rockets[0], { x: '-20vw', y: '-80vh', rotation: 160 }).set(rockets[1], { x: '20vw', y: '-80vh', rotation: -160 }).set([...flapsLeft, ...flapsRight], { rotationY: 0 }).set(flapsLeft, { rotationY: 88 }).set(flapsRight, { rotationY: -88 }).set(contents, { opacity: 0 });
+            
             tl.to(rockets, { x: 0, y: 0, z: 0, rotation: 0, scale: 1, duration: 1.8, ease: "power4.out", stagger: 0.1 });
             tl.to([...flapsLeft, ...flapsRight], { rotationY: 0, duration: 0.8, ease: "back.out(1.2)" }, "+=0.1").to(contents, { opacity: 1, duration: 0.5 }, "<0.3");
             tl.to({}, { duration: 4 });
@@ -535,14 +596,13 @@
         const ctx = canvas.getContext('2d');
         let width, height;
         
-        // Colors from reference
         const COLORS = {
             bg: 'rgba(5, 20, 8, 1)',         
-            trail: 'rgba(5, 20, 8, 0.08)',   // Low opacity green for fading trails
-            swirlGreen: 'rgba(77, 183, 72, 0.4)',  
-            swirlDark: 'rgba(30, 50, 20, 0.5)',    
-            gold: 'rgba(214, 194, 106, 0.6)',      
-            mandala: 'rgba(214, 194, 106, 0.8)'    
+            trail: 'rgba(5, 20, 8, 0.08)',   
+            swirlGreen: 'rgba(77, 183, 72, 0.2)', 
+            swirlDark: 'rgba(30, 50, 20, 0.3)',   
+            gold: 'rgba(214, 194, 106, 0.4)',      
+            mandala: 'rgba(214, 194, 106, 0.15)'   
         };
 
         const particles = [];
@@ -624,10 +684,8 @@
         }
 
         function animate() {
-            // Draw semi-transparent trail
             ctx.fillStyle = COLORS.trail;
             ctx.fillRect(0, 0, width, height);
-
             mandalas.forEach(m => { m.update(); m.draw(); });
             particles.forEach(p => { p.update(); p.draw(); });
             requestAnimationFrame(animate);
