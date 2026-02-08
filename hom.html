@@ -12,256 +12,288 @@
 
 <style>
     :root {
-        /* PALETTE */
-        --bg-dark: #060606;
-        --bg-panel: #181C10;
-        --accent-gold: #D6C26A;
-        --accent-olive: #3D4324;
-        --accent-green: #4D8F48;
-        
+        /* --- COLORS --- */
+        --bg-dark: #051408;       
+        --accent-gold: #D6C26A;   
+        --accent-olive: #6B7540;  
+        --accent-green: #4D8F48;  
         --text-light: #e0e0e0;
         
         /* FONTS */
         --font-display: 'Syncopate', sans-serif;
         --font-fold: 'Foldit', display;
         --font-body: 'Space Grotesk', sans-serif;
-        --font-serif: 'Cormorant Garamond', serif;
         --font-tech: 'Share Tech Mono', monospace;
-    }
-
-    /* Origami Font Simulation */
-    @font-face {
-        font-family: 'Kubos Origami';
-        src: url('fonts/kubos-origami.woff2') format('woff2');
-        font-display: swap;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
     
-    body { 
-        background: var(--bg-dark); 
+    html, body { 
+        background: transparent; 
         color: var(--text-light); 
         font-family: var(--font-body); 
         overflow-x: hidden; 
         width: 100vw; 
+        min-height: 100vh;
     }
 
-    /* --- BACKGROUNDS --- */
-    #bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+    /* --- LAYERS --- */
+    #animated-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; background-color: var(--bg-dark); pointer-events: none; }
+    #webgl { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+    #bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, transparent 0%, rgba(5, 20, 8, 0.85) 100%); z-index: -5; pointer-events: none; }
+
+    main { position: relative; z-index: 10; will-change: opacity; }
     
-    #hero-bg-image {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background-image: linear-gradient(to bottom, rgba(6,6,6,0.3), var(--bg-dark)), url(https://images.unsplash.com/photo-1518062024220-e2986427a13c?q=80&w=2070&auto=format&fit=crop);
-        background-size: cover; background-position: center;
-        z-index: 0;
-        opacity: 0.4;
+    /* --- UTILITIES & GLASSMORPHISM --- */
+    section { min-height: 100vh; padding: 0 5vw; position: relative; display: flex; align-items: center; justify-content: center; }
+    
+    .glass-panel {
+        background: rgba(24, 28, 16, 0.4) !important;
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(214, 194, 106, 0.2);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(77, 143, 72, 0.1);
     }
 
-    #webgl { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
-    #noise-overlay { position: fixed; inset: 0; z-index: 900; pointer-events: none; opacity: 0.05; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
-
-    main { position: relative; z-index: 10; opacity: 0; transition: opacity 0.5s ease; will-change: opacity; }
-    section { min-height: 100vh; padding: 0 5vw; position: relative; display: flex; flex-direction: column; justify-content: center; }
-
-    /* --- COMMON BUTTON --- */
-    .cta-btn {
-        display: inline-block; margin-top: 30px; padding: 15px 40px; background: transparent;
-        border: 1px solid var(--accent-gold); color: var(--accent-gold); font-family: var(--font-display);
-        font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; cursor: pointer;
-        transition: all 0.3s ease; text-decoration: none; position: relative; overflow: hidden;
+    .section-layout { width: 100%; max-width: 1600px; display: flex; align-items: center; justify-content: space-between; }
+    
+    .perch-title { 
+        font-family: var(--font-fold); font-size: clamp(3rem, 6vw, 5rem); 
+        color: var(--accent-gold); opacity: 0.9; text-shadow: 0 0 20px rgba(0,0,0,0.8); 
+        line-height: 1; margin-bottom: 10px;
     }
-    .cta-btn::before {
-        content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-        background: var(--accent-olive); z-index: -1; transition: 0.4s;
+    .perch-subtitle { 
+        font-family: var(--font-tech); font-size: 1rem; color: var(--accent-green); 
+        letter-spacing: 2px; padding: 5px 10px; display: inline-block; 
+        background: rgba(0,0,0,0.5); border: 1px solid var(--accent-olive); 
     }
-    .cta-btn:hover::before { left: 0; }
-    .cta-btn:hover { color: #fff; border-color: var(--accent-green); }
-
+    
+    .cta-btn { 
+        display: inline-block; margin-top: 30px; padding: 15px 40px; 
+        background: rgba(24, 28, 16, 0.6); border: 1px solid var(--accent-green); 
+        color: var(--accent-gold); font-family: var(--font-display); 
+        font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; 
+        cursor: pointer; transition: all 0.3s ease; text-decoration: none; position: relative; overflow: hidden; 
+    }
+    .cta-btn:hover { color: #fff; border-color: var(--accent-gold); box-shadow: 0 0 20px rgba(77, 143, 72, 0.4); background: rgba(77, 143, 72, 0.2); }
 
     /* --- HERO --- */
-    #hero { align-items: center; text-align: center; justify-content: flex-start; padding-top: 65vh; padding-bottom: 20vh; }
+    #hero { flex-direction: column; text-align: center; padding-top: 60vh; padding-bottom: 20vh; }
     .hero-content { pointer-events: none; width: 100%; position: relative; z-index: 20; }
-    .hero-title {
-        perspective: 1000px; font-family: var(--font-fold); font-size: clamp(2.5rem, 8vw, 7rem); 
-        line-height: 0.9; text-transform: uppercase; color: var(--text-light); margin-bottom: 1vh; font-weight: 900;
-    }
-    .hero-title .letter { display: inline-block; white-space: pre; transform-style: preserve-3d; opacity: 0; color: #fff; text-shadow: 0 0 20px rgba(77, 143, 72, 0.5); }
     
-    .hero-date {
+    .hero-title { 
+        perspective: 1000px; font-family: var(--font-fold); 
+        font-size: clamp(3rem, 10vw, 8rem); line-height: 0.9; text-transform: uppercase; 
+        background: linear-gradient(to bottom, #ffffff 10%, #D6C26A 60%, #8a7c40 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 0 25px rgba(214, 194, 106, 0.4));
+        margin-bottom: 1vh; font-weight: 900; 
+    }
+    .hero-title .letter { display: inline-block; white-space: pre; transform-style: preserve-3d; opacity: 0; }
+    
+    .hero-date { 
         perspective: 1000px; font-family: var(--font-display); font-weight: 700; 
-        font-size: clamp(1rem, 3vw, 1.5rem); color: var(--accent-gold); letter-spacing: 3px; text-transform: uppercase;
-        margin-top: 2vh; 
+        font-size: clamp(1rem, 3vw, 1.5rem); color: var(--accent-gold); 
+        letter-spacing: 3px; text-transform: uppercase; margin-top: 2vh; 
     }
     .hero-date .date-char { display: inline-block; transform-style: preserve-3d; opacity: 0; }
     
-    /* UPDATED TIMER STYLES */
-    .hero-countdown { display: flex; justify-content: center; gap: 15px; margin-top: 30px; font-family: var(--font-tech); color: var(--accent-green); opacity: 0; }
-    .time-block { display: flex; flex-direction: column; align-items: center; padding: 10px 10px; background: rgba(6,6,6,0.6); border: 1px solid var(--accent-olive); border-radius: 5px; min-width: 70px; backdrop-filter: blur(5px);}
-    .time-block span { font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1; text-shadow: 0 0 10px rgba(77, 143, 72, 0.4); }
-    .time-block .label { font-size: 0.6rem; letter-spacing: 1px; color: #888; margin-top: 5px; font-family: var(--font-display); text-transform: uppercase; }
+    .hero-countdown { display: flex; justify-content: center; gap: 15px; margin-top: 40px; font-family: var(--font-tech); color: var(--accent-green); opacity: 0; }
+    .time-block { 
+        display: flex; flex-direction: column; align-items: center; padding: 15px 20px; 
+        border-radius: 8px; min-width: 80px; 
+    }
+    .time-block span { font-size: clamp(2rem, 5vw, 3rem); line-height: 1; text-shadow: 0 0 10px rgba(77, 143, 72, 0.6); }
 
-    /* --- ABOUT ISHYA --- */
-    #about-ishya { align-items: center; padding-top: 10vh; padding-bottom: 10vh; }
-    .dialogue-wrapper { width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 30px; }
-    .chat-question {
-        align-self: flex-start; background: var(--bg-panel); border: 1px solid var(--accent-olive); color: var(--accent-gold);
-        padding: 15px 30px; font-family: var(--font-display); font-size: 1rem; border-radius: 20px 20px 20px 0;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.5); opacity: 0; transform: translateY(20px); position: relative;
-    }
-    .origami-sheet {
-        background: #e6e6e6; color: #111; padding: 40px; border-radius: 2px; position: relative;
-        transform-origin: top center; box-shadow: 0 20px 50px rgba(0,0,0,0.8); overflow: hidden; backface-visibility: hidden; 
-        border: 1px solid #999;
-    }
-    .origami-sheet::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('https://www.transparenttextures.com/patterns/crumpled-paper.png'); opacity: 0.5; pointer-events: none; }
-    .sheet-content h3 { font-family: var(--font-display); font-size: 1.8rem; margin-bottom: 20px; color: var(--accent-olive); border-bottom: 2px solid var(--accent-gold); padding-bottom: 10px; display: inline-block; }
-    .sheet-content p { font-family: var(--font-body); font-size: 1.1rem; line-height: 1.6; margin-bottom: 15px; font-weight: 500; color: #222; }
-    .sheet-content strong { color: var(--accent-green); font-weight: 700; }
+    /* --- SECTIONS LAYOUT --- */
+    .layout-content-right { flex-direction: row; }
+    .layout-content-right .perch-zone { width: 40%; text-align: left; padding-right: 50px; }
+    .layout-content-right .content-zone { width: 60%; }
+    .layout-content-left { flex-direction: row-reverse; }
+    .layout-content-left .perch-zone { width: 40%; text-align: right; padding-left: 50px; }
+    .layout-content-left .content-zone { width: 60%; }
 
-    /* --- MEMORIES --- */
-    #memories { min-height: 50vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 5vh 0; overflow: hidden; }
-    .image-marquee-container {
-        width: 105vw; padding: 20px 0; overflow: hidden; background: var(--bg-panel);
-        margin: 40px 0; position: relative; z-index: 15;
-        border-top: 1px solid var(--accent-olive); border-bottom: 1px solid var(--accent-olive);
-        transform: rotate(-2deg) scale(1.05) translateX(-2.5vw);
+    /* SECTION 1: ABOUT */
+    .chat-question { 
+        align-self: flex-start; 
+        color: var(--accent-gold); padding: 20px 40px; font-family: var(--font-display); 
+        font-size: 1.2rem; border-radius: 30px 30px 30px 0; 
+        transform: translateY(20px); margin-bottom: 20px; 
     }
-    .image-marquee-track { display: flex; gap: 15px; width: max-content; animation: scrollImages 40s linear infinite; will-change: transform; }
-    .image-marquee-item { width: 300px; height: 200px; border-radius: 4px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); filter: grayscale(100%) sepia(20%); transition: 0.3s; }
-    .image-marquee-item:hover { transform: scale(1.02); border-color: var(--accent-green); filter: grayscale(0%); }
+    .origami-sheet { 
+        background: #f0f0f0; color: #111; padding: 50px; border-radius: 4px; 
+        box-shadow: 0 20px 60px rgba(0,0,0,0.8); border: 1px solid #999; 
+    }
+    .sheet-content h3 { font-family: var(--font-display); font-size: 2rem; margin-bottom: 20px; color: var(--accent-olive); border-bottom: 2px solid var(--accent-gold); }
+    .sheet-content p { font-size: 1.2rem; line-height: 1.6; }
+
+    /* SECTION 2: MEMORIES */
+    .image-marquee-container { width: 100%; padding: 30px 0; overflow: hidden; transform: rotate(-2deg) scale(1.05); }
+    .image-marquee-track { display: flex; gap: 20px; width: max-content; animation: scrollImages 80s linear infinite; }
+    .image-marquee-item { 
+        width: 400px; height: 260px; 
+        border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); 
+        filter: grayscale(100%); transition: 0.4s; 
+    }
+    .image-marquee-item:hover { filter: grayscale(0%); transform: scale(1.03); border-color: var(--accent-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     .image-marquee-item img { width: 100%; height: 100%; object-fit: cover; }
-    @keyframes scrollImages { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-300px * 5 - 75px)); } }
+    @keyframes scrollImages { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-420px * 15)); } }
 
-
-    /* --- EVENTS (Optimized for Mobile) --- */
+    /* --- SECTION 3: EVENTS (NEW HORIZONTAL SCROLL) --- */
     #events { 
-        min-height: 100vh; 
-        display: flex; flex-direction: column; justify-content: center; align-items: center; 
-        overflow: hidden; perspective: 2000px;
-    }
-    
-    .rocket-formation-wrapper {
-        display: flex; gap: 30px; justify-content: center; align-items: center;
-        width: 100%; max-width: 1200px; margin-top: 40px; perspective: 1500px;
+        flex-direction: column; 
+        align-items: flex-start; 
+        justify-content: center; 
+        overflow: hidden; 
     }
 
-    .rocket-card { position: relative; width: 280px; height: 420px; transform-style: preserve-3d; opacity: 0; }
-    .flap {
-        position: absolute; top: 0; width: 50%; height: 100%; background: #f4f4f4;
-        backface-visibility: hidden; transform-origin: center center;
-        transition: none; overflow: hidden; border: 1px solid #ccc;
-    }
-    .flap.left { left: 0; transform-origin: right center; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 90%); border-radius: 4px 0 0 4px; }
-    .flap.right { right: 0; transform-origin: left center; clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%); border-radius: 0 4px 4px 0;}
-    
-    .rocket-content {
-        position: absolute; inset: 0; display: flex; flex-direction: column;
-        background: #ddd; opacity: 0; transform: translateZ(1px);
-        overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-        border-radius: 4px; backface-visibility: hidden;
+    .events-header {
+        padding: 0 5vw;
+        margin-bottom: 40px;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
     }
 
-    .rocket-img { width: 100%; height: 65%; object-fit: cover; filter: grayscale(100%); transition: 0.3s; }
-    .rocket-text { padding: 15px; height: 35%; display: flex; flex-direction: column; justify-content: space-between; background: #e0e0e0; }
-    .rocket-cat { font-family: var(--font-tech); color: var(--accent-olive); font-size: 0.8rem; background: var(--accent-gold); display: inline-block; padding: 2px 6px; width: max-content; margin-bottom: 5px; font-weight: bold;}
-    .rocket-title { font-family: var(--font-display); font-size: 1.4rem; color: #000; font-weight: 800; line-height: 1; }
-    .rocket-id { font-family: var(--font-display); font-size: 2.5rem; position: absolute; bottom: 0; right: 5px; color: rgba(0,0,0,0.06); }
-    .rocket-content:hover .rocket-img { filter: grayscale(0%); transform: scale(1.05); }
+    .events-track-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 50px; 
+        padding-left: 5vw; padding-right: 5vw;
+        -ms-overflow-style: none; scrollbar-width: none;
+        cursor: grab;
+    }
+    .events-track-wrapper::-webkit-scrollbar { display: none; }
+    .events-track-wrapper:active { cursor: grabbing; }
 
-    /* Mobile Stack for Rockets */
-    @media (max-width: 900px) {
-        .rocket-formation-wrapper { flex-direction: column; gap: 60px; transform: none !important; margin-top: 20px;}
-        .rocket-card { width: 85vw; height: 350px; opacity: 1 !important; transform: none !important; }
-        .flap { display: none; } /* Remove complex folding on mobile for performance */
-        .rocket-content { opacity: 1; transform: none; position: relative; border: 1px solid var(--accent-olive); }
+    .events-track {
+        display: flex;
+        gap: 30px;
+        width: max-content;
     }
 
-
-    /* --- AFTERMOVIE --- */
-    #aftermovie { align-items: center; text-align: center; padding: 5vh 0; width: 100%; overflow: hidden; }
-    .video-frame-wrapper {
-        width: 95vw; max-width: 900px; margin-top: 40px; position: relative; background: var(--bg-panel); border: 1px solid var(--accent-olive);
-        clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
-        box-shadow: 0 0 30px rgba(77, 143, 72, 0.1);
-    }
-    .video-frame-aspect { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px); }
-    .video-frame-aspect iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-
-    /* --- PROSHOWS --- */
-    #proshows {
-        position: relative; overflow: hidden; perspective: 2000px; 
-        padding: 10vh 0; min-height: 100vh;
-        background-color: var(--bg-dark);
-        background-image: radial-gradient(circle at 50% 50%, #1a2010 0%, var(--bg-dark) 80%);
-    }
-    .proshow-header { text-align: center; margin-bottom: 60px; position: relative; z-index: 5; pointer-events: none;}
-    .glitch-text { 
-        font-family: var(--font-fold); font-size: clamp(3rem, 7vw, 7rem); color: #fff; font-weight: 900; 
-        text-shadow: 3px 3px var(--accent-olive), -2px -2px var(--accent-green); 
-    }
-    
-    .proshow-container {
-        display: flex; justify-content: center; align-items: center; gap: 5vw;
-        width: 100%; max-width: 1400px; margin: 0 auto; position: relative; z-index: 5;
+    /* Big Readable Card */
+    .event-card-large {
+        position: relative;
+        width: 320px; height: 480px;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        flex-shrink: 0;
+        background: var(--bg-dark);
+        border: 1px solid rgba(255,255,255,0.1);
+        transform-style: preserve-3d;
     }
 
-    .proshow-card-wrapper { width: 350px; height: 550px; position: relative; perspective: 1500px; }
-
-    .proshow-card {
-        width: 100%; height: 100%; position: relative; transform-style: preserve-3d; background: #0a0a0a;
-        clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
-        box-shadow: 0 0 30px rgba(77, 143, 72, 0.1); transition: transform 0.1s linear; cursor: pointer;
+    .event-card-large:hover {
+        transform: translateY(-15px) scale(1.02);
+        border-color: var(--accent-gold);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 20px rgba(214, 194, 106, 0.2);
+        z-index: 5;
     }
 
-    .card-border {
-        position: absolute; inset: 0; z-index: 10; pointer-events: none;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
-        transform: translateZ(20px);
+    .event-card-img {
+        width: 100%; height: 60%;
+        object-fit: cover;
+        filter: grayscale(100%);
+        transition: all 0.5s;
     }
-    .card-border::after { content: ''; position: absolute; bottom: 20px; right: 20px; width: 40px; height: 4px; background: var(--accent-green); }
-    .card-border::before { content: ''; position: absolute; top: 20px; left: 20px; width: 4px; height: 40px; background: var(--accent-gold); }
+    .event-card-large:hover .event-card-img { filter: grayscale(0%); transform: scale(1.1); }
 
-    .proshow-media { position: absolute; inset: 5px; overflow: hidden; transform: translateZ(0px); clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px); }
-    .proshow-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.1); transition: opacity 0.4s; }
-    
-    .proshow-content-layer {
-        position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; padding: 30px;
-        display: flex; flex-direction: column; justify-content: flex-end;
-        background: linear-gradient(0deg, rgba(6,6,6,0.95) 15%, transparent 60%);
-        transform: translateZ(30px); pointer-events: none;
+    .event-card-info {
+        height: 40%;
+        padding: 25px;
+        display: flex; flex-direction: column; justify-content: space-between;
+        background: linear-gradient(180deg, rgba(24,28,16,0.95) 0%, rgba(6,6,6,1) 100%);
+        border-top: 1px solid var(--accent-olive);
+        position: relative; z-index: 2;
     }
 
-    .proshow-day { font-family: var(--font-tech); color: var(--accent-green); font-size: 1.1rem; margin-bottom: 5px; }
-    .proshow-artist { font-family: var(--font-body); font-size: 3rem; color: #fff; font-weight: 800; text-transform: uppercase; line-height: 0.9; margin-bottom: 5px; text-shadow: 2px 2px 0px #000; }
-    .proshow-genre { font-family: var(--font-serif); font-style: italic; color: var(--accent-gold); font-size: 1.2rem; }
-
-    @media (max-width: 900px) {
-        .proshow-container { flex-direction: column; gap: 60px; }
-        .proshow-card-wrapper { width: 90vw; height: 120vw; max-width: 380px; max-height: 550px; }
+    .event-cat-tag {
+        font-family: var(--font-tech); color: var(--accent-green);
+        font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px;
     }
 
-    /* --- FOOTER --- */
-    .footer-section { background: #020202; border-radius: 50px 50px 0 0; padding: 10vh 0 5vh; text-align: center; border-top: 1px solid var(--bg-panel); }
+    .event-title-large {
+        font-family: var(--font-display); font-size: 1.8rem;
+        color: #fff; line-height: 1; margin-bottom: 10px;
+    }
+
+    .event-desc {
+        font-family: var(--font-body); font-size: 0.95rem; color: #aaa;
+        line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical; overflow: hidden;
+    }
+
+    .event-btn {
+        margin-top: 10px; font-size: 0.8rem; color: var(--accent-gold);
+        text-decoration: none; border-bottom: 1px solid transparent;
+        width: max-content; transition: 0.3s;
+    }
+    .event-card-large:hover .event-btn { border-color: var(--accent-gold); color: #fff; }
+
+    /* SECTION 4: PROSHOWS */
+    .proshow-container { display: flex; justify-content: center; gap: 4vw; }
+    .proshow-card-wrapper { width: 360px; height: 540px; perspective: 1500px; }
+    .proshow-card { 
+        width: 100%; height: 100%; position: relative; background: var(--bg-dark); 
+        clip-path: polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px); 
+        transition: transform 0.2s ease-out; cursor: pointer;
+    }
+    .card-border { position: absolute; inset: 0; z-index: 10; pointer-events: none; border: 1px solid var(--accent-olive); clip-path: polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px); transform: translateZ(20px); }
+    .proshow-media { position: absolute; inset: 5px; overflow: hidden; clip-path: polygon(28px 0, 100% 0, 100% calc(100% - 28px), calc(100% - 28px) 100%, 0 100%, 0 28px); }
+    .proshow-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.5s; }
+    .proshow-card:hover .proshow-img { filter: grayscale(0%); }
+    .proshow-content-layer { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; padding: 30px; display: flex; flex-direction: column; justify-content: flex-end; background: linear-gradient(0deg, var(--bg-green-dark) 20%, transparent 70%); pointer-events: none; }
+    .proshow-artist { font-size: 3rem; margin-bottom: 5px; text-shadow: 2px 2px 0px #000; line-height: 0.9; }
+
+    /* FOOTER */
+    .footer-section { background: rgba(24, 28, 16, 0.95); border-radius: 50px 50px 0 0; padding: 10vh 0 5vh; text-align: center; border-top: 1px solid var(--accent-olive); backdrop-filter: blur(10px); margin-top: 10vh; }
     .footer-logo { font-family: var(--font-fold); font-size: 15vw; color: transparent; -webkit-text-stroke: 1px #333; line-height: 0.8; opacity: 0.6; transition: 0.5s; }
     .footer-logo:hover { color: var(--accent-olive); opacity: 1; text-shadow: 0 0 30px var(--accent-green); }
-    
-    /* Utilities */
-    .reveal-text { opacity: 0; }
-    #status-msg { position: fixed; bottom: 10px; right: 10px; font-size: 10px; color: #333; font-family: monospace; z-index: 1000; }
-    
+
+    /* --- MOBILE OPTIMIZATION --- */
+    @media (max-width: 900px) {
+        section { padding: 0 20px; box-sizing: border-box; }
+        .section-layout { flex-direction: column !important; gap: 40px; width: 100%; }
+        
+        .layout-content-right .perch-zone, .layout-content-left .perch-zone { width: 100%; text-align: center; padding: 0; order: 1; margin-bottom: 20px; }
+        .layout-content-right .content-zone, .layout-content-left .content-zone { width: 100%; order: 2; }
+        
+        .perch-title { font-size: 2.5rem; }
+        .sheet-content h3 { font-size: 1.5rem; }
+        .sheet-content p { font-size: 1rem; }
+        
+        /* Event Scroll Mobile */
+        .events-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+        .event-card-large { width: 85vw; height: 450px; }
+        .events-track { gap: 15px; }
+        
+        .proshow-container { flex-direction: column; align-items: center; gap: 30px; }
+        .proshow-card-wrapper { width: 90vw; height: 60vh; max-height: 500px; }
+        
+        .image-marquee-item { width: 70vw; height: 250px; }
+        .image-marquee-container { width: 120%; margin-left: -10%; } 
+        
+        .hero-countdown { gap: 10px; }
+        .time-block { padding: 10px; min-width: 60px; }
+        .time-block span { font-size: 1.8rem; }
+        .origami-sheet { padding: 25px; }
+        .chat-question { width: 100%; text-align: center; padding: 15px; font-size: 1rem; }
+    }
 </style>
 </head>
 <body>
 
-<div id="bg-container">
-    <div id="hero-bg-image"></div>
-</div>
+<!-- 1. BACKGROUND CANVAS -->
+<canvas id="animated-bg"></canvas>
+<div id="bg-overlay"></div>
 
+<!-- 2. WEBGL FOREGROUND -->
 <canvas id="webgl"></canvas>
-<div id="noise-overlay"></div>
-<div id="status-msg"></div>
 
+<!-- 3. CONTENT -->
 <main id="smooth-wrapper">
     <section id="hero">
         <div class="hero-content">
@@ -272,139 +304,213 @@
             <h2 class="hero-date"><span class="date-char">M</span><span class="date-char">A</span><span class="date-char">R</span><span class="date-char">C</span><span class="date-char">H</span><span class="date-char"> </span><span class="date-char">1</span><span class="date-char">3</span><span class="date-char"> </span><span class="date-char">-</span><span class="date-char"> </span><span class="date-char">1</span><span class="date-char">5</span></h2>
             
             <div id="countdown" class="hero-countdown">
-                <div class="time-block"><span id="days">00</span><span class="label">Days</span></div>
-                <div class="time-block"><span id="hours">00</span><span class="label">Hrs</span></div>
-                <div class="time-block"><span id="minutes">00</span><span class="label">Min</span></div>
-                <div class="time-block"><span id="seconds">00</span><span class="label">Sec</span></div>
+                <div class="time-block glass-panel"><span id="days">00</span><span class="label">Days</span></div>
+                <div class="time-block glass-panel"><span id="hours">00</span><span class="label">Hrs</span></div>
+                <div class="time-block glass-panel"><span id="minutes">00</span><span class="label">Min</span></div>
+                <div class="time-block glass-panel"><span id="seconds">00</span><span class="label">Sec</span></div>
             </div>
             
-            <div style="margin-top: 5vh; opacity: 0;" class="fade-in-up"><p style="font-family: var(--font-tech); color: #666; font-size: 0.8rem; letter-spacing: 2px;">SCROLL TO INITIATE</p></div>
+            <div style="margin-top: 5vh; opacity: 0;" class="fade-in-up"><p style="font-family: var(--font-tech); color: #fff; font-size: 0.8rem; letter-spacing: 2px;">SCROLL TO FOLLOW THE GUIDE</p></div>
         </div>
     </section>
 
+    <!-- SECTION 1 -->
     <section id="about-ishya">
-        <div class="dialogue-wrapper">
-            <div class="chat-question">WHAT IS ISHYA?</div>
-            <div class="origami-answer-container">
-                <div class="origami-sheet">
-                    <div class="sheet-content">
-                        <h3>THE ORIGIN</h3>
-                        <p><strong>Ishya</strong> is the annual cultural fest of <strong>IISER Thiruvananthapuram</strong> which, since her inception in 2010, has set the stage to nurture imagination and nourish originality. Staying true to her name, Ishya flows with the advent of spring, when life blooms from the earth.</p>
-                        <p>We have been flying for the past fifteen years, higher each time, from inspiring minds and blossoming creativity to spreading smiles and instilling hope.</p>
+        <div class="section-layout layout-content-right">
+            <div class="perch-zone">
+                <h2 class="perch-title">THE<br>ORIGIN</h2>
+                <div class="perch-subtitle">WHERE IT ALL BEGAN</div>
+            </div>
+            <div class="content-zone">
+                <div class="dialogue-wrapper">
+                    <div class="chat-question glass-panel">WHAT IS ISHYA?</div>
+                    <div class="origami-answer-container">
+                        <div class="origami-sheet">
+                            <div class="sheet-content">
+                                <h3>LEGACY</h3>
+                                <p><strong>Ishya</strong> is the annual cultural fest of <strong>IISER Thiruvananthapuram</strong>. Since 2010, it has been the crucible where imagination meets reality.</p>
+                                <p>Fifteen years of art, dance, music, and the fiery spirit of youth.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- SECTION 2: MEMORIES -->
     <section id="memories">
-        <h2 class="section-title reveal-text" style="font-family: var(--font-display); font-size: 2rem; color: var(--accent-gold); margin-bottom: 20px;">MEMORIES</h2>
-        <div class="image-marquee-container">
-            <div class="image-marquee-track">
-                <!-- Placeholders using low-res images for performance -->
-                <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&q=60" alt="Memory" loading="lazy"></div>
-                <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1470229722913-7c0d2dbbafd3?w=500&q=60" alt="Memory" loading="lazy"></div>
-                <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500&q=60" alt="Memory" loading="lazy"></div>
-                <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?w=500&q=60" alt="Memory" loading="lazy"></div>
-                <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=500&q=60" alt="Memory" loading="lazy"></div>
-                 <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&q=60" alt="Memory" loading="lazy"></div>
-                <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1470229722913-7c0d2dbbafd3?w=500&q=60" alt="Memory" loading="lazy"></div>
+        <div class="section-layout layout-content-left">
+            <div class="perch-zone">
+                <h2 class="perch-title">TIME<br>CAPSULE</h2>
+                <div class="perch-subtitle">MOMENTS FROZEN</div>
+            </div>
+            <div class="content-zone">
+                <div class="image-marquee-container glass-panel">
+                    <div class="image-marquee-track">
+                        <!-- 15 Unique Images Loop -->
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1470229722913-7c0d2dbbafd3?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1459749411177-287ce51261df?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1506157786151-b8491531f436?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1514924013411-cbf25faa35ad?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=500&q=60" loading="lazy"></div>
+                        <!-- Loop Set -->
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1470229722913-7c0d2dbbafd3?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1459749411177-287ce51261df?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1506157786151-b8491531f436?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1514924013411-cbf25faa35ad?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=500&q=60" loading="lazy"></div>
+                    </div>
+                </div>
+                <div style="text-align: center;"><a href="#" class="cta-btn">VIEW GALLERY</a></div>
             </div>
         </div>
-        <a href="#" class="cta-btn">VIEW GALLERY</a>
     </section>
 
-    <!-- EVENTS SECTION -->
+    <!-- SECTION 3: EVENTS (SCROLLABLE DECK) -->
     <section id="events">
-        <div style="text-align: center; margin-bottom: 10px; position: relative; z-index: 2;">
-            <h2 class="section-title reveal-text" style="font-family: var(--font-fold); font-size: 3rem; color: #fff;">THE <br><em style="color:var(--accent-green)">STAGES</em></h2>
-        </div>
-        
-        <div class="rocket-formation-wrapper">
-            <!-- Rocket 1 -->
-            <div class="rocket-card" id="rocket-1">
-                <div class="flap left"></div><div class="flap right"></div>
-                <div class="rocket-content">
-                    <img class="rocket-img">
-                    <div class="rocket-text">
-                        <div><span class="rocket-cat"></span><h3 class="rocket-title"></h3></div>
-                        <span class="rocket-id"></span>
-                    </div>
-                </div>
+        <div class="events-header">
+            <div class="perch-zone">
+                <h2 class="perch-title">THE<br>STAGES</h2>
+                <div class="perch-subtitle">COMPETE & CONQUER</div>
             </div>
-            <!-- Rocket 2 -->
-            <div class="rocket-card" id="rocket-2">
-                <div class="flap left"></div><div class="flap right"></div>
-                <div class="rocket-content">
-                    <img class="rocket-img">
-                    <div class="rocket-text">
-                        <div><span class="rocket-cat"></span><h3 class="rocket-title"></h3></div>
-                        <span class="rocket-id"></span>
-                    </div>
-                </div>
-            </div>
-            <!-- Rocket 3 -->
-            <div class="rocket-card" id="rocket-3">
-                <div class="flap left"></div><div class="flap right"></div>
-                <div class="rocket-content">
-                    <img class="rocket-img">
-                    <div class="rocket-text">
-                        <div><span class="rocket-cat"></span><h3 class="rocket-title"></h3></div>
-                        <span class="rocket-id"></span>
-                    </div>
-                </div>
+            <div style="font-family: var(--font-tech); color: #666; display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-arrow-left"></i> DRAG / SCROLL <i class="fa-solid fa-arrow-right"></i>
             </div>
         </div>
-        
-        <a href="#" class="cta-btn">VIEW ALL EVENTS</a>
+
+        <div class="events-track-wrapper" id="eventsTrack">
+            <div class="events-track">
+                <!-- CARD 1 -->
+                <div class="event-card-large glass-panel">
+                    <img src="https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?w=500&q=80" class="event-card-img" loading="lazy">
+                    <div class="event-card-info">
+                        <div>
+                            <div class="event-cat-tag">DANCE</div>
+                            <h3 class="event-title-large">MUDHRA</h3>
+                            <p class="event-desc">The classical dance showdown. Grace, poise, and rhythm define the stage.</p>
+                        </div>
+                        <a href="#" class="event-btn">REGISTER <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <!-- CARD 2 -->
+                <div class="event-card-large glass-panel">
+                    <img src="https://images.unsplash.com/photo-1501612780327-45045538702b?w=500&q=80" class="event-card-img" loading="lazy">
+                    <div class="event-card-info">
+                        <div>
+                            <div class="event-cat-tag">MUSIC</div>
+                            <h3 class="event-title-large">RHAPSODY</h3>
+                            <p class="event-desc">Battle of the bands. Let the amplifiers scream and the drums roll.</p>
+                        </div>
+                        <a href="#" class="event-btn">REGISTER <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <!-- CARD 3 -->
+                <div class="event-card-large glass-panel">
+                    <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=500&q=80" class="event-card-img" loading="lazy">
+                    <div class="event-card-info">
+                        <div>
+                            <div class="event-cat-tag">FASHION</div>
+                            <h3 class="event-title-large">PANACHE</h3>
+                            <p class="event-desc">Walk the ramp with elegance. A display of style, attitude and glamour.</p>
+                        </div>
+                        <a href="#" class="event-btn">REGISTER <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <!-- CARD 4 -->
+                <div class="event-card-large glass-panel">
+                    <img src="https://images.unsplash.com/photo-1519074069444-1ba4fff66d16?w=500&q=80" class="event-card-img" loading="lazy">
+                    <div class="event-card-info">
+                        <div>
+                            <div class="event-cat-tag">THEATRE</div>
+                            <h3 class="event-title-large">THEATRIX</h3>
+                            <p class="event-desc">Unleash the actor within. Drama, emotion, and storytelling at its peak.</p>
+                        </div>
+                        <a href="#" class="event-btn">REGISTER <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <!-- CARD 5 -->
+                <div class="event-card-large glass-panel">
+                    <img src="https://images.unsplash.com/photo-1475721027767-4d0637c054e9?w=500&q=80" class="event-card-img" loading="lazy">
+                    <div class="event-card-info">
+                        <div>
+                            <div class="event-cat-tag">FINE ARTS</div>
+                            <h3 class="event-title-large">CANVAS</h3>
+                            <p class="event-desc">Paint your imagination. A competition for the creative souls.</p>
+                        </div>
+                        <a href="#" class="event-btn">REGISTER <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <!-- CARD 6 -->
+                <div class="event-card-large glass-panel">
+                    <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=500&q=80" class="event-card-img" loading="lazy">
+                    <div class="event-card-info">
+                        <div>
+                            <div class="event-cat-tag">LITERATURE</div>
+                            <h3 class="event-title-large">QUIZ</h3>
+                            <p class="event-desc">The ultimate battle of wits. Test your knowledge against the best.</p>
+                        </div>
+                        <a href="#" class="event-btn">REGISTER <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <!-- CARD 7 -->
+                <div class="event-card-large glass-panel">
+                    <img src="https://images.unsplash.com/photo-1550977186-c4582f219a4c?w=500&q=80" class="event-card-img" loading="lazy">
+                    <div class="event-card-info">
+                        <div>
+                            <div class="event-cat-tag">DANCE</div>
+                            <h3 class="event-title-large">STEP UP</h3>
+                            <p class="event-desc">Free style solo dance competition. Show us your best moves.</p>
+                        </div>
+                        <a href="#" class="event-btn">REGISTER <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <section id="aftermovie">
-        <div class="aftermovie-container" style="width:100%; display:flex; flex-direction:column; align-items:center;">
-            <h2 class="section-title reveal-text" style="font-family: var(--font-display); font-size: 2rem;">RELIVE THE <br><em style="color:var(--accent-gold)">MEMORIES</em></h2>
-            <div class="video-frame-wrapper">
-                <div class="video-frame-aspect">
-                    <!-- Lazy load iframe logic can be added here, currently placeholder -->
-                    <div style="width:100%; height:100%; background: #000; display:flex; align-items:center; justify-content:center; color:#555;">VIDEO PLACEHOLDER</div>
-                </div>
-            </div>
-            <p style="margin-top: 20px; font-family: var(--font-serif); color: #888; font-style: italic;">"A glimpse into the fire of yesteryears"</p>
-        </div>
-    </section>
-
+    <!-- SECTION 4 -->
     <section id="proshows">
-        <div class="proshow-header">
-            <h2 class="glitch-text">PROSHOWS</h2>
-            <p style="font-family: var(--font-tech); letter-spacing: 4px; color: var(--accent-green); margin-top: 10px;">THE HEADLINERS</p>
-        </div>
-        
-        <div class="proshow-container">
-            <!-- Card 1 -->
-            <div class="proshow-card-wrapper" id="proshow-wrapper-1">
-                <div class="proshow-card" id="proshow-1">
-                    <div class="card-border"></div>
-                    <div class="proshow-media">
-                        <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1920&auto=format&fit=crop" class="proshow-img" alt="Artist 1" loading="lazy">
-                    </div>
-                    <div class="proshow-content-layer">
-                        <div class="proshow-day">DAY 01</div>
-                        <h3 class="proshow-artist">MASALA<br>COFFEE</h3>
-                        <div class="proshow-genre">FOLK ROCK</div>
-                    </div>
-                </div>
+        <div class="section-layout layout-content-left">
+            <div class="perch-zone">
+                <h2 class="perch-title">STAR<br>NIGHTS</h2>
+                <div class="perch-subtitle">HEADLINERS</div>
             </div>
-
-            <!-- Card 2 -->
-            <div class="proshow-card-wrapper" id="proshow-wrapper-2">
-                <div class="proshow-card" id="proshow-2">
-                    <div class="card-border"></div>
-                    <div class="proshow-media">
-                        <img src="https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=1920&auto=format&fit=crop" class="proshow-img" alt="Artist 2" loading="lazy">
+            <div class="content-zone">
+                <div class="proshow-container">
+                    <div class="proshow-card-wrapper" id="proshow-wrapper-1">
+                        <div class="proshow-card glass-panel" id="proshow-1">
+                            <div class="card-border"></div>
+                            <div class="proshow-media"><img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1920&auto=format&fit=crop" class="proshow-img" alt="Artist 1" loading="lazy"></div>
+                            <div class="proshow-content-layer"><div class="proshow-day">DAY 01</div><h3 class="proshow-artist">MASALA<br>COFFEE</h3><div class="proshow-genre">FOLK ROCK</div></div>
+                        </div>
                     </div>
-                    <div class="proshow-content-layer">
-                        <div class="proshow-day">DAY 02</div>
-                        <h3 class="proshow-artist">JONITA<br>GANDHI</h3>
-                        <div class="proshow-genre">BOLLYWOOD POP</div>
+                    <div class="proshow-card-wrapper" id="proshow-wrapper-2">
+                        <div class="proshow-card glass-panel" id="proshow-2">
+                            <div class="card-border"></div>
+                            <div class="proshow-media"><img src="https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=1920&auto=format&fit=crop" class="proshow-img" alt="Artist 2" loading="lazy"></div>
+                            <div class="proshow-content-layer"><div class="proshow-day">DAY 02</div><h3 class="proshow-artist">JONITA<br>GANDHI</h3><div class="proshow-genre">BOLLYWOOD POP</div></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -418,15 +524,17 @@
             <div style="margin-top: 30px; display: flex; justify-content: center; gap: 30px;">
                 <a href="#" style="color: #444;"><i class="fa-brands fa-instagram fa-xl"></i></a><a href="#" style="color: #444;"><i class="fa-brands fa-twitter fa-xl"></i></a><a href="#" style="color: #444;"><i class="fa-brands fa-youtube fa-xl"></i></a>
             </div>
-            <p style="color: #333; margin-top: 30px; font-size: 0.7rem; font-family: var(--font-tech);">© 2026 ISHYA. FLAMES IN EVERY FOLD.</p>
+            <p style="color: #666; margin-top: 30px; font-size: 0.7rem; font-family: var(--font-tech);">© 2026 ISHYA. FLAMES IN EVERY FOLD.</p>
         </div>
     </footer>
 </main>
 
+<!-- WEBGL 3D SHADERS -->
 <script type="x-shader/x-vertex" id="vParticles">
     attribute float aRandom; attribute vec3 targetPos; uniform float uTime; uniform float uProgress; uniform float uExplode; uniform float uParticleOpacity; varying vec3 vColor; varying float vOpacity;
     vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; } vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; } vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
     float snoise(vec2 v) { const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439); vec2 i  = floor(v + dot(v, C.yy) ); vec2 x0 = v - i + dot(i, C.xx); vec2 i1; i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0); vec4 x12 = x0.xyxy + C.xxzz; x12.xy -= i1; i = mod289(i); vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 )); vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0); m = m*m; m = m*m; vec3 x = 2.0 * fract(p * C.www) - 1.0; vec3 h = abs(x) - 0.5; vec3 ox = floor(x + 0.5); vec3 a0 = x - ox; m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h ); vec3 g; g.x  = a0.x  * x0.x  + h.x  * x0.y; g.yz = a0.yz * x12.xz + h.yz * x12.yw; return 130.0 * dot(m, g); }
+    
     void main() { 
         vec3 firePos = position; 
         float t = uTime * 1.0; 
@@ -436,9 +544,8 @@
         firePos.x += noise * 1.5 * (0.5 + firePos.y * 0.1); 
         float progress = smoothstep(0.0, 1.0, uProgress); 
         vec3 pos = mix(firePos, targetPos, progress); 
-        // UPDATED COLORS: Olive/Green Fire
         vec3 cFire = mix(vec3(0.24, 0.26, 0.14), vec3(0.3, 0.56, 0.28), aRandom); 
-        vec3 cLogo = mix(vec3(0.9, 0.9, 0.9), vec3(0.84, 0.76, 0.41), aRandom); // Gold/White
+        vec3 cLogo = mix(vec3(0.84, 0.76, 0.41), vec3(0.3, 0.56, 0.28), aRandom);
         vColor = mix(cFire, cLogo, progress); 
         if(uExplode > 0.0) { pos += normalize(pos) * uExplode * 60.0; vColor *= (1.0 - uExplode); } 
         vOpacity = uParticleOpacity; 
@@ -452,233 +559,135 @@
     void main() { if(length(gl_PointCoord - vec2(0.5)) > 0.5) discard; float alpha = (1.0 - smoothstep(0.4, 0.5, length(gl_PointCoord - vec2(0.5)))) * vOpacity; gl_FragColor = vec4(vColor, alpha); }
 </script>
 
+<!-- MAIN LOGIC -->
 <script type="module">
     import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
-    import { EffectComposer } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/postprocessing/EffectComposer.js';
-    import { RenderPass } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/postprocessing/RenderPass.js';
-    import { UnrealBloomPass } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/postprocessing/UnrealBloomPass.js';
     import gsap from 'https://cdn.skypack.dev/gsap@3.12.2';
     import ScrollTrigger from 'https://cdn.skypack.dev/gsap@3.12.2/ScrollTrigger';
     import Lenis from 'https://cdn.skypack.dev/@studio-freight/lenis@1.0.29';
 
     gsap.registerPlugin(ScrollTrigger);
-
-    // --- MOBILE OPTIMIZATION DETECTION ---
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 800;
 
-    const CONFIG = { 
-        NEW_LOGO_PATH: 'logo.png', // Fallback behavior included if missing
-        // HEAVY OPTIMIZATION FOR MOBILE
-        PARTICLE_DENSITY: isMobile ? 8 : 4, // Higher = fewer particles (4px step vs 8px step)
-        LOGO_SCALE: isMobile ? 8 : 12, 
-        LOGO_Y_OFFSET: 1.8, 
-        ANIMATION: { fireDuration: 4.0, revealContentDelay: 1.0 }, 
-        // Disable bloom strength on mobile for fps
-        BLOOM: { strength: isMobile ? 0 : 0.3, radius: 0.4, threshold: 0.85 } 
-    };
+    const CONFIG = { LOGO_PATH: 'logo.png', PARTICLE_DENSITY: isMobile ? 12 : 8, LOGO_SCALE: isMobile ? 8 : 12, LOGO_Y_OFFSET: 1.8 };
 
     const canvas = document.getElementById('webgl'); 
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: !isMobile, alpha: true, powerPreference: "high-performance" }); 
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); 
     renderer.setSize(window.innerWidth, window.innerHeight); 
-    // Limit pixel ratio on mobile
     renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2)); 
-    
+    renderer.setClearColor(0x000000, 0);
+
     const scene = new THREE.Scene(); 
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100); 
     camera.position.set(0, 0, 16); 
-    
     const clock = new THREE.Clock(); 
-    const textureLoader = new THREE.TextureLoader(); 
-    const statusMsg = document.getElementById('status-msg');
 
-    // Fallback logic if logo.png is missing, creates a simple square shape
-    function generateFallbackLogoData() {
-        const points = [];
-        const count = 1000; 
-        for(let i=0; i<count; i++) {
-            points.push((Math.random()-0.5)*5, (Math.random()-0.5)*5 + 1.8, 0);
-        }
-        return new Float32Array(points);
-    }
-
-    function loadTexture(url) { return new Promise((resolve, reject) => { textureLoader.load(url, resolve, undefined, () => resolve(null)); }); }
-    
     function loadAndProcessLogo(url) { 
         return new Promise((resolve) => { 
-            const img = new Image(); 
-            img.crossOrigin = "Anonymous"; 
-            img.src = url; 
+            const img = new Image(); img.crossOrigin = "Anonymous"; img.src = url; 
             img.onload = () => { 
-                const w = 300; // Reduced resolution for processing
-                const h = 300; 
-                const c = document.createElement('canvas'); 
-                c.width = w; c.height = h; 
-                const ctx = c.getContext('2d'); 
-                ctx.drawImage(img, 0, 0, w, h); 
-                const pixels = ctx.getImageData(0,0,w,h).data; 
-                const points = []; 
+                const w = 1024; const h = 1024; const c = document.createElement('canvas'); c.width = w; c.height = h; 
+                const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0, w, h); 
+                const pixels = ctx.getImageData(0,0,w,h).data; const points = []; 
                 for (let y = 0; y < h; y += CONFIG.PARTICLE_DENSITY) { 
                     for (let x = 0; x < w; x += CONFIG.PARTICLE_DENSITY) { 
-                        if (pixels[(y * w + x) * 4 + 3] > 128) { 
-                            points.push( (x / w - 0.5) * CONFIG.LOGO_SCALE, (-(y / h - 0.5) * CONFIG.LOGO_SCALE) + CONFIG.LOGO_Y_OFFSET, 0 ); 
-                        } 
+                        if (pixels[(y * w + x) * 4 + 3] > 128) points.push( (x / w - 0.5) * CONFIG.LOGO_SCALE, (-(y / h - 0.5) * CONFIG.LOGO_SCALE) + CONFIG.LOGO_Y_OFFSET, 0 ); 
                     } 
                 } 
-                resolve(new Float32Array(points)); 
+                const texture = new THREE.CanvasTexture(c);
+                texture.minFilter = THREE.LinearFilter; 
+                resolve({ texture: texture, points: new Float32Array(points) }); 
             }; 
-            img.onerror = () => {
-                console.warn("logo.png not found, using fallback particles");
-                resolve(generateFallbackLogoData());
+            img.onerror = () => { 
+                const w = 512; const h = 512; const c = document.createElement('canvas'); c.width = w; c.height = h; const ctx = c.getContext('2d');
+                ctx.font = "bold 100px sans-serif"; ctx.fillStyle="white"; ctx.textAlign="center"; ctx.fillText("ISHYA", w/2, h/2);
+                const points = []; for(let i=0; i<1000; i++) points.push((Math.random()-0.5)*5, (Math.random()-0.5)*5 + 1.8, 0);
+                resolve({ texture: new THREE.CanvasTexture(c), points: new Float32Array(points) }); 
             }; 
         }); 
     }
-    
+
     let birdMaterial;
 
-    Promise.all([loadAndProcessLogo(CONFIG.NEW_LOGO_PATH), loadTexture(CONFIG.NEW_LOGO_PATH)]).then(([newLogoData, newLogoTexture]) => { 
-        initSystem(newLogoData, newLogoTexture); 
-    });
-
-    function initSystem(newLogoData, newLogoTexture) {
-        statusMsg.style.display = 'none';
-        const particles = createParticles(newLogoData.length / 3, newLogoData);
-        // Only create solid logo if texture loaded
-        const solidLogoNew = newLogoTexture ? createSolidLogo(newLogoTexture) : { material: { opacity: 0 }}; 
+    loadAndProcessLogo(CONFIG.LOGO_PATH).then((data) => { 
+        const particles = createParticles(data.points.length / 3, data.points);
+        const solidLogo = createSolidLogo(data.texture); 
         const bird = createBird();
         setupLights();
-        
-        // Conditional Post Processing
-        let composer = null;
-        if (!isMobile) {
-            const pp = createPostProcessing();
-            composer = pp.composer;
-        }
-
-        setupAnimations(particles, solidLogoNew, bird);
+        setupAnimations(particles, solidLogo, bird);
         setupEventListeners();
         setupInteractiveElements();
-        initRocketFormation(); 
+        initEventScroll(); 
 
         const animate = () => { 
             const t = clock.getElapsedTime(); 
             particles.material.uniforms.uTime.value = t; 
-            if (bird.group.visible) { 
-                const flap = Math.sin(t * 8); 
-                bird.wingL.rotation.z = flap * 0.4 + 0.1; 
-                bird.wingR.rotation.z = -flap * 0.4 - 0.1; 
-                bird.group.position.y += Math.sin(t * 4) * 0.005; 
-            } 
-            
-            if (composer) composer.render();
-            else renderer.render(scene, camera);
-            
-            requestAnimationFrame(animate); 
+            if (bird.group.visible) { const flap = Math.sin(t * 8); bird.wingL.rotation.z = flap * 0.4 + 0.1; bird.wingR.rotation.z = -flap * 0.4 - 0.1; } 
+            renderer.render(scene, camera); requestAnimationFrame(animate); 
         };
         animate();
-    }
+    });
 
     function createParticles(count, targetData) { 
-        const pGeo = new THREE.BufferGeometry(); 
-        const initialPosArr = new Float32Array(count * 3); 
-        const randArr = new Float32Array(count); 
-        for (let i = 0; i < count; i++) { 
-            initialPosArr[i * 3] = (Math.random() - 0.5) * 4; 
-            initialPosArr[i * 3 + 1] = -8 + (Math.random() * 4); 
-            initialPosArr[i * 3 + 2] = (Math.random() - 0.5) * 4; 
-            randArr[i]=Math.random(); 
-        } 
-        pGeo.setAttribute('position', new THREE.BufferAttribute(initialPosArr, 3)); 
-        pGeo.setAttribute('targetPos', new THREE.BufferAttribute(targetData, 3)); 
-        pGeo.setAttribute('aRandom', new THREE.BufferAttribute(randArr, 1)); 
-        const pMat = new THREE.ShaderMaterial({ 
-            vertexShader: document.getElementById('vParticles').textContent, 
-            fragmentShader: document.getElementById('fParticles').textContent, 
-            uniforms: { uTime: { value: 0 }, uProgress: { value: 0 }, uExplode: { value: 0 }, uParticleOpacity: { value: 1.0 } }, 
-            transparent: true, blending: THREE.AdditiveBlending, depthWrite: false 
-        }); 
-        const particleSystem = new THREE.Points(pGeo, pMat); 
-        scene.add(particleSystem); 
-        return particleSystem; 
+        const pGeo = new THREE.BufferGeometry(); const initialPosArr = new Float32Array(count * 3); const randArr = new Float32Array(count); 
+        for (let i = 0; i < count; i++) { initialPosArr[i * 3] = (Math.random() - 0.5) * 4; initialPosArr[i * 3 + 1] = -8 + (Math.random() * 4); initialPosArr[i * 3 + 2] = (Math.random() - 0.5) * 4; randArr[i]=Math.random(); } 
+        pGeo.setAttribute('position', new THREE.BufferAttribute(initialPosArr, 3)); pGeo.setAttribute('targetPos', new THREE.BufferAttribute(targetData, 3)); pGeo.setAttribute('aRandom', new THREE.BufferAttribute(randArr, 1)); 
+        const pMat = new THREE.ShaderMaterial({ vertexShader: document.getElementById('vParticles').textContent, fragmentShader: document.getElementById('fParticles').textContent, uniforms: { uTime: { value: 0 }, uProgress: { value: 0 }, uExplode: { value: 0 }, uParticleOpacity: { value: 1.0 } }, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }); 
+        const ps = new THREE.Points(pGeo, pMat); scene.add(ps); return ps; 
     }
 
     function createSolidLogo(texture) { 
         const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, opacity: 0 }); 
-        const logoMesh = new THREE.Mesh(new THREE.PlaneGeometry(10, 10), material); 
+        const logoMesh = new THREE.Mesh(new THREE.PlaneGeometry(CONFIG.LOGO_SCALE, CONFIG.LOGO_SCALE), material); 
         logoMesh.position.set(0, CONFIG.LOGO_Y_OFFSET, 0.1); 
-        scene.add(logoMesh); 
-        return logoMesh; 
+        scene.add(logoMesh); return logoMesh; 
     }
 
     function createBird() {
-        birdMaterial = new THREE.MeshStandardMaterial({ color: 0xbbbbbb, roughness: 1.0, metalness: 0.0, side: THREE.DoubleSide });
+        birdMaterial = new THREE.MeshStandardMaterial({ color: 0xD6C26A, roughness: 0.3, metalness: 0.8, side: THREE.DoubleSide });
         const group = new THREE.Group(); group.visible = false; scene.add(group);
-        // Simplified geometry for speed
         const vBody=[0,0,1,1,0,0,0,0,-1,0,0,1,0,0,-1,-1,0,0,0,0.8,-0.2,0,0,1,1,0,0,0,0.8,-0.2,-1,0,0,0,0,1,0,0.8,-0.2,1,0,0,0,0,-1,0,0.8,-0.2,0,0,-1,-1,0,0,0,0,1,0.15,0,0.8,0,2.5,2.0,0,0,1,0,2.5,2.0,-0.15,0,0.8,0,2.5,2.0,0.1,2.2,2.0,0,1.8,2.5,0,2.5,2.0,0,1.8,2.5,-0.1,2.2,2.0,0,0,-1,0.15,0,-0.8,0,2.0,-2.5,0,0,-1,0,2.0,-2.5,-0.15,0,-0.8];
-        const bGeo=new THREE.BufferGeometry(); bGeo.setAttribute('position', new THREE.Float32BufferAttribute(vBody,3)); bGeo.computeVertexNormals();
-        group.add(new THREE.Mesh(bGeo, birdMaterial));
         const vWing=[0,0,0.8,0,0,-0.8,3.5,1.5,0,0,0,0.8,3.5,1.5,0,0,0.8,-0.2];
+        const bGeo=new THREE.BufferGeometry(); bGeo.setAttribute('position', new THREE.Float32BufferAttribute(vBody,3)); bGeo.computeVertexNormals();
         const wGeo=new THREE.BufferGeometry(); wGeo.setAttribute('position', new THREE.Float32BufferAttribute(vWing,3)); wGeo.computeVertexNormals();
-        const wingL=new THREE.Mesh(wGeo, birdMaterial); wingL.position.set(-0.9,0,0); wingL.scale.x=-1; 
-        const wingR=new THREE.Mesh(wGeo, birdMaterial); wingR.position.set(0.9,0,0);
-        group.add(wingL, wingR); group.rotation.x=0.2;
+        group.add(new THREE.Mesh(bGeo, birdMaterial));
+        const wingL=new THREE.Mesh(wGeo, birdMaterial); wingL.position.set(-0.9,0,0); wingL.scale.x=-1; const wingR=new THREE.Mesh(wGeo, birdMaterial); wingR.position.set(0.9,0,0);
+        group.add(wingL, wingR); group.rotation.x=0.2; 
+        
+        const birdLight = new THREE.PointLight(0xD6C26A, 1.5, 15);
+        birdLight.position.set(0, 0.5, 0);
+        group.add(birdLight);
+
         return { group, wingL, wingR };
     }
 
-    function setupLights() { scene.add(new THREE.AmbientLight(0xffffff, 0.4)); const spot = new THREE.SpotLight(0xffffff, 1.5); spot.position.set(5, 10, 5); scene.add(spot); }
-    
-    function createPostProcessing() { 
-        const composer = new EffectComposer(renderer); 
-        composer.addPass(new RenderPass(scene, camera)); 
-        const bloom = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.95); 
-        bloom.strength = CONFIG.BLOOM.strength; bloom.radius = CONFIG.BLOOM.radius; bloom.threshold = CONFIG.BLOOM.threshold; 
-        composer.addPass(bloom); 
-        return { composer, bloom }; 
-    }
+    function setupLights() { scene.add(new THREE.AmbientLight(0xffffff, 0.4)); const spot = new THREE.SpotLight(0xD6C26A, 2.0); spot.position.set(5, 10, 5); scene.add(spot); const back = new THREE.DirectionalLight(0x4D8F48, 1.2); back.position.set(-5, 5, -5); scene.add(back); }
 
-    function setupAnimations(particles, solidLogoNew, bird) {
-        const pMat = particles.material; const newMat = solidLogoNew.material; const A = CONFIG.ANIMATION;
-        
+    function setupAnimations(particles, solidLogo, bird) {
+        const pMat = particles.material; const sMat = solidLogo.material;
+        gsap.fromTo('main', { opacity: 0 }, { opacity: 1, duration: 2, ease: "power2.out", delay: 0.5 });
         const introTl = gsap.timeline({delay: 0.5, onComplete: () => {gsap.to(".hero-countdown", {opacity:1, duration:1})} });
-        introTl.to(pMat.uniforms.uProgress, { value: 1.0, duration: A.fireDuration, ease: "power2.inOut" })
-               .to(newMat, { opacity: 1, duration: 1.5, ease: "power2.in" }, `-=1.5`)
-               .to(pMat.uniforms.uParticleOpacity, { value: 0, duration: 1.5 }, "<")
-               .to('main', { opacity: 1, duration: 1 }, `<-=${A.revealContentDelay}`)
+        
+        introTl.to(pMat.uniforms.uProgress, { value: 1.0, duration: 4.0, ease: "power2.inOut" })
+               .to(pMat.uniforms.uParticleOpacity, { value: 0, duration: 0.8 }, "-=1.0")
+               .to(sMat, { opacity: 1, duration: 0.8 }, "<") 
                .fromTo(gsap.utils.toArray('.hero-title .letter'), { opacity: 0, rotationX: -95, scaleY: 0, transformOrigin: "50% 100%" }, { opacity: 1, rotationX: 0, scaleY: 1, duration: 1.5, ease: "elastic.out(1, 0.6)", stagger: 0.04 }, "<+0.2")
                .fromTo(gsap.utils.toArray('.hero-date .date-char'), { opacity: 0, rotationX: 95, scaleY: 0, transformOrigin: "50% 0%" }, { opacity: 1, rotationX: 0, scaleY: 1, duration: 1.2, ease: "back.out(1.7)", stagger: 0.03 }, "<+0.1")
                .to('.fade-in-up', { opacity: 1, y: 0, duration: 1 }, "-=1");
-        
-        gsap.utils.toArray('.reveal-text').forEach(section => { 
-            gsap.fromTo(section, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: section, start: 'top 85%' } }); 
-        });
-        
+
         const heroTl = gsap.timeline({ scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: 1 }});
-        heroTl.to(newMat, { opacity: 0, duration: 0.1 })
-              .to("#hero-bg-image", { opacity: 0, duration: 0.5 }, "<")
-              .to(pMat.uniforms.uParticleOpacity, { value: 1.0, duration: 0.1 }, "<")
-              .to(pMat.uniforms.uExplode, { value: 1, duration: 1 })
-              .call(() => { bird.group.visible = true; }, null, "<0.2")
+        heroTl.to(sMat, { opacity: 0, duration: 0.1 }) 
+              .to(pMat.uniforms.uParticleOpacity, { value: 1, duration: 0.1 }, "<")
+              .to(pMat.uniforms.uExplode, { value: 1, duration: 1 }) 
+              .call(() => { bird.group.visible = true; }, null, "<0.1") 
               .fromTo(bird.group.scale, {x:0, y:0, z:0}, {x:1, y:1, z:1, duration: 0.8}, "<");
-        
-        const aboutTl = gsap.timeline({ scrollTrigger: { trigger: "#about-ishya", start: "top 70%", toggleActions: "play none none reverse" }});
-        aboutTl.to(".chat-question", { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.7)" })
-               .fromTo(".origami-sheet", { rotateX: -90, opacity: 0 }, { rotateX: 0, opacity: 1, duration: 1.5, ease: "expo.out" }, ">-0.2");
 
-        const lookAtTl = gsap.timeline({ scrollTrigger: { trigger: "#about-ishya", start: "top bottom", end: "bottom top", scrub: 1 }});
-        lookAtTl.to(bird.group.position, { x: isMobile? 0 : 4.5, y: -2, z: 1 }).to(bird.group.rotation, { y: 0.8, x: 0.2 }, "<");
-        
-        const eventsTl = gsap.timeline({ scrollTrigger: { trigger: "#events", start: "top bottom", end: "bottom top", scrub: 1.5 }});
-        eventsTl.to(bird.group.position, { x: isMobile? 0 : -3.5, y: 3, z: -2 }).to(bird.group.rotation, { y: -0.5, x: 0.1 }, "<");
-        
-        ScrollTrigger.create({ trigger: "#aftermovie", start: "top 70%", onEnter: () => { gsap.fromTo(".video-frame-wrapper", { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.2, ease: "expo.out" } ); } });
+        gsap.timeline({ scrollTrigger: { trigger: "#about-ishya", start: "top bottom", end: "center center", scrub: 1.5 }}).to(bird.group.position, { x: isMobile ? 0 : -6, y: -0.5, z: 2 }).to(bird.group.rotation, { y: -0.5, x: 0.2, z: 0 }, "<");
+        gsap.timeline({ scrollTrigger: { trigger: "#memories", start: "top bottom", end: "center center", scrub: 1.5 }}).to(bird.group.position, { x: isMobile ? 0 : 6, y: 0, z: 0 }).to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
+        gsap.timeline({ scrollTrigger: { trigger: "#events", start: "top bottom", end: "center center", scrub: 1.5 }}).to(bird.group.position, { x: isMobile ? 0 : -5.5, y: -0.5, z: 1 }).to(bird.group.rotation, { y: -0.6, x: 0.1, z: 0 }, "<");
+        gsap.timeline({ scrollTrigger: { trigger: "#proshows", start: "top bottom", end: "center center", scrub: 1.5 }}).to(bird.group.position, { x: isMobile ? 0 : 6, y: 0.5, z: -1 }).to(bird.group.rotation, { y: 0.8, x: 0.2, z: 0 }, "<");
 
-        const proshowBirdTl = gsap.timeline({ scrollTrigger: { trigger: "#proshows", start: "top bottom", end: "bottom top", scrub: 1.5, onUpdate: (self) => { bird.group.position.y = 1 + Math.sin(self.progress * Math.PI * 4) * 2; } }});
-        proshowBirdTl.to(bird.group.position, { z: -4, x: 0 })
-                     .to(birdMaterial.color, { r:77/255, g:143/255, b:72/255 }, "<") // Change to green
-                     .to(bird.group.scale, { x: 0.5, y: 0.5, z: 0.5}, "<");
-
-        // HEAVY ENTRANCE FOR PROSHOWS (Simplified on mobile)
         const proshowTl = gsap.timeline({ scrollTrigger: { trigger: "#proshows", start: "top 60%", end: "top 10%", scrub: 1 }});
-        
         if(!isMobile) {
             proshowTl.fromTo("#proshow-wrapper-1", { z: -800, x: -200, rotationY: -90, opacity: 0 }, { z: 0, x: 0, rotationY: 0, opacity: 1, ease: "power2.out" }, 0);
             proshowTl.fromTo("#proshow-wrapper-2", { z: -800, x: 200, rotationY: 90, opacity: 0 }, { z: 0, x: 0, rotationY: 0, opacity: 1, ease: "power2.out" }, 0.1 );
@@ -687,78 +696,63 @@
         }
     }
 
-    /* --- EVENTS LOGIC (Responsive) --- */
-    function initRocketFormation() {
-        const eventsData = [ { id: '01', title: 'MUDHRA', cat: 'Classical', img: 'https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?w=500&q=80' }, { id: '02', title: 'RHAPSODY', cat: 'Band', img: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=500&q=80' }, { id: '03', title: 'PANACHE', cat: 'Fashion', img: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=500&q=80' }, { id: '04', title: 'EUPHONY', cat: 'Singing', img: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=500&q=80' }, { id: '05', title: 'STEP UP', cat: 'Dance', img: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=500&q=80' }, { id: '06', title: 'ABHINAYA', cat: 'Drama', img: 'https://images.unsplash.com/photo-1533561052604-c3beb6d55760?w=500&q=80' } ];
-        
-        let currentIndex = 0;
-        const rockets = [ document.getElementById('rocket-1'), document.getElementById('rocket-2'), document.getElementById('rocket-3') ];
-        
-        function updateRocketContent(element, data) {
-            if(!data) return; 
-            element.querySelector('.rocket-img').src = data.img;
-            element.querySelector('.rocket-title').innerText = data.title;
-            element.querySelector('.rocket-cat').innerHTML = `<i class="fa-solid fa-star"></i> ${data.cat}`;
-            element.querySelector('.rocket-id').innerText = data.id;
+    function initEventScroll() {
+        const slider = document.getElementById('eventsTrack');
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        slider.addEventListener('mousedown', (e) => {
+            isDown = true;
+            slider.classList.add('active');
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        });
+        slider.addEventListener('mouseleave', () => { isDown = false; slider.classList.remove('active'); });
+        slider.addEventListener('mouseup', () => { isDown = false; slider.classList.remove('active'); });
+        slider.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 2; 
+            slider.scrollLeft = scrollLeft - walk;
+        });
+
+        // Simple tilt effect on mouse move over cards
+        const cards = document.querySelectorAll('.event-card-large');
+        if(!isMobile) {
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const rotateX = ((y / rect.height) - 0.5) * -10;
+                    const rotateY = ((x / rect.width) - 0.5) * 10;
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale(1)`;
+                });
+            });
         }
-
-        function playFormationCycle() {
-            updateRocketContent(rockets[0], eventsData[currentIndex]);
-            updateRocketContent(rockets[1], eventsData[(currentIndex + 1) % eventsData.length]);
-            updateRocketContent(rockets[2], eventsData[(currentIndex + 2) % eventsData.length]);
-
-            const tl = gsap.timeline({ onComplete: () => { currentIndex = (currentIndex + 3) % eventsData.length; playFormationCycle(); } });
-            
-            // If Mobile: Simple Fade In/Out cycle, no complex 3D transforms
-            if(isMobile) {
-                tl.fromTo(rockets, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1, stagger: 0.2 })
-                  .to({}, { duration: 3 })
-                  .to(rockets, { opacity: 0, y: -50, duration: 0.5 });
-                return;
-            }
-
-            // Desktop Complex Animation
-            const flapsLeft = rockets.map(r => r.querySelector('.flap.left'));
-            const flapsRight = rockets.map(r => r.querySelector('.flap.right'));
-            const contents = rockets.map(r => r.querySelector('.rocket-content'));
-
-            tl.set(rockets, { opacity: 1, z: -800, rotationY: 0, scale: 0.5 })
-              .set(rockets[0], { x: '-50vw', y: '-80vh', rotation: 160 }).set(rockets[1], { x: '0vw', y: '-80vh', rotation: 180 }).set(rockets[2], { x: '50vw', y: '-80vh', rotation: -160 })
-              .set([...flapsLeft, ...flapsRight], { rotationY: 0 })
-              .set(flapsLeft, { rotationY: 88 }).set(flapsRight, { rotationY: -88 })
-              .set(contents, { opacity: 0 });
-
-            tl.to(rockets, { x: 0, y: 0, z: 0, rotation: 0, scale: 1, duration: 1.8, ease: "power4.out", stagger: 0.1 });
-            tl.to(rockets, { rotation: -3, duration: 0.1, yoyo: true, repeat: 1, stagger: 0.05 }).to(rockets, { rotation: 0, duration: 0.1 });
-            tl.to([...flapsLeft, ...flapsRight], { rotationY: 0, duration: 0.8, ease: "back.out(1.2)" }, "+=0.1").to(contents, { opacity: 1, duration: 0.5 }, "<0.3");
-            tl.to({}, { duration: 4 });
-            tl.to(contents, { opacity: 0, duration: 0.3 }).to(flapsLeft, { rotationY: 88, duration: 0.5, ease: "power2.in" }, "<").to(flapsRight, { rotationY: -88, duration: 0.5, ease: "power2.in" }, "<").to(rockets, { x: '-40vw', y: '60vh', z: -200, rotation: -45, opacity: 0, duration: 1.2, ease: "power2.in", stagger: 0.05 });
-        }
-        playFormationCycle();
     }
 
     function setupInteractiveElements() {
-        // --- UPDATED DATE: March 13, 2026 ---
         const targetDate = new Date("March 13, 2026 00:00:00").getTime();
-        
-        const countdownInterval = setInterval(() => {
-            const now = new Date().getTime(); const distance = targetDate - now; if (distance < 0) { clearInterval(countdownInterval); return; }
-            document.getElementById('days').innerText = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
-            document.getElementById('hours').innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
-            document.getElementById('minutes').innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
-            document.getElementById('seconds').innerText = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+        setInterval(() => {
+            const now = new Date().getTime(); const distance = targetDate - now; 
+            if (distance > 0) {
+                document.getElementById('days').innerText = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+                document.getElementById('hours').innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+                document.getElementById('minutes').innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                document.getElementById('seconds').innerText = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+            }
         }, 1000);
-
-        // 3D Tilt - Disable on touch devices
         if (!isMobile) {
             const cards = document.querySelectorAll('.proshow-card');
             cards.forEach(card => {
                 card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left; const y = e.clientY - rect.top;
-                    const centerX = rect.width / 2; const centerY = rect.height / 2;
-                    const rotateX = ((y - centerY) / centerY) * -15; 
-                    const rotateY = ((x - centerX) / centerX) * 15;
+                    const rect = card.getBoundingClientRect(); const rotateX = ((e.clientY - rect.top - rect.height/2) / rect.height/2) * -15; const rotateY = ((e.clientX - rect.left - rect.width/2) / rect.width/2) * 15;
                     card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
                 });
                 card.addEventListener('mouseleave', () => { card.style.transform = `rotateX(0) rotateY(0) scale(1)`; });
@@ -767,21 +761,121 @@
     }
 
     function setupEventListeners() {
-        // Smooth Scroll with Lenis
         const lenis = new Lenis({ lerp: 0.1, smooth: true });
-        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-        requestAnimationFrame(raf);
-        
-        // Debounced Resize
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); } requestAnimationFrame(raf);
         let resizeTimeout;
-        window.addEventListener('resize', () => { 
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                 camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); 
-                 renderer.setSize(window.innerWidth, window.innerHeight); 
-            }, 100);
-        });
+        window.addEventListener('resize', () => { clearTimeout(resizeTimeout); resizeTimeout = setTimeout(() => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); }, 100); });
     }
 </script>   
+
+<!-- GREEN BACKGROUND ANIMATION -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const canvas = document.getElementById('animated-bg');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        
+        const COLORS = {
+            bg: 'rgba(5, 20, 8, 1)',         
+            trail: 'rgba(5, 20, 8, 0.08)',   
+            swirlGreen: 'rgba(77, 183, 72, 0.2)', 
+            swirlDark: 'rgba(30, 50, 20, 0.3)',   
+            gold: 'rgba(214, 194, 106, 0.4)',      
+            mandala: 'rgba(214, 194, 106, 0.15)'   
+        };
+
+        const particles = [];
+        const numParticles = 600; 
+        const noiseScale = 0.002;
+        let mandalas = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            
+            ctx.fillStyle = COLORS.bg;
+            ctx.fillRect(0, 0, width, height);
+
+            mandalas = [
+                new Mandala(width, 0, width * 0.3, -0.002, COLORS.mandala), 
+                new Mandala(0, height, width * 0.35, 0.0015, COLORS.mandala)
+            ];
+            
+            if (particles.length === 0) {
+                for(let i=0; i<numParticles; i++) particles.push(new FlowParticle());
+            }
+        }
+
+        function noise(x, y) { return Math.sin(x) * Math.cos(y); }
+
+        class FlowParticle {
+            constructor() {
+                this.x = Math.random() * width; this.y = Math.random() * height;
+                this.speed = Math.random() * 2 + 0.5; this.angle = 0;
+                this.size = Math.random() * 2.5 + 0.5;
+                this.color = Math.random() > 0.9 ? COLORS.gold : (Math.random() > 0.6 ? COLORS.swirlGreen : COLORS.swirlDark);
+            }
+            update() {
+                const n = noise(this.x * noiseScale, this.y * noiseScale);
+                this.angle = n * Math.PI * 4;
+                this.x += Math.cos(this.angle) * this.speed;
+                this.y += Math.sin(this.angle) * this.speed;
+                if (this.x < 0) this.x = width; if (this.x > width) this.x = 0;
+                if (this.y < 0) this.y = height; if (this.y > height) this.y = 0;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        class Mandala {
+            constructor(x, y, radius, speed, color) {
+                this.x = x; this.y = y; this.radius = radius;
+                this.speed = speed; this.angle = 0; this.color = color;
+            }
+            update() { this.angle += this.speed; }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 1.5; 
+                const petals = 12;
+                for (let i = 0; i < petals; i++) {
+                    ctx.rotate(Math.PI * 2 / petals);
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.quadraticCurveTo(this.radius * 0.5, this.radius * 0.5, 0, this.radius);
+                    ctx.quadraticCurveTo(-this.radius * 0.5, this.radius * 0.5, 0, 0);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.arc(0, this.radius * 0.7, this.radius * 0.05, 0, Math.PI * 2);
+                    ctx.fillStyle = COLORS.gold;
+                    ctx.fill();
+                }
+                ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 2); ctx.stroke();
+                ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.9, 0, Math.PI * 2); ctx.stroke();
+                ctx.restore();
+            }
+        }
+
+        function animate() {
+            ctx.fillStyle = COLORS.trail;
+            ctx.fillRect(0, 0, width, height);
+            mandalas.forEach(m => { m.update(); m.draw(); });
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        animate();
+    });
+</script>
+
 </body>
 </html>
