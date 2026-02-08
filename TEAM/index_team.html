@@ -264,6 +264,20 @@
                 min-height: 350px;
                 min-width: 300px;
             }
+            
+            .department-section:has(.team-card:nth-child(3):last-child) .team-card{
+            min-height: 400px;
+            max-height: 400px;
+            min-width: 400px;
+            max-width: 400px;
+            }
+
+            .department-section:has(.team-card:nth-child(2):last-child) .team-card{
+            min-height: 400px;
+            max-height: 400px;
+            min-width: 400px;
+            max-width: 400px;
+            }
 
             .team-card img {
                 object-fit: cover;
@@ -661,6 +675,16 @@
                 box-shadow: 0 15px 40px rgba(212, 198, 133, 0.25);
                 transition: all 0.4s ease;
                 position: relative;
+            }
+
+            .department-section:has(.team-card:nth-child(3):last-child) .element-avatar{
+            width: 200px;
+            height: 200px;
+            }
+            
+            .department-section:has(.team-card:nth-child(2):last-child) .element-avatar{
+            width: 200px;
+            height: 200px;
             }
     
             .team-card:hover .element-avatar {
