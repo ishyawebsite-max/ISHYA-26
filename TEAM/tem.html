@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+    <head>
+        <link rel="shortcut icon" type="image/x-icon" href="../Logo Ishya.ico">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <title>Team</title>
+        <link rel="stylesheet" href="style.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Fontdiner+Swanky&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Texturina&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Jim+Nightshade&display=swap" rel="stylesheet">
+        <script src="https://accounts.google.com/gsi/client" async defer></script>
+        <!-- this is the script for header -->
+        <style>
+            /* --- CSS Variables --- */
+    
+            body{
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                font-family: 'Poppins', sans-serif;
+                color: var(--text-color);
+                line-height: 1.6;
+                overflow-x: hidden; /* Prevent horizontal scroll */
+                background-color: #000;
+            }
+            html {
+                scroll-snap-type: y mandatory;
+                scroll-behavior: smooth;
+                overflow-y: scroll;
+                height: 100%;
+                overflow-x: hidden;
+            }
+    
+            header {
+                scroll-snap-align: start;
+            }
+
+            #rainCanvas {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 3; /* Puts the canvas BEHIND other content */
+                pointer-events: none; /* Allows clicking through the canvas */
+                background-color: black; /* The base black color */
+                display: block; /* Removes tiny scrollbars sometimes caused by canvas */
+            }
+    
+            /* --- Floating Elements --- */
+            .floating-element {
+                position: fixed;
+                border-radius: 50%;
+                opacity: 0.05;
+                pointer-events: none;
+                z-index: -1;
+            }
+    
+            .element-1 {
+                width: 300px;
+                height: 300px;
+                top: 10%;
+                left: 5%;
+                background: var(--primary-color);
+                animation: float 8s ease-in-out infinite;
+            }
+    
+            .element-2 {
+                width: 200px;
+                height: 200px;
+                bottom: 20%;
+                right: 10%;
+                background: var(--accent-purple);
+                animation: float 10s ease-in-out infinite 1s;
+            }
+    
+            .element-3 {
+                width: 250px;
+                height: 250px;
+                top: 50%;
+                right: 5%;
+                background: var(--secondary-color);
+                animation: float 12s ease-in-out infinite 2s;
+            }
+    
+            @keyframes float {
+                0%, 100% { transform: translate(0, 0); }
+                50% { transform: translate(30px, 30px); }
+            }
+    
+            /* --- Main Container --- */
+            .container {
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 0 20px 60px;
+                position: relative;
+                z-index: 5;
+                overflow: visible;
+            }
+    
+            /* --- Section Titles --- */
+            .section-title {
+                text-align: center;
+                margin-bottom: 50px;
+                position: relative;                
+            }
+    
+            .section-title h2 {
+                font-family: 'Michroma';
+                font-size: 3rem;
+                color: var(--text-secondary);
+                text-transform: uppercase;
+                letter-spacing: 3px;
+                margin-bottom: 15px;
+                position: relative;
+                display: inline-block;
+                word-wrap: break-word; /* Prevents long words from breaking layout */
+            }
+    
+            .section-title .line {
+                width: 100px;
+                height: 3px;
+                background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+                margin: 0 auto;
+                border-radius: 2px;
+                animation: expandWidth 0.8s ease-out;
+            }
+    
+            @keyframes expandWidth {
+                from { width: 0; }
+                to { width: 100px; }
+            }
+    
+            /* --- Team Grid --- */
+            .team-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Optimized for mobile width */
+                gap: 30px;
+                margin-bottom: 80px;
+                justify-items: center;
+                width: 100%;
+            }
+    
+            /* --- Team Card --- */
+            .team-card {
+                position: relative;
+                background: var(--card-bg);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(216, 212, 207, 0.2);
+                border-radius: 20px;
+                padding: 20px;
+                padding-top: 40px;
+                text-align: center;
+                transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+                overflow: hidden;
+                cursor: pointer;
+                animation: fadeInUp 0.6s ease-out both;
+                
+                /* OPTIMIZED SIZE SETTINGS */
+                width: 100%;
+                max-width: 400px;
+                min-height: 400px;
+                /* Removed fixed min-width: 400px which breaks mobile */
+            }
+
+            .team-card img {
+                object-fit: cover;
+                size: contain;
+                position: center;
+                border-radius: 50%;
+                width: 70%;
+            }
+
+            .team-card:nth-child(1) { animation-delay: 0.1s; }
+            .team-card:nth-child(2) { animation-delay: 0.2s; }
+            .team-card:nth-child(3) { animation-delay: 0.3s; }
+            .team-card:nth-child(4) { animation-delay: 0.4s; }
+            .team-card:nth-child(5) { animation-delay: 0.5s; }
+            .team-card:nth-child(6) { animation-delay: 0.6s; }
+    
+            @keyframes fadeInUp {
+                from { opacity: 0; transform: translateY(50px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+    
+            .team-card::before {
+                content: '';
+                position: absolute;
+                top: -2px;
+                left: 0;
+                right: 0;
+                height: 2px;
+                background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), transparent);
+                opacity: 0;
+                transition: opacity 0.4s ease;
+            }
+    
+            .team-card:hover::before { opacity: 1; }
+    
+            .team-card:hover {
+                border-color: rgba(64, 66, 67, 0.5);
+                transform: translateY(-20px);
+                box-shadow: 0px 0px 20px 1px #ffbb763f;
+                border: 1px solid rgba(255, 255, 255, 0.454);
+            }
+    
+            /* --- Team Member Avatar --- */
+            .member-avatar {
+                width: 170px;
+                height: 170px;
+                margin: 0 auto 20px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 50px;
+                box-shadow: 0 10px 30px rgba(212, 198, 133, 0.2);
+                transition: all 0.4s ease;
+                position: relative;
+                overflow: hidden;
+            }
+    
+            .team-card:hover .member-avatar {
+                transform: scale(1.1) rotate(5deg);
+                box-shadow: 0 15px 50px rgba(212, 198, 133, 0.4);
+            }
+    
+            .member-avatar::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+                animation: shimmer 3s infinite;
+            }
+    
+            @keyframes shimmer {
+                0% { transform: translate(-100%, -100%); }
+                100% { transform: translate(100%, 100%); }
+            }
+    
+            /* --- Department Section --- */
+            .department-section {
+                margin-bottom: 0px;
+                scroll-snap-align: start;
+                scroll-snap-stop: normal;
+                scroll-margin-top: 0px;
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                width: 100vw;
+                position: relative;
+                left: 50%;
+                right: 50%;
+                margin-left: -50vw;
+                margin-right: -50vw;
+                padding: 50px;
+                min-height: 100vh; /* Changed from height to min-height */
+                height: auto;
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+            .leadership-section.department-section{ background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('../Images_BG/leadership.png') center/cover fixed; }
+            .decoration-section.department-section{ background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('../Images_BG/decoration.png') center/cover fixed; }
+            .finance-section.department-section{ background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url("../Images_BG/finance.png") center/cover fixed; }
+            .design-section.department-section{ background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('../Images_BG/design.png') center/cover fixed; }            
+            .anchoring-section.department-section{ background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('../Images_BG/anchoring.png') center/cover fixed; }
+            .socialmedia-section.department-section{ background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('../Images_BG/socialmedia.png') center/cover fixed; }
+            .hospitality-section.department-section{ background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('../Images_BG/hospitality.png') center/cover fixed; }
+            .informals-section.department-section{ background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('../Images_BG/informals.png') center/cover fixed; }
+            .judges-section.department-section{ background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('../Images_BG/judges.png') center/cover fixed; }            
+            .events-section.department-section{ background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('../Images_BG/events.png') center/cover fixed; }
+            .media-section.department-section{ background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('../Images_BG/media.png') center/cover fixed; }
+            .merchandise-section.department-section{ background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('../Images_BG/merchandise.png') center/cover fixed; }
+            .production-section.department-section{ background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('../Images_BG/production.png') center/cover fixed; }  
+            .proshow-section.department-section{ background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('../Images_BG/proshow.png') center/cover fixed; }  
+            .outreach-section.department-section{ background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('../Images_BG/outreach.png') center/cover fixed; }                                
+            .sponsorship-section.department-section{ background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('../Images_BG/sponsorship.png') center/cover fixed; }   
+            .technical-section.department-section{ background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('../Images_BG/website.png') center/cover fixed; }
+            .advisory-section.department-section{ background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('../Images_BG/advisory.png') center/cover fixed; }
+            .stall-section.department-section{ background:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url('../Images_BG/stalls.png') center/cover fixed; }
+            
+            /* Team Card Styling */
+            .team-card {
+                background: linear-gradient(135deg, rgba(212, 198, 133, 0.1), rgba(139, 92, 246, 0.1));
+                border: 1px solid rgba(55, 54, 46, 0.3);
+                border-radius: 20px;
+                padding: 30px;
+                text-align: center;
+                margin-bottom: 20px;
+                backdrop-filter: blur(10px);
+                transition: all 0.4s ease;
+                position: relative;
+                overflow: hidden;
+            }
+    
+            .team-card::before {
+                content: '';
+                position: absolute;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: linear-gradient(135deg, rgba(212, 198, 133, 0.1), transparent);
+                opacity: 0;
+                transition: opacity 0.4s ease;
+                pointer-events: none;
+            }
+    
+            .team-card:hover {
+                transform: translateY(-15px);
+                border-color: rgba(177, 155, 172, 0.6);
+                box-shadow: 0 20px 60px rgba(212, 198, 133, 0.15);
+            }
+    
+            .team-card:hover::before { opacity: 1; }
+    
+            .element-avatar {
+                width: 150px; /* Slightly smaller for better response */
+                height: 150px;
+                margin: 0 auto 20px;
+                border-radius: 50%;
+                background: conic-gradient(from 0deg, var(--primary-color), var(--accent-purple), var(--secondary-color), var(--primary-color));
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                font-size: 60px;
+                box-shadow: 0 15px 40px rgba(212, 198, 133, 0.25);
+                transition: all 0.4s ease;
+                position: relative;
+            }
+    
+            .team-card:hover .element-avatar {
+                transform: scale(1.15) rotateY(10deg);
+                box-shadow: 0 20px 60px rgba(212, 198, 133, 0.4);
+            }
+    
+            .element-name {
+                font-size: 1.4rem;
+                font-weight: 700;
+                color: var(--primary-color);
+                margin-bottom: 8px;
+            }
+    
+            .element-title {
+                font-size: 1rem;
+                color: var(--secondary-color);
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                font-weight: 600;
+                margin-bottom: 15px;
+            }
+    
+            /* --- Stats Section --- */
+            .stats-section {
+                width: 100vw;
+                position: relative;
+                left: 50%;
+                right: 50%;
+                margin-left: -50vw;
+                margin-right: -50vw;
+                background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../logo_old.png');
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
+                background-attachment: fixed;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 30px;
+                padding: 100px 20px;
+                margin-bottom: 0px;
+                min-height: 100vh;
+                box-sizing: border-box;
+                scroll-snap-align: start;
+                scroll-snap-stop: normal;
+            }
+    
+            .stats-section .section-title {
+                flex-basis: 100%;
+                text-align: center;
+                margin-bottom: 40px;
+            }
+    
+            .stat-card {
+                border-radius: 50%;
+                width: 180px;
+                height: 180px;
+                margin: 0 auto;
+                background: var(--card-bg);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(212, 198, 133, 0.2);
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                transition: all 0.4s ease;
+                cursor: pointer;
+            }
+    
+            .stat-card:hover {
+                border-color: rgba(212, 198, 133, 0.5);
+                box-shadow: 0 15px 40px rgba(212, 198, 133, 0.2);
+                transform: translateY(-10px);
+            }
+    
+            .stat-number {
+                font-family: 'Michroma';
+                font-size: 2rem;
+                font-weight: 700;
+                color: var(--text-color);
+                margin-bottom: 5px;
+            }
+    
+            .stat-label {
+                font-size: 0.8rem;
+                color: var(--text-secondary);
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+            }
+    
+            .aurora-textnew {
+                background-image: linear-gradient(to right, #9fd0d6 0%, #72d7d4 50%, #a6d5af 100%);
+                background-size: 200% auto;
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent !important;
+                filter: drop-shadow(0 0 10px rgba(236, 162, 71, 0.5));
+                animation: shine 3s linear infinite;
+            }
+
+            @keyframes shine { to { background-position: 200% center; } }
+            
+            #scroll-down-btn {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                background: var(--primary-color);
+                color: white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                z-index: 1000;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            }
+
+            #scroll-down-btn:hover {
+                background: var(--secondary-color);
+                transform: scale(1.1);
+            }
+
+            /* --- RESPONSIVE OPTIMIZATIONS --- */
+            @media (max-width: 768px) {
+                /* Disable scroll snap on mobile as it locks content when sections are tall */
+                html {
+                    scroll-snap-type: none;
+                    height: auto;
+                }
+
+                .container {
+                    padding: 0 15px 40px;
+                }
+    
+                .section-title h2 {
+                    font-size: 1.8rem;
+                    line-height: 1.3;
+                }
+                
+                .aurora-textnew {
+                     font-size: 2.5rem !important; /* Force resize for the main title */
+                }
+    
+                .team-grid {
+                    /* On mobile, 1 column usually looks best, or strict 2-col if cards are small. */
+                    grid-template-columns: 1fr;
+                    gap: 30px;
+                    width: 100%;
+                }
+                
+                /* CRITICAL MOBILE FIX: Remove rigid dimensions */
+                .team-card {
+                    padding: 25px;
+                    min-width: unset; 
+                    width: 100%;
+                    max-width: 340px; /* Keeps cards looking nice on phones */
+                    min-height: auto;
+                    margin: 0 auto;
+                }
+                
+                /* Adjust spacing inside department sections */
+                .department-section {
+                    padding: 60px 20px; /* Give more breathing room */
+                    background-attachment: scroll !important; /* Fixes background disappearing on iOS */
+                    background-size: cover;
+                    height: auto; /* Allow height to grow with content */
+                    min-height: 100vh;
+                    scroll-snap-align: none;
+                }
+
+                /* Leadership and other BG images might need overlay adjustment */
+                .leadership-section.department-section, 
+                .department-section {
+                     background-position: center;
+                }
+    
+                .member-avatar, .element-avatar {
+                    width: 140px;
+                    height: 140px;
+                }
+    
+                .stats-section {
+                    gap: 20px;
+                    padding: 60px 15px;
+                    height: auto;
+                    min-height: auto;
+                    background-attachment: scroll;
+                }
+                
+                .stat-card {
+                    width: 140px;
+                    height: 140px;
+                }
+
+                /* Floating elements can be distracting on mobile */
+                .floating-element {
+                    display: none; 
+                }
+            }
+    
+            @media (max-width: 480px) {
+                .section-title h2 { font-size: 1.5rem; }
+                .element-name { font-size: 1.2rem; }
+                .element-title { font-size: 0.8rem; }
+            }
+        </style>
+    </head>
+    
+    <body>
+        <canvas id="rainCanvas"></canvas>
+        <div id="app" class="container">
+            <!-- Floating Elements -->
+            <div class="floating-element element-1"></div>
+            <div class="floating-element element-2"></div>
+            <div class="floating-element element-3"></div>
+    
+            <!-- Main Content -->
+            <main>
+                <div class="container">
+                    <!-- Stats Section -->
+                   
+                    <div class="stats-section section-title">    
+                        <div class="section-title">
+                            <h2 class="aurora-textnew" style="font-family: 'Michroma';">The ISHYA Family</h2>
+                            <div class="line"></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"></div>
+                            <div class="stat-number">50+</div>
+                            <div class="stat-label">Members</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"></div>
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Dedication</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"></div>
+                            <div class="stat-number">∞</div>
+                            <div class="stat-label">Creativity</div>
+                        </div>
+                    </div>
+    
+                    <!-- Leadership Section -->
+                    <div class="leadership-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Leadership</h2>
+                            <div class="line"></div>
+                        </div>
+                        <br>
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/hridya.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Hridya Hareesh</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Convener - ISHYA 26</div>                                
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/annrose.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Ann Rose Saji</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co - Convener - ISHYA 26</div>                               
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Raniya</div>
+                                <div class="element-title" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Co - Convener - ISHYA 26</div>                               
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advisory Section -->
+                    <div class="advisory-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Advisory Committee</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/gayathribinu.png" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Gayathri Binu</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/dheeraj.png" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dheeraj R</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/sreerag.png" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Sreerag</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Decoration Section -->
+                    <div class="decoration-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Decoration Team</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/adithye.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Adithye M Ajai</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/amisha.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Amisha A K</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/sudeshna.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Sudeshna P D</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Design Section -->
+                    <div class="design-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Design Team</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/ananthika.JPG" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Ananthika Sajith</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/emylin.png" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Emylin Mary</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/nandhana.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Nandhana T S</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Events Section -->
+                    <div class="events-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Events Team</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/pranav.jpeg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Pranav M</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/ajumiya.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Ajumiya Ashraf</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/ardra.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Ardra S</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/rohit.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Rohit</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hospitality Section -->
+                    <div class="hospitality-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Hospitality Team</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/avanthika.jpeg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Avanthika</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/adarsh.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Adarsh A</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/ramith.jpeg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Ramith Krishna Enoth</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/devanath.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Devanath M</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stalls Section -->
+                    <div class="stalls-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Stall Management</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/maheshwar.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Maheshwar Sajith P</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/adarsh.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Sidharth S Krishna</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/fidel.jpeg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Fidel N Sharaf</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Informals Section -->
+                    <div class="informals-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>ISHYA Informals Team</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/ananya.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Ananya J R</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/abhirag.jpeg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Abhirag A</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/aswathy.png" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Aswathy Sunil</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Judges Section -->
+                    <div class="judges-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Judges Management Team</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/gowri_nair.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Gowri S Nair</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/gopika_krishnan.jpeg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Gopika R Krishnan</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/athul.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>S Athtul Krishna</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/aleena.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Aleena Sabu Koshy</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Media Section -->
+                    <div class="media-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Media Team</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/angel.png" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Angel CJ</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/sreelekshmi.jpeg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Sreelekshmi S</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/dummy.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Olivia</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/dummy.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Ameen</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Merchandise Section -->
+                    <div class="merchandise-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Merchandise Team</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/karthik.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>C Karthik Krishna</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/gowri_ramesh.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Gowri S Ramesh</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/alga.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Alga M D</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sponsorship Section -->
+                    <div class="sponsorship-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Sponsorship Team</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/riswan.png" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Riswan</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Dummy</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PR and Outreach Section -->
+                    <div class="outreach-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>PR and Outreach Team</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/gouri.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Gouri M</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/gopika_krishna.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Gopika Krishna J</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/sreelakshmi.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Sreelakshmi V V</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Media Section -->
+                    <div class="socialmedia-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Social Media Team</h2>                            
+                        </div>
+                        <br>
+                        
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/aswath.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Aswath Vinod M</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/samarth.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Samarth V</div>
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/harshwin.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ;color: var(--text-secondary)";>Harshwin M</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Anchoring Section -->
+                    <div class="anchoring-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Content and Anchoring Team</h2>
+                            <div class="line"></div>
+                        </div>
+                        <br>
+
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/fathima_basheer.jpeg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Fathima Basheer</div>
+                               
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/dhriti.jpeg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Dhriti A Bengalore</div>
+                               
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/annrose.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Ann Rose Saji</div>
+                               
+                            </div>
+                        </div>
+                    </div>  
+
+                   <!-- Production Section -->
+                    <div class="production-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Production Team</h2>
+                            <div class="line"></div>
+                        </div>
+                        <br>
+
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/jefrin.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Jefrin</div>
+                               
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/aashique.jpeg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Aashique M A</div>                               
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Proshow and crowd management Section -->
+                    <div class="proshow-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Proshow and Crowd Management Team</h2>
+                            <div class="line"></div>
+                        </div>
+                        <br>
+
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/ashmith.png" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Ashmith S S</div>
+                               
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/ajin.jpeg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Ajin V L</div>
+                               
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/akash.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Akash S Ajith</div>
+                               
+                            </div>
+                        </div>
+                    </div>  
+
+                    <!-- Finance Section -->
+                    <div class="finance-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Finance</h2>
+                            <div class="line"></div>
+                        </div>
+                        <br>
+                       
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/farhana.jpeg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Fathima Farhana Vailassari</div>
+                               
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/jerome.JPG" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Jerome Baspin</div>
+                               
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/ashin.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Ashin Saj P</div>
+                               
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Website Section -->
+                    <div class="technical-section department-section">
+                        <br><br>
+                        <div class="section-title">
+                            <h2>Website Team</h2>
+                            <div class="line"></div>
+                        </div>
+                        <br>
+
+                        <div class="team-grid">
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/eldho.png" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Eldho Sam Varghese</div>
+                               
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/nikhil.jpeg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Nikhil Raju Manjooran</div>
+                               
+                            </div>
+                            <div class="team-card">
+                                <div class="element-avatar"><img src="../Heads_Photos/aditya.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="img_err"></div>
+                                <br>
+                                <div class="element-name" style="font-family:'Michroma' ; color: var(--text-secondary)" ;>Aditya Katti</div>
+                               
+                            </div>
+                        </div>
+                    </div>  
+                </div>
+            </main>
+        </div>
+        <div id="scroll-down-btn" onclick="scrollToNextSection()">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <script src="script.js"></script>
+        <script>
+
+            const canvas = document.getElementById('rainCanvas');
+            const ctx = canvas.getContext('2d');
+
+            let canvasWidth = window.innerWidth;
+            let canvasHeight = window.innerHeight;
+
+            // Set canvas dimensions to match window size
+            function setCanvasSize() {
+                canvasWidth = window.innerWidth;
+                canvasHeight = window.innerHeight;
+                canvas.width = canvasWidth;
+                canvas.height = canvasHeight;
+            }
+
+            setCanvasSize();
+            // Ensure canvas resizes if the user changes window size
+            window.addEventListener('resize', setCanvasSize);
+
+            // Configuration settings used to tune the look
+            const settings = {
+                particleCount: 150,   // How many lines are on screen at once
+                minSpeed: 2,          // Slowest falling speed
+                maxSpeed: 4,          // Fastest falling speed
+                minLength: 5,         // Shortest line length
+                maxLength: 20,        // Longest line length
+                color: 'rgba(255, 255, 255, 0.5)', // Semi-transparent white looks best
+                lineWidth: 1.5        // How thick the lines are
+            };
+
+            // Array to store our line particles
+            let particles = [];
+
+            // Class to define a single falling line
+            class Particle {
+                constructor() {
+                    this.reset();
+                    // Start Y at a random position on screen initially so they don't all start at top
+                    this.y = Math.random() * canvasHeight;
+                }
+            
+                reset() {
+                    // Reset to top of screen with random X, speed, and length
+                    this.x = Math.random() * canvasWidth;
+                    this.y = -Math.random() * 100; // Start slightly off-screen top
+                    this.speed = settings.minSpeed + Math.random() * (settings.maxSpeed - settings.minSpeed);
+                    this.length = settings.minLength + Math.random() * (settings.maxLength - settings.minLength);
+                    this.opacity = (Math.random() * 0.5) + 0.2; // Random opacity between 0.2 and 0.7
+                }
+            
+                update() {
+                    // Move down based on speed
+                    this.y += this.speed;
+                
+                    // If it goes past the bottom of the screen, reset it to the top
+                    if (this.y > canvasHeight + this.length) {
+                        this.reset();
+                    }
+                }
+            
+                draw() {
+                    ctx.beginPath();
+                    // Start point of line
+                    ctx.moveTo(this.x, this.y);
+                    // End point of line (y + length)
+                    ctx.lineTo(this.x, this.y + this.length);
+
+                    ctx.strokeStyle = `rgba(200, 200, 255, ${this.opacity})`; // Slight blue tint looks nice
+                    ctx.lineWidth = settings.lineWidth;
+                    // Round line caps make them look smoother
+                    ctx.lineCap = 'round';
+                    ctx.stroke();
+                }
+            }
+
+            // Initialize particles
+            function initParticles() {
+                particles = [];
+                for (let i = 0; i < settings.particleCount; i++) {
+                    particles.push(new Particle());
+                }
+            }
+
+            // The animation loop function
+            function animate() {
+                // 1. Clear the entire canvas for the next frame
+                ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            
+                // 2. Loop through every particle, update its position, and draw it
+                particles.forEach(particle => {
+                    particle.update();
+                    particle.draw();
+                });
+            
+                // 3. Request the next animation frame
+                requestAnimationFrame(animate);
+            }
+
+            // Start everything
+            initParticles();
+            animate();
+
+            // Smooth scroll behavior
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+    
+            // Intersection Observer for animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -100px 0px'
+            };
+    
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+    
+            // Observe all team cards
+            document.querySelectorAll('.team-card, .team-card, .stat-card').forEach(card => {
+                observer.observe(card);
+            });
+    
+            // Counter animation for stats
+            function animateCounter(element, target, duration = 2000) {
+                let current = 0;
+                const increment = target / (duration / 16);
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        element.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        element.textContent = Math.floor(current);
+                    }
+                }, 16);
+            }
+    
+            // Trigger counter animation on scroll
+            const statNumbers = document.querySelectorAll('.stat-number');
+            const statsSection = document.querySelector('.stats-section');
+    
+            const statsObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !entry.target.animated) {
+                        entry.target.animated = true;
+                        statNumbers.forEach(num => {
+                            const value = parseInt(num.textContent);
+                            if (!isNaN(value)) {
+                                animateCounter(num, value);
+                            }
+                        });
+                    }
+                });
+            }, { threshold: 0.5 });
+    
+            if (statsSection) {
+                statsObserver.observe(statsSection);
+            }
+
+            function scrollToNextSection() {
+                const sections = document.querySelectorAll('.stats-section, .department-section');
+                let currentIndex = -1;
+                // Use a smaller tolerance for mobile scrolling
+                const tolerance = window.innerWidth < 768 ? window.innerHeight * 0.2 : window.innerHeight / 2;
+
+                for (let i = 0; i < sections.length; i++) {
+                    const rect = sections[i].getBoundingClientRect();
+                    // Check if the element is roughly in the viewport
+                    if (rect.top <= tolerance && rect.bottom >= tolerance) {
+                        currentIndex = i;
+                        break;
+                    }
+                }
+                
+                if (currentIndex === -1) {
+                    // Fallback: find the first section that is below the top of viewport
+                    for (let i = 0; i < sections.length; i++) {
+                        if (sections[i].getBoundingClientRect().top > 0) {
+                            currentIndex = i - 1;
+                            break;
+                        }
+                    }
+                    if (currentIndex < 0) currentIndex = 0;
+                }
+                
+                const nextIndex = (currentIndex + 1) % sections.length;
+                sections[nextIndex].scrollIntoView({ behavior: 'smooth' });
+            }
+        </script>
+        <script>
+            fetch('/ISHYA-26/header.html')
+                .then(response => response.text())
+                .then(data => {
+                    // Create a temporary container
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = data;
+                    // Extract the script tag from the loaded HTML
+                    const script = tempDiv.querySelector('script');
+                    // Insert the HTML at the very top of the body (First Child)
+                    document.body.prepend(tempDiv);
+                    // Execute the extracted script manually
+                    if (script) {
+                        const newScript = document.createElement('script');
+                        newScript.textContent = script.textContent;
+                        document.body.appendChild(newScript);
+                    }
+                })
+                .catch(err => console.error('Error loading header:', err));
+        </script>
+    </body>
+    
+</html>
