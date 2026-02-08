@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+    <head>
+        <link rel="shortcut icon" type="image/x-icon" href="../Logo Ishya.ico">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Team | Ishya '26</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Michroma&family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        
+        <style>
+            /* --- 1. PALETTE & VARIABLES --- */
+            :root {
+                --bg-void: #060606;       /* Deepest Black */
+                --bg-fold: #181C10;       /* Dark Greenish Black (Card BG) */
+                --gold-flame: #D6C26A;    /* Primary Accent/Text */
+                --olive-shadow: #3D4324;  /* Secondary Accent */
+                --leaf-spark: #4D8F48;    /* Highlight */
+                --text-main: #f0f0f0;
+                
+                --font-header: 'Michroma', sans-serif;
+                --font-body: 'Poppins', sans-serif;
+                --font-deco: 'Cinzel Decorative', cursive;
+
+                --origami-clip: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);
+                --origami-clip-img: polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%);
+            }
+    
+            /* --- 2. GLOBAL RESET & BODY --- */
+            body {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                font-family: var(--font-body);
+                background-color: var(--bg-void);
+                color: var(--text-main);
+                line-height: 1.6;
+                overflow-x: hidden;
+            }
+
+            html {
+                scroll-behavior: smooth;
+                overflow-x: hidden;
+            }
+
+            /* --- 3. CANVAS (EMBER EFFECT) --- */
+            #emberCanvas {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: -1;
+                pointer-events: none;
+                background: radial-gradient(circle at bottom, #1a1e12 0%, #060606 70%);
+            }
+
+            /* --- 4. TYPOGRAPHY & TITLES --- */
+            h1, h2, h3 {
+                margin: 0;
+                font-weight: normal;
+            }
+
+            .section-title {
+                text-align: center;
+                margin-bottom: 60px;
+                position: relative;
+                z-index: 2;
+                padding-top: 40px;
+            }
+    
+            .section-title h2 {
+                font-family: var(--font-header);
+                font-size: 2.5rem;
+                text-transform: uppercase;
+                letter-spacing: 4px;
+                background: linear-gradient(to bottom, var(--gold-flame), var(--leaf-spark));
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                filter: drop-shadow(0px 0px 10px rgba(214, 194, 106, 0.3));
+                position: relative;
+                display: inline-block;
+            }
+
+            /* Flame Underline */
+            .section-title .line {
+                width: 0;
+                height: 4px;
+                background: linear-gradient(90deg, transparent, var(--gold-flame), transparent);
+                margin: 15px auto 0;
+                animation: expandLine 1s ease-out forwards;
+                box-shadow: 0 0 15px var(--gold-flame);
+            }
+
+            @keyframes expandLine {
+                to { width: 150px; }
+            }
+
+            /* --- 5. LAYOUT CONTAINERS --- */
+            .container {
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 0 20px 100px;
+                position: relative;
+                z-index: 5;
+            }
+            
+            /* The parallax section logic preserved but styled */
+            .department-section {
+                min-height: 100vh;
+                width: 100%;
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                /* justify-content: center;  Removed to allow scrolling if content is long */
+                padding: 80px 20px;
+                box-sizing: border-box;
+                
+                /* Dark Overlay to make text readable over images */
+                background-blend-mode: overlay;
+                background-color: rgba(6, 6, 6, 0.85); 
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                border-bottom: 1px solid var(--olive-shadow);
+            }
+
+            /* Specific Backgrounds (Images need to exist in your folder) */
+            /* Using gradients as fallback if images fail */
+            .leadership-section { background-image: url('../Images_BG/leadership.png'); }
+            .advisory-section { background-image: url('../Images_BG/advisory.png'); }
+            .decoration-section { background-image: url('../Images_BG/decoration.png'); }
+            .finance-section { background-image: url('../Images_BG/finance.png'); }
+            .design-section { background-image: url('../Images_BG/design.png'); }
+            .anchoring-section { background-image: url('../Images_BG/anchoring.png'); }
+            .socialmedia-section { background-image: url('../Images_BG/socialmedia.png'); }
+            .hospitality-section { background-image: url('../Images_BG/hospitality.png'); }
+            .informals-section { background-image: url('../Images_BG/informals.png'); }
+            .judges-section { background-image: url('../Images_BG/judges.png'); }
+            .events-section { background-image: url('../Images_BG/events.png'); }
+            .media-section { background-image: url('../Images_BG/media.png'); }
+            .merchandise-section { background-image: url('../Images_BG/merchandise.png'); }
+            .production-section { background-image: url('../Images_BG/production.png'); }
+            .proshow-section { background-image: url('../Images_BG/proshow.png'); }
+            .outreach-section { background-image: url('../Images_BG/outreach.png'); }
+            .sponsorship-section { background-image: url('../Images_BG/sponsorship.png'); }
+            .technical-section { background-image: url('../Images_BG/website.png'); }
+            .stall-section { background-image: url('../Images_BG/stalls.png'); }
+
+            /* --- 6. THE ORIGAMI TEAM CARD (REDESIGNED) --- */
+            .team-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 320px));
+                gap: 40px;
+                justify-content: center;
+                width: 100%;
+                perspective: 1000px;
+            }
+
+            .team-card {
+                position: relative;
+                width: 100%;
+                height: 420px;
+                background: var(--bg-fold);
+                /* The Folded Shape */
+                clip-path: var(--origami-clip); 
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+                border: 1px solid rgba(214, 194, 106, 0.1);
+                overflow: hidden;
+            }
+
+            /* Golden Border Effect via Pseudo-element (since clip-path clips borders) */
+            .team-card::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(135deg, var(--gold-flame), transparent 40%, transparent 60%, var(--leaf-spark));
+                z-index: 1;
+                opacity: 0.3;
+                transition: opacity 0.4s;
+                pointer-events: none;
+            }
+
+            /* Image Container - High Ratio */
+            .element-avatar {
+                width: 100%;
+                height: 65%; /* Takes up top 65% of card */
+                position: relative;
+                z-index: 2;
+                overflow: hidden;
+                margin: 0;
+                border-radius: 0;
+                background: transparent;
+                box-shadow: none;
+                /* Folded bottom edge for image */
+                clip-path: polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%);
+                transition: transform 0.5s ease;
+            }
+
+            .element-avatar img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center 25%; 
+                transition: transform 0.6s ease;
+                filter: grayscale(20%) sepia(10%);
+            }
+
+            /* Text Content */
+            .card-content {
+                height: 35%;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+                z-index: 3;
+                padding: 0 15px;
+                background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            }
+
+            .element-name {
+                font-family: var(--font-header);
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: var(--gold-flame);
+                text-align: center;
+                text-transform: uppercase;
+                margin-bottom: 5px;
+                text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+                letter-spacing: 1px;
+            }
+
+            .element-title {
+                font-family: var(--font-body);
+                font-size: 0.85rem;
+                color: #aeb59a;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                text-align: center;
+            }
+
+            /* Hover Effects */
+            .team-card:hover {
+                transform: translateY(-15px) scale(1.02);
+                background: #232918;
+                box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            }
+
+            .team-card:hover::before {
+                opacity: 0.8;
+            }
+
+            .team-card:hover .element-avatar img {
+                transform: scale(1.1);
+                filter: grayscale(0%) sepia(0%);
+            }
+
+            /* Fire Glow on Hover Bottom */
+            .team-card::after {
+                content: '';
+                position: absolute;
+                bottom: -20px;
+                left: 20%;
+                width: 60%;
+                height: 20px;
+                background: var(--gold-flame);
+                filter: blur(20px);
+                opacity: 0;
+                transition: opacity 0.4s;
+                z-index: 0;
+            }
+
+            .team-card:hover::after {
+                opacity: 0.6;
+            }
+
+            /* --- 7. STATS SECTION --- */
+            .stats-section {
+                width: 100%;
+                min-height: 80vh;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                gap: 60px;
+                background: linear-gradient(rgba(6,6,6,0.9), rgba(6,6,6,0.8)), url('../logo_old.png');
+                background-size: cover;
+                background-attachment: fixed;
+                padding: 50px;
+            }
+
+            .stat-card {
+                width: 200px;
+                height: 200px;
+                background: rgba(24, 28, 16, 0.4);
+                backdrop-filter: blur(5px);
+                border: 1px solid var(--gold-flame);
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+                /* Rotated Square for Origami feel */
+                transform: rotate(45deg); 
+                transition: all 0.4s;
+            }
+
+            /* Counter rotate content so it's straight */
+            .stat-content {
+                transform: rotate(-45deg);
+                text-align: center;
+            }
+
+            .stat-number {
+                font-family: var(--font-header);
+                font-size: 2.5rem;
+                color: var(--gold-flame);
+                text-shadow: 0 0 10px rgba(214, 194, 106, 0.5);
+            }
+
+            .stat-label {
+                font-family: var(--font-body);
+                color: var(--leaf-spark);
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+
+            .stat-card:hover {
+                background: rgba(214, 194, 106, 0.1);
+                box-shadow: 0 0 30px rgba(214, 194, 106, 0.2);
+            }
+
+            /* --- 8. FOOTER & UI --- */
+            #scroll-down-btn {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                width: 60px;
+                height: 60px;
+                background: transparent;
+                border: 2px solid var(--gold-flame);
+                color: var(--gold-flame);
+                /* Hexagon Shape */
+                clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                z-index: 1000;
+                transition: all 0.3s;
+                font-size: 1.2rem;
+            }
+
+            #scroll-down-btn:hover {
+                background: var(--gold-flame);
+                color: var(--bg-void);
+                box-shadow: 0 0 20px var(--gold-flame);
+            }
+
+            /* --- RESPONSIVE --- */
+            @media (max-width: 768px) {
+                .team-card {
+                    height: 380px;
+                }
+                .element-avatar {
+                    height: 60%;
+                }
+                .section-title h2 {
+                    font-size: 1.8rem;
+                }
+                .stats-section {
+                    flex-direction: column;
+                }
+                .stat-card {
+                    margin: 20px 0;
+                    transform: rotate(0deg); /* Remove rotation on mobile for space */
+                    border-radius: 20px;
+                    width: 100%;
+                    max-width: 250px;
+                }
+                .stat-content {
+                    transform: rotate(0deg);
+                }
+            }
+        </style>
+    </head>
+    
+    <body>
+        <!-- Rising Embers Canvas -->
+        <canvas id="emberCanvas"></canvas>
+        
+        <div id="app">
+            <!-- Header inject handled by script at bottom -->
+
+            <main>
+                <!-- Stats Section -->
+                <div class="stats-section">
+                    <div style="flex-basis: 100%; text-align: center; margin-bottom: 50px;">
+                        <div class="section-title">
+                            <h2>The Ishya Family</h2>
+                            <div class="line"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <div class="stat-number">50+</div>
+                            <div class="stat-label">Heads</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Spirit</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <div class="stat-number">∞</div>
+                            <div class="stat-label">Passion</div>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- LEADERSHIP -->
+                <div class="department-section leadership-section">
+                    <div class="section-title">
+                        <h2>Leadership</h2>
+                        <div class="line"></div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <div class="element-avatar">
+                                <img src="../Heads_Photos/hridya.jpg" alt="Hridya">
+                            </div>
+                            <div class="card-content">
+                                <div class="element-name">Hridya Hareesh</div>
+                                <div class="element-title">Convener</div>
+                            </div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar">
+                                <img src="../Heads_Photos/annrose.jpg" style="object-position: 20% 50%;" alt="Ann Rose">
+                                
+                            </div>
+                            <div class="card-content">
+                                <div class="element-name">Ann Rose Saji</div>
+                                <div class="element-title">Co-Convener</div>
+                            </div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar">
+                                <img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" alt="Raniya">
+                            </div>
+                            <div class="card-content">
+                                <div class="element-name">Raniya</div>
+                                <div class="element-title">Co-Convener</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADVISORY -->
+                <div class="department-section advisory-section">
+                    <div class="section-title">
+                        <h2>Advisory Committee</h2>
+                        <div class="line"></div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/gayathribinu.png" alt="Gayathri"></div>
+                            <div class="card-content"><div class="element-name">Gayathri Binu</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/dheeraj.png" alt="Dheeraj"></div>
+                            <div class="card-content"><div class="element-name">Dheeraj R</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/sreerag.png" alt="Sreerag"></div>
+                            <div class="card-content"><div class="element-name">Sreerag</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DECORATION -->
+                <div class="department-section decoration-section">
+                    <div class="section-title">
+                        <h2>Decoration Team</h2>
+                        <div class="line"></div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/adithye.jpg" alt="Adithye"></div>
+                            <div class="card-content"><div class="element-name">Adithye M Ajai</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/amisha.jpg" alt="Amisha"></div>
+                            <div class="card-content"><div class="element-name">Amisha A K</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/sudeshna.jpg" alt="Sudeshna"></div>
+                            <div class="card-content"><div class="element-name">Sudeshna P D</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DESIGN -->
+                <div class="department-section design-section">
+                    <div class="section-title">
+                        <h2>Design Team</h2>
+                        <div class="line"></div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/ananthika.JPG" alt="Ananthika"></div>
+                            <div class="card-content"><div class="element-name">Ananthika Sajith</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/emylin.png" alt="Emylin"></div>
+                            <div class="card-content"><div class="element-name">Emylin Mary</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/nandhana.jpg" alt="Nandhana"></div>
+                            <div class="card-content"><div class="element-name">Nandhana T S</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EVENTS -->
+                <div class="department-section events-section">
+                    <div class="section-title">
+                        <h2>Events Team</h2>
+                        <div class="line"></div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/pranav.jpeg" alt="Pranav"></div>
+                            <div class="card-content"><div class="element-name">Pranav M</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/ajumiya.jpg" alt="Ajumiya"></div>
+                            <div class="card-content"><div class="element-name">Ajumiya Ashraf</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/ardra.jpg" alt="Ardra"></div>
+                            <div class="card-content"><div class="element-name">Ardra S</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/rohit.jpg" alt="Rohit"></div>
+                            <div class="card-content"><div class="element-name">Rohit</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HOSPITALITY -->
+                <div class="department-section hospitality-section">
+                    <div class="section-title">
+                        <h2>Hospitality Team</h2>
+                        <div class="line"></div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/avanthika.jpeg" alt="Avanthika"></div>
+                            <div class="card-content"><div class="element-name">Avanthika</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/adarsh.jpg" alt="Adarsh"></div>
+                            <div class="card-content"><div class="element-name">Adarsh A</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/ramith.jpeg" alt="Ramith"></div>
+                            <div class="card-content"><div class="element-name">Ramith Krishna</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/devanath.jpg" alt="Devanath"></div>
+                            <div class="card-content"><div class="element-name">Devanath M</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STALLS -->
+                <div class="department-section stall-section">
+                    <div class="section-title">
+                        <h2>Stall Management</h2>
+                        <div class="line"></div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/maheshwar.jpg" alt="Maheshwar"></div>
+                            <div class="card-content"><div class="element-name">Maheshwar Sajith</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/adarsh.jpg" alt="Sidharth"></div>
+                            <div class="card-content"><div class="element-name">Sidharth S Krishna</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/fidel.jpeg" alt="Fidel"></div>
+                            <div class="card-content"><div class="element-name">Fidel N Sharaf</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- INFORMALS -->
+                <div class="department-section informals-section">
+                    <div class="section-title">
+                        <h2>Informals Team</h2>
+                        <div class="line"></div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/ananya.jpg" alt="Ananya"></div>
+                            <div class="card-content"><div class="element-name">Ananya J R</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/abhirag.jpeg" alt="Abhirag"></div>
+                            <div class="card-content"><div class="element-name">Abhirag A</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/aswathy.png" alt="Aswathy"></div>
+                            <div class="card-content"><div class="element-name">Aswathy Sunil</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- JUDGES -->
+                <div class="department-section judges-section">
+                    <div class="section-title">
+                        <h2>Judges Management</h2>
+                        <div class="line"></div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/gowri_nair.jpg" alt="Gowri"></div>
+                            <div class="card-content"><div class="element-name">Gowri S Nair</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/gopika_krishnan.jpeg" alt="Gopika"></div>
+                            <div class="card-content"><div class="element-name">Gopika R Krishnan</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/athul.jpg" alt="Athul"></div>
+                            <div class="card-content"><div class="element-name">S Athtul Krishna</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/aleena.jpg" alt="Aleena"></div>
+                            <div class="card-content"><div class="element-name">Aleena Sabu</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MEDIA -->
+                <div class="department-section media-section">
+                    <div class="section-title">
+                        <h2>Media Team</h2>
+                        <div class="line"></div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/angel.png" alt="Angel"></div>
+                            <div class="card-content"><div class="element-name">Angel CJ</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/sreelekshmi.jpeg" alt="Sreelekshmi"></div>
+                            <div class="card-content"><div class="element-name">Sreelekshmi S</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/dummy.jpg" alt="Olivia"></div>
+                            <div class="card-content"><div class="element-name">Olivia</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/dummy.jpg" alt="Ameen"></div>
+                            <div class="card-content"><div class="element-name">Ameen</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MERCHANDISE -->
+                <div class="department-section merchandise-section">
+                    <div class="section-title">
+                        <h2>Merchandise Team</h2>
+                        <div class="line"></div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/karthik.jpg" alt="Karthik"></div>
+                            <div class="card-content"><div class="element-name">C Karthik Krishna</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/gowri_ramesh.jpg" alt="Gowri"></div>
+                            <div class="card-content"><div class="element-name">Gowri S Ramesh</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/alga.jpg" alt="Alga"></div>
+                            <div class="card-content"><div class="element-name">Alga M D</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SPONSORSHIP -->
+                <div class="department-section sponsorship-section">
+                    <div class="section-title">
+                        <h2>Sponsorship Team</h2>
+                        <div class="line"></div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/riswan.png" alt="Riswan"></div>
+                            <div class="card-content"><div class="element-name">Riswan</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" alt="Dummy"></div>
+                            <div class="card-content"><div class="element-name">Member 2</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" alt="Dummy"></div>
+                            <div class="card-content"><div class="element-name">Member 3</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OUTREACH -->
+                <div class="department-section outreach-section">
+                    <div class="section-title">
+                        <h2>PR and Outreach</h2>
+                        <div class="line"></div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/gouri.jpg" alt="Gouri"></div>
+                            <div class="card-content"><div class="element-name">Gouri M</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/gopika_krishna.jpg" alt="Gopika"></div>
+                            <div class="card-content"><div class="element-name">Gopika Krishna J</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/sreelakshmi.jpg" alt="Sreelakshmi"></div>
+                            <div class="card-content"><div class="element-name">Sreelakshmi V V</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SOCIAL MEDIA -->
+                <div class="department-section socialmedia-section">
+                    <div class="section-title">
+                        <h2>Social Media Team</h2>
+                        <div class="line"></div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/aswath.jpg" alt="Aswath"></div>
+                            <div class="card-content"><div class="element-name">Aswath Vinod M</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/samarth.jpg" alt="Samarth"></div>
+                            <div class="card-content"><div class="element-name">Samarth V</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/harshwin.jpg" alt="Harshwin"></div>
+                            <div class="card-content"><div class="element-name">Harshwin M</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ANCHORING -->
+                <div class="department-section anchoring-section">
+                    <div class="section-title">
+                        <h2>Content & Anchoring</h2>
+                        <div class="line"></div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/fathima_basheer.jpeg" alt="Fathima"></div>
+                            <div class="card-content"><div class="element-name">Fathima Basheer</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/dhriti.jpeg" alt="Dhriti"></div>
+                            <div class="card-content"><div class="element-name">Dhriti A Bengalore</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/annrose.jpg" alt="Ann Rose"></div>
+                            <div class="card-content"><div class="element-name">Ann Rose Saji</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRODUCTION -->
+                <div class="department-section production-section">
+                    <div class="section-title">
+                        <h2>Production Team</h2>
+                        <div class="line"></div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/jefrin.jpg" alt="Jefrin"></div>
+                            <div class="card-content"><div class="element-name">Jefrin</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/aashique.jpeg" alt="Aashique"></div>
+                            <div class="card-content"><div class="element-name">Aashique M A</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROSHOW -->
+                <div class="department-section proshow-section">
+                    <div class="section-title">
+                        <h2>Proshow & Crowd</h2>
+                        <div class="line"></div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/ashmith.png" alt="Ashmith"></div>
+                            <div class="card-content"><div class="element-name">Ashmith S S</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/ajin.jpeg" alt="Ajin"></div>
+                            <div class="card-content"><div class="element-name">Ajin V L</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/akash.jpg" alt="Akash"></div>
+                            <div class="card-content"><div class="element-name">Akash S Ajith</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FINANCE -->
+                <div class="department-section finance-section">
+                    <div class="section-title">
+                        <h2>Finance Team</h2>
+                        <div class="line"></div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/farhana.jpeg" alt="Farhana"></div>
+                            <div class="card-content"><div class="element-name">Fathima Farhana</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/jerome.JPG" alt="Jerome"></div>
+                            <div class="card-content"><div class="element-name">Jerome Baspin</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/ashin.jpg" alt="Ashin"></div>
+                            <div class="card-content"><div class="element-name">Ashin Saj P</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WEB TEAM -->
+                <div class="department-section technical-section">
+                    <div class="section-title">
+                        <h2>Website Team</h2>
+                        <div class="line"></div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/eldho.png" alt="Eldho"></div>
+                            <div class="card-content"><div class="element-name">Eldho Sam</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/nikhil.jpeg" alt="Nikhil"></div>
+                            <div class="card-content"><div class="element-name">Nikhil Raju</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/aditya.jpg" alt="Aditya"></div>
+                            <div class="card-content"><div class="element-name">Aditya Katti</div></div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+
+        <!-- Scroll Button -->
+        <div id="scroll-down-btn" onclick="scrollToNextSection()">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+
+        <script>
+            // --- 1. RISING EMBERS PARTICLE SYSTEM ---
+            const canvas = document.getElementById('emberCanvas');
+            const ctx = canvas.getContext('2d');
+            let width = window.innerWidth;
+            let height = window.innerHeight;
+
+            function resize() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Ember {
+                constructor() {
+                    this.reset();
+                    // Initial random positions
+                    this.y = Math.random() * height;
+                }
+
+                reset() {
+                    this.x = Math.random() * width;
+                    this.y = height + Math.random() * 100;
+                    this.size = Math.random() * 3 + 1; // 1px to 4px
+                    this.speedY = Math.random() * 2 + 0.5; // Upward speed
+                    this.speedX = (Math.random() - 0.5) * 1.5; // Slight drift
+                    this.life = 1; // Opacity
+                    this.decay = Math.random() * 0.005 + 0.002;
+                    
+                    // Colors from palette (Gold to Orange)
+                    const colors = ['#D6C26A', '#c98a2c', '#d65a2a'];
+                    this.color = colors[Math.floor(Math.random() * colors.length)];
+                }
+
+                update() {
+                    this.y -= this.speedY;
+                    this.x += this.speedX;
+                    this.life -= this.decay;
+
+                    if (this.life <= 0 || this.y < 0) {
+                        this.reset();
+                    }
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.globalAlpha = this.life;
+                    ctx.fill();
+                    // Add glow
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = this.color;
+                }
+            }
+
+            const embers = [];
+            const emberCount = 100;
+
+            for(let i=0; i<emberCount; i++) {
+                embers.push(new Ember());
+            }
+
+            function animateEmbers() {
+                ctx.clearRect(0, 0, width, height);
+                // Draw slight dark overlay for trail effect? No, clean clear looks better with shadows
+                // ctx.fillStyle = 'rgba(6, 6, 6, 0.1)';
+                // ctx.fillRect(0,0,width,height);
+                
+                embers.forEach(ember => {
+                    ember.update();
+                    ember.draw();
+                });
+                
+                ctx.globalAlpha = 1;
+                ctx.shadowBlur = 0;
+                requestAnimationFrame(animateEmbers);
+            }
+            animateEmbers();
+
+
+            // --- 2. INTERSECTION OBSERVER (ANIMATIONS) ---
+            const observerOptions = {
+                threshold: 0.15,
+                rootMargin: '0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0) rotate(0deg)';
+                        
+                        // Special logic for rotated stat cards
+                        if(entry.target.classList.contains('stat-card')) {
+                             // Keep the 45deg rotation for stat cards
+                             if(window.innerWidth > 768) {
+                                entry.target.style.transform = 'rotate(45deg)'; 
+                             } else {
+                                entry.target.style.transform = 'rotate(0deg)';
+                             }
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            // Set initial state for animations
+            document.querySelectorAll('.team-card').forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(50px)';
+                card.style.transitionDelay = `${index * 0.1}s`; // Stagger effect
+                observer.observe(card);
+            });
+
+            document.querySelectorAll('.stat-card').forEach((card, index) => {
+                card.style.opacity = '0';
+                // Start slightly lower
+                // observer logic handles the end state
+                observer.observe(card);
+            });
+
+
+            // --- 3. SCROLL LOGIC ---
+            function scrollToNextSection() {
+                const sections = document.querySelectorAll('.stats-section, .department-section');
+                let currentIndex = -1;
+                
+                // Find visible section
+                for (let i = 0; i < sections.length; i++) {
+                    const rect = sections[i].getBoundingClientRect();
+                    // If top is near middle of screen or taking up most of screen
+                    if (rect.top >= -window.innerHeight/2 && rect.top < window.innerHeight/2) {
+                        currentIndex = i;
+                        break;
+                    }
+                }
+
+                // If nothing found or at end, loop or go next
+                let nextIndex = currentIndex + 1;
+                if(currentIndex === -1) nextIndex = 0;
+                if(nextIndex >= sections.length) nextIndex = 0;
+
+                sections[nextIndex].scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // --- 4. HEADER INJECTION (Keep existing logic) ---
+            fetch('/ISHYA-26/header.html')
+                .then(response => response.text())
+                .then(data => {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = data;
+                    const script = tempDiv.querySelector('script');
+                    document.body.prepend(tempDiv);
+                    if (script) {
+                        const newScript = document.createElement('script');
+                        newScript.textContent = script.textContent;
+                        document.body.appendChild(newScript);
+                    }
+                })
+                .catch(err => console.error('Error loading header:', err));
+        </script>
+    </body>
+</html>
