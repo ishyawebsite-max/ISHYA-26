@@ -81,7 +81,13 @@
     .cta-btn:hover { color: #fff; border-color: var(--accent-gold); box-shadow: 0 0 20px rgba(77, 143, 72, 0.4); background: rgba(77, 143, 72, 0.2); }
 
     /* --- HERO --- */
-    #hero { flex-direction: column; text-align: center; padding-top: 55vh; padding-bottom: 15vh; }
+    #hero { 
+        flex-direction: column; 
+        text-align: center; 
+        /* ADJUSTED FOR DESKTOP: Increased padding-top to push text lower so logo is visible */
+        padding-top: 70vh; 
+        padding-bottom: 10vh; 
+    }
     .hero-content { pointer-events: none; width: 100%; position: relative; z-index: 20; }
     
     .hero-title { 
@@ -259,13 +265,34 @@
 
     /* --- MOBILE & TABLET OPTIMIZATION --- */
     @media (max-width: 950px) {
-        section { padding: 0 20px; }
-        .section-layout { flex-direction: column !important; gap: 40px; width: 100%; }
+        /* FIX GAP: Remove full viewport height forcing on mobile */
+        section { 
+            padding: 60px 20px; 
+            min-height: auto !important;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-layout { flex-direction: column !important; gap: 30px; width: 100%; }
         
-        .layout-content-right .perch-zone, .layout-content-left .perch-zone { width: 100%; text-align: center; padding: 0; order: 1; margin-bottom: 10px; }
+        /* FIX CENTERING: Force all Perch Zones (Headings) to be centered */
+        .layout-content-right .perch-zone, 
+        .layout-content-left .perch-zone,
+        .events-header .perch-zone { 
+            width: 100%; 
+            text-align: center !important; 
+            padding: 0; 
+            order: 1; 
+            margin-bottom: 10px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
         .layout-content-right .content-zone, .layout-content-left .content-zone { width: 100%; order: 2; }
         
-        .perch-title { font-size: 2.5rem; }
+        .perch-title { font-size: 2.5rem; text-align: center; }
         .perch-subtitle { font-size: 0.8rem; }
         
         /* FIX: Hero Text FONT and SPACING for Mobile */
@@ -288,15 +315,27 @@
         }
         .word-group { margin: 0; }
         
+        /* HERO MOBILE POSITIONING */
+        #hero {
+            padding-top: 45vh; /* Keep text reasonable on mobile */
+            padding-bottom: 50px;
+            min-height: 90vh !important;
+        }
+        
         .hero-date { font-size: 2rem; letter-spacing: 2px; }
 
         /* Origami & Text Adjustments */
         .origami-sheet { padding: 30px 20px; }
         .sheet-content h3 { font-size: 1.5rem; }
         .sheet-content p { font-size: 1rem; }
-        .chat-question { width: 100%; text-align: center; padding: 15px; font-size: 1rem; }
+        .chat-question { width: 100%; text-align: center; padding: 15px; font-size: 1rem; border-radius: 20px; }
         
         /* Carousel Mobile */
+        .events-header {
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
         .carousel-stage { height: 450px; width: 100%; overflow: visible; }
         .carousel-card-3d { width: 80vw; height: 400px; max-width: 320px; }
         .card-number { font-size: 3rem; }
@@ -318,8 +357,10 @@
         /* Footer Mobile */
         .footer-logo { font-size: 18vw; margin-bottom: 30px; }
         .footer-grid { grid-template-columns: 1fr; gap: 40px; text-align: center; }
+        .footer-col { display: flex; flex-direction: column; align-items: center; }
         .social-icons-footer { justify-content: center; }
-        .map-container { height: 250px; }
+        .map-container { height: 250px; width: 100%; }
+        .footer-section { padding-top: 40px; }
     }
 </style>
 </head>
