@@ -7,7 +7,7 @@
 
     <!-- FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Foldit:wght@600;800;900&family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;500;700&family=Cormorant+Garamond:ital,wght@1,300;1,600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Foldit:wght@400;600;800;900&family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;500;700&family=Cormorant+Garamond:ital,wght@1,300;1,600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
@@ -24,6 +24,7 @@
         --font-fold: 'Foldit', display;
         --font-body: 'Space Grotesk', sans-serif;
         --font-tech: 'Share Tech Mono', monospace;
+        --font-serif: 'Cormorant Garamond', serif;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
@@ -58,12 +59,12 @@
     .section-layout { width: 100%; max-width: 1600px; display: flex; align-items: center; justify-content: space-between; }
     
     .perch-title { 
-        font-family: var(--font-fold); font-size: clamp(3rem, 6vw, 5rem); 
+        font-family: var(--font-fold); font-size: clamp(2.5rem, 5vw, 5rem); 
         color: var(--accent-gold); opacity: 0.9; text-shadow: 0 0 20px rgba(0,0,0,0.8); 
         line-height: 1; margin-bottom: 10px;
     }
     .perch-subtitle { 
-        font-family: var(--font-tech); font-size: 1rem; color: var(--accent-green); 
+        font-family: var(--font-tech); font-size: clamp(0.8rem, 2vw, 1rem); color: var(--accent-green); 
         letter-spacing: 2px; padding: 5px 10px; display: inline-block; 
         background: rgba(0,0,0,0.5); border: 1px solid var(--accent-olive); 
     }
@@ -78,12 +79,12 @@
     .cta-btn:hover { color: #fff; border-color: var(--accent-gold); box-shadow: 0 0 20px rgba(77, 143, 72, 0.4); background: rgba(77, 143, 72, 0.2); }
 
     /* --- HERO --- */
-    #hero { flex-direction: column; text-align: center; padding-top: 60vh; padding-bottom: 20vh; }
+    #hero { flex-direction: column; text-align: center; padding-top: 50vh; padding-bottom: 20vh; }
     .hero-content { pointer-events: none; width: 100%; position: relative; z-index: 20; }
     
     .hero-title { 
         perspective: 1000px; font-family: var(--font-fold); 
-        font-size: clamp(3rem, 10vw, 8rem); line-height: 0.9; text-transform: uppercase; 
+        font-size: clamp(3.5rem, 11vw, 9rem); line-height: 0.9; text-transform: uppercase; 
         background: linear-gradient(to bottom, #ffffff 10%, #D6C26A 60%, #8a7c40 100%);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         filter: drop-shadow(0 0 25px rgba(214, 194, 106, 0.4));
@@ -92,18 +93,25 @@
     .hero-title .letter { display: inline-block; white-space: pre; transform-style: preserve-3d; opacity: 0; }
     
     .hero-date { 
-        perspective: 1000px; font-family: var(--font-display); font-weight: 700; 
-        font-size: clamp(1rem, 3vw, 1.5rem); color: var(--accent-gold); 
-        letter-spacing: 3px; text-transform: uppercase; margin-top: 2vh; 
+        perspective: 1000px; 
+        font-family: var(--font-fold); 
+        font-weight: 900; 
+        font-size: clamp(1.8rem, 5vw, 4rem); 
+        color: var(--accent-gold); 
+        letter-spacing: 3px; 
+        text-transform: uppercase; 
+        margin-top: 2vh; 
+        text-shadow: 4px 4px 0px #3e2b18;
     }
     .hero-date .date-char { display: inline-block; transform-style: preserve-3d; opacity: 0; }
     
     .hero-countdown { display: flex; justify-content: center; gap: 15px; margin-top: 40px; font-family: var(--font-tech); color: var(--accent-green); opacity: 0; }
     .time-block { 
         display: flex; flex-direction: column; align-items: center; padding: 15px 20px; 
-        border-radius: 8px; min-width: 80px; 
+        border-radius: 8px; min-width: 70px; 
     }
-    .time-block span { font-size: clamp(2rem, 5vw, 3rem); line-height: 1; text-shadow: 0 0 10px rgba(77, 143, 72, 0.6); }
+    .time-block span { font-size: clamp(1.5rem, 5vw, 3rem); line-height: 1; text-shadow: 0 0 10px rgba(77, 143, 72, 0.6); }
+    .time-block .label { font-size: 0.7rem; margin-top: 5px; text-transform: uppercase; }
 
     /* --- SECTIONS LAYOUT --- */
     .layout-content-right { flex-direction: row; }
@@ -113,174 +121,139 @@
     .layout-content-left .perch-zone { width: 40%; text-align: right; padding-left: 50px; }
     .layout-content-left .content-zone { width: 60%; }
 
-    /* SECTION 1: ABOUT */
+    /* ORIGAMI SHEET STYLES */
     .chat-question { 
         align-self: flex-start; 
-        color: var(--accent-gold); padding: 20px 40px; font-family: var(--font-display); 
-        font-size: 1.2rem; border-radius: 30px 30px 30px 0; 
-        transform: translateY(20px); margin-bottom: 20px; 
+        color: var(--accent-gold); padding: 15px 30px; font-family: var(--font-display); 
+        font-size: clamp(0.9rem, 1.5vw, 1.2rem); border-radius: 30px 30px 30px 0; 
+        transform: translateY(20px); margin-bottom: 20px; display: inline-block;
     }
+    
     .origami-sheet { 
-        background: #f0f0f0; color: #111; padding: 50px; border-radius: 4px; 
-        box-shadow: 0 20px 60px rgba(0,0,0,0.8); border: 1px solid #999; 
+        background-color: #f4e4bc;
+        background-image: url('https://www.transparenttextures.com/patterns/crumpled-paper.png');
+        color: #3e2b18; 
+        padding: 50px; 
+        border-radius: 2px; 
+        box-shadow: 0 20px 60px rgba(0,0,0,0.8), inset 0 0 80px rgba(139, 90, 43, 0.1); 
+        border: none;
+        position: relative;
+        transform-origin: top center;
+        perspective: 1000px;
+        will-change: transform, opacity;
+        opacity: 0; 
+        width: 100%;
     }
-    .sheet-content h3 { font-family: var(--font-display); font-size: 2rem; margin-bottom: 20px; color: var(--accent-olive); border-bottom: 2px solid var(--accent-gold); }
-    .sheet-content p { font-size: 1.2rem; line-height: 1.6; }
+    .origami-sheet::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: rgba(0,0,0,0.1); }
 
-    /* SECTION 2: MEMORIES */
+    .sheet-content h3 { 
+        font-family: var(--font-display); font-size: clamp(1.5rem, 3vw, 2rem); 
+        margin-bottom: 20px; color: #8b5a2b; border-bottom: 2px solid #8b5a2b; padding-bottom: 10px; display: inline-block;
+    }
+    .sheet-content p { font-size: clamp(1rem, 1.2vw, 1.15rem); line-height: 1.6; margin-bottom: 15px; font-family: var(--font-serif); font-weight: 600; }
+
+    /* MEMORIES */
     .image-marquee-container { width: 100%; padding: 30px 0; overflow: hidden; transform: rotate(-2deg) scale(1.05); }
     .image-marquee-track { display: flex; gap: 20px; width: max-content; animation: scrollImages 80s linear infinite; }
-    .image-marquee-item { 
-        width: 400px; height: 260px; 
-        border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); 
-        filter: grayscale(100%); transition: 0.4s; 
-    }
+    .image-marquee-item { width: 400px; height: 260px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); filter: grayscale(100%); transition: 0.4s; }
     .image-marquee-item:hover { filter: grayscale(0%); transform: scale(1.03); border-color: var(--accent-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     .image-marquee-item img { width: 100%; height: 100%; object-fit: cover; }
     @keyframes scrollImages { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-420px * 15)); } }
 
-    /* --- SECTION 3: EVENTS (NEW HORIZONTAL SCROLL) --- */
-    #events { 
-        flex-direction: column; 
-        align-items: flex-start; 
-        justify-content: center; 
-        overflow: hidden; 
-    }
+    /* EVENTS 3D CAROUSEL */
+    .events-3d-section { flex-direction: column; overflow: hidden; position: relative; padding-top: 5vh; padding-bottom: 5vh; justify-content: flex-start; }
+    .events-header { padding: 0 5vw; margin-bottom: 20px; width: 100%; display: flex; justify-content: space-between; align-items: flex-end; z-index: 5; }
+    .carousel-stage { width: 100%; height: 600px; position: relative; display: flex; justify-content: center; align-items: center; perspective: 1200px; margin-top: 20px; }
+    .carousel-container { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; touch-action: none; } /* Added touch-action none for swipe */
+    .carousel-card-3d { position: absolute; top: 50%; left: 50%; width: 320px; height: 500px; background: #000; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); transform-origin: center center; transform: translate(-50%, -50%); overflow: hidden; cursor: pointer; box-shadow: 0 15px 40px rgba(0,0,0,0.8); transition: border-color 0.3s, box-shadow 0.3s; }
+    .carousel-card-3d::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(5,20,8,0.95) 100%); z-index: 2; pointer-events: none; }
+    .card-bg-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: filter 0.5s; position: absolute; top: 0; left: 0; z-index: 1; }
+    .carousel-card-3d.active-card .card-bg-img { filter: grayscale(0%); }
+    .card-content { position: absolute; z-index: 3; padding: 25px; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
+    .card-number { font-family: var(--font-serif); font-style: italic; font-weight: 300; font-size: 5rem; color: rgba(255,255,255,0.9); line-height: 0.8; margin-left: -5px; }
+    .card-details { transform: translateY(20px); opacity: 0; transition: all 0.4s ease 0.2s; }
+    .carousel-card-3d.active-card .card-details { transform: translateY(0); opacity: 1; }
+    .card-cat { font-family: var(--font-tech); color: var(--accent-gold); font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 8px; text-transform: uppercase; }
+    .card-title { font-family: var(--font-display); font-size: 2rem; color: #fff; line-height: 1; margin-bottom: 5px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+    .card-arrow-icon { position: absolute; top: 25px; right: 25px; color: #fff; font-size: 1.2rem; opacity: 0.7; transform: rotate(45deg); }
+    .carousel-nav { display: flex; gap: 15px; }
+    .nav-btn { width: 50px; height: 50px; border-radius: 50%; border: 1px solid var(--accent-olive); background: rgba(24, 28, 16, 0.6); color: var(--text-light); cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
 
-    .events-header {
-        padding: 0 5vw;
-        margin-bottom: 40px;
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-    }
+    /* TEAM */
+    .team-content-wrapper { padding: 50px; position: relative; text-align: center; }
+    .team-text { font-family: var(--font-serif); font-size: 1.35rem; line-height: 1.8; color: #ddd; max-width: 800px; margin: 0 auto; }
+    .team-highlight { color: #8b5a2b; font-style: italic; font-weight: 800; }
 
-    .events-track-wrapper {
-        width: 100%;
-        overflow-x: auto;
-        padding-bottom: 50px; 
-        padding-left: 5vw; padding-right: 5vw;
-        -ms-overflow-style: none; scrollbar-width: none;
-        cursor: grab;
-    }
-    .events-track-wrapper::-webkit-scrollbar { display: none; }
-    .events-track-wrapper:active { cursor: grabbing; }
-
-    .events-track {
-        display: flex;
-        gap: 30px;
-        width: max-content;
-    }
-
-    /* Big Readable Card */
-    .event-card-large {
-        position: relative;
-        width: 320px; height: 480px;
-        border-radius: 12px;
-        overflow: hidden;
-        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        flex-shrink: 0;
-        background: var(--bg-dark);
-        border: 1px solid rgba(255,255,255,0.1);
-        transform-style: preserve-3d;
-    }
-
-    .event-card-large:hover {
-        transform: translateY(-15px) scale(1.02);
-        border-color: var(--accent-gold);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 20px rgba(214, 194, 106, 0.2);
-        z-index: 5;
-    }
-
-    .event-card-img {
-        width: 100%; height: 60%;
-        object-fit: cover;
-        filter: grayscale(100%);
-        transition: all 0.5s;
-    }
-    .event-card-large:hover .event-card-img { filter: grayscale(0%); transform: scale(1.1); }
-
-    .event-card-info {
-        height: 40%;
-        padding: 25px;
-        display: flex; flex-direction: column; justify-content: space-between;
-        background: linear-gradient(180deg, rgba(24,28,16,0.95) 0%, rgba(6,6,6,1) 100%);
-        border-top: 1px solid var(--accent-olive);
-        position: relative; z-index: 2;
-    }
-
-    .event-cat-tag {
-        font-family: var(--font-tech); color: var(--accent-green);
-        font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px;
-    }
-
-    .event-title-large {
-        font-family: var(--font-display); font-size: 1.8rem;
-        color: #fff; line-height: 1; margin-bottom: 10px;
-    }
-
-    .event-desc {
-        font-family: var(--font-body); font-size: 0.95rem; color: #aaa;
-        line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical; overflow: hidden;
-    }
-
-    .event-btn {
-        margin-top: 10px; font-size: 0.8rem; color: var(--accent-gold);
-        text-decoration: none; border-bottom: 1px solid transparent;
-        width: max-content; transition: 0.3s;
-    }
-    .event-card-large:hover .event-btn { border-color: var(--accent-gold); color: #fff; }
-
-    /* SECTION 4: PROSHOWS */
-    .proshow-container { display: flex; justify-content: center; gap: 4vw; }
-    .proshow-card-wrapper { width: 360px; height: 540px; perspective: 1500px; }
-    .proshow-card { 
-        width: 100%; height: 100%; position: relative; background: var(--bg-dark); 
-        clip-path: polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px); 
-        transition: transform 0.2s ease-out; cursor: pointer;
-    }
-    .card-border { position: absolute; inset: 0; z-index: 10; pointer-events: none; border: 1px solid var(--accent-olive); clip-path: polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px); transform: translateZ(20px); }
-    .proshow-media { position: absolute; inset: 5px; overflow: hidden; clip-path: polygon(28px 0, 100% 0, 100% calc(100% - 28px), calc(100% - 28px) 100%, 0 100%, 0 28px); }
-    .proshow-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.5s; }
-    .proshow-card:hover .proshow-img { filter: grayscale(0%); }
-    .proshow-content-layer { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; padding: 30px; display: flex; flex-direction: column; justify-content: flex-end; background: linear-gradient(0deg, var(--bg-green-dark) 20%, transparent 70%); pointer-events: none; }
-    .proshow-artist { font-size: 3rem; margin-bottom: 5px; text-shadow: 2px 2px 0px #000; line-height: 0.9; }
+    /* PROSHOWS */
+    .proshow-container { display: flex; justify-content: center; align-items: center; width: 100%; }
+    .wait-see-wrapper { text-align: center; padding: 50px; border: 1px solid var(--accent-gold); background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); transform: skewX(-10deg); width: 100%; max-width: 800px; }
+    .wait-see-text { font-family: var(--font-display); font-size: clamp(2rem, 8vw, 7rem); font-weight: 700; color: transparent; -webkit-text-stroke: 1px var(--accent-gold); text-shadow: 0 0 30px rgba(214, 194, 106, 0.3); transform: skewX(10deg); animation: pulseText 3s infinite ease-in-out; white-space: nowrap; }
+    @keyframes pulseText { 0%, 100% { opacity: 0.6; text-shadow: 0 0 10px rgba(214, 194, 106, 0.1); } 50% { opacity: 1; text-shadow: 0 0 50px rgba(214, 194, 106, 0.6), 0 0 20px #fff; } }
 
     /* FOOTER */
-    .footer-section { background: rgba(24, 28, 16, 0.95); border-radius: 50px 50px 0 0; padding: 10vh 0 5vh; text-align: center; border-top: 1px solid var(--accent-olive); backdrop-filter: blur(10px); margin-top: 10vh; }
-    .footer-logo { font-family: var(--font-fold); font-size: 15vw; color: transparent; -webkit-text-stroke: 1px #333; line-height: 0.8; opacity: 0.6; transition: 0.5s; }
-    .footer-logo:hover { color: var(--accent-olive); opacity: 1; text-shadow: 0 0 30px var(--accent-green); }
+    .footer-section { background: linear-gradient(0deg, #020503 0%, #051408 100%); border-radius: 50px 50px 0 0; padding: 8vh 5vw 4vh; border-top: 1px solid var(--accent-olive); margin-top: 10vh; }
+    .footer-content-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; width: 100%; max-width: 1400px; margin: 0 auto; margin-bottom: 40px; }
+    .footer-col { display: flex; flex-direction: column; }
+    .footer-col.center { align-items: center; text-align: center; }
+    .footer-col.right { align-items: flex-end; text-align: right; }
+    .footer-col.left { align-items: flex-start; text-align: left; }
+    .footer-title { font-family: var(--font-serif); color: var(--accent-gold); font-size: 3rem; margin-bottom: 30px; text-align: center; width: 100%; }
+    .footer-info { font-family: var(--font-body); color: #aaa; font-size: 1rem; line-height: 1.8; }
+    .footer-highlight { color: #fff; font-weight: 500; font-size: 1.1rem; margin-bottom: 5px; }
+    .social-links { display: flex; gap: 25px; margin-top: 20px; }
+    .social-links a { color: var(--accent-gold); transition: 0.3s; }
+    .social-links a:hover { color: #fff; transform: scale(1.1); }
+    
+    .map-container { width: 100%; max-width: 1400px; margin: 0 auto 40px; height: 300px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
+    .map-frame { width: 100%; height: 100%; border: 0; filter: invert(90%) hue-rotate(180deg) brightness(90%) contrast(90%); } /* Dark Mode Map Hack */
 
-    /* --- MOBILE OPTIMIZATION --- */
-    @media (max-width: 900px) {
-        section { padding: 0 20px; box-sizing: border-box; }
-        .section-layout { flex-direction: column !important; gap: 40px; width: 100%; }
+    .grievance-box { text-align: center; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); width: 100%; }
+    .grievance-text { font-family: var(--font-display); font-weight: 700; color: #fff; margin-bottom: 10px; font-size: 1.2rem; }
+    .grievance-link { color: #4D8F48; text-decoration: underline; font-family: var(--font-body); transition: 0.3s; cursor: pointer; }
+    .grievance-link:hover { color: var(--accent-gold); }
+    .copyright { margin-top: 30px; text-align: center; font-family: var(--font-tech); color: #555; font-size: 0.8rem; }
+
+    /* --- MOBILE & TABLET OPTIMIZATION --- */
+    @media (max-width: 1024px) {
+        .section-layout { flex-direction: column !important; gap: 30px; }
+        .layout-content-right .perch-zone, .layout-content-left .perch-zone, .layout-content-right .content-zone, .layout-content-left .content-zone { width: 100%; text-align: center; padding: 0; }
+        .layout-content-right .perch-zone, .layout-content-left .perch-zone { margin-bottom: 20px; }
+        .carousel-card-3d { width: 60vw; height: 450px; }
+        .origami-sheet { padding: 40px; }
+    }
+
+    @media (max-width: 768px) {
+        /* General Layout */
+        section { padding: 0 15px; }
+        .cta-btn { padding: 12px 30px; font-size: 0.75rem; }
         
-        .layout-content-right .perch-zone, .layout-content-left .perch-zone { width: 100%; text-align: center; padding: 0; order: 1; margin-bottom: 20px; }
-        .layout-content-right .content-zone, .layout-content-left .content-zone { width: 100%; order: 2; }
+        /* Hero */
+        #hero { padding-top: 40vh; }
+        .hero-countdown { gap: 8px; margin-top: 30px; }
+        .time-block { padding: 10px 5px; min-width: 55px; }
         
-        .perch-title { font-size: 2.5rem; }
-        .sheet-content h3 { font-size: 1.5rem; }
-        .sheet-content p { font-size: 1rem; }
-        
-        /* Event Scroll Mobile */
-        .events-header { flex-direction: column; align-items: flex-start; gap: 10px; }
-        .event-card-large { width: 85vw; height: 450px; }
-        .events-track { gap: 15px; }
-        
-        .proshow-container { flex-direction: column; align-items: center; gap: 30px; }
-        .proshow-card-wrapper { width: 90vw; height: 60vh; max-height: 500px; }
-        
-        .image-marquee-item { width: 70vw; height: 250px; }
-        .image-marquee-container { width: 120%; margin-left: -10%; } 
-        
-        .hero-countdown { gap: 10px; }
-        .time-block { padding: 10px; min-width: 60px; }
-        .time-block span { font-size: 1.8rem; }
+        /* Content Elements */
+        .chat-question { width: auto; max-width: 90%; text-align: left; }
         .origami-sheet { padding: 25px; }
-        .chat-question { width: 100%; text-align: center; padding: 15px; font-size: 1rem; }
+        .sheet-content p { font-size: 1rem; text-align: left; }
+        
+        /* Marquee */
+        .image-marquee-item { width: 70vw; height: 220px; }
+        
+        /* 3D Carousel */
+        .carousel-stage { height: 500px; }
+        .carousel-card-3d { width: 80vw; height: 420px; }
+        .card-number { font-size: 4rem; }
+        .events-header { flex-direction: column; gap: 20px; align-items: center; text-align: center; }
+        
+        /* Footer */
+        .footer-content-grid { grid-template-columns: 1fr; gap: 30px; text-align: center; }
+        .footer-col.right, .footer-col.left { align-items: center; text-align: center; }
+        .footer-title { font-size: 2.5rem; }
+        .map-container { height: 250px; }
+        
+        /* Proshows */
+        .wait-see-wrapper { padding: 30px 10px; }
     }
 </style>
 </head>
@@ -314,7 +287,7 @@
         </div>
     </section>
 
-    <!-- SECTION 1 -->
+    <!-- SECTION 1: ABOUT ISHYA -->
     <section id="about-ishya">
         <div class="section-layout layout-content-right">
             <div class="perch-zone">
@@ -325,11 +298,13 @@
                 <div class="dialogue-wrapper">
                     <div class="chat-question glass-panel">WHAT IS ISHYA?</div>
                     <div class="origami-answer-container">
-                        <div class="origami-sheet">
+                        <div class="origami-sheet" id="paper-sheet">
                             <div class="sheet-content">
                                 <h3>LEGACY</h3>
-                                <p><strong>Ishya</strong> is the annual cultural fest of <strong>IISER Thiruvananthapuram</strong>. Since 2010, it has been the crucible where imagination meets reality.</p>
-                                <p>Fifteen years of art, dance, music, and the fiery spirit of youth.</p>
+                                <p><strong>Ishya</strong> is the annual cultural fest of <strong>IISER Thiruvananthapuram</strong> which, since her inception in 2010, has set stage to nurture imagination and nourish originality.</p>
+                                <p>Staying true to her name, Ishya flows with the advent of spring in April, when life blooms from the earth.</p>
+                                <p>We have been flying for the past sixteen years, higher each time, from inspiring minds and blossoming creativity to spreading smiles and instilling hope.</p>
+                                <p>Ishya is made possible every year with the hardwork and dedication of its organizers, participants and support from sponsors.</p>
                             </div>
                         </div>
                     </div>
@@ -348,23 +323,6 @@
             <div class="content-zone">
                 <div class="image-marquee-container glass-panel">
                     <div class="image-marquee-track">
-                        <!-- 15 Unique Images Loop -->
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1470229722913-7c0d2dbbafd3?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1459749411177-287ce51261df?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1506157786151-b8491531f436?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1514924013411-cbf25faa35ad?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=500&q=60" loading="lazy"></div>
-                        <!-- Loop Set -->
                         <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&q=60" loading="lazy"></div>
                         <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1470229722913-7c0d2dbbafd3?w=500&q=60" loading="lazy"></div>
                         <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500&q=60" loading="lazy"></div>
@@ -387,145 +345,103 @@
         </div>
     </section>
 
-    <!-- SECTION 3: EVENTS (SCROLLABLE DECK) -->
-    <section id="events">
+    <!-- SECTION 3: EVENTS -->
+    <section id="events" class="events-3d-section">
         <div class="events-header">
             <div class="perch-zone">
-                <h2 class="perch-title">THE<br>STAGES</h2>
+                <h2 class="perch-title">THE<br>EVENTS</h2>
                 <div class="perch-subtitle">COMPETE & CONQUER</div>
             </div>
-            <div style="font-family: var(--font-tech); color: #666; display: flex; align-items: center; gap: 10px;">
-                <i class="fa-solid fa-arrow-left"></i> DRAG / SCROLL <i class="fa-solid fa-arrow-right"></i>
+            <div class="carousel-nav">
+                <button id="prevBtn" class="nav-btn"><i class="fa-solid fa-arrow-left"></i></button>
+                <button id="nextBtn" class="nav-btn"><i class="fa-solid fa-arrow-right"></i></button>
             </div>
         </div>
+        <div class="carousel-stage">
+            <div class="carousel-container" id="cardCarousel">
+                <!-- Cards injected via JS -->
+            </div>
+        </div>
+    </section>
 
-        <div class="events-track-wrapper" id="eventsTrack">
-            <div class="events-track">
-                <!-- CARD 1 -->
-                <div class="event-card-large glass-panel">
-                    <img src="https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?w=500&q=80" class="event-card-img" loading="lazy">
-                    <div class="event-card-info">
-                        <div>
-                            <div class="event-cat-tag">DANCE</div>
-                            <h3 class="event-title-large">MUDHRA</h3>
-                            <p class="event-desc">The classical dance showdown. Grace, poise, and rhythm define the stage.</p>
+    <!-- SECTION 4: TEAM -->
+    <section id="team">
+        <div class="section-layout layout-content-left">
+            <div class="perch-zone">
+                <h2 class="perch-title">THE<br>CREW</h2>
+                <div class="perch-subtitle">BEHIND THE SCENES</div>
+            </div>
+            <div class="content-zone">
+                <div class="dialogue-wrapper">
+                    <div class="origami-sheet" id="team-paper-sheet">
+                        <div class="sheet-content">
+                            <h3>MEET THE TEAM</h3>
+                            <p>Behind every unforgettable moment at <span class="team-highlight">ISHYA</span>, there’s a passionate team bringing magic to life! From curating electrifying performances to crafting immersive experiences, we are a group of dedicated dreamers, artists, and organizers who believe in the power of culture, creativity, and community.</p>
+                            <p>With months of planning, late-night brainstorming, and an unshakable love for arts, we’re here to make ISHYA a celebration to remember.</p>
+                            <div style="text-align: center; margin-top: 30px;">
+                                <a href="#" class="cta-btn">VIEW MEMBERS</a>
+                            </div>
                         </div>
-                        <a href="#" class="event-btn">REGISTER <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-                <!-- CARD 2 -->
-                <div class="event-card-large glass-panel">
-                    <img src="https://images.unsplash.com/photo-1501612780327-45045538702b?w=500&q=80" class="event-card-img" loading="lazy">
-                    <div class="event-card-info">
-                        <div>
-                            <div class="event-cat-tag">MUSIC</div>
-                            <h3 class="event-title-large">RHAPSODY</h3>
-                            <p class="event-desc">Battle of the bands. Let the amplifiers scream and the drums roll.</p>
-                        </div>
-                        <a href="#" class="event-btn">REGISTER <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-                <!-- CARD 3 -->
-                <div class="event-card-large glass-panel">
-                    <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=500&q=80" class="event-card-img" loading="lazy">
-                    <div class="event-card-info">
-                        <div>
-                            <div class="event-cat-tag">FASHION</div>
-                            <h3 class="event-title-large">PANACHE</h3>
-                            <p class="event-desc">Walk the ramp with elegance. A display of style, attitude and glamour.</p>
-                        </div>
-                        <a href="#" class="event-btn">REGISTER <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-                <!-- CARD 4 -->
-                <div class="event-card-large glass-panel">
-                    <img src="https://images.unsplash.com/photo-1519074069444-1ba4fff66d16?w=500&q=80" class="event-card-img" loading="lazy">
-                    <div class="event-card-info">
-                        <div>
-                            <div class="event-cat-tag">THEATRE</div>
-                            <h3 class="event-title-large">THEATRIX</h3>
-                            <p class="event-desc">Unleash the actor within. Drama, emotion, and storytelling at its peak.</p>
-                        </div>
-                        <a href="#" class="event-btn">REGISTER <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-                <!-- CARD 5 -->
-                <div class="event-card-large glass-panel">
-                    <img src="https://images.unsplash.com/photo-1475721027767-4d0637c054e9?w=500&q=80" class="event-card-img" loading="lazy">
-                    <div class="event-card-info">
-                        <div>
-                            <div class="event-cat-tag">FINE ARTS</div>
-                            <h3 class="event-title-large">CANVAS</h3>
-                            <p class="event-desc">Paint your imagination. A competition for the creative souls.</p>
-                        </div>
-                        <a href="#" class="event-btn">REGISTER <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-                <!-- CARD 6 -->
-                <div class="event-card-large glass-panel">
-                    <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=500&q=80" class="event-card-img" loading="lazy">
-                    <div class="event-card-info">
-                        <div>
-                            <div class="event-cat-tag">LITERATURE</div>
-                            <h3 class="event-title-large">QUIZ</h3>
-                            <p class="event-desc">The ultimate battle of wits. Test your knowledge against the best.</p>
-                        </div>
-                        <a href="#" class="event-btn">REGISTER <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-                <!-- CARD 7 -->
-                <div class="event-card-large glass-panel">
-                    <img src="https://images.unsplash.com/photo-1550977186-c4582f219a4c?w=500&q=80" class="event-card-img" loading="lazy">
-                    <div class="event-card-info">
-                        <div>
-                            <div class="event-cat-tag">DANCE</div>
-                            <h3 class="event-title-large">STEP UP</h3>
-                            <p class="event-desc">Free style solo dance competition. Show us your best moves.</p>
-                        </div>
-                        <a href="#" class="event-btn">REGISTER <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- SECTION 4 -->
+    <!-- SECTION 5: PROSHOWS -->
     <section id="proshows">
         <div class="section-layout layout-content-left">
             <div class="perch-zone">
-                <h2 class="perch-title">STAR<br>NIGHTS</h2>
-                <div class="perch-subtitle">HEADLINERS</div>
+                <h2 class="perch-title">PROSHOW</h2>
+                <div class="perch-subtitle">THE GRAND FINALE</div>
             </div>
             <div class="content-zone">
                 <div class="proshow-container">
-                    <div class="proshow-card-wrapper" id="proshow-wrapper-1">
-                        <div class="proshow-card glass-panel" id="proshow-1">
-                            <div class="card-border"></div>
-                            <div class="proshow-media"><img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1920&auto=format&fit=crop" class="proshow-img" alt="Artist 1" loading="lazy"></div>
-                            <div class="proshow-content-layer"><div class="proshow-day">DAY 01</div><h3 class="proshow-artist">MASALA<br>COFFEE</h3><div class="proshow-genre">FOLK ROCK</div></div>
-                        </div>
-                    </div>
-                    <div class="proshow-card-wrapper" id="proshow-wrapper-2">
-                        <div class="proshow-card glass-panel" id="proshow-2">
-                            <div class="card-border"></div>
-                            <div class="proshow-media"><img src="https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=1920&auto=format&fit=crop" class="proshow-img" alt="Artist 2" loading="lazy"></div>
-                            <div class="proshow-content-layer"><div class="proshow-day">DAY 02</div><h3 class="proshow-artist">JONITA<br>GANDHI</h3><div class="proshow-genre">BOLLYWOOD POP</div></div>
-                        </div>
+                    <div class="wait-see-wrapper">
+                        <div class="wait-see-text">WAIT AND SEE</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- FOOTER WITH MAP -->
     <footer class="footer-section">
-        <div class="footer-content">
-            <p style="font-family: var(--font-serif); margin-bottom: 20px; color: #888;">IISER THIRUVANANTHAPURAM</p>
-            <h2 class="footer-logo">ISHYA</h2>
-            <div style="margin-top: 30px; display: flex; justify-content: center; gap: 30px;">
-                <a href="#" style="color: #444;"><i class="fa-brands fa-instagram fa-xl"></i></a><a href="#" style="color: #444;"><i class="fa-brands fa-twitter fa-xl"></i></a><a href="#" style="color: #444;"><i class="fa-brands fa-youtube fa-xl"></i></a>
+        <h2 class="footer-title">Contact Us</h2>
+        <div class="footer-content-grid">
+            <div class="footer-col left">
+                <p class="footer-highlight">IISER Thiruvananthapuram,</p>
+                <p class="footer-info">Maruthamala PO, Vithura,<br>Thiruvananthapuram - 695551,<br>Kerala, India.</p>
             </div>
-            <p style="color: #666; margin-top: 30px; font-size: 0.7rem; font-family: var(--font-tech);">© 2026 ISHYA. FLAMES IN EVERY FOLD.</p>
+            
+            <div class="footer-col center">
+                <h2 style="font-family: var(--font-fold); color: #444; font-size: clamp(2rem, 5vw, 3rem); margin: 0;">ISHYA</h2>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-youtube fa-xl"></i></a>
+                    <a href="#"><i class="fa-brands fa-facebook fa-xl"></i></a>
+                    <a href="#"><i class="fa-brands fa-x-twitter fa-xl"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram fa-xl"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-col right">
+                <p class="footer-highlight">+91 97476 36164</p>
+                <p class="footer-info">ishya@iisertvm.ac.in</p>
+            </div>
         </div>
+
+        <!-- GOOGLE MAP INTEGRATION -->
+        <div class="map-container">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3941.6268297071727!2d77.16439031478546!3d8.675098993769938!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b05b9b6e82a88ef%3A0x1d47346808794824!2sIndian%20Institute%20of%20Science%20Education%20and%20Research%20Thiruvananthapuram!5e0!3m2!1sen!2sin!4v1678893456789!5m2!1sen!2sin" 
+            class="map-frame" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+
+        <div class="grievance-box">
+            <p class="grievance-text">Facing Any Problems? Let Us Hear You</p>
+            <a href="#" class="grievance-link">Grievance Redressal</a>
+        </div>
+        
+        <p class="copyright">© 2026 ISHYA. FLAMES IN EVERY FOLD.</p>
     </footer>
 </main>
 
@@ -569,11 +485,13 @@
     gsap.registerPlugin(ScrollTrigger);
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 800;
 
-    const CONFIG = { LOGO_PATH: 'logo.png', PARTICLE_DENSITY: isMobile ? 12 : 8, LOGO_SCALE: isMobile ? 8 : 12, LOGO_Y_OFFSET: 1.8 };
+    // REDUCED PARTICLES FOR MOBILE OPTIMIZATION
+    const CONFIG = { LOGO_PATH: 'logo.png', PARTICLE_DENSITY: isMobile ? 18 : 8, LOGO_SCALE: isMobile ? 7 : 12, LOGO_Y_OFFSET: 1.8 };
 
     const canvas = document.getElementById('webgl'); 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); 
     renderer.setSize(window.innerWidth, window.innerHeight); 
+    // LIMIT PIXEL RATIO FOR MOBILE PERFORMANCE
     renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2)); 
     renderer.setClearColor(0x000000, 0);
 
@@ -617,7 +535,8 @@
         setupAnimations(particles, solidLogo, bird);
         setupEventListeners();
         setupInteractiveElements();
-        initEventScroll(); 
+        
+        init3DCarousel(); 
 
         const animate = () => { 
             const t = clock.getElapsedTime(); 
@@ -682,59 +601,146 @@
               .call(() => { bird.group.visible = true; }, null, "<0.1") 
               .fromTo(bird.group.scale, {x:0, y:0, z:0}, {x:1, y:1, z:1, duration: 0.8}, "<");
 
-        gsap.timeline({ scrollTrigger: { trigger: "#about-ishya", start: "top bottom", end: "center center", scrub: 1.5 }}).to(bird.group.position, { x: isMobile ? 0 : -6, y: -0.5, z: 2 }).to(bird.group.rotation, { y: -0.5, x: 0.2, z: 0 }, "<");
-        gsap.timeline({ scrollTrigger: { trigger: "#memories", start: "top bottom", end: "center center", scrub: 1.5 }}).to(bird.group.position, { x: isMobile ? 0 : 6, y: 0, z: 0 }).to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
-        gsap.timeline({ scrollTrigger: { trigger: "#events", start: "top bottom", end: "center center", scrub: 1.5 }}).to(bird.group.position, { x: isMobile ? 0 : -5.5, y: -0.5, z: 1 }).to(bird.group.rotation, { y: -0.6, x: 0.1, z: 0 }, "<");
-        gsap.timeline({ scrollTrigger: { trigger: "#proshows", start: "top bottom", end: "center center", scrub: 1.5 }}).to(bird.group.position, { x: isMobile ? 0 : 6, y: 0.5, z: -1 }).to(bird.group.rotation, { y: 0.8, x: 0.2, z: 0 }, "<");
+        // --- PAPER OPENING ANIMATION: WHAT IS ISHYA? ---
+        gsap.fromTo("#paper-sheet",
+            { scaleY: 0, opacity: 0, rotationX: -15, transformOrigin: "top center" },
+            {
+                scrollTrigger: {
+                    trigger: "#about-ishya",
+                    start: "top 60%",
+                    end: "bottom center",
+                    toggleActions: "play none none reverse"
+                },
+                scaleY: 1,
+                opacity: 1,
+                rotationX: 0,
+                duration: 1.2,
+                ease: "elastic.out(1, 0.5)"
+            }
+        );
 
-        const proshowTl = gsap.timeline({ scrollTrigger: { trigger: "#proshows", start: "top 60%", end: "top 10%", scrub: 1 }});
-        if(!isMobile) {
-            proshowTl.fromTo("#proshow-wrapper-1", { z: -800, x: -200, rotationY: -90, opacity: 0 }, { z: 0, x: 0, rotationY: 0, opacity: 1, ease: "power2.out" }, 0);
-            proshowTl.fromTo("#proshow-wrapper-2", { z: -800, x: 200, rotationY: 90, opacity: 0 }, { z: 0, x: 0, rotationY: 0, opacity: 1, ease: "power2.out" }, 0.1 );
-        } else {
-             proshowTl.fromTo(".proshow-card-wrapper", { y: 100, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.2 }, 0);
-        }
+        // --- PAPER OPENING ANIMATION: TEAM ---
+        gsap.fromTo("#team-paper-sheet",
+            { scaleY: 0, opacity: 0, rotationX: -15, transformOrigin: "top center" },
+            {
+                scrollTrigger: {
+                    trigger: "#team",
+                    start: "top 60%",
+                    end: "bottom center",
+                    toggleActions: "play none none reverse"
+                },
+                scaleY: 1,
+                opacity: 1,
+                rotationX: 0,
+                duration: 1.2,
+                ease: "elastic.out(1, 0.5)"
+            }
+        );
+
+        // BIRD FLIGHT PATH (ADJUSTED FOR MOBILE)
+        // If Mobile, bird stays closer to center (x:0) to stay on screen, moves vertically/depth instead.
+        gsap.timeline({ scrollTrigger: { trigger: "#about-ishya", start: "top bottom", end: "center center", scrub: 1.5 }})
+            .to(bird.group.position, { x: isMobile ? 0 : -6, y: -0.5, z: 2 })
+            .to(bird.group.rotation, { y: -0.5, x: 0.2, z: 0 }, "<");
+            
+        gsap.timeline({ scrollTrigger: { trigger: "#memories", start: "top bottom", end: "center center", scrub: 1.5 }})
+            .to(bird.group.position, { x: isMobile ? 1 : 6, y: 0, z: 0 })
+            .to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
+            
+        gsap.timeline({ scrollTrigger: { trigger: "#events", start: "top bottom", end: "center center", scrub: 1.5 }})
+            .to(bird.group.position, { x: isMobile ? -1 : -5.5, y: -0.5, z: 1 })
+            .to(bird.group.rotation, { y: -0.6, x: 0.1, z: 0 }, "<");
+        
+        gsap.timeline({ scrollTrigger: { trigger: "#team", start: "top bottom", end: "center center", scrub: 1.5 }})
+            .to(bird.group.position, { x: isMobile ? 0 : 6, y: 0.5, z: 1 })
+            .to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
+
+        // Flight path for Proshows
+        gsap.timeline({ scrollTrigger: { trigger: "#proshows", start: "top bottom", end: "center center", scrub: 1.5 }})
+            .to(bird.group.position, { x: 0, y: 0, z: 3 }) 
+            .to(bird.group.rotation, { y: 0, x: 0, z: 0 }, "<"); 
     }
 
-    function initEventScroll() {
-        const slider = document.getElementById('eventsTrack');
-        let isDown = false;
-        let startX;
-        let scrollLeft;
+    // --- 3D CAROUSEL LOGIC ---
+    function init3DCarousel() {
+        const container = document.getElementById('cardCarousel');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
 
-        slider.addEventListener('mousedown', (e) => {
-            isDown = true;
-            slider.classList.add('active');
-            startX = e.pageX - slider.offsetLeft;
-            scrollLeft = slider.scrollLeft;
-        });
-        slider.addEventListener('mouseleave', () => { isDown = false; slider.classList.remove('active'); });
-        slider.addEventListener('mouseup', () => { isDown = false; slider.classList.remove('active'); });
-        slider.addEventListener('mousemove', (e) => {
-            if (!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - slider.offsetLeft;
-            const walk = (x - startX) * 2; 
-            slider.scrollLeft = scrollLeft - walk;
+        const eventsData = [
+            { id: '01', title: 'MUDHRA', cat: 'CLASSICAL DANCE', img: 'https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?w=500&q=80' },
+            { id: '02', title: 'RHAPSODY', cat: 'BATTLE OF BANDS', img: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=500&q=80' },
+            { id: '03', title: 'PANACHE', cat: 'FASHION SHOW', img: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=500&q=80' },
+            { id: '04', title: 'THEATRIX', cat: 'THEATRE DRAMA', img: 'https://images.unsplash.com/photo-1519074069444-1ba4fff66d16?w=500&q=80' },
+            { id: '05', title: 'CANVAS', cat: 'FINE ARTS', img: 'https://images.unsplash.com/photo-1475721027767-4d0637c054e9?w=500&q=80' },
+            { id: '06', title: 'QUIZ', cat: 'LITERATURE', img: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=500&q=80' },
+            { id: '07', title: 'STEP UP', cat: 'SOLO DANCE', img: 'https://images.unsplash.com/photo-1550977186-c4582f219a4c?w=500&q=80' }
+        ];
+
+        let activeIndex = 0; 
+        const cardElements = [];
+
+        eventsData.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'carousel-card-3d glass-panel';
+            card.innerHTML = `
+                <img src="${item.img}" class="card-bg-img" alt="${item.title}">
+                <div class="card-content">
+                    <div>
+                        <div class="card-number">${item.id}</div>
+                        <i class="fa-solid fa-arrow-up card-arrow-icon"></i>
+                    </div>
+                    <div class="card-details">
+                        <div class="card-cat">${item.cat}</div>
+                        <div class="card-title">${item.title}</div>
+                    </div>
+                </div>
+            `;
+            card.addEventListener('click', () => { if (activeIndex !== index) { activeIndex = index; updateCarousel(); } });
+            container.appendChild(card);
+            cardElements.push(card);
         });
 
-        // Simple tilt effect on mouse move over cards
-        const cards = document.querySelectorAll('.event-card-large');
-        if(!isMobile) {
-            cards.forEach(card => {
-                card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    const rotateX = ((y / rect.height) - 0.5) * -10;
-                    const rotateY = ((x / rect.width) - 0.5) * 10;
-                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
-                });
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale(1)`;
-                });
+        function updateCarousel() {
+            // ADJUSTED SPACING FOR MOBILE VS DESKTOP
+            const rotationIntensity = 25; 
+            const depthIntensity = 200; 
+            const scaleIntensity = 0.15; 
+            // Mobile: less separation to fit on screen. Desktop: wider.
+            const xSeparation = isMobile ? 60 : 250; 
+
+            cardElements.forEach((card, index) => {
+                const offset = index - activeIndex;
+                const absOffset = Math.abs(offset);
+                if (absOffset > 3) {
+                    gsap.to(card, { opacity: 0, duration: 0.3, pointerEvents: 'none' });
+                } else {
+                    const zIndex = 100 - absOffset;
+                    const scale = 1 - (absOffset * scaleIntensity);
+                    const rotateY = offset * -rotationIntensity; 
+                    const translateX = offset * xSeparation; 
+                    const translateZ = -absOffset * depthIntensity;
+                    const opacity = 1 - (absOffset * 0.3);
+
+                    if (offset === 0) card.classList.add('active-card');
+                    else card.classList.remove('active-card');
+
+                    gsap.to(card, { x: translateX, z: translateZ, rotateY: rotateY, scale: scale, opacity: opacity, zIndex: zIndex, duration: 0.8, ease: "power2.out", pointerEvents: 'auto' });
+                }
             });
         }
+
+        nextBtn.addEventListener('click', () => { if (activeIndex < eventsData.length - 1) { activeIndex++; updateCarousel(); } });
+        prevBtn.addEventListener('click', () => { if (activeIndex > 0) { activeIndex--; updateCarousel(); } });
+
+        let touchStartX = 0;
+        container.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX, {passive: true});
+        container.addEventListener('touchend', e => {
+            const touchEndX = e.changedTouches[0].screenX;
+            if (touchStartX - touchEndX > 50) nextBtn.click(); 
+            if (touchEndX - touchStartX > 50) prevBtn.click(); 
+        }, {passive: true});
+        updateCarousel();
     }
 
     function setupInteractiveElements() {
@@ -748,16 +754,6 @@
                 document.getElementById('seconds').innerText = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
             }
         }, 1000);
-        if (!isMobile) {
-            const cards = document.querySelectorAll('.proshow-card');
-            cards.forEach(card => {
-                card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect(); const rotateX = ((e.clientY - rect.top - rect.height/2) / rect.height/2) * -15; const rotateY = ((e.clientX - rect.left - rect.width/2) / rect.width/2) * 15;
-                    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
-                });
-                card.addEventListener('mouseleave', () => { card.style.transform = `rotateX(0) rotateY(0) scale(1)`; });
-            });
-        }
     }
 
     function setupEventListeners() {
@@ -786,7 +782,9 @@
         };
 
         const particles = [];
-        const numParticles = 600; 
+        // REDUCED 2D PARTICLES FOR MOBILE
+        const isMobile = window.innerWidth < 800;
+        const numParticles = isMobile ? 200 : 600; 
         const noiseScale = 0.002;
         let mandalas = [];
 
