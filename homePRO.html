@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ISHYA '26 | FLAMES IN EVERY FOLD</title>
+
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Foldit:wght@600;800;900&family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;500;700&family=Cormorant+Garamond:ital,wght@1,300;1,600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    :root {
+        /* --- COLORS --- */
+        --bg-dark: #051408;       
+        --accent-gold: #D6C26A;   
+        --accent-olive: #6B7540;  
+        --accent-green: #4D8F48;  
+        --text-light: #e0e0e0;
+        
+        /* FONTS */
+        --font-display: 'Syncopate', sans-serif;
+        --font-fold: 'Foldit', display;
+        --font-body: 'Space Grotesk', sans-serif;
+        --font-tech: 'Share Tech Mono', monospace;
+        --font-serif: 'Cormorant Garamond', serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+    
+    html, body { 
+        background: transparent; 
+        color: var(--text-light); 
+        font-family: var(--font-body); 
+        overflow-x: hidden; 
+        width: 100vw; 
+        min-height: 100vh;
+    }
+
+    /* --- LAYERS --- */
+    #animated-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; background-color: var(--bg-dark); pointer-events: none; }
+    #webgl { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+    #bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, transparent 0%, rgba(5, 20, 8, 0.85) 100%); z-index: -5; pointer-events: none; }
+
+    main { position: relative; z-index: 10; will-change: opacity; }
+    
+    /* --- UTILITIES & GLASSMORPHISM --- */
+    section { min-height: 100vh; padding: 0 5vw; position: relative; display: flex; align-items: center; justify-content: center; }
+    
+    .glass-panel {
+        background: rgba(24, 28, 16, 0.4) !important;
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(214, 194, 106, 0.2);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(77, 143, 72, 0.1);
+    }
+
+    .section-layout { width: 100%; max-width: 1600px; display: flex; align-items: center; justify-content: space-between; }
+    
+    .perch-title { 
+        font-family: var(--font-fold); font-size: clamp(3rem, 6vw, 5rem); 
+        color: var(--accent-gold); opacity: 0.9; text-shadow: 0 0 20px rgba(0,0,0,0.8); 
+        line-height: 1; margin-bottom: 10px;
+    }
+    .perch-subtitle { 
+        font-family: var(--font-tech); font-size: 1rem; color: var(--accent-green); 
+        letter-spacing: 2px; padding: 5px 10px; display: inline-block; 
+        background: rgba(0,0,0,0.5); border: 1px solid var(--accent-olive); 
+    }
+    
+    .cta-btn { 
+        display: inline-block; margin-top: 30px; padding: 15px 40px; 
+        background: rgba(24, 28, 16, 0.6); border: 1px solid var(--accent-green); 
+        color: var(--accent-gold); font-family: var(--font-display); 
+        font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; 
+        cursor: pointer; transition: all 0.3s ease; text-decoration: none; position: relative; overflow: hidden; 
+    }
+    .cta-btn:hover { color: #fff; border-color: var(--accent-gold); box-shadow: 0 0 20px rgba(77, 143, 72, 0.4); background: rgba(77, 143, 72, 0.2); }
+
+    /* --- HERO --- */
+    #hero { flex-direction: column; text-align: center; padding-top: 60vh; padding-bottom: 20vh; }
+    .hero-content { pointer-events: none; width: 100%; position: relative; z-index: 20; }
+    
+    .hero-title { 
+        perspective: 1000px; font-family: var(--font-fold); 
+        font-size: clamp(3rem, 10vw, 8rem); line-height: 0.9; text-transform: uppercase; 
+        background: linear-gradient(to bottom, #ffffff 10%, #D6C26A 60%, #8a7c40 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 0 25px rgba(214, 194, 106, 0.4));
+        margin-bottom: 1vh; font-weight: 900; 
+    }
+    .hero-title .letter { display: inline-block; white-space: pre; transform-style: preserve-3d; opacity: 0; }
+    
+    .hero-date { 
+        perspective: 1000px; font-family: var(--font-display); font-weight: 700; 
+        font-size: clamp(1rem, 3vw, 1.5rem); color: var(--accent-gold); 
+        letter-spacing: 3px; text-transform: uppercase; margin-top: 2vh; 
+    }
+    .hero-date .date-char { display: inline-block; transform-style: preserve-3d; opacity: 0; }
+    
+    .hero-countdown { display: flex; justify-content: center; gap: 15px; margin-top: 40px; font-family: var(--font-tech); color: var(--accent-green); opacity: 0; }
+    .time-block { 
+        display: flex; flex-direction: column; align-items: center; padding: 15px 20px; 
+        border-radius: 8px; min-width: 80px; 
+    }
+    .time-block span { font-size: clamp(2rem, 5vw, 3rem); line-height: 1; text-shadow: 0 0 10px rgba(77, 143, 72, 0.6); }
+
+    /* --- SECTIONS LAYOUT --- */
+    .layout-content-right { flex-direction: row; }
+    .layout-content-right .perch-zone { width: 40%; text-align: left; padding-right: 50px; }
+    .layout-content-right .content-zone { width: 60%; }
+    .layout-content-left { flex-direction: row-reverse; }
+    .layout-content-left .perch-zone { width: 40%; text-align: right; padding-left: 50px; }
+    .layout-content-left .content-zone { width: 60%; }
+
+    /* SECTION 1: ABOUT (UPDATED WITH PAPER TEXTURE) */
+    .chat-question { 
+        align-self: flex-start; 
+        color: var(--accent-gold); padding: 20px 40px; font-family: var(--font-display); 
+        font-size: 1.2rem; border-radius: 30px 30px 30px 0; 
+        transform: translateY(20px); margin-bottom: 20px; 
+    }
+    
+    .origami-sheet { 
+        /* PAPER TEXTURE STYLE */
+        background-color: #f4e4bc;
+        background-image: url('https://www.transparenttextures.com/patterns/crumpled-paper.png');
+        color: #3e2b18; 
+        padding: 60px; 
+        border-radius: 2px; 
+        box-shadow: 0 20px 60px rgba(0,0,0,0.8), inset 0 0 80px rgba(139, 90, 43, 0.1); 
+        border: none;
+        position: relative;
+        transform-origin: top center; /* Critical for the unfolding animation */
+        perspective: 1000px;
+        will-change: transform;
+    }
+    
+    /* Paper Edge Effect (Top) */
+    .origami-sheet::before {
+        content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+        background: rgba(0,0,0,0.1);
+    }
+
+    .sheet-content h3 { 
+        font-family: var(--font-display); 
+        font-size: 2rem; 
+        margin-bottom: 25px; 
+        color: #8b5a2b; /* Brownish ink */
+        border-bottom: 2px solid #8b5a2b; 
+        padding-bottom: 10px;
+        display: inline-block;
+    }
+    
+    .sheet-content p { 
+        font-size: 1.15rem; 
+        line-height: 1.7; 
+        margin-bottom: 15px;
+        font-family: var(--font-serif);
+        font-weight: 500;
+    }
+
+    /* SECTION 2: MEMORIES */
+    .image-marquee-container { width: 100%; padding: 30px 0; overflow: hidden; transform: rotate(-2deg) scale(1.05); }
+    .image-marquee-track { display: flex; gap: 20px; width: max-content; animation: scrollImages 80s linear infinite; }
+    .image-marquee-item { 
+        width: 400px; height: 260px; 
+        border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); 
+        filter: grayscale(100%); transition: 0.4s; 
+    }
+    .image-marquee-item:hover { filter: grayscale(0%); transform: scale(1.03); border-color: var(--accent-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .image-marquee-item img { width: 100%; height: 100%; object-fit: cover; }
+    @keyframes scrollImages { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-420px * 15)); } }
+
+    /* --- SECTION 3: EVENTS (3D CAROUSEL) --- */
+    .events-3d-section {
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+        padding-top: 5vh;
+        padding-bottom: 5vh;
+        justify-content: flex-start;
+    }
+
+    .events-header {
+        padding: 0 5vw;
+        margin-bottom: 20px;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        z-index: 5;
+    }
+
+    .carousel-stage {
+        width: 100%;
+        height: 600px;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        perspective: 1200px; 
+        margin-top: 20px;
+    }
+
+    .carousel-container {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+    }
+
+    .carousel-card-3d {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 320px;
+        height: 500px;
+        background: #000;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transform-origin: center center;
+        transform: translate(-50%, -50%);
+        overflow: hidden;
+        cursor: pointer;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .carousel-card-3d::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(5,20,8,0.95) 100%);
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    .carousel-card-3d:hover {
+        border-color: var(--accent-gold);
+    }
+
+    /* Card Content */
+    .card-bg-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(100%);
+        transition: filter 0.5s;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+    }
+
+    .carousel-card-3d.active-card .card-bg-img {
+        filter: grayscale(0%);
+    }
+
+    .card-content {
+        position: absolute;
+        z-index: 3;
+        padding: 25px;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        pointer-events: none;
+    }
+
+    .card-number {
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-weight: 300;
+        font-size: 5rem;
+        color: rgba(255,255,255,0.9);
+        line-height: 0.8;
+        margin-left: -5px;
+    }
+
+    .card-details {
+        transform: translateY(20px);
+        opacity: 0;
+        transition: all 0.4s ease 0.2s;
+    }
+
+    .carousel-card-3d.active-card .card-details {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    .card-cat {
+        font-family: var(--font-tech);
+        color: var(--accent-gold);
+        font-size: 0.9rem;
+        letter-spacing: 2px;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+    }
+
+    .card-title {
+        font-family: var(--font-display);
+        font-size: 2rem;
+        color: #fff;
+        line-height: 1;
+        margin-bottom: 5px;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    }
+
+    .card-arrow-icon {
+        position: absolute;
+        top: 25px;
+        right: 25px;
+        color: #fff;
+        font-size: 1.2rem;
+        opacity: 0.7;
+        transform: rotate(45deg);
+    }
+
+    /* Navigation Buttons */
+    .carousel-nav {
+        display: flex;
+        gap: 15px;
+    }
+
+    .nav-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 1px solid var(--accent-olive);
+        background: rgba(24, 28, 16, 0.6);
+        color: var(--text-light);
+        cursor: pointer;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(5px);
+    }
+
+    .nav-btn:hover {
+        background: var(--accent-green);
+        color: #fff;
+        border-color: var(--accent-green);
+        box-shadow: 0 0 15px rgba(77, 143, 72, 0.4);
+    }
+
+    /* SECTION 4: PROSHOWS */
+    .proshow-container { display: flex; justify-content: center; gap: 4vw; }
+    .proshow-card-wrapper { width: 360px; height: 540px; perspective: 1500px; }
+    .proshow-card { 
+        width: 100%; height: 100%; position: relative; background: var(--bg-dark); 
+        clip-path: polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px); 
+        transition: transform 0.2s ease-out; cursor: pointer;
+    }
+    .card-border { position: absolute; inset: 0; z-index: 10; pointer-events: none; border: 1px solid var(--accent-olive); clip-path: polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px); transform: translateZ(20px); }
+    .proshow-media { position: absolute; inset: 5px; overflow: hidden; clip-path: polygon(28px 0, 100% 0, 100% calc(100% - 28px), calc(100% - 28px) 100%, 0 100%, 0 28px); }
+    .proshow-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.5s; }
+    .proshow-card:hover .proshow-img { filter: grayscale(0%); }
+    .proshow-content-layer { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; padding: 30px; display: flex; flex-direction: column; justify-content: flex-end; background: linear-gradient(0deg, var(--bg-green-dark) 20%, transparent 70%); pointer-events: none; }
+    .proshow-artist { font-size: 3rem; margin-bottom: 5px; text-shadow: 2px 2px 0px #000; line-height: 0.9; }
+
+    /* FOOTER */
+    .footer-section { background: rgba(24, 28, 16, 0.95); border-radius: 50px 50px 0 0; padding: 10vh 0 5vh; text-align: center; border-top: 1px solid var(--accent-olive); backdrop-filter: blur(10px); margin-top: 10vh; }
+    .footer-logo { font-family: var(--font-fold); font-size: 15vw; color: transparent; -webkit-text-stroke: 1px #333; line-height: 0.8; opacity: 0.6; transition: 0.5s; }
+    .footer-logo:hover { color: var(--accent-olive); opacity: 1; text-shadow: 0 0 30px var(--accent-green); }
+
+    /* --- MOBILE OPTIMIZATION --- */
+    @media (max-width: 900px) {
+        section { padding: 0 20px; box-sizing: border-box; }
+        .section-layout { flex-direction: column !important; gap: 40px; width: 100%; }
+        
+        .layout-content-right .perch-zone, .layout-content-left .perch-zone { width: 100%; text-align: center; padding: 0; order: 1; margin-bottom: 20px; }
+        .layout-content-right .content-zone, .layout-content-left .content-zone { width: 100%; order: 2; }
+        
+        .perch-title { font-size: 2.5rem; }
+        .sheet-content h3 { font-size: 1.5rem; }
+        .sheet-content p { font-size: 1rem; }
+        
+        /* 3D Carousel Mobile */
+        .carousel-stage { height: 450px; }
+        .carousel-card-3d { width: 75vw; height: 420px; }
+        .card-number { font-size: 3.5rem; }
+        
+        .proshow-container { flex-direction: column; align-items: center; gap: 30px; }
+        .proshow-card-wrapper { width: 90vw; height: 60vh; max-height: 500px; }
+        
+        .image-marquee-item { width: 70vw; height: 250px; }
+        .image-marquee-container { width: 120%; margin-left: -10%; } 
+        
+        .hero-countdown { gap: 10px; }
+        .time-block { padding: 10px; min-width: 60px; }
+        .time-block span { font-size: 1.8rem; }
+        .origami-sheet { padding: 25px; }
+        .chat-question { width: 100%; text-align: center; padding: 15px; font-size: 1rem; }
+    }
+</style>
+</head>
+<body>
+
+<!-- 1. BACKGROUND CANVAS -->
+<canvas id="animated-bg"></canvas>
+<div id="bg-overlay"></div>
+
+<!-- 2. WEBGL FOREGROUND -->
+<canvas id="webgl"></canvas>
+
+<!-- 3. CONTENT -->
+<main id="smooth-wrapper">
+    <section id="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <div><span class="letter">F</span><span class="letter">L</span><span class="letter">A</span><span class="letter">M</span><span class="letter">E</span><span class="letter">S</span><span class="letter"> </span><span class="letter">I</span><span class="letter">N</span><span class="letter"> </span><span class="letter">E</span><span class="letter">V</span><span class="letter">E</span><span class="letter">R</span><span class="letter">Y</span></div>
+                <div><span class="letter">F</span><span class="letter">O</span><span class="letter">L</span><span class="letter">D</span></div>
+            </h1>
+            <h2 class="hero-date"><span class="date-char">M</span><span class="date-char">A</span><span class="date-char">R</span><span class="date-char">C</span><span class="date-char">H</span><span class="date-char"> </span><span class="date-char">1</span><span class="date-char">3</span><span class="date-char"> </span><span class="date-char">-</span><span class="date-char"> </span><span class="date-char">1</span><span class="date-char">5</span></h2>
+            
+            <div id="countdown" class="hero-countdown">
+                <div class="time-block glass-panel"><span id="days">00</span><span class="label">Days</span></div>
+                <div class="time-block glass-panel"><span id="hours">00</span><span class="label">Hrs</span></div>
+                <div class="time-block glass-panel"><span id="minutes">00</span><span class="label">Min</span></div>
+                <div class="time-block glass-panel"><span id="seconds">00</span><span class="label">Sec</span></div>
+            </div>
+            
+            <div style="margin-top: 5vh; opacity: 0;" class="fade-in-up"><p style="font-family: var(--font-tech); color: #fff; font-size: 0.8rem; letter-spacing: 2px;">SCROLL TO FOLLOW THE GUIDE</p></div>
+        </div>
+    </section>
+
+    <!-- SECTION 1: UPDATED ABOUT ISHYA -->
+    <section id="about-ishya">
+        <div class="section-layout layout-content-right">
+            <div class="perch-zone">
+                <h2 class="perch-title">THE<br>ORIGIN</h2>
+                <div class="perch-subtitle">WHERE IT ALL BEGAN</div>
+            </div>
+            <div class="content-zone">
+                <div class="dialogue-wrapper">
+                    <div class="chat-question glass-panel">WHAT IS ISHYA?</div>
+                    <div class="origami-answer-container">
+                        <!-- Added ID for animation targeting -->
+                        <div class="origami-sheet" id="paper-sheet">
+                            <div class="sheet-content">
+                                <h3>LEGACY</h3>
+                                <p><strong>Ishya</strong> is the annual cultural fest of <strong>IISER Thiruvananthapuram</strong> which, since her inception in 2010, has set stage to nurture imagination and nourish originality.</p>
+                                <p>Staying true to her name, Ishya flows with the advent of spring in April, when life blooms from the earth.</p>
+                                <p>We have been flying for the past sixteen years, higher each time, from inspiring minds and blossoming creativity to spreading smiles and instilling hope.</p>
+                                <p>Ishya is made possible every year with the hardwork and dedication of its organizers, participants and support from sponsors.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: MEMORIES -->
+    <section id="memories">
+        <div class="section-layout layout-content-left">
+            <div class="perch-zone">
+                <h2 class="perch-title">TIME<br>CAPSULE</h2>
+                <div class="perch-subtitle">MOMENTS FROZEN</div>
+            </div>
+            <div class="content-zone">
+                <div class="image-marquee-container glass-panel">
+                    <div class="image-marquee-track">
+                        <!-- 15 Unique Images Loop -->
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1470229722913-7c0d2dbbafd3?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1459749411177-287ce51261df?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1506157786151-b8491531f436?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1514924013411-cbf25faa35ad?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=500&q=60" loading="lazy"></div>
+                        <!-- Loop Set -->
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1470229722913-7c0d2dbbafd3?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1459749411177-287ce51261df?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1506157786151-b8491531f436?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1514924013411-cbf25faa35ad?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=500&q=60" loading="lazy"></div>
+                    </div>
+                </div>
+                <div style="text-align: center;"><a href="#" class="cta-btn">VIEW GALLERY</a></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: EVENTS (3D CAROUSEL) -->
+    <section id="events" class="events-3d-section">
+        <div class="events-header">
+            <div class="perch-zone">
+                <h2 class="perch-title">THE<br>STAGES</h2>
+                <div class="perch-subtitle">COMPETE & CONQUER</div>
+            </div>
+            <!-- Custom Navigation Buttons -->
+            <div class="carousel-nav">
+                <button id="prevBtn" class="nav-btn"><i class="fa-solid fa-arrow-left"></i></button>
+                <button id="nextBtn" class="nav-btn"><i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </div>
+
+        <!-- The 3D Stage -->
+        <div class="carousel-stage">
+            <div class="carousel-container" id="cardCarousel">
+                <!-- Cards will be injected via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4 -->
+    <section id="proshows">
+        <div class="section-layout layout-content-left">
+            <div class="perch-zone">
+                <h2 class="perch-title">STAR<br>NIGHTS</h2>
+                <div class="perch-subtitle">HEADLINERS</div>
+            </div>
+            <div class="content-zone">
+                <div class="proshow-container">
+                    <div class="proshow-card-wrapper" id="proshow-wrapper-1">
+                        <div class="proshow-card glass-panel" id="proshow-1">
+                            <div class="card-border"></div>
+                            <div class="proshow-media"><img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1920&auto=format&fit=crop" class="proshow-img" alt="Artist 1" loading="lazy"></div>
+                            <div class="proshow-content-layer"><div class="proshow-day">DAY 01</div><h3 class="proshow-artist">MASALA<br>COFFEE</h3><div class="proshow-genre">FOLK ROCK</div></div>
+                        </div>
+                    </div>
+                    <div class="proshow-card-wrapper" id="proshow-wrapper-2">
+                        <div class="proshow-card glass-panel" id="proshow-2">
+                            <div class="card-border"></div>
+                            <div class="proshow-media"><img src="https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=1920&auto=format&fit=crop" class="proshow-img" alt="Artist 2" loading="lazy"></div>
+                            <div class="proshow-content-layer"><div class="proshow-day">DAY 02</div><h3 class="proshow-artist">JONITA<br>GANDHI</h3><div class="proshow-genre">BOLLYWOOD POP</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer-section">
+        <div class="footer-content">
+            <p style="font-family: var(--font-serif); margin-bottom: 20px; color: #888;">IISER THIRUVANANTHAPURAM</p>
+            <h2 class="footer-logo">ISHYA</h2>
+            <div style="margin-top: 30px; display: flex; justify-content: center; gap: 30px;">
+                <a href="#" style="color: #444;"><i class="fa-brands fa-instagram fa-xl"></i></a><a href="#" style="color: #444;"><i class="fa-brands fa-twitter fa-xl"></i></a><a href="#" style="color: #444;"><i class="fa-brands fa-youtube fa-xl"></i></a>
+            </div>
+            <p style="color: #666; margin-top: 30px; font-size: 0.7rem; font-family: var(--font-tech);">© 2026 ISHYA. FLAMES IN EVERY FOLD.</p>
+        </div>
+    </footer>
+</main>
+
+<!-- WEBGL 3D SHADERS -->
+<script type="x-shader/x-vertex" id="vParticles">
+    attribute float aRandom; attribute vec3 targetPos; uniform float uTime; uniform float uProgress; uniform float uExplode; uniform float uParticleOpacity; varying vec3 vColor; varying float vOpacity;
+    vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; } vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; } vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
+    float snoise(vec2 v) { const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439); vec2 i  = floor(v + dot(v, C.yy) ); vec2 x0 = v - i + dot(i, C.xx); vec2 i1; i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0); vec4 x12 = x0.xyxy + C.xxzz; x12.xy -= i1; i = mod289(i); vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 )); vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0); m = m*m; m = m*m; vec3 x = 2.0 * fract(p * C.www) - 1.0; vec3 h = abs(x) - 0.5; vec3 ox = floor(x + 0.5); vec3 a0 = x - ox; m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h ); vec3 g; g.x  = a0.x  * x0.x  + h.x  * x0.y; g.yz = a0.yz * x12.xz + h.yz * x12.yw; return 130.0 * dot(m, g); }
+    
+    void main() { 
+        vec3 firePos = position; 
+        float t = uTime * 1.0; 
+        float noise = snoise(vec2(firePos.x * 0.5, t + firePos.y * 0.2)); 
+        firePos.y += mod(t * (3.0 + aRandom), 18.0); 
+        if(firePos.y > 7.0) firePos.y -= 18.0; 
+        firePos.x += noise * 1.5 * (0.5 + firePos.y * 0.1); 
+        float progress = smoothstep(0.0, 1.0, uProgress); 
+        vec3 pos = mix(firePos, targetPos, progress); 
+        vec3 cFire = mix(vec3(0.24, 0.26, 0.14), vec3(0.3, 0.56, 0.28), aRandom); 
+        vec3 cLogo = mix(vec3(0.84, 0.76, 0.41), vec3(0.3, 0.56, 0.28), aRandom);
+        vColor = mix(cFire, cLogo, progress); 
+        if(uExplode > 0.0) { pos += normalize(pos) * uExplode * 60.0; vColor *= (1.0 - uExplode); } 
+        vOpacity = uParticleOpacity; 
+        vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0); 
+        gl_Position = projectionMatrix * mvPosition; 
+        gl_PointSize = (4.0 + aRandom * 3.0) * (20.0 / -mvPosition.z); 
+    }
+</script>
+<script type="x-shader/x-fragment" id="fParticles">
+    varying vec3 vColor; varying float vOpacity;
+    void main() { if(length(gl_PointCoord - vec2(0.5)) > 0.5) discard; float alpha = (1.0 - smoothstep(0.4, 0.5, length(gl_PointCoord - vec2(0.5)))) * vOpacity; gl_FragColor = vec4(vColor, alpha); }
+</script>
+
+<!-- MAIN LOGIC -->
+<script type="module">
+    import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
+    import gsap from 'https://cdn.skypack.dev/gsap@3.12.2';
+    import ScrollTrigger from 'https://cdn.skypack.dev/gsap@3.12.2/ScrollTrigger';
+    import Lenis from 'https://cdn.skypack.dev/@studio-freight/lenis@1.0.29';
+
+    gsap.registerPlugin(ScrollTrigger);
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 800;
+
+    const CONFIG = { LOGO_PATH: 'logo.png', PARTICLE_DENSITY: isMobile ? 12 : 8, LOGO_SCALE: isMobile ? 8 : 12, LOGO_Y_OFFSET: 1.8 };
+
+    const canvas = document.getElementById('webgl'); 
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); 
+    renderer.setSize(window.innerWidth, window.innerHeight); 
+    renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2)); 
+    renderer.setClearColor(0x000000, 0);
+
+    const scene = new THREE.Scene(); 
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100); 
+    camera.position.set(0, 0, 16); 
+    const clock = new THREE.Clock(); 
+
+    function loadAndProcessLogo(url) { 
+        return new Promise((resolve) => { 
+            const img = new Image(); img.crossOrigin = "Anonymous"; img.src = url; 
+            img.onload = () => { 
+                const w = 1024; const h = 1024; const c = document.createElement('canvas'); c.width = w; c.height = h; 
+                const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0, w, h); 
+                const pixels = ctx.getImageData(0,0,w,h).data; const points = []; 
+                for (let y = 0; y < h; y += CONFIG.PARTICLE_DENSITY) { 
+                    for (let x = 0; x < w; x += CONFIG.PARTICLE_DENSITY) { 
+                        if (pixels[(y * w + x) * 4 + 3] > 128) points.push( (x / w - 0.5) * CONFIG.LOGO_SCALE, (-(y / h - 0.5) * CONFIG.LOGO_SCALE) + CONFIG.LOGO_Y_OFFSET, 0 ); 
+                    } 
+                } 
+                const texture = new THREE.CanvasTexture(c);
+                texture.minFilter = THREE.LinearFilter; 
+                resolve({ texture: texture, points: new Float32Array(points) }); 
+            }; 
+            img.onerror = () => { 
+                const w = 512; const h = 512; const c = document.createElement('canvas'); c.width = w; c.height = h; const ctx = c.getContext('2d');
+                ctx.font = "bold 100px sans-serif"; ctx.fillStyle="white"; ctx.textAlign="center"; ctx.fillText("ISHYA", w/2, h/2);
+                const points = []; for(let i=0; i<1000; i++) points.push((Math.random()-0.5)*5, (Math.random()-0.5)*5 + 1.8, 0);
+                resolve({ texture: new THREE.CanvasTexture(c), points: new Float32Array(points) }); 
+            }; 
+        }); 
+    }
+
+    let birdMaterial;
+
+    loadAndProcessLogo(CONFIG.LOGO_PATH).then((data) => { 
+        const particles = createParticles(data.points.length / 3, data.points);
+        const solidLogo = createSolidLogo(data.texture); 
+        const bird = createBird();
+        setupLights();
+        setupAnimations(particles, solidLogo, bird);
+        setupEventListeners();
+        setupInteractiveElements();
+        
+        // --- 3D CAROUSEL INIT ---
+        init3DCarousel(); 
+
+        const animate = () => { 
+            const t = clock.getElapsedTime(); 
+            particles.material.uniforms.uTime.value = t; 
+            if (bird.group.visible) { const flap = Math.sin(t * 8); bird.wingL.rotation.z = flap * 0.4 + 0.1; bird.wingR.rotation.z = -flap * 0.4 - 0.1; } 
+            renderer.render(scene, camera); requestAnimationFrame(animate); 
+        };
+        animate();
+    });
+
+    function createParticles(count, targetData) { 
+        const pGeo = new THREE.BufferGeometry(); const initialPosArr = new Float32Array(count * 3); const randArr = new Float32Array(count); 
+        for (let i = 0; i < count; i++) { initialPosArr[i * 3] = (Math.random() - 0.5) * 4; initialPosArr[i * 3 + 1] = -8 + (Math.random() * 4); initialPosArr[i * 3 + 2] = (Math.random() - 0.5) * 4; randArr[i]=Math.random(); } 
+        pGeo.setAttribute('position', new THREE.BufferAttribute(initialPosArr, 3)); pGeo.setAttribute('targetPos', new THREE.BufferAttribute(targetData, 3)); pGeo.setAttribute('aRandom', new THREE.BufferAttribute(randArr, 1)); 
+        const pMat = new THREE.ShaderMaterial({ vertexShader: document.getElementById('vParticles').textContent, fragmentShader: document.getElementById('fParticles').textContent, uniforms: { uTime: { value: 0 }, uProgress: { value: 0 }, uExplode: { value: 0 }, uParticleOpacity: { value: 1.0 } }, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }); 
+        const ps = new THREE.Points(pGeo, pMat); scene.add(ps); return ps; 
+    }
+
+    function createSolidLogo(texture) { 
+        const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, opacity: 0 }); 
+        const logoMesh = new THREE.Mesh(new THREE.PlaneGeometry(CONFIG.LOGO_SCALE, CONFIG.LOGO_SCALE), material); 
+        logoMesh.position.set(0, CONFIG.LOGO_Y_OFFSET, 0.1); 
+        scene.add(logoMesh); return logoMesh; 
+    }
+
+    function createBird() {
+        birdMaterial = new THREE.MeshStandardMaterial({ color: 0xD6C26A, roughness: 0.3, metalness: 0.8, side: THREE.DoubleSide });
+        const group = new THREE.Group(); group.visible = false; scene.add(group);
+        const vBody=[0,0,1,1,0,0,0,0,-1,0,0,1,0,0,-1,-1,0,0,0,0.8,-0.2,0,0,1,1,0,0,0,0.8,-0.2,-1,0,0,0,0,1,0,0.8,-0.2,1,0,0,0,0,-1,0,0.8,-0.2,0,0,-1,-1,0,0,0,0,1,0.15,0,0.8,0,2.5,2.0,0,0,1,0,2.5,2.0,-0.15,0,0.8,0,2.5,2.0,0.1,2.2,2.0,0,1.8,2.5,0,2.5,2.0,0,1.8,2.5,-0.1,2.2,2.0,0,0,-1,0.15,0,-0.8,0,2.0,-2.5,0,0,-1,0,2.0,-2.5,-0.15,0,-0.8];
+        const vWing=[0,0,0.8,0,0,-0.8,3.5,1.5,0,0,0,0.8,3.5,1.5,0,0,0.8,-0.2];
+        const bGeo=new THREE.BufferGeometry(); bGeo.setAttribute('position', new THREE.Float32BufferAttribute(vBody,3)); bGeo.computeVertexNormals();
+        const wGeo=new THREE.BufferGeometry(); wGeo.setAttribute('position', new THREE.Float32BufferAttribute(vWing,3)); wGeo.computeVertexNormals();
+        group.add(new THREE.Mesh(bGeo, birdMaterial));
+        const wingL=new THREE.Mesh(wGeo, birdMaterial); wingL.position.set(-0.9,0,0); wingL.scale.x=-1; const wingR=new THREE.Mesh(wGeo, birdMaterial); wingR.position.set(0.9,0,0);
+        group.add(wingL, wingR); group.rotation.x=0.2; 
+        
+        const birdLight = new THREE.PointLight(0xD6C26A, 1.5, 15);
+        birdLight.position.set(0, 0.5, 0);
+        group.add(birdLight);
+
+        return { group, wingL, wingR };
+    }
+
+    function setupLights() { scene.add(new THREE.AmbientLight(0xffffff, 0.4)); const spot = new THREE.SpotLight(0xD6C26A, 2.0); spot.position.set(5, 10, 5); scene.add(spot); const back = new THREE.DirectionalLight(0x4D8F48, 1.2); back.position.set(-5, 5, -5); scene.add(back); }
+
+    function setupAnimations(particles, solidLogo, bird) {
+        const pMat = particles.material; const sMat = solidLogo.material;
+        gsap.fromTo('main', { opacity: 0 }, { opacity: 1, duration: 2, ease: "power2.out", delay: 0.5 });
+        const introTl = gsap.timeline({delay: 0.5, onComplete: () => {gsap.to(".hero-countdown", {opacity:1, duration:1})} });
+        
+        introTl.to(pMat.uniforms.uProgress, { value: 1.0, duration: 4.0, ease: "power2.inOut" })
+               .to(pMat.uniforms.uParticleOpacity, { value: 0, duration: 0.8 }, "-=1.0")
+               .to(sMat, { opacity: 1, duration: 0.8 }, "<") 
+               .fromTo(gsap.utils.toArray('.hero-title .letter'), { opacity: 0, rotationX: -95, scaleY: 0, transformOrigin: "50% 100%" }, { opacity: 1, rotationX: 0, scaleY: 1, duration: 1.5, ease: "elastic.out(1, 0.6)", stagger: 0.04 }, "<+0.2")
+               .fromTo(gsap.utils.toArray('.hero-date .date-char'), { opacity: 0, rotationX: 95, scaleY: 0, transformOrigin: "50% 0%" }, { opacity: 1, rotationX: 0, scaleY: 1, duration: 1.2, ease: "back.out(1.7)", stagger: 0.03 }, "<+0.1")
+               .to('.fade-in-up', { opacity: 1, y: 0, duration: 1 }, "-=1");
+
+        const heroTl = gsap.timeline({ scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: 1 }});
+        heroTl.to(sMat, { opacity: 0, duration: 0.1 }) 
+              .to(pMat.uniforms.uParticleOpacity, { value: 1, duration: 0.1 }, "<")
+              .to(pMat.uniforms.uExplode, { value: 1, duration: 1 }) 
+              .call(() => { bird.group.visible = true; }, null, "<0.1") 
+              .fromTo(bird.group.scale, {x:0, y:0, z:0}, {x:1, y:1, z:1, duration: 0.8}, "<");
+
+        // --- PAPER UNFOLDING ANIMATION (New) ---
+        gsap.fromTo("#paper-sheet",
+            { scaleY: 0, opacity: 0, rotationX: -45 },
+            {
+                scrollTrigger: {
+                    trigger: "#about-ishya",
+                    start: "top 70%",
+                    end: "center center",
+                    toggleActions: "play none none reverse"
+                },
+                scaleY: 1,
+                opacity: 1,
+                rotationX: 0,
+                duration: 1.2,
+                ease: "elastic.out(1, 0.7)"
+            }
+        );
+
+        gsap.timeline({ scrollTrigger: { trigger: "#about-ishya", start: "top bottom", end: "center center", scrub: 1.5 }}).to(bird.group.position, { x: isMobile ? 0 : -6, y: -0.5, z: 2 }).to(bird.group.rotation, { y: -0.5, x: 0.2, z: 0 }, "<");
+        gsap.timeline({ scrollTrigger: { trigger: "#memories", start: "top bottom", end: "center center", scrub: 1.5 }}).to(bird.group.position, { x: isMobile ? 0 : 6, y: 0, z: 0 }).to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
+        gsap.timeline({ scrollTrigger: { trigger: "#events", start: "top bottom", end: "center center", scrub: 1.5 }}).to(bird.group.position, { x: isMobile ? 0 : -5.5, y: -0.5, z: 1 }).to(bird.group.rotation, { y: -0.6, x: 0.1, z: 0 }, "<");
+        gsap.timeline({ scrollTrigger: { trigger: "#proshows", start: "top bottom", end: "center center", scrub: 1.5 }}).to(bird.group.position, { x: isMobile ? 0 : 6, y: 0.5, z: -1 }).to(bird.group.rotation, { y: 0.8, x: 0.2, z: 0 }, "<");
+
+        const proshowTl = gsap.timeline({ scrollTrigger: { trigger: "#proshows", start: "top 60%", end: "top 10%", scrub: 1 }});
+        if(!isMobile) {
+            proshowTl.fromTo("#proshow-wrapper-1", { z: -800, x: -200, rotationY: -90, opacity: 0 }, { z: 0, x: 0, rotationY: 0, opacity: 1, ease: "power2.out" }, 0);
+            proshowTl.fromTo("#proshow-wrapper-2", { z: -800, x: 200, rotationY: 90, opacity: 0 }, { z: 0, x: 0, rotationY: 0, opacity: 1, ease: "power2.out" }, 0.1 );
+        } else {
+             proshowTl.fromTo(".proshow-card-wrapper", { y: 100, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.2 }, 0);
+        }
+    }
+
+    // --- 3D CAROUSEL LOGIC ---
+    function init3DCarousel() {
+        const container = document.getElementById('cardCarousel');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        // Data for the cards
+        const eventsData = [
+            { id: '01', title: 'MUDHRA', cat: 'CLASSICAL DANCE', img: 'https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?w=500&q=80' },
+            { id: '02', title: 'RHAPSODY', cat: 'BATTLE OF BANDS', img: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=500&q=80' },
+            { id: '03', title: 'PANACHE', cat: 'FASHION SHOW', img: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=500&q=80' },
+            { id: '04', title: 'THEATRIX', cat: 'THEATRE DRAMA', img: 'https://images.unsplash.com/photo-1519074069444-1ba4fff66d16?w=500&q=80' },
+            { id: '05', title: 'CANVAS', cat: 'FINE ARTS', img: 'https://images.unsplash.com/photo-1475721027767-4d0637c054e9?w=500&q=80' },
+            { id: '06', title: 'QUIZ', cat: 'LITERATURE', img: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=500&q=80' },
+            { id: '07', title: 'STEP UP', cat: 'SOLO DANCE', img: 'https://images.unsplash.com/photo-1550977186-c4582f219a4c?w=500&q=80' }
+        ];
+
+        let activeIndex = 0; // Start at the first card
+        const cardElements = [];
+
+        // 1. Create DOM Elements
+        eventsData.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'carousel-card-3d glass-panel';
+            card.innerHTML = `
+                <img src="${item.img}" class="card-bg-img" alt="${item.title}">
+                <div class="card-content">
+                    <div>
+                        <div class="card-number">${item.id}</div>
+                        <i class="fa-solid fa-arrow-up card-arrow-icon"></i>
+                    </div>
+                    <div class="card-details">
+                        <div class="card-cat">${item.cat}</div>
+                        <div class="card-title">${item.title}</div>
+                    </div>
+                </div>
+            `;
+            
+            // Click to select
+            card.addEventListener('click', () => {
+                if (activeIndex !== index) {
+                    activeIndex = index;
+                    updateCarousel();
+                }
+            });
+
+            container.appendChild(card);
+            cardElements.push(card);
+        });
+
+        // 2. The Physics/Animation Logic
+        function updateCarousel() {
+            // Configuration
+            const spacing = isMobile ? 40 : 120; 
+            const rotationIntensity = 25; 
+            const depthIntensity = 200; 
+            const scaleIntensity = 0.15; 
+
+            cardElements.forEach((card, index) => {
+                const offset = index - activeIndex;
+                const absOffset = Math.abs(offset);
+                
+                // We only show a few cards on either side for performance
+                if (absOffset > 3) {
+                    gsap.to(card, { opacity: 0, duration: 0.3, pointerEvents: 'none' });
+                } else {
+                    
+                    const zIndex = 100 - absOffset;
+                    const scale = 1 - (absOffset * scaleIntensity);
+                    const rotateY = offset * -rotationIntensity; 
+                    const translateX = offset * (isMobile ? 60 : 250); 
+                    const translateZ = -absOffset * depthIntensity;
+                    const opacity = 1 - (absOffset * 0.3);
+
+                    if (offset === 0) card.classList.add('active-card');
+                    else card.classList.remove('active-card');
+
+                    // GSAP Animation
+                    gsap.to(card, {
+                        x: translateX,
+                        z: translateZ,
+                        rotateY: rotateY,
+                        scale: scale,
+                        opacity: opacity,
+                        zIndex: zIndex,
+                        duration: 0.8,
+                        ease: "power2.out",
+                        pointerEvents: 'auto'
+                    });
+                }
+            });
+        }
+
+        // 3. Navigation Listeners
+        nextBtn.addEventListener('click', () => {
+            if (activeIndex < eventsData.length - 1) {
+                activeIndex++;
+                updateCarousel();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (activeIndex > 0) {
+                activeIndex--;
+                updateCarousel();
+            }
+        });
+
+        // Mobile Swipe Support
+        let touchStartX = 0;
+        container.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX, {passive: true});
+        container.addEventListener('touchend', e => {
+            const touchEndX = e.changedTouches[0].screenX;
+            if (touchStartX - touchEndX > 50) nextBtn.click(); 
+            if (touchEndX - touchStartX > 50) prevBtn.click(); 
+        }, {passive: true});
+
+        // Initial render
+        updateCarousel();
+    }
+
+    function setupInteractiveElements() {
+        const targetDate = new Date("March 13, 2026 00:00:00").getTime();
+        setInterval(() => {
+            const now = new Date().getTime(); const distance = targetDate - now; 
+            if (distance > 0) {
+                document.getElementById('days').innerText = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+                document.getElementById('hours').innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+                document.getElementById('minutes').innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                document.getElementById('seconds').innerText = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+            }
+        }, 1000);
+        if (!isMobile) {
+            const cards = document.querySelectorAll('.proshow-card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect(); const rotateX = ((e.clientY - rect.top - rect.height/2) / rect.height/2) * -15; const rotateY = ((e.clientX - rect.left - rect.width/2) / rect.width/2) * 15;
+                    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+                });
+                card.addEventListener('mouseleave', () => { card.style.transform = `rotateX(0) rotateY(0) scale(1)`; });
+            });
+        }
+    }
+
+    function setupEventListeners() {
+        const lenis = new Lenis({ lerp: 0.1, smooth: true });
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); } requestAnimationFrame(raf);
+        let resizeTimeout;
+        window.addEventListener('resize', () => { clearTimeout(resizeTimeout); resizeTimeout = setTimeout(() => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); }, 100); });
+    }
+</script>   
+
+<!-- GREEN BACKGROUND ANIMATION -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const canvas = document.getElementById('animated-bg');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        
+        const COLORS = {
+            bg: 'rgba(5, 20, 8, 1)',         
+            trail: 'rgba(5, 20, 8, 0.08)',   
+            swirlGreen: 'rgba(77, 183, 72, 0.2)', 
+            swirlDark: 'rgba(30, 50, 20, 0.3)',   
+            gold: 'rgba(214, 194, 106, 0.4)',      
+            mandala: 'rgba(214, 194, 106, 0.15)'   
+        };
+
+        const particles = [];
+        const numParticles = 600; 
+        const noiseScale = 0.002;
+        let mandalas = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            
+            ctx.fillStyle = COLORS.bg;
+            ctx.fillRect(0, 0, width, height);
+
+            mandalas = [
+                new Mandala(width, 0, width * 0.3, -0.002, COLORS.mandala), 
+                new Mandala(0, height, width * 0.35, 0.0015, COLORS.mandala)
+            ];
+            
+            if (particles.length === 0) {
+                for(let i=0; i<numParticles; i++) particles.push(new FlowParticle());
+            }
+        }
+
+        function noise(x, y) { return Math.sin(x) * Math.cos(y); }
+
+        class FlowParticle {
+            constructor() {
+                this.x = Math.random() * width; this.y = Math.random() * height;
+                this.speed = Math.random() * 2 + 0.5; this.angle = 0;
+                this.size = Math.random() * 2.5 + 0.5;
+                this.color = Math.random() > 0.9 ? COLORS.gold : (Math.random() > 0.6 ? COLORS.swirlGreen : COLORS.swirlDark);
+            }
+            update() {
+                const n = noise(this.x * noiseScale, this.y * noiseScale);
+                this.angle = n * Math.PI * 4;
+                this.x += Math.cos(this.angle) * this.speed;
+                this.y += Math.sin(this.angle) * this.speed;
+                if (this.x < 0) this.x = width; if (this.x > width) this.x = 0;
+                if (this.y < 0) this.y = height; if (this.y > height) this.y = 0;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        class Mandala {
+            constructor(x, y, radius, speed, color) {
+                this.x = x; this.y = y; this.radius = radius;
+                this.speed = speed; this.angle = 0; this.color = color;
+            }
+            update() { this.angle += this.speed; }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 1.5; 
+                const petals = 12;
+                for (let i = 0; i < petals; i++) {
+                    ctx.rotate(Math.PI * 2 / petals);
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.quadraticCurveTo(this.radius * 0.5, this.radius * 0.5, 0, this.radius);
+                    ctx.quadraticCurveTo(-this.radius * 0.5, this.radius * 0.5, 0, 0);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.arc(0, this.radius * 0.7, this.radius * 0.05, 0, Math.PI * 2);
+                    ctx.fillStyle = COLORS.gold;
+                    ctx.fill();
+                }
+                ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 2); ctx.stroke();
+                ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.9, 0, Math.PI * 2); ctx.stroke();
+                ctx.restore();
+            }
+        }
+
+        function animate() {
+            ctx.fillStyle = COLORS.trail;
+            ctx.fillRect(0, 0, width, height);
+            mandalas.forEach(m => { m.update(); m.draw(); });
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        animate();
+    });
+</script>
+
+</body>
+</html>
