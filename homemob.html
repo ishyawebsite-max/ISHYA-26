@@ -84,6 +84,7 @@
     #hero { 
         flex-direction: column; 
         text-align: center; 
+        /* ADJUSTED FOR DESKTOP: Increased padding-top to push text lower so logo is visible */
         padding-top: 70vh; 
         padding-bottom: 10vh; 
     }
@@ -151,7 +152,7 @@
         transform-origin: top center; 
         perspective: 1000px;
         will-change: transform;
-        opacity: 0; /* Default hidden for desktop animation */
+        opacity: 0; 
     }
     
     .origami-sheet::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: rgba(0,0,0,0.1); }
@@ -264,18 +265,17 @@
 
     /* --- MOBILE & TABLET OPTIMIZATION --- */
     @media (max-width: 950px) {
-        /* FIX GAP: Reduced padding significantly to reduce gaps */
+        /* FIX GAP: Remove full viewport height forcing on mobile */
         section { 
-            padding: 30px 15px; /* Reduced from 60px */
+            padding: 60px 20px; 
             min-height: auto !important;
             display: flex;
             flex-direction: column;
-            margin-bottom: 0px !important; /* Ensure no margin stacking */
         }
 
-        .section-layout { flex-direction: column !important; gap: 10px; width: 100%; } /* Reduced gap from 30px */
+        .section-layout { flex-direction: column !important; gap: 30px; width: 100%; }
         
-        /* FIX CENTERING & SPACING */
+        /* FIX CENTERING: Force all Perch Zones (Headings) to be centered */
         .layout-content-right .perch-zone, 
         .layout-content-left .perch-zone,
         .events-header .perch-zone { 
@@ -283,82 +283,84 @@
             text-align: center !important; 
             padding: 0; 
             order: 1; 
-            margin-bottom: 5px; /* Reduced margin */
+            margin-bottom: 10px; 
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
         }
         
-        .layout-content-right .content-zone, .layout-content-left .content-zone { width: 100%; order: 2; margin-top: 10px; }
+        .layout-content-right .content-zone, .layout-content-left .content-zone { width: 100%; order: 2; }
         
-        .perch-title { font-size: 2.5rem; text-align: center; margin-bottom: 5px; }
+        .perch-title { font-size: 2.5rem; text-align: center; }
+        .perch-subtitle { font-size: 0.8rem; }
         
-        /* MOBILE ORIGAMI FIX: REMOVE ANIMATION, MAKE STATIC */
-        .origami-sheet {
-            opacity: 1 !important; /* Force visible */
-            transform: none !important; /* Remove rotation/skew */
-            padding: 25px 20px;
-            margin-top: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5); /* Simpler shadow */
-        }
-        .chat-question { margin-bottom: 15px; }
-        
-        /* HERO MOBILE POSITIONING */
-        #hero {
-            padding-top: 25vh; /* Reduced from 45vh to remove huge top gap */
-            padding-bottom: 30px;
-            min-height: 80vh !important;
-            justify-content: flex-start;
-        }
-
+        /* FIX: Hero Text FONT and SPACING for Mobile */
         .hero-title {
+            /* Switch to Syncopate on mobile to ensure visibility (Foldit can be buggy on some OS) */
             font-family: 'Syncopate', sans-serif !important; 
             font-weight: 700;
-            font-size: 12vw; /* Slightly smaller to fit better */
+            font-size: 13vw; 
             display: flex;
             flex-direction: column; 
             align-items: center;
             line-height: 1.1;
             margin-top: 0;
-            gap: 5px;
+            gap: 10px; /* Space between lines */
+            
+            /* Ensure color visibility if gradient fails on mobile */
             color: var(--accent-gold);
             background: none !important; 
             -webkit-text-fill-color: var(--accent-gold) !important;
         }
         .word-group { margin: 0; }
         
-        .hero-date { font-size: 1.8rem; letter-spacing: 2px; margin-top: 10px; }
+        /* HERO MOBILE POSITIONING */
+        #hero {
+            padding-top: 45vh; /* Keep text reasonable on mobile */
+            padding-bottom: 50px;
+            min-height: 90vh !important;
+        }
+        
+        .hero-date { font-size: 2rem; letter-spacing: 2px; }
 
+        /* Origami & Text Adjustments */
+        .origami-sheet { padding: 30px 20px; }
+        .sheet-content h3 { font-size: 1.5rem; }
+        .sheet-content p { font-size: 1rem; }
+        .chat-question { width: 100%; text-align: center; padding: 15px; font-size: 1rem; border-radius: 20px; }
+        
         /* Carousel Mobile */
         .events-header {
             flex-direction: column;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 0;
+            gap: 20px;
         }
-        .carousel-stage { height: 420px; margin-top: 10px; }
-        .carousel-card-3d { width: 85vw; height: 380px; max-width: 320px; }
+        .carousel-stage { height: 450px; width: 100%; overflow: visible; }
+        .carousel-card-3d { width: 80vw; height: 400px; max-width: 320px; }
         .card-number { font-size: 3rem; }
         .card-title { font-size: 1.5rem; }
         
         /* Team Mobile */
-        .team-content-wrapper { padding: 30px 20px; text-align: center; margin-top: 0; }
+        .team-content-wrapper { padding: 30px 20px; text-align: center; }
         .team-text { font-size: 1rem; }
         
         /* Marquee Mobile */
         .image-marquee-item { width: 70vw; height: 200px; }
-        .image-marquee-container { width: 120%; margin-left: -10%; margin-top: 10px; } 
+        .image-marquee-container { width: 120%; margin-left: -10%; } 
         
         /* Hero Mobile */
-        .hero-countdown { gap: 8px; margin-top: 25px; }
-        .time-block { padding: 8px; min-width: 55px; }
-        .time-block span { font-size: 1.5rem; }
+        .hero-countdown { gap: 10px; }
+        .time-block { padding: 10px; min-width: 60px; }
+        .time-block span { font-size: 1.8rem; }
         
         /* Footer Mobile */
         .footer-logo { font-size: 18vw; margin-bottom: 30px; }
-        .footer-grid { grid-template-columns: 1fr; gap: 30px; text-align: center; }
-        .footer-section { padding-top: 30px; margin-top: 20px; }
+        .footer-grid { grid-template-columns: 1fr; gap: 40px; text-align: center; }
+        .footer-col { display: flex; flex-direction: column; align-items: center; }
+        .social-icons-footer { justify-content: center; }
+        .map-container { height: 250px; width: 100%; }
+        .footer-section { padding-top: 40px; }
     }
 </style>
 </head>
@@ -739,14 +741,11 @@
               .call(() => { bird.group.visible = true; }, null, "<0.1") 
               .fromTo(bird.group.scale, {x:0, y:0, z:0}, {x:birdScale, y:birdScale, z:birdScale, duration: 0.8}, "<");
 
-        // DISABLED ORIGAMI ANIMATION FOR MOBILE (Moved content to CSS to handle visibility)
-        if (!isMobile) {
-            gsap.fromTo("#paper-sheet",
-                { opacity: 0, rotationX: 90, transformOrigin: "top center", z: -200 },
-                { scrollTrigger: { trigger: "#about-ishya", start: "top 60%", end: "center center", toggleActions: "play none none reverse" },
-                  opacity: 1, rotationX: 0, z: 0, duration: 1.5, ease: "elastic.out(1, 0.5)" }
-            );
-        }
+        gsap.fromTo("#paper-sheet",
+            { opacity: 0, rotationX: 90, transformOrigin: "top center", z: -200 },
+            { scrollTrigger: { trigger: "#about-ishya", start: "top 60%", end: "center center", toggleActions: "play none none reverse" },
+              opacity: 1, rotationX: 0, z: 0, duration: 1.5, ease: "elastic.out(1, 0.5)" }
+        );
 
         gsap.timeline({ scrollTrigger: { trigger: "#team", start: "top 70%", toggleActions: "play none none reverse" } })
             .to(".team-content-wrapper", { opacity: 1, duration: 0.8 })
@@ -902,15 +901,11 @@
             width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight;
             ctx.fillStyle = COLORS.bg; ctx.fillRect(0, 0, width, height);
             
-            // ENABLE MANDALAS FOR BOTH MOBILE AND DESKTOP (Adjusted for Mobile)
+            // Disable complex mandalas on mobile
             if (!isMobile) {
                 mandalas = [new Mandala(width, 0, width * 0.3, -0.002, COLORS.mandala), new Mandala(0, height, width * 0.35, 0.0015, COLORS.mandala)];
             } else {
-                // Mobile: Smaller and positioned to frame the vertical content
-                mandalas = [
-                    new Mandala(width, 0, width * 0.7, -0.002, COLORS.mandala), // Top Right
-                    new Mandala(0, height * 0.8, width * 0.6, 0.0015, COLORS.mandala) // Bottom Left
-                ];
+                mandalas = [];
             }
             
             if (particles.length === 0) { for(let i=0; i<numParticles; i++) particles.push(new FlowParticle()); }
@@ -930,8 +925,7 @@
         function animate() { 
             ctx.fillStyle = COLORS.trail; 
             ctx.fillRect(0, 0, width, height); 
-            // Always draw mandalas now
-            mandalas.forEach(m => { m.update(); m.draw(); }); 
+            if(!isMobile) mandalas.forEach(m => { m.update(); m.draw(); }); 
             particles.forEach(p => { p.update(); p.draw(); }); 
             requestAnimationFrame(animate); 
         }
