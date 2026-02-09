@@ -923,78 +923,27 @@
     
             /* --- Responsive Design --- */
             @media (max-width: 768px) {
-                header h1 {
-                    font-size: 2.5rem;
+                .team-card {
+                    height: 380px;
                 }
-    
+                .element-avatar {
+                    height: 60%;
+                }
                 .section-title h2 {
                     font-size: 1.8rem;
                 }
-    
-                .team-grid {
-                    grid-template-columns: 1fr;
-                    gap: 20px;
-                    padding: 0 15px;
-                }
-    
-                .team-card {
-                    padding: 20px;
-                    max-width: 100%;
-                    min-width: 100%;
-                    max-height: auto;
-                    min-height: auto;
-                }
-
-                .department-section:has(.team-card:nth-child(3):last-child) .team-card {
-                    max-width: 100%;
-                    min-width: 100%;
-                    max-height: auto;
-                    min-height: auto;
-                }
-
-                .department-section:has(.team-card:nth-child(2):last-child) .team-card {
-                    max-width: 100%;
-                    min-width: 100%;
-                    max-height: auto;
-                    min-height: auto;
-                }
-    
-                .member-avatar {
-                    width: 150px;
-                    height: 150px;
-                    font-size: 40px;
-                }
-    
-                .element-avatar {
-                    width: 180px;
-                    height: 180px;
-                    font-size: 50px;
-                }
-    
                 .stats-section {
-                    height: auto;
-                    padding: 40px 20px;
-                    gap: 20px;
-                    flex-wrap: wrap;
+                    flex-direction: column;
                 }
-
                 .stat-card {
-                    max-width: 150px;
-                    padding: 20px;
+                    margin: 20px 0;
+                    transform: rotate(0deg); 
+                    border-radius: 20px;
+                    width: 100%;
+                    max-width: 250px;
                 }
-
-                .section-title .line {
-                    width: 80px;
-                }
-
-                .department-section {
-                    height: auto;
-                    padding: 40px 20px;
-                }
-
-                .card-container {
-                    width: 90vw;
-                    max-width: 300px;
+                .stat-content {
+                    transform: rotate(0deg);
                 }
             }
     
