@@ -84,8 +84,7 @@
     #hero { 
         flex-direction: column; 
         text-align: center; 
-        /* ADJUSTED FOR DESKTOP: Increased padding-top to push text lower so logo is visible */
-        padding-top: 70vh; 
+        padding-top: 85vh; 
         padding-bottom: 10vh; 
     }
     .hero-content { pointer-events: none; width: 100%; position: relative; z-index: 20; }
@@ -160,13 +159,55 @@
     .sheet-content h3 { font-family: var(--font-display); font-size: 2rem; margin-bottom: 25px; color: #8b5a2b; border-bottom: 2px solid #8b5a2b; padding-bottom: 10px; display: inline-block; }
     .sheet-content p { font-size: 1.15rem; line-height: 1.7; margin-bottom: 15px; font-family: var(--font-serif); font-weight: 500; }
 
-    /* SECTION 2: MEMORIES */
-    .image-marquee-container { width: 100%; padding: 30px 0; overflow: hidden; transform: rotate(-2deg) scale(1.05); }
-    .image-marquee-track { display: flex; gap: 20px; width: max-content; animation: scrollImages 80s linear infinite; }
-    .image-marquee-item { width: 400px; height: 260px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); filter: grayscale(100%); transition: 0.4s; }
-    .image-marquee-item:hover { filter: grayscale(0%); transform: scale(1.03); border-color: var(--accent-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-    .image-marquee-item img { width: 100%; height: 100%; object-fit: cover; }
-    @keyframes scrollImages { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-420px * 15)); } }
+    /* SECTION 2: MEMORIES - CORRECTED IMPLEMENTATION */
+    #memories .perch-title {
+        font-family: var(--font-display);
+        font-weight: 700;
+        color: var(--text-light);
+        opacity: 0.9;
+        text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+    #memories .perch-subtitle {
+        background: rgba(0,0,0,0.3);
+        border: 1px solid var(--accent-olive);
+        color: var(--text-light);
+    }
+    .image-marquee-container { 
+        width: 100%; 
+        padding: 30px 0; 
+        overflow: hidden; 
+        transform: rotate(-2deg) scale(1.05); 
+    }
+    .image-marquee-track { 
+        display: flex; 
+        gap: 20px; 
+        width: max-content; 
+        animation: scrollImages 80s linear infinite; 
+    }
+    .image-marquee-item { 
+        width: 400px; 
+        height: 260px; 
+        border-radius: 8px; 
+        overflow: hidden; 
+        border: 1px solid rgba(255,255,255,0.2); 
+        filter: grayscale(100%); 
+        transition: 0.4s; 
+    }
+    .image-marquee-item:hover { 
+        filter: grayscale(0%); 
+        transform: scale(1.03); 
+        border-color: var(--accent-gold); 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+    }
+    .image-marquee-item img { 
+        width: 100%; 
+        height: 100%; 
+        object-fit: cover; 
+    }
+    @keyframes scrollImages { 
+        0% { transform: translateX(0); } 
+        100% { transform: translateX(calc(-420px * 10)); } /* Adjusted count */
+    }
 
     /* --- SECTION 3: EVENTS --- */
     .events-3d-section { flex-direction: column; overflow: hidden; position: relative; padding-top: 5vh; padding-bottom: 5vh; justify-content: flex-start; }
@@ -330,6 +371,22 @@
         .sheet-content p { font-size: 1rem; }
         .chat-question { width: 100%; text-align: center; padding: 15px; font-size: 1rem; border-radius: 20px; }
         
+        /* Marquee Mobile */
+        .image-marquee-item { width: 70vw; height: 200px; }
+        .image-marquee-container { 
+            width: 120%; 
+            margin-left: -10%; 
+            transform: rotate(0) scale(1);
+        } 
+        #memories .content-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #memories .perch-title {
+            font-family: var(--font-fold); /* Revert to original mobile font */
+        }
+        
         /* Carousel Mobile */
         .events-header {
             flex-direction: column;
@@ -344,10 +401,6 @@
         /* Team Mobile */
         .team-content-wrapper { padding: 30px 20px; text-align: center; }
         .team-text { font-size: 1rem; }
-        
-        /* Marquee Mobile */
-        .image-marquee-item { width: 70vw; height: 200px; }
-        .image-marquee-container { width: 120%; margin-left: -10%; } 
         
         /* Hero Mobile */
         .hero-countdown { gap: 10px; }
@@ -432,13 +485,13 @@
                 <div class="image-marquee-container glass-panel">
                     <div class="image-marquee-track">
                         <!-- Repeated images for smooth loop -->
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=500&q=60" loading="lazy" alt="Confetti at a concert"></div>
                         <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1470229722913-7c0d2dbbafd3?w=500&q=60" loading="lazy"></div>
                         <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500&q=60" loading="lazy"></div>
                         <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1459749411177-287ce51261df?w=500&q=60" loading="lazy"></div>
                         <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1459749411177-287ce51261df?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=500&q=60" loading="lazy" alt="Confetti at a concert"></div>
                         <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1470229722913-7c0d2dbbafd3?w=500&q=60" loading="lazy"></div>
                         <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500&q=60" loading="lazy"></div>
                         <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?w=500&q=60" loading="lazy"></div>
@@ -659,7 +712,7 @@
         const animate = () => { 
             const t = clock.getElapsedTime(); 
             particles.material.uniforms.uTime.value = t; 
-            if (bird.group.visible) { const flap = Math.sin(t * 8); bird.wingL.rotation.z = flap * 0.4 + 0.1; bird.wingR.rotation.z = -flap * 0.4 - 0.1; } 
+            if (!isMobile && bird.group.visible) { const flap = Math.sin(t * 8); bird.wingL.rotation.z = flap * 0.4 + 0.1; bird.wingR.rotation.z = -flap * 0.4 - 0.1; } 
             renderer.render(scene, camera); requestAnimationFrame(animate); 
         };
         animate();
@@ -737,9 +790,7 @@
         const heroTl = gsap.timeline({ scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: 1 }});
         heroTl.to(sMat, { opacity: 0, duration: 0.1 }) 
               .to(pMat.uniforms.uParticleOpacity, { value: 1, duration: 0.1 }, "<")
-              .to(pMat.uniforms.uExplode, { value: 1, duration: 1 }) 
-              .call(() => { bird.group.visible = true; }, null, "<0.1") 
-              .fromTo(bird.group.scale, {x:0, y:0, z:0}, {x:birdScale, y:birdScale, z:birdScale, duration: 0.8}, "<");
+              .to(pMat.uniforms.uExplode, { value: 1, duration: 1 });
 
         gsap.fromTo("#paper-sheet",
             { opacity: 0, rotationX: 90, transformOrigin: "top center", z: -200 },
@@ -750,30 +801,32 @@
         gsap.timeline({ scrollTrigger: { trigger: "#team", start: "top 70%", toggleActions: "play none none reverse" } })
             .to(".team-content-wrapper", { opacity: 1, duration: 0.8 })
             .from(".team-anim-text", { y: 30, opacity: 0, duration: 0.8, stagger: 0.2, ease: "power2.out" }, "<");
-
-        // OPTIMIZED BIRD PATH for Mobile
-        // Push z further back (-5) to avoid clipping through the "camera"
-        const mZ = -5; 
         
-        gsap.timeline({ scrollTrigger: { trigger: "#about-ishya", start: "top bottom", end: "center center", scrub: 1.5 }})
-            .to(bird.group.position, { x: isMobile ? -1.5 : -6, y: -0.5, z: isMobile ? mZ : 2 })
-            .to(bird.group.rotation, { y: -0.5, x: 0.2, z: 0 }, "<");
+        // FIX: Remove bird animation on mobile
+        if (!isMobile) {
+            heroTl.call(() => { bird.group.visible = true; }, null, "<0.1") 
+                  .fromTo(bird.group.scale, {x:0, y:0, z:0}, {x:birdScale, y:birdScale, z:birdScale, duration: 0.8}, "<");
 
-        gsap.timeline({ scrollTrigger: { trigger: "#memories", start: "top bottom", end: "center center", scrub: 1.5 }})
-            .to(bird.group.position, { x: isMobile ? 1.5 : 6, y: 0, z: isMobile ? mZ : 0 })
-            .to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
+            gsap.timeline({ scrollTrigger: { trigger: "#about-ishya", start: "top bottom", end: "center center", scrub: 1.5 }})
+                .to(bird.group.position, { x: -6, y: -0.5, z: 2 })
+                .to(bird.group.rotation, { y: -0.5, x: 0.2, z: 0 }, "<");
 
-        gsap.timeline({ scrollTrigger: { trigger: "#events", start: "top bottom", end: "center center", scrub: 1.5 }})
-            .to(bird.group.position, { x: isMobile ? -1.5 : -5.5, y: -0.5, z: isMobile ? mZ : 1 })
-            .to(bird.group.rotation, { y: -0.6, x: 0.1, z: 0 }, "<");
+            gsap.timeline({ scrollTrigger: { trigger: "#memories", start: "top bottom", end: "center center", scrub: 1.5 }})
+                .to(bird.group.position, { x: 6, y: 0, z: 0 })
+                .to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
 
-        gsap.timeline({ scrollTrigger: { trigger: "#team", start: "top bottom", end: "center center", scrub: 1.5 }})
-            .to(bird.group.position, { x: isMobile ? 1.5 : 6, y: 0.5, z: isMobile ? mZ : 1 })
-            .to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
+            gsap.timeline({ scrollTrigger: { trigger: "#events", start: "top bottom", end: "center center", scrub: 1.5 }})
+                .to(bird.group.position, { x: -5.5, y: -0.5, z: 1 })
+                .to(bird.group.rotation, { y: -0.6, x: 0.1, z: 0 }, "<");
 
-        gsap.timeline({ scrollTrigger: { trigger: "#proshows", start: "top bottom", end: "center center", scrub: 1.5 }})
-            .to(bird.group.position, { x: 0, y: 0, z: isMobile ? mZ : 3 })
-            .to(bird.group.rotation, { y: 0, x: 0, z: 0 }, "<"); 
+            gsap.timeline({ scrollTrigger: { trigger: "#team", start: "top bottom", end: "center center", scrub: 1.5 }})
+                .to(bird.group.position, { x: 6, y: 0.5, z: 1 })
+                .to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
+
+            gsap.timeline({ scrollTrigger: { trigger: "#proshows", start: "top bottom", end: "center center", scrub: 1.5 }})
+                .to(bird.group.position, { x: 0, y: 0, z: 3 })
+                .to(bird.group.rotation, { y: 0, x: 0, z: 0 }, "<"); 
+        }
     }
 
     // --- 3D CAROUSEL LOGIC ---
