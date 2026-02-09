@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Foldit:wght@400;600;800;900&family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;500;700&family=Cormorant+Garamond:ital,wght@1,300;1,600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
-    <!-- FONT AWESOME (Includes X Twitter and Facebook) -->
+    <!-- FONT AWESOME -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
 <style>
@@ -165,14 +165,22 @@
     /* --- SECTION 3: EVENTS --- */
     .events-3d-section { flex-direction: column; overflow: hidden; position: relative; padding-top: 5vh; padding-bottom: 5vh; justify-content: flex-start; }
     .events-header { padding: 0 5vw; margin-bottom: 20px; width: 100%; display: flex; justify-content: space-between; align-items: flex-end; z-index: 5; }
-    .carousel-stage { width: 100%; height: 600px; position: relative; display: flex; justify-content: center; align-items: center; perspective: 1200px; margin-top: 20px; }
-    .carousel-container { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; }
+    .carousel-stage { 
+        width: 100%; height: 600px; position: relative; 
+        display: flex; justify-content: center; align-items: center; 
+        perspective: 1200px; margin-top: 20px;
+        perspective-origin: center; 
+    }
+    .carousel-container { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; display: flex; justify-content: center; align-items: center; }
 
     .carousel-card-3d {
-        position: absolute; top: 50%; left: 50%; width: 320px; height: 500px;
+        position: absolute; 
+        width: 320px; height: 500px;
         background: #000; border-radius: 12px;
         border: 1px solid rgba(255, 255, 255, 0.1);
-        transform-origin: center center; transform: translate(-50%, -50%);
+        transform-origin: center center; 
+        /* Important: Initial state set by JS, but this ensures centering reference */
+        left: 0; right: 0; margin: auto;
         overflow: hidden; cursor: pointer;
         box-shadow: 0 15px 40px rgba(0,0,0,0.8);
         transition: border-color 0.3s, box-shadow 0.3s;
@@ -263,6 +271,17 @@
         .perch-title { font-size: 2.5rem; }
         .perch-subtitle { font-size: 0.8rem; }
         
+        /* FIX 1: Hero Text Visibility on Mobile */
+        .hero-title {
+            font-size: clamp(1.8rem, 8vw, 4rem); /* Smaller min and max */
+            display: flex;
+            flex-wrap: wrap; /* Allow words to wrap */
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+        }
+        .word-group { margin: 0 2px; }
+
         /* Origami & Text Adjustments */
         .origami-sheet { padding: 30px 20px; }
         .sheet-content h3 { font-size: 1.5rem; }
@@ -270,8 +289,8 @@
         .chat-question { width: 100%; text-align: center; padding: 15px; font-size: 1rem; }
         
         /* Carousel Mobile */
-        .carousel-stage { height: 450px; }
-        .carousel-card-3d { width: 80vw; height: 400px; }
+        .carousel-stage { height: 450px; width: 100%; overflow: visible; }
+        .carousel-card-3d { width: 80vw; height: 400px; max-width: 320px; }
         .card-number { font-size: 3rem; }
         .card-title { font-size: 1.5rem; }
         
@@ -284,7 +303,6 @@
         .image-marquee-container { width: 120%; margin-left: -10%; } 
         
         /* Hero Mobile */
-        .word-group { margin: 0 5px; }
         .hero-countdown { gap: 10px; }
         .time-block { padding: 10px; min-width: 60px; }
         .time-block span { font-size: 1.8rem; }
@@ -395,6 +413,10 @@
         </div>
         <div class="carousel-stage">
             <div class="carousel-container" id="cardCarousel"></div>
+        </div>
+        <!-- UPDATED: EXPLORE MORE BUTTON -->
+        <div style="text-align: center; margin-top: 30px; z-index: 5;">
+            <a href="#" class="cta-btn">EXPLORE MORE</a>
         </div>
     </section>
 
@@ -630,12 +652,15 @@
                .fromTo(gsap.utils.toArray('.hero-title .letter'), { opacity: 0, rotationX: -95, scaleY: 0, transformOrigin: "50% 100%" }, { opacity: 1, rotationX: 0, scaleY: 1, duration: 1.5, ease: "elastic.out(1, 0.6)", stagger: 0.04 }, "<+0.2")
                .fromTo(gsap.utils.toArray('.hero-date .date-char'), { opacity: 0, rotationX: 95, scaleY: 0, transformOrigin: "50% 0%" }, { opacity: 1, rotationX: 0, scaleY: 1, duration: 1.2, ease: "back.out(1.7)", stagger: 0.03 }, "<+0.1");
 
+        // FIX 2a: Set Bird Scale for Mobile (60% size) vs Desktop
+        const birdScale = isMobile ? 0.6 : 1;
+
         const heroTl = gsap.timeline({ scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: 1 }});
         heroTl.to(sMat, { opacity: 0, duration: 0.1 }) 
               .to(pMat.uniforms.uParticleOpacity, { value: 1, duration: 0.1 }, "<")
               .to(pMat.uniforms.uExplode, { value: 1, duration: 1 }) 
               .call(() => { bird.group.visible = true; }, null, "<0.1") 
-              .fromTo(bird.group.scale, {x:0, y:0, z:0}, {x:1, y:1, z:1, duration: 0.8}, "<");
+              .fromTo(bird.group.scale, {x:0, y:0, z:0}, {x:birdScale, y:birdScale, z:birdScale, duration: 0.8}, "<");
 
         gsap.fromTo("#paper-sheet",
             { opacity: 0, rotationX: 90, transformOrigin: "top center", z: -200 },
@@ -647,12 +672,27 @@
             .to(".team-content-wrapper", { opacity: 1, duration: 0.8 })
             .from(".team-anim-text", { y: 30, opacity: 0, duration: 0.8, stagger: 0.2, ease: "power2.out" }, "<");
 
-        // Bird Flight Path (Optimized for Mobile)
-        gsap.timeline({ scrollTrigger: { trigger: "#about-ishya", start: "top bottom", end: "center center", scrub: 1.5 }}).to(bird.group.position, { x: isMobile ? 0 : -6, y: -0.5, z: 2 }).to(bird.group.rotation, { y: -0.5, x: 0.2, z: 0 }, "<");
-        gsap.timeline({ scrollTrigger: { trigger: "#memories", start: "top bottom", end: "center center", scrub: 1.5 }}).to(bird.group.position, { x: isMobile ? 0 : 6, y: 0, z: 0 }).to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
-        gsap.timeline({ scrollTrigger: { trigger: "#events", start: "top bottom", end: "center center", scrub: 1.5 }}).to(bird.group.position, { x: isMobile ? 0 : -5.5, y: -0.5, z: 1 }).to(bird.group.rotation, { y: -0.6, x: 0.1, z: 0 }, "<");
-        gsap.timeline({ scrollTrigger: { trigger: "#team", start: "top bottom", end: "center center", scrub: 1.5 }}).to(bird.group.position, { x: isMobile ? 0 : 6, y: 0.5, z: 1 }).to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
-        gsap.timeline({ scrollTrigger: { trigger: "#proshows", start: "top bottom", end: "center center", scrub: 1.5 }}).to(bird.group.position, { x: 0, y: 0, z: 3 }).to(bird.group.rotation, { y: 0, x: 0, z: 0 }, "<"); 
+        // FIX 2b: Bird Flight Path (Optimized for Mobile Movement)
+        // On mobile, the bird now sways left (-2.5) and right (2.5) to show movement, instead of staying at x:0
+        gsap.timeline({ scrollTrigger: { trigger: "#about-ishya", start: "top bottom", end: "center center", scrub: 1.5 }})
+            .to(bird.group.position, { x: isMobile ? -2.5 : -6, y: -0.5, z: 2 })
+            .to(bird.group.rotation, { y: -0.5, x: 0.2, z: 0 }, "<");
+
+        gsap.timeline({ scrollTrigger: { trigger: "#memories", start: "top bottom", end: "center center", scrub: 1.5 }})
+            .to(bird.group.position, { x: isMobile ? 2.5 : 6, y: 0, z: 0 })
+            .to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
+
+        gsap.timeline({ scrollTrigger: { trigger: "#events", start: "top bottom", end: "center center", scrub: 1.5 }})
+            .to(bird.group.position, { x: isMobile ? -2.5 : -5.5, y: -0.5, z: 1 })
+            .to(bird.group.rotation, { y: -0.6, x: 0.1, z: 0 }, "<");
+
+        gsap.timeline({ scrollTrigger: { trigger: "#team", start: "top bottom", end: "center center", scrub: 1.5 }})
+            .to(bird.group.position, { x: isMobile ? 2.5 : 6, y: 0.5, z: 1 })
+            .to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
+
+        gsap.timeline({ scrollTrigger: { trigger: "#proshows", start: "top bottom", end: "center center", scrub: 1.5 }})
+            .to(bird.group.position, { x: 0, y: 0, z: 3 })
+            .to(bird.group.rotation, { y: 0, x: 0, z: 0 }, "<"); 
     }
 
     // --- 3D CAROUSEL LOGIC ---
@@ -696,21 +736,27 @@
         });
 
         function updateCarousel() {
-            const spacing = isMobile ? 40 : 120; 
+            // FIX 3: Adjusted spacing for mobile to ensure centering
+            const spacing = isMobile ? 30 : 120; 
             const rotationIntensity = 25; 
             const depthIntensity = 200; 
             const scaleIntensity = 0.15; 
+            
+            // On mobile, the translation distance needs to be smaller so cards don't fly off screen
+            // But strict centering relies on offset * distance being 0 when offset is 0.
+            const xDistance = isMobile ? 40 : 250; 
 
             cardElements.forEach((card, index) => {
                 const offset = index - activeIndex;
                 const absOffset = Math.abs(offset);
+                
                 if (absOffset > 3) {
                     gsap.to(card, { opacity: 0, duration: 0.3, pointerEvents: 'none' });
                 } else {
                     const zIndex = 100 - absOffset;
                     const scale = 1 - (absOffset * scaleIntensity);
                     const rotateY = offset * -rotationIntensity; 
-                    const translateX = offset * (isMobile ? 60 : 250); 
+                    const translateX = offset * xDistance; 
                     const translateZ = -absOffset * depthIntensity;
                     const opacity = 1 - (absOffset * 0.3);
 
