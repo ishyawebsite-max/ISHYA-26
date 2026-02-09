@@ -930,10 +930,24 @@
                     height: 60%;
                 }
                 .section-title h2 {
-                    font-size: 1.8rem;
+                    font-size: 1.8rem !important;
+                    margin-top: 20px;
+                    display: block;
                 }
+                .department-section, 
+                .stats-section {
+                    height: auto !important; /* Allow content to dictate height */
+                    min-height: 100vh;       /* Ensure it still feels like a full section */
+                    width: 100% !important;  /* Reset breakout width */
+                    left: 0 !important;
+                    margin-left: 0 !important;
+                    margin-right: 0 !important;
+                    padding: 60px 20px !important; /* Add breathing room */
+                }
+            
                 .stats-section {
                     flex-direction: column;
+                    justify-content: center;
                 }
                 .stat-card {
                     margin: 20px 0;
@@ -981,10 +995,10 @@
                 .team-card {
                     padding: 15px;
                     padding-top: 25px;
-                    max-width: 100%;
-                    min-width: 100%;
-                    max-height: auto;
-                    min-height: auto;
+                    max-width: 100%!important;
+                    min-width: 100%!important;
+                    max-height: auto!important;
+                    min-height: auto!important;
                     border-radius: 15px;
                 }
 
@@ -1014,8 +1028,8 @@
                 }
 
                 .element-avatar {
-                    width: 150px;
-                    height: 150px;
+                    width: 120px!important;
+                    height: 120px!important;
                     font-size: 40px;
                 }
 
