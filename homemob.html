@@ -268,17 +268,25 @@
         .perch-title { font-size: 2.5rem; }
         .perch-subtitle { font-size: 0.8rem; }
         
-        /* FIX: Hero Text - Forced Vertical Stack for Visibility */
+        /* FIX: Hero Text FONT and SPACING for Mobile */
         .hero-title {
-            font-size: 13vw; /* Large size relative to screen width */
+            /* Switch to Syncopate on mobile to ensure visibility (Foldit can be buggy on some OS) */
+            font-family: 'Syncopate', sans-serif !important; 
+            font-weight: 700;
+            font-size: 13vw; 
             display: flex;
-            flex-direction: column; /* Stack words vertically */
+            flex-direction: column; 
             align-items: center;
             line-height: 1.1;
             margin-top: 0;
-            gap: 0px;
+            gap: 10px; /* Space between lines */
+            
+            /* Ensure color visibility if gradient fails on mobile */
+            color: var(--accent-gold);
+            background: none !important; 
+            -webkit-text-fill-color: var(--accent-gold) !important;
         }
-        .word-group { margin: 2px 0; }
+        .word-group { margin: 0; }
         
         .hero-date { font-size: 2rem; letter-spacing: 2px; }
 
@@ -330,7 +338,9 @@
         <div class="hero-content">
             <h1 class="hero-title">
                 <span class="word-group"><span class="letter">F</span><span class="letter">L</span><span class="letter">A</span><span class="letter">M</span><span class="letter">E</span><span class="letter">S</span></span>
-                <span class="word-group"><span class="letter">I</span><span class="letter">N</span><span class="letter"> </span><span class="letter">E</span><span class="letter">V</span><span class="letter">E</span><span class="letter">R</span><span class="letter">Y</span></span>
+                <!-- FIX: Split IN and EVERY to ensure spacing on mobile -->
+                <span class="word-group"><span class="letter">I</span><span class="letter">N</span></span>
+                <span class="word-group"><span class="letter">E</span><span class="letter">V</span><span class="letter">E</span><span class="letter">R</span><span class="letter">Y</span></span>
                 <span class="word-group"><span class="letter">F</span><span class="letter">O</span><span class="letter">L</span><span class="letter">D</span></span>
             </h1>
             <h2 class="hero-date"><span class="date-char">M</span><span class="date-char">A</span><span class="date-char">R</span><span class="date-char">C</span><span class="date-char">H</span><span class="date-char"> </span><span class="date-char">1</span><span class="date-char">3</span><span class="date-char"> </span><span class="date-char">-</span><span class="date-char"> </span><span class="date-char">1</span><span class="date-char">5</span></h2>
@@ -630,16 +640,15 @@
     }
 
     function createBird() {
-        // OPTIMIZATION: Use MeshLambertMaterial (Cheap lighting) on Mobile instead of Standard (Expensive PBR)
+        // OPTIMIZATION: Use MeshBasicMaterial (Fastest) on Mobile
         if (isMobile) {
-            birdMaterial = new THREE.MeshLambertMaterial({ color: 0xD6C26A, side: THREE.DoubleSide });
+            birdMaterial = new THREE.MeshBasicMaterial({ color: 0xD6C26A, side: THREE.DoubleSide });
         } else {
             birdMaterial = new THREE.MeshStandardMaterial({ color: 0xD6C26A, roughness: 0.3, metalness: 0.8, side: THREE.DoubleSide });
         }
         
         const group = new THREE.Group(); group.visible = false; scene.add(group);
         
-        // Simpler geometry for mobile could be implemented, but these arrays are low poly enough
         const vBody=[0,0,1,1,0,0,0,0,-1,0,0,1,0,0,-1,-1,0,0,0,0.8,-0.2,0,0,1,1,0,0,0,0.8,-0.2,-1,0,0,0,0,1,0,0.8,-0.2,1,0,0,0,0,-1,0,0.8,-0.2,0,0,-1,-1,0,0,0,0,1,0.15,0,0.8,0,2.5,2.0,0,0,1,0,2.5,2.0,-0.15,0,0.8,0,2.5,2.0,0.1,2.2,2.0,0,1.8,2.5,0,2.5,2.0,0,1.8,2.5,-0.1,2.2,2.0,0,0,-1,0.15,0,-0.8,0,2.0,-2.5,0,0,-1,0,2.0,-2.5,-0.15,0,-0.8];
         const vWing=[0,0,0.8,0,0,-0.8,3.5,1.5,0,0,0,0.8,3.5,1.5,0,0,0.8,-0.2];
         
@@ -652,11 +661,7 @@
         group.add(wingL, wingR); group.rotation.x=0.2; 
         
         // Add a simple light directly to bird group for mobile so it's always lit
-        if(isMobile) {
-            const birdLight = new THREE.DirectionalLight(0xffffff, 1);
-            birdLight.position.set(0, 1, 0);
-            group.add(birdLight);
-        } else {
+        if(!isMobile) {
             const birdLight = new THREE.PointLight(0xD6C26A, 1.5, 15);
             birdLight.position.set(0, 0.5, 0);
             group.add(birdLight);
@@ -686,7 +691,7 @@
                .fromTo(gsap.utils.toArray('.hero-title .letter'), { opacity: 0, rotationX: -95, scaleY: 0, transformOrigin: "50% 100%" }, { opacity: 1, rotationX: 0, scaleY: 1, duration: 1.5, ease: "elastic.out(1, 0.6)", stagger: 0.04 }, "<+0.2")
                .fromTo(gsap.utils.toArray('.hero-date .date-char'), { opacity: 0, rotationX: 95, scaleY: 0, transformOrigin: "50% 0%" }, { opacity: 1, rotationX: 0, scaleY: 1, duration: 1.2, ease: "back.out(1.7)", stagger: 0.03 }, "<+0.1");
 
-        const birdScale = isMobile ? 0.5 : 1;
+        const birdScale = isMobile ? 0.6 : 1;
 
         const heroTl = gsap.timeline({ scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: 1 }});
         heroTl.to(sMat, { opacity: 0, duration: 0.1 }) 
@@ -706,25 +711,27 @@
             .from(".team-anim-text", { y: 30, opacity: 0, duration: 0.8, stagger: 0.2, ease: "power2.out" }, "<");
 
         // OPTIMIZED BIRD PATH for Mobile
-        // Less z-depth movement on mobile to prevent clipping into camera
+        // Push z further back (-5) to avoid clipping through the "camera"
+        const mZ = -5; 
+        
         gsap.timeline({ scrollTrigger: { trigger: "#about-ishya", start: "top bottom", end: "center center", scrub: 1.5 }})
-            .to(bird.group.position, { x: isMobile ? -1.5 : -6, y: -0.5, z: isMobile ? 0 : 2 })
+            .to(bird.group.position, { x: isMobile ? -1.5 : -6, y: -0.5, z: isMobile ? mZ : 2 })
             .to(bird.group.rotation, { y: -0.5, x: 0.2, z: 0 }, "<");
 
         gsap.timeline({ scrollTrigger: { trigger: "#memories", start: "top bottom", end: "center center", scrub: 1.5 }})
-            .to(bird.group.position, { x: isMobile ? 1.5 : 6, y: 0, z: 0 })
+            .to(bird.group.position, { x: isMobile ? 1.5 : 6, y: 0, z: isMobile ? mZ : 0 })
             .to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
 
         gsap.timeline({ scrollTrigger: { trigger: "#events", start: "top bottom", end: "center center", scrub: 1.5 }})
-            .to(bird.group.position, { x: isMobile ? -1.5 : -5.5, y: -0.5, z: isMobile ? 0 : 1 })
+            .to(bird.group.position, { x: isMobile ? -1.5 : -5.5, y: -0.5, z: isMobile ? mZ : 1 })
             .to(bird.group.rotation, { y: -0.6, x: 0.1, z: 0 }, "<");
 
         gsap.timeline({ scrollTrigger: { trigger: "#team", start: "top bottom", end: "center center", scrub: 1.5 }})
-            .to(bird.group.position, { x: isMobile ? 1.5 : 6, y: 0.5, z: 1 })
+            .to(bird.group.position, { x: isMobile ? 1.5 : 6, y: 0.5, z: isMobile ? mZ : 1 })
             .to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
 
         gsap.timeline({ scrollTrigger: { trigger: "#proshows", start: "top bottom", end: "center center", scrub: 1.5 }})
-            .to(bird.group.position, { x: 0, y: 0, z: isMobile ? 1 : 3 })
+            .to(bird.group.position, { x: 0, y: 0, z: isMobile ? mZ : 3 })
             .to(bird.group.rotation, { y: 0, x: 0, z: 0 }, "<"); 
     }
 
