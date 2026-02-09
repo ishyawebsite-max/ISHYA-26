@@ -81,12 +81,12 @@
     .cta-btn:hover { color: #fff; border-color: var(--accent-gold); box-shadow: 0 0 20px rgba(77, 143, 72, 0.4); background: rgba(77, 143, 72, 0.2); }
 
     /* --- HERO --- */
-    #hero { flex-direction: column; text-align: center; padding-top: 60vh; padding-bottom: 20vh; }
+    #hero { flex-direction: column; text-align: center; padding-top: 55vh; padding-bottom: 15vh; }
     .hero-content { pointer-events: none; width: 100%; position: relative; z-index: 20; }
     
     .hero-title { 
         perspective: 1000px; font-family: var(--font-fold); 
-        font-size: clamp(2.5rem, 9vw, 8rem); line-height: 1.1; text-transform: uppercase; 
+        font-size: clamp(3rem, 7vw, 8rem); line-height: 1.1; text-transform: uppercase; 
         background: linear-gradient(to bottom, #ffffff 10%, #D6C26A 60%, #8a7c40 100%);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         filter: drop-shadow(0 0 25px rgba(214, 194, 106, 0.4));
@@ -95,7 +95,7 @@
         max-width: 95vw;
         margin-left: auto; margin-right: auto;
     }
-    .word-group { display: inline-block; white-space: nowrap; margin: 0 10px; }
+    .word-group { display: inline-block; white-space: nowrap; margin: 0 15px; }
     .hero-title .letter { display: inline-block; transform-style: preserve-3d; opacity: 0; }
     
     .hero-date { 
@@ -179,7 +179,6 @@
         background: #000; border-radius: 12px;
         border: 1px solid rgba(255, 255, 255, 0.1);
         transform-origin: center center; 
-        /* Important: Initial state set by JS, but this ensures centering reference */
         left: 0; right: 0; margin: auto;
         overflow: hidden; cursor: pointer;
         box-shadow: 0 15px 40px rgba(0,0,0,0.8);
@@ -211,7 +210,7 @@
     .wait-see-text { font-family: var(--font-display); font-size: clamp(3rem, 8vw, 7rem); font-weight: 700; color: transparent; -webkit-text-stroke: 2px var(--accent-gold); text-shadow: 0 0 30px rgba(214, 194, 106, 0.3); transform: skewX(10deg); animation: pulseText 3s infinite ease-in-out; }
     @keyframes pulseText { 0%, 100% { opacity: 0.6; text-shadow: 0 0 10px rgba(214, 194, 106, 0.1); } 50% { opacity: 1; text-shadow: 0 0 50px rgba(214, 194, 106, 0.6), 0 0 20px #fff; } }
 
-    /* --- FOOTER (Optimized with Map & X/Facebook) --- */
+    /* --- FOOTER --- */
     .footer-section { 
         background: rgba(24, 28, 16, 0.95); 
         border-radius: 50px 50px 0 0; 
@@ -226,7 +225,7 @@
 
     .footer-grid {
         display: grid;
-        grid-template-columns: 1.2fr 1fr 1.5fr; /* Address | Contact/Social | Map */
+        grid-template-columns: 1.2fr 1fr 1.5fr; 
         gap: 30px;
         max-width: 1400px;
         margin: 0 auto;
@@ -240,7 +239,6 @@
     .footer-col p, .footer-col a { font-family: var(--font-body); font-size: 0.95rem; color: #bbb; line-height: 1.6; text-decoration: none; display: block; transition: 0.3s; }
     .footer-col a:hover { color: var(--accent-gold); }
 
-    /* Social Icons Styling */
     .social-icons-footer { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 15px; }
     .social-icons-footer a { 
         color: #888; transition: 0.3s; font-size: 1.3rem; 
@@ -249,13 +247,12 @@
     }
     .social-icons-footer a:hover { color: var(--bg-dark); background: var(--accent-gold); border-color: var(--accent-gold); transform: translateY(-3px); }
 
-    /* Map Styling */
     .map-container {
         width: 100%; height: 200px; border-radius: 12px; overflow: hidden;
         border: 1px solid rgba(214, 194, 106, 0.3);
         box-shadow: 0 5px 20px rgba(0,0,0,0.5);
     }
-    .map-frame { width: 100%; height: 100%; border: 0; filter: invert(90%) hue-rotate(180deg) brightness(0.9); } /* Dark Mode Effect */
+    .map-frame { width: 100%; height: 100%; border: 0; filter: invert(90%) hue-rotate(180deg) brightness(0.9); } 
 
     .grievance-btn { margin-top: 15px; color: var(--accent-gold) !important; text-decoration: underline !important; font-weight: bold; }
     .copyright { color: #555; margin-top: 50px; font-size: 0.7rem; font-family: var(--font-tech); text-align: center; width: 100%; }
@@ -271,16 +268,19 @@
         .perch-title { font-size: 2.5rem; }
         .perch-subtitle { font-size: 0.8rem; }
         
-        /* FIX 1: Hero Text Visibility on Mobile */
+        /* FIX: Hero Text - Forced Vertical Stack for Visibility */
         .hero-title {
-            font-size: clamp(1.8rem, 8vw, 4rem); /* Smaller min and max */
+            font-size: 13vw; /* Large size relative to screen width */
             display: flex;
-            flex-wrap: wrap; /* Allow words to wrap */
-            justify-content: center;
-            gap: 0.5rem;
-            width: 100%;
+            flex-direction: column; /* Stack words vertically */
+            align-items: center;
+            line-height: 1.1;
+            margin-top: 0;
+            gap: 0px;
         }
-        .word-group { margin: 0 2px; }
+        .word-group { margin: 2px 0; }
+        
+        .hero-date { font-size: 2rem; letter-spacing: 2px; }
 
         /* Origami & Text Adjustments */
         .origami-sheet { padding: 30px 20px; }
@@ -307,7 +307,7 @@
         .time-block { padding: 10px; min-width: 60px; }
         .time-block span { font-size: 1.8rem; }
         
-        /* Footer Mobile - Stacking */
+        /* Footer Mobile */
         .footer-logo { font-size: 18vw; margin-bottom: 30px; }
         .footer-grid { grid-template-columns: 1fr; gap: 40px; text-align: center; }
         .social-icons-footer { justify-content: center; }
@@ -330,8 +330,7 @@
         <div class="hero-content">
             <h1 class="hero-title">
                 <span class="word-group"><span class="letter">F</span><span class="letter">L</span><span class="letter">A</span><span class="letter">M</span><span class="letter">E</span><span class="letter">S</span></span>
-                <span class="word-group"><span class="letter">I</span><span class="letter">N</span></span>
-                <span class="word-group"><span class="letter">E</span><span class="letter">V</span><span class="letter">E</span><span class="letter">R</span><span class="letter">Y</span></span>
+                <span class="word-group"><span class="letter">I</span><span class="letter">N</span><span class="letter"> </span><span class="letter">E</span><span class="letter">V</span><span class="letter">E</span><span class="letter">R</span><span class="letter">Y</span></span>
                 <span class="word-group"><span class="letter">F</span><span class="letter">O</span><span class="letter">L</span><span class="letter">D</span></span>
             </h1>
             <h2 class="hero-date"><span class="date-char">M</span><span class="date-char">A</span><span class="date-char">R</span><span class="date-char">C</span><span class="date-char">H</span><span class="date-char"> </span><span class="date-char">1</span><span class="date-char">3</span><span class="date-char"> </span><span class="date-char">-</span><span class="date-char"> </span><span class="date-char">1</span><span class="date-char">5</span></h2>
@@ -457,7 +456,7 @@
         </div>
     </section>
 
-    <!-- FOOTER WITH MAP AND UPDATED ICONS -->
+    <!-- FOOTER -->
     <footer class="footer-section">
         <div class="footer-content">
             <h2 class="footer-logo">ISHYA</h2>
@@ -495,7 +494,6 @@
                 <div class="footer-col">
                     <h4>FIND US</h4>
                     <div class="map-container">
-                        <!-- Map with Invert Filter for Dark Mode -->
                         <iframe class="map-frame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3941.6263884346857!2d77.15933807584109!3d8.677098491371813!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b05bbfeb5076e73%3A0x633d994e775f0376!2sIndian%20Institute%20of%20Science%20Education%20and%20Research%20Thiruvananthapuram%20(IISER%20TVM)!5e0!3m2!1sen!2sin!4v1714412345678!5m2!1sen!2sin" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
                 </div>
@@ -544,13 +542,23 @@
     import Lenis from 'https://cdn.skypack.dev/@studio-freight/lenis@1.0.29';
 
     gsap.registerPlugin(ScrollTrigger);
+    
+    // DETECTION FOR OPTIMIZATION
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 950;
 
-    const CONFIG = { LOGO_PATH: 'logo.png', PARTICLE_DENSITY: isMobile ? 12 : 8, LOGO_SCALE: isMobile ? 7 : 12, LOGO_Y_OFFSET: 1.8 };
+    // OPTIMIZED CONFIGURATION FOR MOBILE
+    const CONFIG = { 
+        LOGO_PATH: 'logo.png', 
+        // Increase step to reduce particles (Higher number = fewer particles)
+        PARTICLE_DENSITY: isMobile ? 18 : 8, 
+        LOGO_SCALE: isMobile ? 7 : 12, 
+        LOGO_Y_OFFSET: 1.8 
+    };
 
     const canvas = document.getElementById('webgl'); 
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); 
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: !isMobile, alpha: true }); 
     renderer.setSize(window.innerWidth, window.innerHeight); 
+    // Limit pixel ratio on mobile to 1 to prevent lag
     renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2)); 
     renderer.setClearColor(0x000000, 0);
 
@@ -590,7 +598,7 @@
         const particles = createParticles(data.points.length / 3, data.points);
         const solidLogo = createSolidLogo(data.texture); 
         const bird = createBird();
-        setupLights();
+        if (!isMobile) setupLights(); // Skip heavy lights on mobile if possible, or keep simple
         setupAnimations(particles, solidLogo, bird);
         setupEventListeners();
         setupInteractiveElements();
@@ -622,24 +630,50 @@
     }
 
     function createBird() {
-        birdMaterial = new THREE.MeshStandardMaterial({ color: 0xD6C26A, roughness: 0.3, metalness: 0.8, side: THREE.DoubleSide });
+        // OPTIMIZATION: Use MeshLambertMaterial (Cheap lighting) on Mobile instead of Standard (Expensive PBR)
+        if (isMobile) {
+            birdMaterial = new THREE.MeshLambertMaterial({ color: 0xD6C26A, side: THREE.DoubleSide });
+        } else {
+            birdMaterial = new THREE.MeshStandardMaterial({ color: 0xD6C26A, roughness: 0.3, metalness: 0.8, side: THREE.DoubleSide });
+        }
+        
         const group = new THREE.Group(); group.visible = false; scene.add(group);
+        
+        // Simpler geometry for mobile could be implemented, but these arrays are low poly enough
         const vBody=[0,0,1,1,0,0,0,0,-1,0,0,1,0,0,-1,-1,0,0,0,0.8,-0.2,0,0,1,1,0,0,0,0.8,-0.2,-1,0,0,0,0,1,0,0.8,-0.2,1,0,0,0,0,-1,0,0.8,-0.2,0,0,-1,-1,0,0,0,0,1,0.15,0,0.8,0,2.5,2.0,0,0,1,0,2.5,2.0,-0.15,0,0.8,0,2.5,2.0,0.1,2.2,2.0,0,1.8,2.5,0,2.5,2.0,0,1.8,2.5,-0.1,2.2,2.0,0,0,-1,0.15,0,-0.8,0,2.0,-2.5,0,0,-1,0,2.0,-2.5,-0.15,0,-0.8];
         const vWing=[0,0,0.8,0,0,-0.8,3.5,1.5,0,0,0,0.8,3.5,1.5,0,0,0.8,-0.2];
+        
         const bGeo=new THREE.BufferGeometry(); bGeo.setAttribute('position', new THREE.Float32BufferAttribute(vBody,3)); bGeo.computeVertexNormals();
         const wGeo=new THREE.BufferGeometry(); wGeo.setAttribute('position', new THREE.Float32BufferAttribute(vWing,3)); wGeo.computeVertexNormals();
+        
         group.add(new THREE.Mesh(bGeo, birdMaterial));
-        const wingL=new THREE.Mesh(wGeo, birdMaterial); wingL.position.set(-0.9,0,0); wingL.scale.x=-1; const wingR=new THREE.Mesh(wGeo, birdMaterial); wingR.position.set(0.9,0,0);
+        const wingL=new THREE.Mesh(wGeo, birdMaterial); wingL.position.set(-0.9,0,0); wingL.scale.x=-1; 
+        const wingR=new THREE.Mesh(wGeo, birdMaterial); wingR.position.set(0.9,0,0);
         group.add(wingL, wingR); group.rotation.x=0.2; 
         
-        const birdLight = new THREE.PointLight(0xD6C26A, 1.5, 15);
-        birdLight.position.set(0, 0.5, 0);
-        group.add(birdLight);
+        // Add a simple light directly to bird group for mobile so it's always lit
+        if(isMobile) {
+            const birdLight = new THREE.DirectionalLight(0xffffff, 1);
+            birdLight.position.set(0, 1, 0);
+            group.add(birdLight);
+        } else {
+            const birdLight = new THREE.PointLight(0xD6C26A, 1.5, 15);
+            birdLight.position.set(0, 0.5, 0);
+            group.add(birdLight);
+        }
 
         return { group, wingL, wingR };
     }
 
-    function setupLights() { scene.add(new THREE.AmbientLight(0xffffff, 0.4)); const spot = new THREE.SpotLight(0xD6C26A, 2.0); spot.position.set(5, 10, 5); scene.add(spot); const back = new THREE.DirectionalLight(0x4D8F48, 1.2); back.position.set(-5, 5, -5); scene.add(back); }
+    function setupLights() { 
+        scene.add(new THREE.AmbientLight(0xffffff, 0.4)); 
+        const spot = new THREE.SpotLight(0xD6C26A, 2.0); 
+        spot.position.set(5, 10, 5); 
+        scene.add(spot); 
+        const back = new THREE.DirectionalLight(0x4D8F48, 1.2); 
+        back.position.set(-5, 5, -5); 
+        scene.add(back); 
+    }
 
     function setupAnimations(particles, solidLogo, bird) {
         const pMat = particles.material; const sMat = solidLogo.material;
@@ -652,8 +686,7 @@
                .fromTo(gsap.utils.toArray('.hero-title .letter'), { opacity: 0, rotationX: -95, scaleY: 0, transformOrigin: "50% 100%" }, { opacity: 1, rotationX: 0, scaleY: 1, duration: 1.5, ease: "elastic.out(1, 0.6)", stagger: 0.04 }, "<+0.2")
                .fromTo(gsap.utils.toArray('.hero-date .date-char'), { opacity: 0, rotationX: 95, scaleY: 0, transformOrigin: "50% 0%" }, { opacity: 1, rotationX: 0, scaleY: 1, duration: 1.2, ease: "back.out(1.7)", stagger: 0.03 }, "<+0.1");
 
-        // FIX 2a: Set Bird Scale for Mobile (60% size) vs Desktop
-        const birdScale = isMobile ? 0.6 : 1;
+        const birdScale = isMobile ? 0.5 : 1;
 
         const heroTl = gsap.timeline({ scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: 1 }});
         heroTl.to(sMat, { opacity: 0, duration: 0.1 }) 
@@ -672,26 +705,26 @@
             .to(".team-content-wrapper", { opacity: 1, duration: 0.8 })
             .from(".team-anim-text", { y: 30, opacity: 0, duration: 0.8, stagger: 0.2, ease: "power2.out" }, "<");
 
-        // FIX 2b: Bird Flight Path (Optimized for Mobile Movement)
-        // On mobile, the bird now sways left (-2.5) and right (2.5) to show movement, instead of staying at x:0
+        // OPTIMIZED BIRD PATH for Mobile
+        // Less z-depth movement on mobile to prevent clipping into camera
         gsap.timeline({ scrollTrigger: { trigger: "#about-ishya", start: "top bottom", end: "center center", scrub: 1.5 }})
-            .to(bird.group.position, { x: isMobile ? -2.5 : -6, y: -0.5, z: 2 })
+            .to(bird.group.position, { x: isMobile ? -1.5 : -6, y: -0.5, z: isMobile ? 0 : 2 })
             .to(bird.group.rotation, { y: -0.5, x: 0.2, z: 0 }, "<");
 
         gsap.timeline({ scrollTrigger: { trigger: "#memories", start: "top bottom", end: "center center", scrub: 1.5 }})
-            .to(bird.group.position, { x: isMobile ? 2.5 : 6, y: 0, z: 0 })
+            .to(bird.group.position, { x: isMobile ? 1.5 : 6, y: 0, z: 0 })
             .to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
 
         gsap.timeline({ scrollTrigger: { trigger: "#events", start: "top bottom", end: "center center", scrub: 1.5 }})
-            .to(bird.group.position, { x: isMobile ? -2.5 : -5.5, y: -0.5, z: 1 })
+            .to(bird.group.position, { x: isMobile ? -1.5 : -5.5, y: -0.5, z: isMobile ? 0 : 1 })
             .to(bird.group.rotation, { y: -0.6, x: 0.1, z: 0 }, "<");
 
         gsap.timeline({ scrollTrigger: { trigger: "#team", start: "top bottom", end: "center center", scrub: 1.5 }})
-            .to(bird.group.position, { x: isMobile ? 2.5 : 6, y: 0.5, z: 1 })
+            .to(bird.group.position, { x: isMobile ? 1.5 : 6, y: 0.5, z: 1 })
             .to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
 
         gsap.timeline({ scrollTrigger: { trigger: "#proshows", start: "top bottom", end: "center center", scrub: 1.5 }})
-            .to(bird.group.position, { x: 0, y: 0, z: 3 })
+            .to(bird.group.position, { x: 0, y: 0, z: isMobile ? 1 : 3 })
             .to(bird.group.rotation, { y: 0, x: 0, z: 0 }, "<"); 
     }
 
@@ -736,15 +769,10 @@
         });
 
         function updateCarousel() {
-            // FIX 3: Adjusted spacing for mobile to ensure centering
-            const spacing = isMobile ? 30 : 120; 
+            const scaleIntensity = 0.15; 
+            const xDistance = isMobile ? 40 : 250; 
             const rotationIntensity = 25; 
             const depthIntensity = 200; 
-            const scaleIntensity = 0.15; 
-            
-            // On mobile, the translation distance needs to be smaller so cards don't fly off screen
-            // But strict centering relies on offset * distance being 0 when offset is 0.
-            const xDistance = isMobile ? 40 : 250; 
 
             cardElements.forEach((card, index) => {
                 const offset = index - activeIndex;
@@ -802,7 +830,7 @@
     }
 </script>   
 
-<!-- GREEN BACKGROUND ANIMATION -->
+<!-- OPTIMIZED GREEN BACKGROUND ANIMATION -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const canvas = document.getElementById('animated-bg');
@@ -810,13 +838,28 @@
         const ctx = canvas.getContext('2d');
         let width, height;
         
+        // DETECTION
+        const isMobile = window.innerWidth < 950;
+
         const COLORS = { bg: 'rgba(5, 20, 8, 1)', trail: 'rgba(5, 20, 8, 0.08)', swirlGreen: 'rgba(77, 183, 72, 0.2)', swirlDark: 'rgba(30, 50, 20, 0.3)', gold: 'rgba(214, 194, 106, 0.4)', mandala: 'rgba(214, 194, 106, 0.15)' };
-        const particles = []; const numParticles = 600; const noiseScale = 0.002; let mandalas = [];
+        
+        // Massive reduction of particles on mobile
+        const particles = []; 
+        const numParticles = isMobile ? 40 : 600; 
+        const noiseScale = 0.002; 
+        let mandalas = [];
 
         function resize() {
             width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight;
             ctx.fillStyle = COLORS.bg; ctx.fillRect(0, 0, width, height);
-            mandalas = [new Mandala(width, 0, width * 0.3, -0.002, COLORS.mandala), new Mandala(0, height, width * 0.35, 0.0015, COLORS.mandala)];
+            
+            // Disable complex mandalas on mobile
+            if (!isMobile) {
+                mandalas = [new Mandala(width, 0, width * 0.3, -0.002, COLORS.mandala), new Mandala(0, height, width * 0.35, 0.0015, COLORS.mandala)];
+            } else {
+                mandalas = [];
+            }
+            
             if (particles.length === 0) { for(let i=0; i<numParticles; i++) particles.push(new FlowParticle()); }
         }
 
@@ -831,7 +874,13 @@
             update() { this.angle += this.speed; }
             draw() { ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.angle); ctx.strokeStyle = this.color; ctx.lineWidth = 1.5; const petals = 12; for (let i = 0; i < petals; i++) { ctx.rotate(Math.PI * 2 / petals); ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(this.radius * 0.5, this.radius * 0.5, 0, this.radius); ctx.quadraticCurveTo(-this.radius * 0.5, this.radius * 0.5, 0, 0); ctx.stroke(); ctx.beginPath(); ctx.arc(0, this.radius * 0.7, this.radius * 0.05, 0, Math.PI * 2); ctx.fillStyle = COLORS.gold; ctx.fill(); } ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 2); ctx.stroke(); ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.9, 0, Math.PI * 2); ctx.stroke(); ctx.restore(); }
         }
-        function animate() { ctx.fillStyle = COLORS.trail; ctx.fillRect(0, 0, width, height); mandalas.forEach(m => { m.update(); m.draw(); }); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animate); }
+        function animate() { 
+            ctx.fillStyle = COLORS.trail; 
+            ctx.fillRect(0, 0, width, height); 
+            if(!isMobile) mandalas.forEach(m => { m.update(); m.draw(); }); 
+            particles.forEach(p => { p.update(); p.draw(); }); 
+            requestAnimationFrame(animate); 
+        }
         window.addEventListener('resize', resize); resize(); animate();
     });
 </script>
