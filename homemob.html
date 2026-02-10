@@ -635,7 +635,7 @@
     const CONFIG = { 
         LOGO_PATH: 'logo.png', 
         // FIX: Reduced density step to generate more particles on mobile. From 24 -> 14.
-        PARTICLE_DENSITY: isMobile ? 14 : 8, 
+        PARTICLE_DENSITY: isMobile ? 10 : 8, 
         LOGO_SCALE: isMobile ? 8 : 12, 
         LOGO_Y_OFFSET: isMobile ? 2.5 : 1.8 
     };
@@ -670,8 +670,8 @@
                 solidTexture.minFilter = THREE.LinearFilter;
 
                 // --- 2. Canvas for particle position scanning (low-res on mobile for speed) ---
-                const particleW = isMobile ? 256 : 1024;
-                const particleH = isMobile ? 256 : 1024;
+                const particleW = isMobile ? 400 : 1024;
+                const particleH = isMobile ? 400 : 1024;
                 // Reuse the hi-res canvas on desktop, create a new low-res one for mobile
                 const particleCanvas = (particleW === textureW) ? textureCanvas : document.createElement('canvas');
                 if (particleW !== textureW) {
