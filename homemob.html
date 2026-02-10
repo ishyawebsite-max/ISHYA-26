@@ -101,7 +101,7 @@
         margin-left: auto; margin-right: auto;
     }
     .word-group { display: inline-block; white-space: nowrap; margin: 0 15px; }
-    .hero-title .letter { display: inline-block; transform-style: preserve-d; opacity: 0; }
+    .hero-title .letter { display: inline-block; transform-style: preserve-3d; opacity: 0; }
     
     .hero-date { 
         perspective: 1000px; 
@@ -334,7 +334,6 @@
         .perch-title { font-size: 2.5rem; text-align: center; }
         .perch-subtitle { font-size: 0.8rem; }
         
-        /* FIX: Hero Text FONT and SPACING for Mobile */
         .hero-title {
             font-family: 'Syncopate', sans-serif !important; 
             font-weight: 700;
@@ -345,18 +344,13 @@
             line-height: 1.1;
             margin-top: 0;
             gap: 10px;
-            
-            /* REMOVED margin-bottom to allow natural flow */
-            
             color: var(--accent-gold);
             background: none !important; 
             -webkit-text-fill-color: var(--accent-gold) !important;
         }
         .word-group { margin: 0; }
         
-        /* HERO MOBILE POSITIONING */
         #hero {
-            /* FIXED: Increased padding-top to push text DOWN, below the logo */
             padding-top: 65vh; 
             padding-bottom: 50px;
             min-height: 100vh !important;
@@ -640,9 +634,9 @@
 
     const CONFIG = { 
         LOGO_PATH: 'logo.png', 
-        PARTICLE_DENSITY: isMobile ? 24 : 8, 
+        // FIX: Reduced density step to generate more particles on mobile. From 24 -> 14.
+        PARTICLE_DENSITY: isMobile ? 14 : 8, 
         LOGO_SCALE: isMobile ? 8 : 12, 
-        // FIX: Positive Y offset on mobile (2.5) to place the logo in the top half of the screen
         LOGO_Y_OFFSET: isMobile ? 2.5 : 1.8 
     };
 
@@ -657,38 +651,62 @@
     camera.position.set(0, 0, 16); 
     const clock = new THREE.Clock(); 
 
+    // FIX: This function now generates a hi-res texture for the solid logo and uses a 
+    // separate (potentially low-res) canvas for fast particle calculation.
     function loadAndProcessLogo(url) { 
-        return new Promise((resolve) => { 
+        return new Promise((resolve, reject) => { 
             const img = new Image(); img.crossOrigin = "Anonymous"; img.src = url; 
+            
             img.onload = () => { 
-                const w = isMobile ? 256 : 1024; 
-                const h = isMobile ? 256 : 1024; 
-                const c = document.createElement('canvas'); c.width = w; c.height = h; 
-                const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0, w, h); 
-                const pixels = ctx.getImageData(0,0,w,h).data; const points = []; 
-                for (let y = 0; y < h; y += CONFIG.PARTICLE_DENSITY) { 
-                    for (let x = 0; x < w; x += CONFIG.PARTICLE_DENSITY) { 
-                        if (pixels[(y * w + x) * 4 + 3] > 128) points.push( (x / w - 0.5) * CONFIG.LOGO_SCALE, (-(y / h - 0.5) * CONFIG.LOGO_SCALE) + CONFIG.LOGO_Y_OFFSET, 0 ); 
+                // --- 1. High-Res canvas for the final, clear texture ---
+                const textureW = 1024;
+                const textureH = 1024;
+                const textureCanvas = document.createElement('canvas');
+                textureCanvas.width = textureW;
+                textureCanvas.height = textureH;
+                const textureCtx = textureCanvas.getContext('2d');
+                textureCtx.drawImage(img, 0, 0, textureW, textureH);
+                const solidTexture = new THREE.CanvasTexture(textureCanvas);
+                solidTexture.minFilter = THREE.LinearFilter;
+
+                // --- 2. Canvas for particle position scanning (low-res on mobile for speed) ---
+                const particleW = isMobile ? 256 : 1024;
+                const particleH = isMobile ? 256 : 1024;
+                // Reuse the hi-res canvas on desktop, create a new low-res one for mobile
+                const particleCanvas = (particleW === textureW) ? textureCanvas : document.createElement('canvas');
+                if (particleW !== textureW) {
+                    particleCanvas.width = particleW;
+                    particleCanvas.height = particleH;
+                    const particleCtx = particleCanvas.getContext('2d');
+                    particleCtx.drawImage(img, 0, 0, particleW, particleH);
+                }
+                
+                const pixels = particleCanvas.getContext('2d').getImageData(0, 0, particleW, particleH).data;
+                const points = []; 
+                for (let y = 0; y < particleH; y += CONFIG.PARTICLE_DENSITY) { 
+                    for (let x = 0; x < particleW; x += CONFIG.PARTICLE_DENSITY) { 
+                        if (pixels[(y * particleW + x) * 4 + 3] > 128) {
+                            points.push( (x / particleW - 0.5) * CONFIG.LOGO_SCALE, (-(y / particleH - 0.5) * CONFIG.LOGO_SCALE) + CONFIG.LOGO_Y_OFFSET, 0 ); 
+                        }
                     } 
                 } 
-                const texture = new THREE.CanvasTexture(c);
-                texture.minFilter = THREE.LinearFilter; 
-                resolve({ texture: texture, points: new Float32Array(points) }); 
+                
+                resolve({ solidTexture: solidTexture, points: new Float32Array(points) }); 
             }; 
+            
             img.onerror = () => { 
                 const w = 512; const h = 512; const c = document.createElement('canvas'); c.width = w; c.height = h; const ctx = c.getContext('2d');
                 ctx.font = "bold 100px sans-serif"; ctx.fillStyle="white"; ctx.textAlign="center"; ctx.fillText("ISHYA", w/2, h/2);
                 const points = []; for(let i=0; i<1000; i++) points.push((Math.random()-0.5)*5, (Math.random()-0.5)*5 + 1.8, 0);
-                resolve({ texture: new THREE.CanvasTexture(c), points: new Float32Array(points) }); 
+                resolve({ solidTexture: new THREE.CanvasTexture(c), points: new Float32Array(points) }); 
             }; 
         }); 
     }
 
-    let birdMaterial;
-
     loadAndProcessLogo(CONFIG.LOGO_PATH).then((data) => { 
         const particles = createParticles(data.points.length / 3, data.points);
-        const solidLogo = createSolidLogo(data.texture); 
+        // Use the new high-resolution texture for the solid logo
+        const solidLogo = createSolidLogo(data.solidTexture); 
         const bird = createBird();
         if (!isMobile) setupLights(); 
         setupAnimations(particles, solidLogo, bird);
@@ -722,6 +740,7 @@
     }
 
     function createBird() {
+        let birdMaterial;
         if (isMobile) {
             birdMaterial = new THREE.MeshBasicMaterial({ color: 0xD6C26A, side: THREE.DoubleSide });
         } else {
@@ -771,8 +790,6 @@
                .fromTo(gsap.utils.toArray('.hero-title .letter'), { opacity: 0, rotationX: -95, scaleY: 0, transformOrigin: "50% 100%" }, { opacity: 1, rotationX: 0, scaleY: 1, duration: 1.5, ease: "elastic.out(1, 0.6)", stagger: 0.04 }, "<+0.2")
                .fromTo(gsap.utils.toArray('.hero-date .date-char'), { opacity: 0, rotationX: 95, scaleY: 0, transformOrigin: "50% 0%" }, { opacity: 1, rotationX: 0, scaleY: 1, duration: 1.2, ease: "back.out(1.7)", stagger: 0.03 }, "<+0.1");
 
-        const birdScale = isMobile ? 0.6 : 1;
-
         const heroTl = gsap.timeline({ scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: 1 }});
         heroTl.to(sMat, { opacity: 0, duration: 0.1 }) 
               .to(pMat.uniforms.uParticleOpacity, { value: 1, duration: 0.1 }, "<")
@@ -789,6 +806,7 @@
             .from(".team-anim-text", { y: 30, opacity: 0, duration: 0.8, stagger: 0.2, ease: "power2.out" }, "<");
         
         if (!isMobile) {
+            const birdScale = 1;
             heroTl.call(() => { bird.group.visible = true; }, null, "<0.1") 
                   .fromTo(bird.group.scale, {x:0, y:0, z:0}, {x:birdScale, y:birdScale, z:birdScale, duration: 0.8}, "<");
 
@@ -936,7 +954,6 @@
             width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight;
             ctx.fillStyle = COLORS.bg; ctx.fillRect(0, 0, width, height);
             
-            // FIX: Two mandalas are now created on mobile as well as desktop
             mandalas = [
                 new Mandala(width, 0, width * 0.3, -0.002, COLORS.mandala), 
                 new Mandala(0, height, width * 0.35, 0.0015, COLORS.mandala)
@@ -960,7 +977,6 @@
                 ctx.rotate(this.angle);
                 ctx.strokeStyle = this.color;
                 
-                // FIX: Use a simplified, high-performance drawing method for mobile
                 if (isMobile) {
                     ctx.lineWidth = 1;
                     ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 2); ctx.stroke();
