@@ -338,18 +338,20 @@
         
         /* FIX: Hero Text FONT and SPACING for Mobile */
         .hero-title {
-            /* Switch to Syncopate on mobile to ensure visibility (Foldit can be buggy on some OS) */
+            /* Switch to Syncopate on mobile to ensure visibility */
             font-family: 'Syncopate', sans-serif !important; 
             font-weight: 700;
-            font-size: 13vw; 
+            font-size: 11vw; 
             display: flex;
             flex-direction: column; 
             align-items: center;
             line-height: 1.1;
             margin-top: 0;
-            gap: 10px; /* Space between lines */
+            gap: 10px; 
             
-            /* Ensure color visibility if gradient fails on mobile */
+            /* FIXED: Add massive bottom margin to push date down and clear space for logo */
+            margin-bottom: 35vh; 
+
             color: var(--accent-gold);
             background: none !important; 
             -webkit-text-fill-color: var(--accent-gold) !important;
@@ -358,9 +360,11 @@
         
         /* HERO MOBILE POSITIONING */
         #hero {
-            padding-top: 45vh; /* Keep text reasonable on mobile */
+            /* FIXED: Reduced padding-top to pull text UP away from center */
+            padding-top: 15vh; 
             padding-bottom: 50px;
             min-height: 90vh !important;
+            justify-content: flex-start;
         }
         
         .hero-date { font-size: 2rem; letter-spacing: 2px; }
@@ -384,7 +388,7 @@
             align-items: center;
         }
         #memories .perch-title {
-            font-family: var(--font-fold); /* Revert to original mobile font */
+            font-family: var(--font-fold); 
         }
         
         /* Carousel Mobile */
@@ -432,7 +436,6 @@
         <div class="hero-content">
             <h1 class="hero-title">
                 <span class="word-group"><span class="letter">F</span><span class="letter">L</span><span class="letter">A</span><span class="letter">M</span><span class="letter">E</span><span class="letter">S</span></span>
-                <!-- FIX: Split IN and EVERY to ensure spacing on mobile -->
                 <span class="word-group"><span class="letter">I</span><span class="letter">N</span></span>
                 <span class="word-group"><span class="letter">E</span><span class="letter">V</span><span class="letter">E</span><span class="letter">R</span><span class="letter">Y</span></span>
                 <span class="word-group"><span class="letter">F</span><span class="letter">O</span><span class="letter">L</span><span class="letter">D</span></span>
@@ -653,10 +656,11 @@
     // OPTIMIZED CONFIGURATION FOR MOBILE
     const CONFIG = { 
         LOGO_PATH: 'logo.png', 
-        // Increase step to reduce particles (Higher number = fewer particles)
-        PARTICLE_DENSITY: isMobile ? 18 : 8, 
+        // FIX: Increased step size on mobile (24) -> Fewer particles = Better FPS
+        PARTICLE_DENSITY: isMobile ? 24 : 8, 
         LOGO_SCALE: isMobile ? 7 : 12, 
-        LOGO_Y_OFFSET: 1.8 
+        // FIX: Lower Y offset on mobile (-0.5) to sit BELOW the text in the gap created by CSS
+        LOGO_Y_OFFSET: isMobile ? -0.5 : 1.8 
     };
 
     const canvas = document.getElementById('webgl'); 
@@ -675,7 +679,10 @@
         return new Promise((resolve) => { 
             const img = new Image(); img.crossOrigin = "Anonymous"; img.src = url; 
             img.onload = () => { 
-                const w = 1024; const h = 1024; const c = document.createElement('canvas'); c.width = w; c.height = h; 
+                // FIX: Faster processing on mobile by using smaller canvas for pixel analysis
+                const w = isMobile ? 256 : 1024; 
+                const h = isMobile ? 256 : 1024; 
+                const c = document.createElement('canvas'); c.width = w; c.height = h; 
                 const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0, w, h); 
                 const pixels = ctx.getImageData(0,0,w,h).data; const points = []; 
                 for (let y = 0; y < h; y += CONFIG.PARTICLE_DENSITY) { 
@@ -702,7 +709,7 @@
         const particles = createParticles(data.points.length / 3, data.points);
         const solidLogo = createSolidLogo(data.texture); 
         const bird = createBird();
-        if (!isMobile) setupLights(); // Skip heavy lights on mobile if possible, or keep simple
+        if (!isMobile) setupLights(); 
         setupAnimations(particles, solidLogo, bird);
         setupEventListeners();
         setupInteractiveElements();
@@ -954,11 +961,11 @@
             width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight;
             ctx.fillStyle = COLORS.bg; ctx.fillRect(0, 0, width, height);
             
-            // Disable complex mandalas on mobile
+            // FIX: Enabled Wheel/Mandala on mobile, but limited to 1 simple one for performance
             if (!isMobile) {
                 mandalas = [new Mandala(width, 0, width * 0.3, -0.002, COLORS.mandala), new Mandala(0, height, width * 0.35, 0.0015, COLORS.mandala)];
             } else {
-                mandalas = [];
+                mandalas = [new Mandala(width / 2, height / 2, width * 0.4, 0.001, COLORS.mandala)];
             }
             
             if (particles.length === 0) { for(let i=0; i<numParticles; i++) particles.push(new FlowParticle()); }
@@ -978,7 +985,7 @@
         function animate() { 
             ctx.fillStyle = COLORS.trail; 
             ctx.fillRect(0, 0, width, height); 
-            if(!isMobile) mandalas.forEach(m => { m.update(); m.draw(); }); 
+            mandalas.forEach(m => { m.update(); m.draw(); }); 
             particles.forEach(p => { p.update(); p.draw(); }); 
             requestAnimationFrame(animate); 
         }
