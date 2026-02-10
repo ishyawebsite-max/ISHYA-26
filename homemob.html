@@ -653,9 +653,11 @@
     };
 
     const canvas = document.getElementById('webgl'); 
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: !isMobile, alpha: true }); 
+    // FIXED: Enabled antialias on mobile for clarity
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); 
     renderer.setSize(window.innerWidth, window.innerHeight); 
-    renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2)); 
+    // FIXED: Removed the condition that forced pixel ratio to 1 on mobile. Now uses device native ratio (max 2).
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); 
     renderer.setClearColor(0x000000, 0);
 
     const scene = new THREE.Scene(); 
