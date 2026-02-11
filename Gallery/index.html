@@ -3,13 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#060606">
+    <meta name="description" content="Gallery 2026 - A cinematic archive">
     <title>Gallery 2026</title>
     
-    <!-- GSAP & ScrollTrigger -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    
+    <!-- 1. Preconnect for faster Font Loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Space+Grotesk:wght@300;600&display=swap" rel="stylesheet">
+    
+    <!-- GSAP (Defer loading to not block render) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
     
     <style>
         :root {
@@ -28,10 +33,13 @@
             font-family: 'Space Grotesk', sans-serif;
             margin: 0;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* --- BACKGROUND FX --- */
-        #ashCanvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.8; }
+        #ashCanvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.8; pointer-events: none; }
+        
+        /* Optimized Noise: CSS Gradient instead of heavy SVG on mobile if supported, falling back to SVG */
         .noise-overlay {
             position: fixed; inset: 0; pointer-events: none; z-index: 0;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
@@ -48,12 +56,14 @@
 
         .main-title {
             font-family: 'Cinzel', serif;
-            font-size: clamp(4rem, 12vw, 10rem);
+            font-size: clamp(3.5rem, 12vw, 10rem);
             color: var(--gold);
             text-transform: uppercase;
-            letter-spacing: 10px;
+            letter-spacing: 5px;
             margin: 0;
             text-shadow: 0 0 40px var(--green-glow);
+            text-align: center;
+            will-change: transform, opacity;
         }
         
         .fold-line {
@@ -62,7 +72,7 @@
             left: 50%; top: 0; opacity: 0.3; z-index: -1;
         }
 
-        /* --- AFTERMOVIES SECTION --- */
+        /* --- ARCHIVES (YEARS) SECTION --- */
         .archives-section {
             padding: 50px 5%;
             position: relative; z-index: 20; margin-bottom: 80px;
@@ -74,46 +84,78 @@
             font-size: 1.2rem;
             letter-spacing: 3px;
             border-bottom: 1px solid var(--green); 
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             padding-bottom: 10px; 
             display: flex; justify-content: space-between;
             text-shadow: 0 0 15px rgba(110, 231, 105, 0.4); 
         }
 
+        /* OPTIMIZED LIST: Grid on Mobile, Strip on Desktop */
         .film-strip {
-            display: flex; gap: 20px; overflow-x: auto; padding: 20px 0;
-            scrollbar-width: none;
+            display: grid;
+            gap: 15px;
+            /* Mobile Default: 2 Columns */
+            grid-template-columns: repeat(2, 1fr); 
         }
+
+        /* Desktop: Horizontal Scroll */
+        @media (min-width: 768px) {
+            .film-strip {
+                display: flex;
+                overflow-x: auto;
+                padding: 20px 0;
+                grid-template-columns: none;
+            }
+        }
+
         .film-strip::-webkit-scrollbar { display: none; }
         
         .year-tag {
-            min-width: 220px; height: 100px;
+            min-width: 0; /* Flex fix */
+            width: 100%;
+            height: 80px;
             background: var(--bg-panel); 
             border: 1px solid var(--olive);
             border-left: 4px solid var(--olive);
-            position: relative; cursor: pointer; transition: 0.3s;
+            position: relative; cursor: pointer; transition: transform 0.2s, background 0.2s;
             clip-path: polygon(0 0, 90% 0, 100% 30%, 100% 100%, 0 100%);
             display: flex; flex-direction: row; justify-content: space-between; align-items: center;
-            padding: 0 25px;
+            padding: 0 15px;
+            box-sizing: border-box;
         }
 
-        .year-tag:hover {
-            transform: translateX(10px); 
-            border-color: var(--gold);
-            border-left-color: var(--green); 
+        @media (min-width: 768px) {
+            .year-tag {
+                min-width: 220px;
+                height: 100px;
+                padding: 0 25px;
+                transition: 0.3s;
+            }
+            .year-tag:hover {
+                transform: translateX(10px); 
+                border-color: var(--gold);
+                border-left-color: var(--green); 
+                background: #1f2615;
+                box-shadow: 0 0 20px rgba(77, 143, 72, 0.2);
+            }
+        }
+
+        /* Mobile Active State (Touch) */
+        .year-tag:active {
             background: #1f2615;
-            box-shadow: 0 0 20px rgba(77, 143, 72, 0.2);
+            border-color: var(--gold);
         }
 
-        .year-tag h3 { color: #fff; font-size: 2rem; margin: 0; font-family: 'Cinzel', serif; line-height: 1; }
+        .year-tag h3 { color: #fff; font-size: 1.5rem; margin: 0; font-family: 'Cinzel', serif; line-height: 1; }
         .year-tag .play-hint { 
-            color: var(--green); font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; 
+            color: var(--green); font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; 
             writing-mode: vertical-rl; transform: rotate(180deg);
         }
+        @media (min-width: 768px) { .year-tag h3 { font-size: 2rem; } .year-tag .play-hint { font-size: 0.7rem; } }
 
         /* --- GALLERY SECTION --- */
         .gallery-header {
-            text-align: center; margin-bottom: 80px; position: relative;
+            text-align: center; margin-bottom: 60px; position: relative;
         }
         .gallery-subtitle {
             font-family: 'Cinzel', serif; 
@@ -127,59 +169,73 @@
         }
 
         .gallery-root {
-            position: relative; padding-bottom: 150px;
+            position: relative; padding-bottom: 100px;
             max-width: 1200px; margin: 0 auto;
         }
 
         .event-row {
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 150px; position: relative; padding: 0 20px;
+            margin-bottom: 100px; position: relative; padding: 0 20px;
+            opacity: 0; /* Hidden initially for GSAP */
         }
-        .event-row:nth-child(even) { flex-direction: row-reverse; }
+        
+        @media (min-width: 768px) {
+            .event-row { margin-bottom: 150px; }
+            .event-row:nth-child(even) { flex-direction: row-reverse; }
+        }
 
-        .text-block { width: 30%; position: relative; z-index: 2; }
+        .text-block { width: 100%; position: relative; z-index: 2; margin-bottom: 20px; text-align: left; }
+        @media (min-width: 768px) { .text-block { width: 30%; margin-bottom: 0; } }
+
         .text-block h2 {
-            font-family: 'Cinzel', serif; font-size: 3rem; color: #fff; margin: 0;
+            font-family: 'Cinzel', serif; font-size: 2rem; color: #fff; margin: 0;
             text-shadow: 0 2px 10px #000; line-height: 1.1;
         }
+        @media (min-width: 768px) { .text-block h2 { font-size: 3rem; } }
 
         /* --- ORIGAMI CARD --- */
         .origami-card {
             position: relative;
             cursor: pointer;
             perspective: 1000px;
-            width: 60%; 
+            width: 100%; 
             aspect-ratio: 16/9;
             transition: width 0.3s;
+            -webkit-tap-highlight-color: transparent;
         }
+        @media (min-width: 768px) { .origami-card { width: 60%; } }
 
         .origami-card.is-portrait {
-            width: 40%; 
+            width: 80%; 
             aspect-ratio: 3/4; 
+            margin: 0 auto;
         }
+        @media (min-width: 768px) { .origami-card.is-portrait { width: 40%; margin: 0; } }
 
         .card-frame {
             position: absolute; inset: 0;
             border: 1px solid var(--olive);
-            background-color: #000; 
+            background-color: #0d0d0d; 
             clip-path: polygon(5% 0, 95% 0, 100% 5%, 100% 95%, 95% 100%, 5% 100%, 0 95%, 0 5%);
             transition: transform 0.3s;
             overflow: hidden;
         }
 
-        .origami-card:hover .card-frame {
-            border-color: var(--gold);
-            transform: scale(1.02);
-            box-shadow: 0 0 30px rgba(214, 194, 106, 0.15);
+        @media (hover: hover) {
+            .origami-card:hover .card-frame {
+                border-color: var(--gold);
+                transform: scale(1.02);
+                box-shadow: 0 0 30px rgba(214, 194, 106, 0.15);
+            }
         }
 
-        /* FIX: BACKGROUND COLOR ADDED HERE */
         .img-layer {
             position: absolute; inset: 0; 
             width: 100%; height: 100%;
             object-fit: contain; 
-            background-color: #000; /* This hides the image sitting behind it */
+            background-color: #000; 
             display: block;
+            will-change: clip-path;
         }
         .img-current { z-index: 2; }
         .img-next { z-index: 1; }
@@ -191,22 +247,45 @@
             clip-path: polygon(0 0, 100% 0, 100% 80%, 80% 100%, 0 100%);
             transition: 0.5s;
         }
-        .origami-card:hover .paper-decoration { transform: translate(15px, 15px); opacity: 0.6; }
 
         /* --- MODALS --- */
         .modal-overlay {
             position: fixed; inset: 0; z-index: 1000;
             background: rgba(6, 6, 6, 0.95);
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             display: none; align-items: center; justify-content: center;
         }
 
+        /* Facade Video Box */
         .video-box {
-            width: 80%; max-width: 900px; aspect-ratio: 16/9;
+            width: 90%; max-width: 900px; aspect-ratio: 16/9;
             border: 1px solid var(--green);
             box-shadow: 0 0 50px rgba(77, 143, 72, 0.3); background: #000;
+            position: relative;
+            overflow: hidden;
         }
         .video-box iframe { width: 100%; height: 100%; border: none; }
+
+        /* Facade Thumbnail Elements */
+        .vid-thumb { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; transition: opacity 0.3s;}
+        .vid-play-btn {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70px; height: 50px;
+            background: rgba(30, 30, 30, 0.8);
+            border-radius: 10px; border: 1px solid var(--gold);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 2;
+        }
+        .vid-play-btn::after {
+            content: '';
+            border-style: solid; border-width: 10px 0 10px 20px;
+            border-color: transparent transparent transparent var(--gold);
+        }
+        .video-box:hover .vid-thumb { opacity: 1; }
+        .video-box:hover .vid-play-btn { background: var(--green); border-color: #fff; }
+        .video-box:hover .vid-play-btn::after { border-left-color: #fff; }
 
         .img-modal-content {
             width: 100%; height: 100%;
@@ -215,7 +294,7 @@
         }
 
         .full-img {
-            max-width: 90vw; 
+            max-width: 95vw; 
             max-height: 90vh; 
             object-fit: contain;
             border: 2px solid var(--gold);
@@ -225,17 +304,10 @@
         }
 
         .close-btn {
-            position: absolute; top: 30px; right: 30px;
+            position: absolute; top: 20px; right: 20px;
             color: var(--gold); font-size: 3rem; cursor: pointer;
             font-family: 'Cinzel', serif; z-index: 1001; line-height: 0.5;
-        }
-
-        @media (max-width: 768px) {
-            .event-row, .event-row:nth-child(even) { flex-direction: column; align-items: flex-start; margin-bottom: 100px; }
-            .text-block { width: 100%; margin-bottom: 20px; }
-            .origami-card { width: 100%; aspect-ratio: 16/9; }
-            .origami-card.is-portrait { width: 100%; aspect-ratio: 3/4; }
-            .main-title { font-size: 4rem; }
+            padding: 10px; /* Touch target size */
         }
     </style>
 </head>
@@ -251,9 +323,10 @@
 
 <section class="archives-section">
     <div class="section-label">
-        <span>AFTERMOVIES</span>
-        <span>WATCH RECAPS</span>
+        <span>ARCHIVES</span>
+        <span>RECAPS</span>
     </div>
+    <!-- Responsive Grid/Strip -->
     <div class="film-strip" id="movieList"></div>
 </section>
 
@@ -263,21 +336,23 @@
 
 <section class="gallery-root" id="galleryRoot"></section>
 
-<div class="modal-overlay" id="vidModal" onclick="closeVideo()">
+<!-- Video Modal -->
+<div class="modal-overlay" id="vidModal" onclick="closeVideo(event)">
     <div class="close-btn">&times;</div>
-    <div class="video-box" id="vidContainer"></div>
+    <div class="video-box" id="vidContainer">
+        <!-- Content injected via JS -->
+    </div>
 </div>
 
+<!-- Image Modal -->
 <div class="modal-overlay" id="imgModal" onclick="closeImage()">
     <div class="close-btn">&times;</div>
     <div class="img-modal-content">
-        <img class="full-img" id="fullImg" src="">
+        <img class="full-img" id="fullImg" src="" alt="Full View">
     </div>
 </div>
 
 <script>
-    gsap.registerPlugin(ScrollTrigger);
-
     const movies = [
         { year: '2025', id: '-HM2rLvpEXE' }, 
         { year: '2024', id: '_b32fejUrsg' }, 
@@ -291,25 +366,45 @@
 
     const API_URL = 'https://script.google.com/macros/s/AKfycbzuOEfCRHEBMA216pJ3oJYaVED2ohOCxAw_XNCbFlf8CK9r-j3K--BXGxcVDOeQHxKJug/exec'; 
 
+    // Mobile Detection for optimization
+    const isMobile = window.innerWidth < 768;
+
+    document.addEventListener("DOMContentLoaded", () => {
+        // Wait for DOM, then check if GSAP is loaded (since we deferred it)
+        const checkGSAP = setInterval(() => {
+            if (window.gsap && window.ScrollTrigger) {
+                clearInterval(checkGSAP);
+                gsap.registerPlugin(ScrollTrigger);
+                init();
+            }
+        }, 100);
+    });
+
     function init() {
         renderMovies();
         fetchGallery();
-        initParticles();
-        gsap.from(".main-title", { scale: 0.8, opacity: 0, duration: 1.5, ease: "power4.out" });
+        initParticles(); // Optimized inside
+        
+        gsap.from(".main-title", { scale: 0.9, opacity: 0, duration: 1.2, ease: "power2.out" });
         gsap.from(".gallery-subtitle", { 
-            scrollTrigger: ".gallery-header", y: 50, opacity: 0, duration: 1 
+            scrollTrigger: { trigger: ".gallery-header", start: "top 80%" }, 
+            y: 30, opacity: 0, duration: 1 
         });
     }
 
     function renderMovies() {
         const container = document.getElementById('movieList');
+        const fragment = document.createDocumentFragment(); // Performance boost
+        
         movies.forEach(m => {
             const div = document.createElement('div');
             div.className = 'year-tag';
-            div.onclick = () => openVideo(m.id);
+            // Pass video ID and Year to trigger Facade
+            div.onclick = () => openVideoFacade(m.id, m.year);
             div.innerHTML = `<h3>${m.year}</h3><span class="play-hint">PLAY</span>`;
-            container.appendChild(div);
+            fragment.appendChild(div);
         });
+        container.appendChild(fragment);
     }
 
     async function fetchGallery() {
@@ -317,15 +412,17 @@
             const req = await fetch(API_URL);
             const data = await req.json();
             const root = document.getElementById('galleryRoot');
+            const fragment = document.createDocumentFragment();
             
             data.forEach((item, i) => {
                 const row = document.createElement('div');
                 row.className = 'event-row';
                 
-                const imagesJSON = JSON.stringify(item.images);
+                // Add loading="lazy" for performance
                 const firstImg = item.images[0];
                 const secondImg = item.images.length > 1 ? item.images[1] : firstImg;
-
+                
+                // Create minimal HTML structure
                 row.innerHTML = `
                     <div class="text-block">
                         <h2>${item.eventName}</h2>
@@ -334,120 +431,180 @@
                     <div class="origami-card" onclick="openImage(this)">
                         <div class="paper-decoration"></div>
                         <div class="card-frame">
-                            <img src="${firstImg}" class="img-layer img-current">
-                            <img src="${secondImg}" class="img-layer img-next">
+                            <img src="${firstImg}" loading="lazy" class="img-layer img-current" alt="${item.eventName}">
+                            <img src="${secondImg}" loading="lazy" class="img-layer img-next" alt="Next slide">
                         </div>
                     </div>
                 `;
                 
                 const card = row.querySelector('.origami-card');
-                card.dataset.images = imagesJSON;
+                // Store images array
+                card.images = item.images; 
                 card.dataset.idx = 0;
 
+                // Determine orientation for layout
                 const tempImg = new Image();
                 tempImg.src = firstImg;
                 tempImg.onload = () => {
                     if(tempImg.height > tempImg.width) {
                         card.classList.add('is-portrait');
                     }
+                    // Animate in
+                    gsap.to(row, { opacity: 1, duration: 0.5 });
                     gsap.from(row, {
-                        y: 100, opacity: 0, duration: 1,
-                        scrollTrigger: { trigger: row, start: "top 85%" }
+                        y: 50, duration: 0.8,
+                        scrollTrigger: { trigger: row, start: "top 90%" }
                     });
                 };
-                root.appendChild(row);
+                fragment.appendChild(row);
+                
+                // Start cycle only if multiple images
                 if(item.images.length > 1) {
-                    setTimeout(() => startCycle(card, item.images), i * 500);
+                    setTimeout(() => startCycle(card), i * 500 + 2000);
                 }
             });
-        } catch(e) { console.error(e); }
+            root.appendChild(fragment);
+
+        } catch(e) { console.error("Gallery Load Error:", e); }
     }
 
-    function startCycle(card, images) {
+    function startCycle(card) {
+        // Optimized: Only run animation if element is roughly in view
+        // Simple Interval, but relies on GSAP to handle the heavy lifting
         setInterval(() => {
-            let idx = parseInt(card.dataset.idx);
-            let nextIdx = (idx + 1) % images.length;
-            const currImg = card.querySelector('.img-current');
-            const nextImg = card.querySelector('.img-next');
+            if (!document.hidden) { // Don't animate if tab is hidden
+                const images = card.images;
+                let idx = parseInt(card.dataset.idx);
+                let nextIdx = (idx + 1) % images.length;
+                const currImg = card.querySelector('.img-current');
+                const nextImg = card.querySelector('.img-next');
 
-            nextImg.src = images[nextIdx];
-            gsap.to(currImg, {
-                clipPath: "polygon(150% 0, 150% 0, 150% 100%, 150% 100%)", 
-                duration: 1.2, ease: "power3.inOut",
-                onComplete: () => {
-                    currImg.src = images[nextIdx]; 
-                    gsap.set(currImg, { clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)" });
-                    card.dataset.idx = nextIdx;
-                    let futureIdx = (nextIdx + 1) % images.length;
-                    nextImg.src = images[futureIdx];
-                }
-            });
-        }, 3000); 
+                nextImg.src = images[nextIdx];
+                
+                gsap.to(currImg, {
+                    clipPath: "polygon(150% 0, 150% 0, 150% 100%, 150% 100%)", 
+                    duration: 1.2, ease: "power3.inOut",
+                    onComplete: () => {
+                        currImg.src = images[nextIdx]; 
+                        gsap.set(currImg, { clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)" });
+                        card.dataset.idx = nextIdx;
+                        let futureIdx = (nextIdx + 1) % images.length;
+                        nextImg.src = images[futureIdx];
+                    }
+                });
+            }
+        }, 4000); 
     }
 
+    /* --- VIDEO OPTIMIZATION (THE FACADE PATTERN) --- */
+    function openVideoFacade(id) {
+        const m = document.getElementById('vidModal');
+        const c = document.getElementById('vidContainer');
+        
+        // 1. Show Thumbnail First (High Speed)
+        c.innerHTML = `
+            <img class="vid-thumb" src="https://img.youtube.com/vi/${id}/hqdefault.jpg" alt="Video Thumbnail">
+            <div class="vid-play-btn" onclick="playYouTube('${id}')"></div>
+        `;
+        
+        m.style.display = 'flex';
+        gsap.from(c, { scale: 0.8, opacity: 0, duration: 0.3, ease: "back.out(1.2)" });
+    }
+
+    function playYouTube(id) {
+        // 2. Load Iframe only on interaction
+        const c = document.getElementById('vidContainer');
+        c.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    }
+    
+    function closeVideo(e) {
+        // Close if clicked background or close button (not the box itself)
+        if(e.target.id === 'vidModal' || e.target.classList.contains('close-btn')) {
+            document.getElementById('vidModal').style.display = 'none';
+            document.getElementById('vidContainer').innerHTML = ''; // Stop video audio
+        }
+    }
+
+    /* --- IMAGE MODAL --- */
     function openImage(cardElem) {
         const currSrc = cardElem.querySelector('.img-current').src;
+        // Google Photos ID trick for Higher res
         const hqSrc = currSrc.replace('=s800', '=s2000'); 
+        
         const modal = document.getElementById('imgModal');
         const img = document.getElementById('fullImg');
+        
         img.src = hqSrc;
         modal.style.display = 'flex';
-        const tl = gsap.timeline();
-        tl.set(img, { clipPath: "polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%)", scale: 0.8 });
-        tl.to(img, { clipPath: "polygon(48% 0, 52% 0, 52% 100%, 48% 100%)", scale: 0.9, duration: 0.4, ease: "power2.out" });
-        tl.to(img, { clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)", scale: 1, duration: 0.7, ease: "expo.out" });
+        
+        // Simple open animation
+        gsap.fromTo(img, 
+            { scale: 0.8, opacity: 0 }, 
+            { scale: 1, opacity: 1, duration: 0.4, ease: "power2.out" }
+        );
     }
 
     function closeImage() {
-        const img = document.getElementById('fullImg');
-        gsap.to(img, {
-            clipPath: "polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%)",
-            duration: 0.4,
+        gsap.to('#fullImg', {
+            scale: 0.8, opacity: 0, duration: 0.3,
             onComplete: () => { document.getElementById('imgModal').style.display = 'none'; }
         });
     }
 
-    function openVideo(id) {
-        const m = document.getElementById('vidModal');
-        const c = document.getElementById('vidContainer');
-        c.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1" allow="autoplay" allowfullscreen></iframe>`;
-        m.style.display = 'flex';
-        gsap.from(c, { scale: 0, duration: 0.5, ease: "back.out(1.7)" });
-    }
-    
-    function closeVideo() {
-        document.getElementById('vidModal').style.display = 'none';
-        document.getElementById('vidContainer').innerHTML = '';
-    }
-
+    /* --- PARTICLES OPTIMIZATION --- */
     function initParticles() {
         const canvas = document.getElementById('ashCanvas');
         const ctx = canvas.getContext('2d');
         let width, height, particles = [];
-        function resize() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
-        window.addEventListener('resize', resize); resize();
+        
+        // Mobile Optimization: Reduce particles
+        const particleCount = isMobile ? 15 : 50; 
+
+        function resize() { 
+            width = canvas.width = window.innerWidth; 
+            height = canvas.height = window.innerHeight; 
+        }
+        window.addEventListener('resize', resize); 
+        resize();
+
         class P {
             constructor() { this.reset(); }
             reset() {
-                this.x = Math.random() * width; this.y = height + 50;
-                this.size = Math.random() * 5 + 2;
-                this.speed = Math.random() * 1.5 + 0.5;
+                this.x = Math.random() * width; 
+                this.y = height + Math.random() * 100; // Start below screen
+                this.size = Math.random() * (isMobile ? 3 : 5) + 2;
+                this.speed = Math.random() * 1 + 0.5;
                 this.color = Math.random() > 0.5 ? '#4D8F48' : '#D6C26A';
                 this.rot = Math.random() * 360;
             }
-            update() { this.y -= this.speed; this.rot += 2; if(this.y < -50) this.reset(); }
+            update() { 
+                this.y -= this.speed; 
+                this.rot += 1; 
+                if(this.y < -50) this.reset(); 
+            }
             draw() {
-                ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rot * Math.PI/180);
-                ctx.fillStyle = this.color; ctx.globalAlpha = 0.6;
+                ctx.save(); 
+                ctx.translate(this.x, this.y); 
+                ctx.rotate(this.rot * Math.PI/180);
+                ctx.fillStyle = this.color; 
+                ctx.globalAlpha = 0.6;
                 ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
                 ctx.restore();
             }
         }
-        for(let i=0; i<50; i++) particles.push(new P());
-        function anim() { ctx.clearRect(0,0,width,height); particles.forEach(p=>{ p.update(); p.draw(); }); requestAnimationFrame(anim); }
+
+        for(let i=0; i<particleCount; i++) particles.push(new P());
+
+        function anim() { 
+            ctx.clearRect(0,0,width,height); 
+            for(let i=0; i<particles.length; i++) {
+                particles[i].update(); 
+                particles[i].draw();
+            }
+            requestAnimationFrame(anim); 
+        }
         anim();
     }
-    init();
 </script>
 </body>
 </html>
