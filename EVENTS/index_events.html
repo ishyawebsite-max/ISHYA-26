@@ -519,17 +519,27 @@
 
             // --- EXIT ---
             window.addEventListener('click', () => {
+                // Check if we are hovering a card, not already closing, and the menu is fully open
                 if(activeHoverIndex !== -1 && !isClosing && isInteracting) {
                     isClosing = true;
-                    const cat = meshes[activeHoverIndex].userData.name;
+                    
+                    // 1. Get the category name (e.g., "PERFORMING ARTS")
+                    const catName = meshes[activeHoverIndex].userData.name;
+                    
+                    // 2. Revert material to normal (remove glowing border)
                     meshes[activeHoverIndex].material = meshes[activeHoverIndex].userData.matNormal;
 
+                    // 3. Play the "Closing" animation
                     gsap.to(animState, {
-                        angle: CONFIG.closedAngle, duration: 0.8, ease: "power2.inOut",
+                        angle: CONFIG.closedAngle, 
+                        duration: 0.8, 
+                        ease: "power2.inOut",
                         onUpdate: () => updateFolds(animState.angle),
                         onComplete: () => {
-                            console.log(cat);
-                            alert(`Opening ${cat}`);
+                            // 4. REDIRECT LOGIC
+                            // We encode the URI to handle spaces and symbols (like "&") correctly
+                            // Make sure your second page is named 'events_landed.html'
+                            window.location.href = `events_landed.html?category=${encodeURIComponent(catName)}`;
                         }
                     });
                 }
