@@ -8,8 +8,9 @@
     <!-- FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Syncopate:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
-    <!-- ANIMATION LIB -->
+    <!-- GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     
     <style>
@@ -20,15 +21,13 @@
         }
 
         body { 
-            margin: 0; 
-            overflow: hidden; 
+            margin: 0; overflow: hidden; 
             background-color: var(--bg-dark); 
             font-family: var(--font-tech);
         }
 
-        #font-loader { 
-            font-family: 'Cinzel'; font-weight: 900; opacity: 0; position: absolute; pointer-events: none; 
-        }
+        #font-loader-text { font-family: 'Cinzel'; font-weight: 900; opacity: 0; position: absolute; }
+        #font-loader-icon { font-family: 'Font Awesome 6 Free'; font-weight: 900; opacity: 0; position: absolute; }
 
         #animated-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; pointer-events: none; }
         #canvas-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
@@ -42,12 +41,14 @@
 </head>
 <body>
 
-    <div id="font-loader">ISHYA LOADING</div>
+    <div id="font-loader-text">ISHYA LOADING</div>
+    <div id="font-loader-icon" class="fa-solid fa-gamepad"></div>
+
     <canvas id="animated-bg"></canvas>
     <div class="overlay-grain"></div>
     <div id="canvas-container"></div>
 
-    <!-- SCRIPT 1: BACKGROUND ANIMATION -->
+    <!-- BACKGROUND ANIMATION -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const canvas = document.getElementById('animated-bg');
@@ -56,7 +57,6 @@
             
             const isMobile = window.innerWidth < 950;
             const COLORS = { 
-                bg: '#051408', 
                 trail: 'rgba(5, 20, 8, 0.15)',
                 swirlGreen: 'rgba(77, 183, 72, 0.1)', 
                 gold: 'rgba(214, 194, 106, 0.3)', 
@@ -114,11 +114,19 @@
         });
     </script>
 
-    <!-- SCRIPT 2: THREE.JS LOGIC -->
+    <!-- MAIN 3D LOGIC -->
     <script type="module">
         import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
-        // --- CONFIG ---
+        // FontAwesome Unicodes
+        const ICONS = {
+            masks: "\uf630", music: "\uf001",
+            feather: "\uf56b", mic: "\uf130",
+            palette: "\uf53f", brush: "\uf1fc",
+            gamepad: "\uf11b", headset: "\uf590",
+            camera: "\uf030", film: "\uf008"
+        };
+
         const CONFIG = {
             bannerWidth: 50,
             bannerHeight: 18, 
@@ -127,11 +135,11 @@
             closedAngle: 1.55, 
             openAngle: 0.18,   
             categories: [
-                "PERFORMING ARTS",
-                "LITERARY & ORATORY",
-                "VISUAL & FINE ARTS",
-                "GAMING & ESPORTS",
-                "MEDIA & PHOTO"
+                { name: "PERFORMING ARTS", iconL: ICONS.masks, iconR: ICONS.music },
+                { name: "LITERARY & ORATORY", iconL: ICONS.feather, iconR: ICONS.mic },
+                { name: "VISUAL & FINE ARTS", iconL: ICONS.palette, iconR: ICONS.brush },
+                { name: "GAMING & ESPORTS", iconL: ICONS.gamepad, iconR: ICONS.headset },
+                { name: "MEDIA & PHOTO", iconL: ICONS.camera, iconR: ICONS.film }
             ]
         };
 
@@ -152,7 +160,6 @@
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             container.appendChild(renderer.domElement);
 
-            // --- LIGHTING ---
             const ambLight = new THREE.AmbientLight(0x051408, 0.8);
             scene.add(ambLight);
 
@@ -162,7 +169,60 @@
             dirLight.shadow.bias = -0.001; 
             scene.add(dirLight);
 
-            // --- TEXTURES ---
+            // --- HELPER: TEXT SCALING LOGIC ---
+            // Measures text and fits it into "Safe Zone" to prevent overlap with icons
+            function getSafeFontSize(ctx, text, baseSize, maxWid) {
+                ctx.font = `900 ${baseSize}px 'Cinzel', serif`;
+                let width = ctx.measureText(text).width;
+                if(width > maxWid) {
+                    return Math.floor(baseSize * (maxWid / width));
+                }
+                return baseSize;
+            }
+
+            // --- TEXTURE: NORMAL (STATIC) ---
+            function createCardTexture(data) {
+                const canvas = document.createElement('canvas');
+                canvas.width = 1024; canvas.height = 256;
+                const ctx = canvas.getContext('2d');
+
+                // 1. Gold BG
+                const grad = ctx.createLinearGradient(0,0,0,256);
+                grad.addColorStop(0, '#8a6e28'); grad.addColorStop(0.2, '#D6C26A'); 
+                grad.addColorStop(0.5, '#fcf6ba'); grad.addColorStop(0.8, '#D6C26A'); grad.addColorStop(1, '#8a6e28');
+                ctx.fillStyle = grad; ctx.fillRect(0,0,1024,256);
+                
+                // Noise
+                ctx.fillStyle = "rgba(0,0,0,0.12)";
+                for(let i=0; i<8000; i++) ctx.fillRect(Math.random()*1024, Math.random()*256, 1.5, 1.5);
+                
+                // 2. Calculation
+                const iconPad = 40; // Push to edges
+                const iconWid = 60; // Estimated icon width
+                // Text area = Total Width - (2 * (Pad + Icon + Spacing))
+                const maxTextWidth = 1024 - (2 * (iconPad + iconWid + 20)); 
+                const fontSize = getSafeFontSize(ctx, data.name, 65, maxTextWidth);
+
+                // 3. Render
+                ctx.fillStyle = "#051408"; 
+                ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                
+                // Text
+                ctx.font = `900 ${fontSize}px 'Cinzel', serif`;
+                ctx.fillText(data.name, 512, 128);
+                
+                // Icons
+                ctx.font = "900 55px 'Font Awesome 6 Free'";
+                ctx.fillText(data.iconL, iconPad + 30, 128);
+                ctx.fillText(data.iconR, 1024 - (iconPad + 30), 128);
+
+                const tex = new THREE.CanvasTexture(canvas);
+                tex.colorSpace = THREE.SRGBColorSpace;
+                tex.anisotropy = 16;
+                return tex;
+            }
+
+            // --- BANNER TEXTURE ---
             function createBannerTexture() {
                 const canvas = document.createElement('canvas');
                 canvas.width = 1024; canvas.height = 368;
@@ -176,15 +236,17 @@
                 for(let i=0; i<10000; i++) ctx.fillRect(Math.random()*1024, Math.random()*368, 2, 2);
                 
                 ctx.lineWidth = 15; ctx.strokeStyle = "#D6C26A"; ctx.strokeRect(10,10,1004,348);
-
-                ctx.font = "900 110px 'Cinzel', serif";
-                ctx.fillStyle = "#D6C26A"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                
+                ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                ctx.fillStyle = "#D6C26A"; 
+                
                 ctx.shadowColor="rgba(0,0,0,0.5)"; ctx.shadowBlur=10;
+                ctx.font = "900 110px 'Cinzel', serif";
                 ctx.fillText("ISHYA '26", 512, 140);
                 
                 ctx.shadowBlur=0;
-                ctx.font = "700 35px 'Syncopate', sans-serif";
                 ctx.fillStyle = "#e0e0e0"; ctx.letterSpacing = "5px";
+                ctx.font = "700 35px 'Syncopate', sans-serif";
                 ctx.fillText("FLAMES IN THE FOLD", 512, 250);
 
                 const tex = new THREE.CanvasTexture(canvas);
@@ -193,212 +255,205 @@
                 return tex;
             }
 
-            function createCardTexture(text, type) {
-                const canvas = document.createElement('canvas');
-                canvas.width = 1024; canvas.height = 256;
-                const ctx = canvas.getContext('2d');
-
-                if (type === 'normal') {
-                    // NORMAL: Gold BG, Dark Text
-                    const grad = ctx.createLinearGradient(0,0,0,256);
-                    grad.addColorStop(0, '#8a6e28'); grad.addColorStop(0.2, '#D6C26A'); 
-                    grad.addColorStop(0.5, '#fcf6ba'); grad.addColorStop(0.8, '#D6C26A'); grad.addColorStop(1, '#8a6e28');
-                    ctx.fillStyle = grad; ctx.fillRect(0,0,1024,256);
-                    
-                    ctx.fillStyle = "rgba(0,0,0,0.12)";
-                    for(let i=0; i<8000; i++) ctx.fillRect(Math.random()*1024, Math.random()*256, 1.5, 1.5);
-                    
-                    ctx.font = "900 65px 'Cinzel', serif";
-                    ctx.fillStyle = "#051408"; 
-                } else {
-                    // HOVER: Dark BG, Bright Gold Text
-                    ctx.fillStyle = "#051408"; // Solid Dark Theme Color
-                    ctx.fillRect(0,0,1024,256);
-                    
-                    // Very subtle grain on background
-                    ctx.fillStyle = "rgba(255,255,255,0.03)";
-                    for(let i=0; i<2000; i++) ctx.fillRect(Math.random()*1024, Math.random()*256, 1, 1);
-
-                    // Bright Gold Text
-                    ctx.font = "900 65px 'Cinzel', serif";
-                    ctx.fillStyle = "#D6C26A";
-                }
-
-                ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                ctx.fillText(text, 512, 128);
-                
-                if (type === 'hover') {
-                    // Crisp gold border for visibility
-                    ctx.lineWidth = 15; ctx.strokeStyle = "#D6C26A"; ctx.strokeRect(0,0,1024,256);
-                }
-
-                const tex = new THREE.CanvasTexture(canvas);
-                tex.colorSpace = THREE.SRGBColorSpace;
-                tex.anisotropy = 16;
-                return tex;
-            }
-
-            // --- MESH GENERATION ---
+            // --- MESH SETUP ---
             const hinges = [];
             const meshes = [];
-
             const rootGroup = new THREE.Group();
             rootGroup.position.set(0, 42, 0); 
             scene.add(rootGroup);
 
-            // Banner (Standard Material to catch light/shadows)
-            const bannerGeom = new THREE.PlaneGeometry(CONFIG.bannerWidth, CONFIG.bannerHeight);
+            // Banner
             const bannerMat = new THREE.MeshStandardMaterial({
-                map: createBannerTexture(),
-                roughness: 0.7, metalness: 0.3, side: THREE.DoubleSide
+                map: createBannerTexture(), roughness: 0.7, metalness: 0.3, side: THREE.DoubleSide
             });
-            const bannerMesh = new THREE.Mesh(bannerGeom, bannerMat);
+            const bannerMesh = new THREE.Mesh(new THREE.PlaneGeometry(CONFIG.bannerWidth, CONFIG.bannerHeight), bannerMat);
             bannerMesh.castShadow = true;
             bannerMesh.position.y = -CONFIG.bannerHeight / 2;
             rootGroup.add(bannerMesh);
 
-            // Accordion Logic
+            // Cards
             let parent = rootGroup;
-            let isInteracting = false; 
-            let isClosing = false; 
-
-            CONFIG.categories.forEach((cat, i) => {
+            CONFIG.categories.forEach((catData, i) => {
                 const hinge = new THREE.Group();
-                if(i === 0) hinge.position.y = -CONFIG.bannerHeight;
-                else hinge.position.y = -CONFIG.cardHeight;
-                
-                if(i === 0) rootGroup.add(hinge); 
-                else parent.add(hinge);           
-
+                hinge.position.y = (i === 0) ? -CONFIG.bannerHeight : -CONFIG.cardHeight;
+                (i === 0) ? rootGroup.add(hinge) : parent.add(hinge);           
                 hinges.push(hinge);
                 parent = hinge;
 
                 const geom = new THREE.PlaneGeometry(CONFIG.cardWidth, CONFIG.cardHeight, 40, 1);
                 geom.translate(0, -CONFIG.cardHeight/2, 0);
 
-                // Create Texture Maps
-                const texNormal = createCardTexture(cat, 'normal');
-                const texHover = createCardTexture(cat, 'hover');
+                // Create Static Normal Map
+                const texNormal = createCardTexture(catData);
 
-                // Material 1: Standard (Reacts to light/shadow)
+                // Create Dynamic Hover Canvas (retained for animation updates)
+                const hoverCanvas = document.createElement('canvas');
+                hoverCanvas.width = 1024; hoverCanvas.height = 256;
+                const texHover = new THREE.CanvasTexture(hoverCanvas);
+                texHover.colorSpace = THREE.SRGBColorSpace;
+                texHover.anisotropy = 16;
+
                 const matNormal = new THREE.MeshStandardMaterial({
-                    map: texNormal,
-                    side: THREE.DoubleSide,
-                    roughness: 0.5, 
-                    metalness: 0.5
+                    map: texNormal, side: THREE.DoubleSide, roughness: 0.5, metalness: 0.5
                 });
 
-                // Material 2: Basic (Ignores light -> Uniform flat appearance)
                 const matHover = new THREE.MeshBasicMaterial({
-                    map: texHover,
-                    side: THREE.DoubleSide
+                    map: texHover, side: THREE.DoubleSide
                 });
 
                 const mesh = new THREE.Mesh(geom, matNormal);
-                mesh.castShadow = true;
-                mesh.receiveShadow = true;
+                mesh.castShadow = true; mesh.receiveShadow = true;
                 
-                // Store materials for swapping
                 mesh.userData = { 
-                    id: i, 
-                    name: cat,
-                    matNormal: matNormal,
-                    matHover: matHover
+                    id: i, name: catData.name, data: catData,
+                    matNormal: matNormal, matHover: matHover,
+                    hoverCanvas: hoverCanvas, texHover: texHover,
+                    anim: { progress: 0 } // Animation State 0 -> 1
                 };
                 
                 hinge.add(mesh);
                 meshes.push(mesh); 
             });
 
-            // --- ANIMATION ---
+            // --- ANIMATIONS ---
             function updateFolds(angle) {
                 hinges.forEach((h, i) => {
-                    if(i === 0) h.rotation.x = angle;
-                    else {
-                        const sign = (i % 2 === 0) ? 1 : -1;
-                        h.rotation.x = angle * 2 * sign;
-                    }
+                    h.rotation.x = (i === 0) ? angle : angle * 2 * ((i % 2 === 0) ? 1 : -1);
                 });
             }
-
             const animState = { angle: CONFIG.closedAngle };
             updateFolds(CONFIG.closedAngle);
 
             gsap.to(animState, {
-                angle: CONFIG.openAngle,
-                duration: 2.5,
-                ease: "elastic.out(1, 0.6)",
-                delay: 0.5,
+                angle: CONFIG.openAngle, duration: 2.5, ease: "elastic.out(1, 0.6)", delay: 0.5,
                 onUpdate: () => updateFolds(animState.angle),
                 onComplete: () => { isInteracting = true; }
             });
 
-            // --- INTERACTION ---
+            let isInteracting = false; 
+            let isClosing = false;
+            let activeHoverIndex = -1;
+
+            // --- RENDER DYNAMIC TEXTURE (HOVER) ---
+            // This runs inside the animate loop for the ACTIVE card only
+            function updateActiveCardTexture(mesh) {
+                if(mesh.material !== mesh.userData.matHover) return;
+
+                const ctx = mesh.userData.hoverCanvas.getContext('2d');
+                const p = mesh.userData.anim.progress; // 0 to 1
+                const data = mesh.userData.data;
+
+                // 1. Clear & BG (Inverted Dark)
+                ctx.fillStyle = "#051408"; ctx.fillRect(0,0,1024,256);
+                
+                // 2. Grain
+                ctx.fillStyle = "rgba(255,255,255,0.04)";
+                for(let i=0; i<1000; i++) ctx.fillRect(Math.random()*1024, Math.random()*256, 1, 1);
+
+                // 3. Dynamic Scale (1.0 -> 1.05)
+                const scale = 1.0 + (p * 0.05); 
+
+                // Draw Text (Scaled)
+                // Re-calc font size safely
+                const iconPad = 40; 
+                const iconWid = 60; 
+                const maxTextWidth = 1024 - (2 * (iconPad + iconWid + 20)); 
+                let fontSize = getSafeFontSize(ctx, data.name, 65, maxTextWidth);
+                fontSize = fontSize * scale;
+
+                ctx.save();
+                ctx.translate(512, 128); // Pivot center
+                // ctx.scale(scale, scale); // We scale font size instead for sharper text
+                ctx.font = `900 ${fontSize}px 'Cinzel', serif`;
+                ctx.fillStyle = "#D6C26A"; 
+                ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                ctx.fillText(data.name, 0, 0);
+                
+                // Icons (Scaled)
+                ctx.font = `900 ${55 * scale}px 'Font Awesome 6 Free'`;
+                // Calculate position based on scale push (Optional, keep centered is cleaner)
+                // Left
+                ctx.fillText(data.iconL, -(512 - (iconPad+30)), 0);
+                // Right
+                ctx.fillText(data.iconR, (512 - (iconPad+30)), 0);
+                ctx.restore();
+
+                // 4. Drawing Border
+                // Path: Top Left -> Right -> Bottom -> Left -> Top
+                // Total Perim = (1024 + 256) * 2 = 2560
+                const perim = 2560;
+                
+                ctx.lineWidth = 15; 
+                ctx.strokeStyle = "#D6C26A"; 
+                ctx.setLineDash([perim * p, perim]); // The magic "drawing" effect
+                ctx.lineDashOffset = 0; // Starts from Top Left corner
+                
+                ctx.strokeRect(0, 0, 1024, 256);
+
+                mesh.userData.texHover.needsUpdate = true;
+            }
+
+            // --- INTERACTION HANDLERS ---
             const raycaster = new THREE.Raycaster();
             const mouse = new THREE.Vector2();
-            let hoveredIndex = -1;
 
             window.addEventListener('mousemove', (e) => {
                 if(!isInteracting || isClosing) return;
-
                 mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
                 mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-
                 raycaster.setFromCamera(mouse, camera);
                 const intersects = raycaster.intersectObjects(meshes);
 
                 if(intersects.length > 0) {
-                    const index = intersects[0].object.userData.id;
-                    if(hoveredIndex !== index) {
-                        hoveredIndex = index;
-                        updateHoverState();
+                    const idx = intersects[0].object.userData.id;
+                    if(activeHoverIndex !== idx) {
+                        switchHover(idx);
                         document.body.style.cursor = 'pointer';
                     }
                 } else {
-                    if(hoveredIndex !== -1) {
-                        hoveredIndex = -1;
-                        updateHoverState();
+                    if(activeHoverIndex !== -1) {
+                        switchHover(-1);
                         document.body.style.cursor = 'default';
                     }
                 }
             });
 
-            function updateHoverState() {
-                meshes.forEach((mesh, i) => {
-                    if(i === hoveredIndex) {
-                        // HOVER: Switch to Basic Material (Unlit/Uniform)
-                        // This makes every fold look identical regardless of angle
-                        if(mesh.material !== mesh.userData.matHover) {
-                            mesh.material = mesh.userData.matHover;
-                        }
-                    } else {
-                        // NORMAL: Switch to Standard Material (Lit)
-                        if(mesh.material !== mesh.userData.matNormal) {
-                            mesh.material = mesh.userData.matNormal;
-                        }
-                    }
-                });
+            function switchHover(newIndex) {
+                // Deactivate current
+                if(activeHoverIndex !== -1) {
+                    const mesh = meshes[activeHoverIndex];
+                    mesh.material = mesh.userData.matNormal;
+                    gsap.killTweensOf(mesh.userData.anim);
+                    mesh.userData.anim.progress = 0; // Reset
+                }
+                
+                activeHoverIndex = newIndex;
+
+                // Activate new
+                if(activeHoverIndex !== -1) {
+                    const mesh = meshes[activeHoverIndex];
+                    mesh.material = mesh.userData.matHover;
+                    gsap.to(mesh.userData.anim, {
+                        progress: 1,
+                        duration: 0.4,
+                        ease: "power2.out"
+                    });
+                }
             }
 
-            // --- NAVIGATION ---
+            // --- EXIT ---
             window.addEventListener('click', () => {
-                if(hoveredIndex !== -1 && !isClosing && isInteracting) {
+                if(activeHoverIndex !== -1 && !isClosing && isInteracting) {
                     isClosing = true;
-                    const selectedCategory = meshes[hoveredIndex].userData.name;
-
-                    // Ensure visual reset to normal before folding
-                    const mesh = meshes[hoveredIndex];
-                    mesh.material = mesh.userData.matNormal;
+                    const cat = meshes[activeHoverIndex].userData.name;
+                    meshes[activeHoverIndex].material = meshes[activeHoverIndex].userData.matNormal;
 
                     gsap.to(animState, {
-                        angle: CONFIG.closedAngle,
-                        duration: 0.8,
-                        ease: "power2.inOut",
+                        angle: CONFIG.closedAngle, duration: 0.8, ease: "power2.inOut",
                         onUpdate: () => updateFolds(animState.angle),
                         onComplete: () => {
-                            console.log(`Navigating to: ${selectedCategory}`);
-                            alert(`Loading ${selectedCategory}`);
-                            // window.location.href = `/events/${selectedCategory.replace(/\s+/g, '-').toLowerCase()}`;
+                            console.log(cat);
+                            alert(`Opening ${cat}`);
                         }
                     });
                 }
@@ -406,6 +461,12 @@
 
             function animate() {
                 requestAnimationFrame(animate);
+                
+                // Only redraw the specific canvas if we are hovering
+                if(activeHoverIndex !== -1) {
+                    updateActiveCardTexture(meshes[activeHoverIndex]);
+                }
+
                 renderer.render(scene, camera);
             }
             animate();
@@ -416,7 +477,6 @@
                 renderer.setSize(window.innerWidth, window.innerHeight);
             });
         }
-
         initApp();
     </script>
 </body>
