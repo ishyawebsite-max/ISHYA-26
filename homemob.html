@@ -5,8 +5,7 @@
     <script async src="https://tally.so/widgets/embed.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ISHYA '26 | FLAMES IN EVERY FOLD</title>
-    <link rel="icon" type="image/png" href="logo.png">
-    <link rel="apple-touch-icon" href="logo.png">
+
     <!-- FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Foldit:wght@400;600;800;900&family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;500;700&family=Cormorant+Garamond:ital,wght@1,300;1,600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -94,7 +93,6 @@
     .hero-title { 
         perspective: 1000px; font-family: var(--font-fold); 
         font-size: clamp(3rem, 7vw, 8rem); line-height: 1.1; text-transform: uppercase; 
-        /* Default Desktop Gradient */
         background: linear-gradient(to bottom, #ffffff 10%, #D6C26A 60%, #8a7c40 100%);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         filter: drop-shadow(0 0 25px rgba(214, 194, 106, 0.4));
@@ -162,7 +160,7 @@
     .sheet-content h3 { font-family: var(--font-display); font-size: 2rem; margin-bottom: 25px; color: #8b5a2b; border-bottom: 2px solid #8b5a2b; padding-bottom: 10px; display: inline-block; }
     .sheet-content p { font-size: 1.15rem; line-height: 1.7; margin-bottom: 15px; font-family: var(--font-serif); font-weight: 500; }
 
-    /* SECTION 2: MEMORIES */
+    /* SECTION 2: MEMORIES - CORRECTED IMPLEMENTATION */
     #memories .perch-title {
         font-family: var(--font-display);
         font-weight: 700;
@@ -209,7 +207,7 @@
     }
     @keyframes scrollImages { 
         0% { transform: translateX(0); } 
-        100% { transform: translateX(-50%);}
+        100% { transform: translateX(-50%);}justed count */
     }
 
     /* --- SECTION 3: EVENTS --- */
@@ -308,8 +306,7 @@
     .copyright { color: #555; margin-top: 50px; font-size: 0.7rem; font-family: var(--font-tech); text-align: center; width: 100%; }
 
     /* --- MOBILE & TABLET OPTIMIZATION --- */
-    /* UPDATED BREAKPOINT: Increased from 950px to 1200px to include iPad Pro and Tablet Landscape modes */
-    @media (max-width: 1200px) {
+    @media (max-width: 950px) {
         section { 
             padding: 60px 20px; 
             min-height: auto !important;
@@ -338,7 +335,6 @@
         .perch-title { font-size: 2.5rem; text-align: center; }
         .perch-subtitle { font-size: 0.8rem; }
         
-        /* FIX FOR TABLET VISIBILITY: Force solid color instead of gradient clip */
         .hero-title {
             font-family: 'Syncopate', sans-serif !important; 
             font-weight: 700;
@@ -351,8 +347,6 @@
             gap: 10px;
             color: var(--accent-gold);
             background: none !important; 
-            -webkit-background-clip: border-box !important;
-            background-clip: border-box !important;
             -webkit-text-fill-color: var(--accent-gold) !important;
         }
         .word-group { margin: 0; }
@@ -648,20 +642,20 @@
 
     gsap.registerPlugin(ScrollTrigger);
     
-    // UPDATED CHECK: Includes tablets in mobile logic (matches CSS 1200px)
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 1200;
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 950;
 
     const CONFIG = { 
         LOGO_PATH: 'logo.png', 
+        // FIX: Reduced density step to generate more particles on mobile. From 24 -> 14.
         PARTICLE_DENSITY: isMobile ? 10 : 8, 
         LOGO_SCALE: isMobile ? 8 : 12, 
         LOGO_Y_OFFSET: isMobile ? 2.5 : 1.8 
     };
 
     const canvas = document.getElementById('webgl'); 
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); 
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: !isMobile, alpha: true }); 
     renderer.setSize(window.innerWidth, window.innerHeight); 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); 
+    renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2)); 
     renderer.setClearColor(0x000000, 0);
 
     const scene = new THREE.Scene(); 
@@ -669,11 +663,14 @@
     camera.position.set(0, 0, 16); 
     const clock = new THREE.Clock(); 
 
+    // FIX: This function now generates a hi-res texture for the solid logo and uses a 
+    // separate (potentially low-res) canvas for fast particle calculation.
     function loadAndProcessLogo(url) { 
         return new Promise((resolve, reject) => { 
             const img = new Image(); img.crossOrigin = "Anonymous"; img.src = url; 
             
             img.onload = () => { 
+                // --- 1. High-Res canvas for the final, clear texture ---
                 const textureW = 1024;
                 const textureH = 1024;
                 const textureCanvas = document.createElement('canvas');
@@ -684,8 +681,10 @@
                 const solidTexture = new THREE.CanvasTexture(textureCanvas);
                 solidTexture.minFilter = THREE.LinearFilter;
 
+                // --- 2. Canvas for particle position scanning (low-res on mobile for speed) ---
                 const particleW = isMobile ? 400 : 1024;
                 const particleH = isMobile ? 400 : 1024;
+                // Reuse the hi-res canvas on desktop, create a new low-res one for mobile
                 const particleCanvas = (particleW === textureW) ? textureCanvas : document.createElement('canvas');
                 if (particleW !== textureW) {
                     particleCanvas.width = particleW;
@@ -718,6 +717,7 @@
 
     loadAndProcessLogo(CONFIG.LOGO_PATH).then((data) => { 
         const particles = createParticles(data.points.length / 3, data.points);
+        // Use the new high-resolution texture for the solid logo
         const solidLogo = createSolidLogo(data.solidTexture); 
         const bird = createBird();
         if (!isMobile) setupLights(); 
@@ -953,8 +953,7 @@
         const ctx = canvas.getContext('2d');
         let width, height;
         
-        // UPDATED CHECK: Match CSS media query
-        const isMobile = window.innerWidth < 1200;
+        const isMobile = window.innerWidth < 950;
 
         const COLORS = { bg: 'rgba(5, 20, 8, 1)', trail: 'rgba(5, 20, 8, 0.08)', swirlGreen: 'rgba(77, 183, 72, 0.2)', swirlDark: 'rgba(30, 50, 20, 0.3)', gold: 'rgba(214, 194, 106, 0.4)', mandala: 'rgba(214, 194, 106, 0.15)' };
         
@@ -1022,3 +1021,5 @@
 
 </body>
 </html>
+
+Displaying Paste February 11, 2026 - 1:07AM.
