@@ -7,13 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ISHYA '26 | FLAMES IN EVERY FOLD</title>
 
-    <!-- FAVICON LINK -->
+    <!-- FAVICON LINK (Ensure logo.png is in the same folder) -->
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
 
     <!-- FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Foldit:wght@400;600;800;900&family=Wallpoet&family=Orbitron:wght@700;900&family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;500;700&family=Cormorant+Garamond:ital,wght@1,300;1,600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Foldit:wght@400;600;800;900&family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;500;700&family=Cormorant+Garamond:ital,wght@1,300;1,600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <!-- FONT AWESOME -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -29,7 +29,7 @@
         
         /* FONTS */
         --font-display: 'Syncopate', sans-serif;
-        --font-fold: 'Foldit', 'Wallpoet', 'Orbitron', sans-serif; 
+        --font-fold: 'Foldit', display;
         --font-body: 'Space Grotesk', sans-serif;
         --font-tech: 'Share Tech Mono', monospace;
         --font-serif: 'Cormorant Garamond', serif;
@@ -45,6 +45,15 @@
         width: 100vw; 
         min-height: 100vh;
     }
+    .ishya-floating-nav-wrapper{
+        padding-top: 85vh;
+    }
+    .ishya-nav-backdrop {
+        position: fixed;
+        top: 0;
+        height: var(--bar-height); /* ~75px */
+    }
+
 
     /* --- LAYERS --- */
     #animated-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; background-color: var(--bg-dark); pointer-events: none; }
@@ -56,18 +65,12 @@
     /* --- UTILITIES & GLASSMORPHISM --- */
     section { min-height: 100vh; padding: 0 5vw; position: relative; display: flex; align-items: center; justify-content: center; }
     
-    /* OPTIMIZED GLASS PANELS */
     .glass-panel {
-        background: rgba(24, 28, 16, 0.4);
+        background: rgba(24, 28, 16, 0.4) !important;
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
         border: 1px solid rgba(214, 194, 106, 0.2);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-    
-    @media (min-width: 950px) {
-        .glass-panel { backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
-    }
-    @media (max-width: 949px) {
-        .glass-panel { background: rgba(15, 20, 10, 0.9); backdrop-filter: none; -webkit-backdrop-filter: none; }
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(77, 143, 72, 0.1);
     }
 
     .section-layout { width: 100%; max-width: 1600px; display: flex; align-items: center; justify-content: space-between; }
@@ -96,54 +99,44 @@
     #hero { 
         flex-direction: column; 
         text-align: center; 
-        /* VISUAL SEPARATION: Content pushed to bottom half */
-        justify-content: flex-start;
-        padding-top: 60vh; 
-        padding-bottom: 15vh;
-        min-height: 100vh;
-        overflow: hidden;
+        padding-top: 85vh; 
+        padding-bottom: 10vh; 
     }
-    
     .hero-content { pointer-events: none; width: 100%; position: relative; z-index: 20; }
     
     .hero-title { 
         perspective: 1000px; font-family: var(--font-fold); 
-        font-size: clamp(3rem, 7vw, 7rem); 
-        line-height: 1.1; 
-        text-transform: uppercase; 
+        font-size: clamp(3rem, 7vw, 8rem); line-height: 1.1; text-transform: uppercase; 
         background: linear-gradient(to bottom, #ffffff 10%, #D6C26A 60%, #8a7c40 100%);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        color: #D6C26A;
         filter: drop-shadow(0 0 25px rgba(214, 194, 106, 0.4));
         margin-bottom: 1vh; font-weight: 900; 
         width: 100%;
         max-width: 95vw;
         margin-left: auto; margin-right: auto;
     }
-    
-    .word-group { display: inline-block; white-space: nowrap; margin: 0 10px; }
+    .word-group { display: inline-block; white-space: nowrap; margin: 0 15px; }
     .hero-title .letter { display: inline-block; transform-style: preserve-3d; opacity: 0; }
     
     .hero-date { 
         perspective: 1000px; 
         font-family: var(--font-fold); 
         font-weight: 900; 
-        font-size: clamp(1.5rem, 4vw, 3rem); 
+        font-size: clamp(1.8rem, 5vw, 4rem); 
         color: var(--accent-gold); 
         letter-spacing: 5px; 
         text-transform: uppercase; 
-        margin-top: 1vh; 
+        margin-top: 2vh; 
         text-shadow: 4px 4px 0px #3e2b18;
     }
     .hero-date .date-char { display: inline-block; transform-style: preserve-3d; opacity: 0; }
     
-    .hero-countdown { display: flex; justify-content: center; gap: 15px; margin-top: 30px; font-family: var(--font-tech); color: var(--accent-green); opacity: 0; flex-wrap: wrap; }
+    .hero-countdown { display: flex; justify-content: center; gap: 15px; margin-top: 40px; font-family: var(--font-tech); color: var(--accent-green); opacity: 0; flex-wrap: wrap; }
     .time-block { 
-        display: flex; flex-direction: column; align-items: center; padding: 10px 15px; 
-        border-radius: 8px; min-width: 70px; 
+        display: flex; flex-direction: column; align-items: center; padding: 15px 20px; 
+        border-radius: 8px; min-width: 80px; 
     }
-    .time-block span { font-size: clamp(1.5rem, 4vw, 2.5rem); line-height: 1; text-shadow: 0 0 10px rgba(77, 143, 72, 0.6); }
-    .time-block .label { font-size: 0.8rem; margin-top: 5px; opacity: 0.8; }
+    .time-block span { font-size: clamp(2rem, 5vw, 3rem); line-height: 1; text-shadow: 0 0 10px rgba(77, 143, 72, 0.6); }
 
     /* --- SECTIONS LAYOUT --- */
     .layout-content-right { flex-direction: row; }
@@ -177,25 +170,86 @@
     }
     
     .origami-sheet::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: rgba(0,0,0,0.1); }
+
     .sheet-content h3 { font-family: var(--font-display); font-size: 2rem; margin-bottom: 25px; color: #8b5a2b; border-bottom: 2px solid #8b5a2b; padding-bottom: 10px; display: inline-block; }
     .sheet-content p { font-size: 1.15rem; line-height: 1.7; margin-bottom: 15px; font-family: var(--font-serif); font-weight: 500; }
 
     /* SECTION 2: MEMORIES */
-    #memories .perch-title { font-family: var(--font-display); weight: 700; color: var(--text-light); opacity: 0.9; text-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-    #memories .perch-subtitle { background: rgba(0,0,0,0.3); border: 1px solid var(--accent-olive); color: var(--text-light); }
-    .image-marquee-container { width: 100%; padding: 30px 0; overflow: hidden; transform: rotate(-2deg) scale(1.05); will-change: transform; }
-    .image-marquee-track { display: flex; gap: 20px; width: max-content; animation: scrollImages 80s linear infinite; will-change: transform; }
-    .image-marquee-item { width: 400px; height: 260px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); filter: grayscale(100%); transition: 0.4s; }
-    .image-marquee-item:hover { filter: grayscale(0%); transform: scale(1.03); border-color: var(--accent-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-    .image-marquee-item img { width: 100%; height: 100%; object-fit: cover; }
-    @keyframes scrollImages { 0% { transform: translateX(0); } 100% { transform: translateX(-50%);} }
+    #memories .perch-title {
+        font-family: var(--font-display);
+        font-weight: 700;
+        color: var(--text-light);
+        opacity: 0.9;
+        text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+    #memories .perch-subtitle {
+        background: rgba(0,0,0,0.3);
+        border: 1px solid var(--accent-olive);
+        color: var(--text-light);
+    }
+    .image-marquee-container { 
+        width: 100%; 
+        padding: 30px 0; 
+        overflow: hidden; 
+        transform: rotate(-2deg) scale(1.05); 
+    }
+    .image-marquee-track { 
+        display: flex; 
+        gap: 20px; 
+        width: max-content; 
+        animation: scrollImages 80s linear infinite; 
+        will-change: transform; /* Optimized for Jitter */
+    }
+    .image-marquee-item { 
+        width: 400px; 
+        height: 260px; 
+        border-radius: 8px; 
+        overflow: hidden; 
+        border: 1px solid rgba(255,255,255,0.2); 
+        filter: grayscale(100%); 
+        transition: 0.4s; 
+        backface-visibility: hidden; /* Optimized for Jitter */
+    }
+    .image-marquee-item:hover { 
+        filter: grayscale(0%); 
+        transform: scale(1.03); 
+        border-color: var(--accent-gold); 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+    }
+    .image-marquee-item img { 
+        width: 100%; 
+        height: 100%; 
+        object-fit: cover; 
+    }
+    @keyframes scrollImages { 
+        0% { transform: translateX(0); } 
+        100% { transform: translateX(-50%);}
+    }
 
     /* --- SECTION 3: EVENTS --- */
     .events-3d-section { flex-direction: column; overflow: hidden; position: relative; padding-top: 5vh; padding-bottom: 5vh; justify-content: flex-start; }
     .events-header { padding: 0 5vw; margin-bottom: 20px; width: 100%; display: flex; justify-content: space-between; align-items: flex-end; z-index: 5; }
-    .carousel-stage { width: 100%; height: 600px; position: relative; display: flex; justify-content: center; align-items: center; perspective: 1200px; margin-top: 20px; perspective-origin: center; }
+    .carousel-stage { 
+        width: 100%; height: 600px; position: relative; 
+        display: flex; justify-content: center; align-items: center; 
+        perspective: 1200px; margin-top: 20px;
+        perspective-origin: center; 
+    }
     .carousel-container { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; display: flex; justify-content: center; align-items: center; }
-    .carousel-card-3d { position: absolute; width: 320px; height: 500px; background: #000; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); transform-origin: center center; left: 0; right: 0; margin: auto; overflow: hidden; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.6); transition: border-color 0.3s, box-shadow 0.3s; will-change: transform, opacity; backface-visibility: hidden; }
+
+    .carousel-card-3d {
+        position: absolute; 
+        width: 320px; height: 500px;
+        background: #000; border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transform-origin: center center; 
+        left: 0; right: 0; margin: auto;
+        overflow: hidden; cursor: pointer;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+        transition: border-color 0.3s, box-shadow 0.3s;
+        will-change: transform, opacity; /* Optimized for Jitter */
+        backface-visibility: hidden;
+    }
     .carousel-card-3d::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(5,20,8,0.95) 100%); z-index: 2; pointer-events: none; }
     .carousel-card-3d:hover { border-color: var(--accent-gold); }
     .card-bg-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: filter 0.5s; position: absolute; top: 0; left: 0; z-index: 1; }
@@ -223,50 +277,147 @@
     @keyframes pulseText { 0%, 100% { opacity: 0.6; text-shadow: 0 0 10px rgba(214, 194, 106, 0.1); } 50% { opacity: 1; text-shadow: 0 0 50px rgba(214, 194, 106, 0.6), 0 0 20px #fff; } }
 
     /* --- FOOTER --- */
-    .footer-section { background: rgba(24, 28, 16, 0.95); border-radius: 50px 50px 0 0; padding: 60px 5vw 30px; text-align: center; border-top: 1px solid var(--accent-olive); backdrop-filter: blur(10px); margin-top: 10vh; }
+    .footer-section { 
+        background: rgba(24, 28, 16, 0.95); 
+        border-radius: 50px 50px 0 0; 
+        padding: 60px 5vw 30px; 
+        text-align: center; 
+        border-top: 1px solid var(--accent-olive); 
+        backdrop-filter: blur(10px); 
+        margin-top: 10vh; 
+    }
     .footer-logo { font-family: var(--font-fold); font-size: 10vw; color: transparent; -webkit-text-stroke: 1px #444; line-height: 0.8; opacity: 0.6; transition: 0.5s; display: block; margin-bottom: 40px; }
     .footer-logo:hover { color: var(--accent-olive); opacity: 1; text-shadow: 0 0 30px var(--accent-green); }
-    .footer-grid { display: grid; grid-template-columns: 1.2fr 1fr 1.5fr; gap: 30px; max-width: 1400px; margin: 0 auto; text-align: left; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 40px; align-items: start; }
+
+    .footer-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr 1.5fr; 
+        gap: 30px;
+        max-width: 1400px;
+        margin: 0 auto;
+        text-align: left;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        padding-top: 40px;
+        align-items: start;
+    }
+
     .footer-col h4 { color: var(--accent-gold); font-family: var(--font-tech); font-size: 1.1rem; margin-bottom: 15px; letter-spacing: 1px; }
     .footer-col p, .footer-col a { font-family: var(--font-body); font-size: 0.95rem; color: #bbb; line-height: 1.6; text-decoration: none; display: block; transition: 0.3s; }
     .footer-col a:hover { color: var(--accent-gold); }
+
     .social-icons-footer { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 15px; }
-    .social-icons-footer a { color: #888; transition: 0.3s; font-size: 1.3rem; width: 40px; height: 40px; border-radius: 50%; border: 1px solid #444; display: flex; align-items: center; justify-content: center; }
+    .social-icons-footer a { 
+        color: #888; transition: 0.3s; font-size: 1.3rem; 
+        width: 40px; height: 40px; border-radius: 50%; border: 1px solid #444; 
+        display: flex; align-items: center; justify-content: center;
+    }
     .social-icons-footer a:hover { color: var(--bg-dark); background: var(--accent-gold); border-color: var(--accent-gold); transform: translateY(-3px); }
-    .map-container { width: 100%; height: 200px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(214, 194, 106, 0.3); box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
+
+    .map-container {
+        width: 100%; height: 200px; border-radius: 12px; overflow: hidden;
+        border: 1px solid rgba(214, 194, 106, 0.3);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    }
     .map-frame { width: 100%; height: 100%; border: 0; filter: invert(90%) hue-rotate(180deg) brightness(0.9); } 
+
     .grievance-btn { margin-top: 15px; color: var(--accent-gold) !important; text-decoration: underline !important; font-weight: bold; }
     .copyright { color: #555; margin-top: 50px; font-size: 0.7rem; font-family: var(--font-tech); text-align: center; width: 100%; }
 
     /* --- MOBILE & TABLET OPTIMIZATION --- */
     @media (max-width: 950px) {
-        section { padding: 60px 20px; min-height: auto !important; display: flex; flex-direction: column; }
+        section {
+            min-height: calc(100vh - var(--header-h));
+            padding: var(--header-h) 5vw 0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+
         .section-layout { flex-direction: column !important; gap: 30px; width: 100%; }
-        .layout-content-right .perch-zone, .layout-content-left .perch-zone, .events-header .perch-zone { width: 100%; text-align: center !important; padding: 0; order: 1; margin-bottom: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        .layout-content-right .perch-zone, 
+        .layout-content-left .perch-zone,
+        .events-header .perch-zone { 
+            width: 100%; 
+            text-align: center !important; 
+            padding: 0; 
+            order: 1; 
+            margin-bottom: 10px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
         .layout-content-right .content-zone, .layout-content-left .content-zone { width: 100%; order: 2; }
+        
         .perch-title { font-size: 2.5rem; text-align: center; }
         .perch-subtitle { font-size: 0.8rem; }
-        .hero-title { font-family: 'Foldit', 'Wallpoet', sans-serif !important; weight: 700; font-size: 11vw; display: flex; flex-direction: column; align-items: center; line-height: 1.1; margin-top: 0; gap: 10px; color: var(--accent-gold); background: none !important; -webkit-text-fill-color: var(--accent-gold) !important; }
-        #hero { padding-top: 55vh; padding-bottom: 50px; min-height: 90vh !important; }
-        .hero-date { font-size: 1.5rem; letter-spacing: 2px; }
+        
+        .hero-title {
+            font-family: 'Syncopate', sans-serif !important; 
+            font-weight: 700;
+            font-size: 11vw; 
+            display: flex;
+            flex-direction: column; 
+            align-items: center;
+            line-height: 1.1;
+            margin-top: 0;
+            gap: 10px;
+            color: var(--accent-gold);
+            background: none !important; 
+            -webkit-text-fill-color: var(--accent-gold) !important;
+        }
+        .word-group { margin: 0; }
+        
+        #hero {
+            padding-top: 75vh; 
+            min-height: calc(100vh - var(--header-h));
+            padding-top: var(--header-h);
+            justify-content: flex-start;
+        }
+        
+        .hero-date { font-size: 2rem; letter-spacing: 2px; }
+
         .origami-sheet { padding: 30px 20px; }
         .sheet-content h3 { font-size: 1.5rem; }
         .sheet-content p { font-size: 1rem; }
         .chat-question { width: 100%; text-align: center; padding: 15px; font-size: 1rem; border-radius: 20px; }
+        
         .image-marquee-item { width: 70vw; height: 200px; }
-        .image-marquee-container { width: 120%; margin-left: -10%; transform: rotate(0) scale(1); } 
-        #memories .content-zone { display: flex; flex-direction: column; align-items: center; }
-        #memories .perch-title { font-family: var(--font-fold); }
-        .events-header { flex-direction: column; align-items: center; gap: 20px; }
+        .image-marquee-container { 
+            width: 120%; 
+            margin-left: -10%; 
+            transform: rotate(0) scale(1);
+        } 
+        #memories .content-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #memories .perch-title {
+            font-family: var(--font-fold); 
+        }
+        
+        .events-header {
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
         .carousel-stage { height: 450px; width: 100%; overflow: visible; }
         .carousel-card-3d { width: 80vw; height: 400px; max-width: 320px; }
         .card-number { font-size: 3rem; }
         .card-title { font-size: 1.5rem; }
+        
         .team-content-wrapper { padding: 30px 20px; text-align: center; }
         .team-text { font-size: 1rem; }
+        
         .hero-countdown { gap: 10px; }
         .time-block { padding: 10px; min-width: 60px; }
         .time-block span { font-size: 1.8rem; }
+        
         .footer-logo { font-size: 18vw; margin-bottom: 30px; }
         .footer-grid { grid-template-columns: 1fr; gap: 40px; text-align: center; }
         .footer-col { display: flex; flex-direction: column; align-items: center; }
@@ -289,8 +440,9 @@
             --ishya-glass-bright: rgba(255, 255, 255, 0.12);
             --anim-fluid: cubic-bezier(0.16, 1, 0.3, 1);
             --bar-height: 75px; 
+            --header-h: 75px;
         }
-        .ishya-header-spacer { display: block; height: 90px; width: 100%; }
+        .ishya-header-spacer { display: none; }
         #animated-bg { top: 0 !important; height: 100vh !important; }
         #bg-overlay { top: 0 !important; height: 100vh !important; }
         #webgl { top: 0 !important; height: 100vh !important; }
@@ -408,6 +560,7 @@
     </section>
 
     <!-- SECTION 2: MEMORIES -->
+    <!-- OPTIMIZED IMAGES: Using low-res thumbnails (=w500) for the marquee to improve speed -->
     <section id="memories">
         <div class="section-layout layout-content-left">
             <div class="perch-zone">
@@ -417,28 +570,28 @@
             <div class="content-zone">
                 <div class="image-marquee-container glass-panel">
                     <div class="image-marquee-track">
-                        <!-- Repeated images for smooth loop -->
-                        <div class="image-marquee-item"><img src="https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_1878,h_770,al_c,q_85,usm_0.33_1.00_0.00,enc_avif,quality_auto/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1FAwb4Q6bGfn8LfGYl7bzxTydX1I4BQ3l=w1000" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://drive.google.com/thumbnail?id=1xPXLyX47aNUus9lO0blEKS22OubXrcNK&sz=w1000" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://drive.google.com/thumbnail?id=1uM7aeb1O2XnOAnFjhq-uH_733QNHQxyG&sz=w1000" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://drive.google.com/thumbnail?id=1PUYZVsEX19nUHfIreiHpY--UcsmusluG&sz=w1000" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://drive.google.com/thumbnail?id=1y74zDoGlqPO7d9mI4rP4ssR0D1-19vq4&sz=w1000" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1b-4Q2P6pkWV9YeEfmOxBpmQqKowrt_rX=w1000" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1s_trrwMrJzxeb_Ze2Z4OcKkLveacLWHO=s2000" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1S4SwVvVa4fcsdPNXEgYOIjsDojw3XiuI=s2000" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1RoTOcpLlqvWZOd_DN0sW_DJl1sT-J1aV=s2000" loading="lazy"></div>
+                        <!-- Repeated images for smooth loop - Optimized Links -->
+                        <div class="image-marquee-item"><img src="https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_400,h_200,al_c,q_80/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1FAwb4Q6bGfn8LfGYl7bzxTydX1I4BQ3l=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1xPXLyX47aNUus9lO0blEKS22OubXrcNK=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1uM7aeb1O2XnOAnFjhq-uH_733QNHQxyG=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1PUYZVsEX19nUHfIreiHpY--UcsmusluG=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1y74zDoGlqPO7d9mI4rP4ssR0D1-19vq4=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1b-4Q2P6pkWV9YeEfmOxBpmQqKowrt_rX=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1s_trrwMrJzxeb_Ze2Z4OcKkLveacLWHO=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1S4SwVvVa4fcsdPNXEgYOIjsDojw3XiuI=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1RoTOcpLlqvWZOd_DN0sW_DJl1sT-J1aV=w500" loading="lazy"></div>
                         <!-- Duplicate for seamless scrolling -->
-                        <div class="image-marquee-item"><img src="https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_1878,h_770,al_c,q_85,usm_0.33_1.00_0.00,enc_avif,quality_auto/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1FAwb4Q6bGfn8LfGYl7bzxTydX1I4BQ3l=w1000" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://drive.google.com/thumbnail?id=1xPXLyX47aNUus9lO0blEKS22OubXrcNK&sz=w1000" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://drive.google.com/thumbnail?id=1uM7aeb1O2XnOAnFjhq-uH_733QNHQxyG&sz=w1000" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://drive.google.com/thumbnail?id=1PUYZVsEX19nUHfIreiHpY--UcsmusluG&sz=w1000" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://drive.google.com/thumbnail?id=1y74zDoGlqPO7d9mI4rP4ssR0D1-19vq4&sz=w1000" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1b-4Q2P6pkWV9YeEfmOxBpmQqKowrt_rX=w1000" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1s_trrwMrJzxeb_Ze2Z4OcKkLveacLWHO=s2000" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1S4SwVvVa4fcsdPNXEgYOIjsDojw3XiuI=s2000" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1RoTOcpLlqvWZOd_DN0sW_DJl1sT-J1aV=s2000" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_400,h_200,al_c,q_80/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1FAwb4Q6bGfn8LfGYl7bzxTydX1I4BQ3l=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1xPXLyX47aNUus9lO0blEKS22OubXrcNK=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1uM7aeb1O2XnOAnFjhq-uH_733QNHQxyG=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1PUYZVsEX19nUHfIreiHpY--UcsmusluG=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1y74zDoGlqPO7d9mI4rP4ssR0D1-19vq4=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1b-4Q2P6pkWV9YeEfmOxBpmQqKowrt_rX=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1s_trrwMrJzxeb_Ze2Z4OcKkLveacLWHO=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1S4SwVvVa4fcsdPNXEgYOIjsDojw3XiuI=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1RoTOcpLlqvWZOd_DN0sW_DJl1sT-J1aV=w500" loading="lazy"></div>
                     </div>
                 </div>
                 <div style="text-align: center;"><a href="/Gallery/" class="cta-btn">VIEW GALLERY</a></div>
@@ -589,23 +742,20 @@
     
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 950;
 
-    // CONFIG: LOWERED Y_OFFSET significantly to ensure it sits UNDER the header
+    // --- FIX 1: LOGO_Y_OFFSET Adjusted Lower to Avoid Header Overlap ---
     const CONFIG = { 
         LOGO_PATH: 'logo.png', 
-        PARTICLE_DENSITY: isMobile ? 12 : 8, 
-        LOGO_SCALE: isMobile ? 5.5 : 10, 
-        LOGO_Y_OFFSET: isMobile ? 0.8 : 0.5 // MOVED DOWN FROM 2.8 to 0.5
+        PARTICLE_DENSITY: isMobile ? 12 : 8, // Optimization: Less density on mobile
+        LOGO_SCALE: isMobile ? 8 : 12, 
+        LOGO_Y_OFFSET: isMobile ? 1.2 : 0.5 // MOVED DOWN (Original was 2.5/1.8)
     };
 
     const canvas = document.getElementById('webgl'); 
-    const renderer = new THREE.WebGLRenderer({ 
-        canvas, 
-        antialias: !isMobile, 
-        alpha: true,
-        powerPreference: "high-performance"
-    }); 
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); 
     renderer.setSize(window.innerWidth, window.innerHeight); 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2)); 
+    
+    // --- FIX 2: Limit Pixel Ratio for Performance ---
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); 
     renderer.setClearColor(0x000000, 0);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
 
@@ -630,8 +780,8 @@
                 solidTexture.minFilter = THREE.LinearFilter;
                 solidTexture.colorSpace = THREE.SRGBColorSpace;
 
-                const particleW = isMobile ? 400 : 1024;
-                const particleH = isMobile ? 400 : 1024;
+                const particleW = isMobile ? 300 : 1024; // Optimization: Smaller processing canvas on mobile
+                const particleH = isMobile ? 300 : 1024;
                 const particleCanvas = (particleW === textureW) ? textureCanvas : document.createElement('canvas');
                 if (particleW !== textureW) {
                     particleCanvas.width = particleW; particleCanvas.height = particleH;
@@ -655,7 +805,7 @@
                 console.warn("Logo failed to load, using text fallback");
                 const w = 512, h = 512; const c = document.createElement('canvas'); c.width = w; c.height = h; const ctx = c.getContext('2d');
                 ctx.font = "bold 100px sans-serif"; ctx.fillStyle="white"; ctx.textAlign="center"; ctx.fillText("ISHYA", w/2, h/2);
-                const points = []; for(let i=0; i<1000; i++) points.push((Math.random()-0.5)*5, (Math.random()-0.5)*5 + 1.8, 0);
+                const points = []; for(let i=0; i<1000; i++) points.push((Math.random()-0.5)*5, (Math.random()-0.5)*5 + 0.5, 0);
                 resolve({ solidTexture: new THREE.CanvasTexture(c), points: new Float32Array(points) }); 
             }; 
         }); 
@@ -665,7 +815,7 @@
         const particles = createParticles(data.points.length / 3, data.points);
         const solidLogo = createSolidLogo(data.solidTexture); 
         const bird = createBird();
-        setupLights(); 
+        setupLights();
         
         setupAnimations(particles, solidLogo, bird);
         setupEventListeners();
@@ -700,7 +850,7 @@
     function createBird() {
         const birdMaterial = new THREE.MeshStandardMaterial({ 
             color: 0xffc400,       
-            roughness: 0.25,       
+            roughness: 0.25,      
             metalness: 0.95,       
             emissive: 0x6e5200,    
             emissiveIntensity: 0.3,
@@ -766,27 +916,27 @@
         
         if (!isMobile) {
             const birdScale = 1;
+            // --- FIX 3: Increased scrub time for smoother 3D jitter ---
             heroTl.call(() => { bird.group.visible = true; }, null, "<0.1") 
                   .fromTo(bird.group.scale, {x:0, y:0, z:0}, {x:birdScale, y:birdScale, z:birdScale, duration: 0.8}, "<");
 
-            // OPTIMIZATION: Hide bird when not in view
-            gsap.timeline({ scrollTrigger: { trigger: "#about-ishya", start: "top bottom", end: "center center", scrub: 1.5 }, overwrite: true })
+            gsap.timeline({ scrollTrigger: { trigger: "#about-ishya", start: "top bottom", end: "center center", scrub: 1.5 }})
                 .to(bird.group.position, { x: -6, y: -0.5, z: 2 })
                 .to(bird.group.rotation, { y: -0.5, x: 0.2, z: 0 }, "<");
 
-            gsap.timeline({ scrollTrigger: { trigger: "#memories", start: "top bottom", end: "center center", scrub: 1.5 }, overwrite: true })
+            gsap.timeline({ scrollTrigger: { trigger: "#memories", start: "top bottom", end: "center center", scrub: 1.5 }})
                 .to(bird.group.position, { x: 6, y: 0, z: 0 })
                 .to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
 
-            gsap.timeline({ scrollTrigger: { trigger: "#events", start: "top bottom", end: "center center", scrub: 1.5 }, overwrite: true })
+            gsap.timeline({ scrollTrigger: { trigger: "#events", start: "top bottom", end: "center center", scrub: 1.5 }})
                 .to(bird.group.position, { x: -5.5, y: -0.5, z: 1 })
                 .to(bird.group.rotation, { y: -0.6, x: 0.1, z: 0 }, "<");
 
-            gsap.timeline({ scrollTrigger: { trigger: "#team", start: "top bottom", end: "center center", scrub: 1.5 }, overwrite: true })
+            gsap.timeline({ scrollTrigger: { trigger: "#team", start: "top bottom", end: "center center", scrub: 1.5 }})
                 .to(bird.group.position, { x: 6, y: 0.5, z: 1 })
                 .to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
 
-            gsap.timeline({ scrollTrigger: { trigger: "#proshows", start: "top bottom", end: "center center", scrub: 1.5 }, overwrite: true })
+            gsap.timeline({ scrollTrigger: { trigger: "#proshows", start: "top bottom", end: "center center", scrub: 1.5 }})
                 .to(bird.group.position, { x: 0, y: 0, z: 3 })
                 .to(bird.group.rotation, { y: 0, x: 0, z: 0 }, "<"); 
         }
@@ -841,7 +991,6 @@
                 const offset = index - activeIndex;
                 const absOffset = Math.abs(offset);
                 
-                // OPTIMIZATION: Hide far away cards completely to save rendering
                 if (absOffset > 3) {
                     gsap.to(card, { opacity: 0, duration: 0.3, pointerEvents: 'none' });
                 } else {
@@ -887,8 +1036,16 @@
     }
 
     function setupEventListeners() {
+        // --- FIX 4: Sync Lenis and ScrollTrigger to Prevent Jitter ---
         const lenis = new Lenis({ lerp: 0.1, smooth: true });
-        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); } requestAnimationFrame(raf);
+        
+        function raf(time) { 
+            lenis.raf(time); 
+            ScrollTrigger.update(); // CRITICAL: Updates ScrollTrigger with Lenis scroll
+            requestAnimationFrame(raf); 
+        } 
+        requestAnimationFrame(raf);
+        
         let resizeTimeout;
         window.addEventListener('resize', () => { clearTimeout(resizeTimeout); resizeTimeout = setTimeout(() => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); }, 100); });
     }
@@ -906,9 +1063,9 @@
 
         const COLORS = { bg: 'rgba(5, 20, 8, 1)', trail: 'rgba(5, 20, 8, 0.08)', swirlGreen: 'rgba(77, 183, 72, 0.2)', swirlDark: 'rgba(30, 50, 20, 0.3)', gold: 'rgba(214, 194, 106, 0.4)', mandala: 'rgba(214, 194, 106, 0.15)' };
         
+        // --- FIX 5: Reduced particle count for speed ---
         const particles = []; 
-        // OPTIMIZATION: Drastically reduce particles on mobile
-        const numParticles = isMobile ? 25 : 600; 
+        const numParticles = isMobile ? 30 : 400; 
         const noiseScale = 0.002; 
         let mandalas = [];
 
@@ -940,7 +1097,6 @@
                 ctx.strokeStyle = this.color;
                 
                 if (isMobile) {
-                    // Simple drawing for mobile
                     ctx.lineWidth = 1;
                     ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 2); ctx.stroke();
                     ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.8, 0, Math.PI * 2); ctx.stroke();
