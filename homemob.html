@@ -2,8 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script async src="https://tally.so/widgets/embed.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ISHYA '26 | FLAMES IN EVERY FOLD</title>
+
+    <!-- FAVICON LINK (Ensure logo.png is in the same folder) -->
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
 
     <!-- FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -45,7 +50,7 @@
     #webgl { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
     #bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, transparent 0%, rgba(5, 20, 8, 0.85) 100%); z-index: -5; pointer-events: none; }
 
-    main { position: relative; z-index: 10; will-change: opacity; opacity: 0; /* JS will reveal */ }
+    main { position: relative; z-index: 10; will-change: opacity; }
     
     /* --- UTILITIES & GLASSMORPHISM --- */
     section { min-height: 100vh; padding: 0 5vw; position: relative; display: flex; align-items: center; justify-content: center; }
@@ -206,7 +211,7 @@
     }
     @keyframes scrollImages { 
         0% { transform: translateX(0); } 
-        100% { transform: translateX(calc(-420px * 10)); } /* Adjusted count */
+        100% { transform: translateX(-50%);}justed count */
     }
 
     /* --- SECTION 3: EVENTS --- */
@@ -306,7 +311,6 @@
 
     /* --- MOBILE & TABLET OPTIMIZATION --- */
     @media (max-width: 950px) {
-        /* FIX GAP: Remove full viewport height forcing on mobile */
         section { 
             padding: 60px 20px; 
             min-height: auto !important;
@@ -316,7 +320,6 @@
 
         .section-layout { flex-direction: column !important; gap: 30px; width: 100%; }
         
-        /* FIX CENTERING: Force all Perch Zones (Headings) to be centered */
         .layout-content-right .perch-zone, 
         .layout-content-left .perch-zone,
         .events-header .perch-zone { 
@@ -336,42 +339,36 @@
         .perch-title { font-size: 2.5rem; text-align: center; }
         .perch-subtitle { font-size: 0.8rem; }
         
-        /* FIX: Hero Text FONT and SPACING for Mobile */
         .hero-title {
-            /* Switch to Syncopate on mobile to ensure visibility (Foldit can be buggy on some OS) */
             font-family: 'Syncopate', sans-serif !important; 
             font-weight: 700;
-            font-size: 13vw; 
+            font-size: 11vw; 
             display: flex;
             flex-direction: column; 
             align-items: center;
             line-height: 1.1;
             margin-top: 0;
-            gap: 10px; /* Space between lines */
-            
-            /* Ensure color visibility if gradient fails on mobile */
+            gap: 10px;
             color: var(--accent-gold);
             background: none !important; 
             -webkit-text-fill-color: var(--accent-gold) !important;
         }
         .word-group { margin: 0; }
         
-        /* HERO MOBILE POSITIONING */
         #hero {
-            padding-top: 45vh; /* Keep text reasonable on mobile */
+            padding-top: 65vh; 
             padding-bottom: 50px;
-            min-height: 90vh !important;
+            min-height: 100vh !important;
+            justify-content: flex-start;
         }
         
         .hero-date { font-size: 2rem; letter-spacing: 2px; }
 
-        /* Origami & Text Adjustments */
         .origami-sheet { padding: 30px 20px; }
         .sheet-content h3 { font-size: 1.5rem; }
         .sheet-content p { font-size: 1rem; }
         .chat-question { width: 100%; text-align: center; padding: 15px; font-size: 1rem; border-radius: 20px; }
         
-        /* Marquee Mobile */
         .image-marquee-item { width: 70vw; height: 200px; }
         .image-marquee-container { 
             width: 120%; 
@@ -384,10 +381,9 @@
             align-items: center;
         }
         #memories .perch-title {
-            font-family: var(--font-fold); /* Revert to original mobile font */
+            font-family: var(--font-fold); 
         }
         
-        /* Carousel Mobile */
         .events-header {
             flex-direction: column;
             align-items: center;
@@ -398,16 +394,13 @@
         .card-number { font-size: 3rem; }
         .card-title { font-size: 1.5rem; }
         
-        /* Team Mobile */
         .team-content-wrapper { padding: 30px 20px; text-align: center; }
         .team-text { font-size: 1rem; }
         
-        /* Hero Mobile */
         .hero-countdown { gap: 10px; }
         .time-block { padding: 10px; min-width: 60px; }
         .time-block span { font-size: 1.8rem; }
         
-        /* Footer Mobile */
         .footer-logo { font-size: 18vw; margin-bottom: 30px; }
         .footer-grid { grid-template-columns: 1fr; gap: 40px; text-align: center; }
         .footer-col { display: flex; flex-direction: column; align-items: center; }
@@ -432,7 +425,6 @@
         <div class="hero-content">
             <h1 class="hero-title">
                 <span class="word-group"><span class="letter">F</span><span class="letter">L</span><span class="letter">A</span><span class="letter">M</span><span class="letter">E</span><span class="letter">S</span></span>
-                <!-- FIX: Split IN and EVERY to ensure spacing on mobile -->
                 <span class="word-group"><span class="letter">I</span><span class="letter">N</span></span>
                 <span class="word-group"><span class="letter">E</span><span class="letter">V</span><span class="letter">E</span><span class="letter">R</span><span class="letter">Y</span></span>
                 <span class="word-group"><span class="letter">F</span><span class="letter">O</span><span class="letter">L</span><span class="letter">D</span></span>
@@ -476,29 +468,39 @@
 
     <!-- SECTION 2: MEMORIES -->
     <section id="memories">
-        <div class="section-layout">
+        <div class="section-layout layout-content-left">
+            <div class="perch-zone">
+                <h2 class="perch-title">TIME<br>CAPSULE</h2>
+                <div class="perch-subtitle">MOMENTS FROZEN</div>
+            </div>
             <div class="content-zone">
                 <div class="image-marquee-container glass-panel">
                     <div class="image-marquee-track">
                         <!-- Repeated images for smooth loop -->
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=500&q=60" loading="lazy" alt="Confetti at a concert"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1470229722913-7c0d2dbbafd3?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1459749411177-287ce51261df?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=500&q=60" loading="lazy" alt="Confetti at a concert"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1470229722913-7c0d2dbbafd3?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500&q=60" loading="lazy"></div>
-                        <div class="image-marquee-item"><img src="https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?w=500&q=60" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_1878,h_770,al_c,q_85,usm_0.33_1.00_0.00,enc_avif,quality_auto/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1FAwb4Q6bGfn8LfGYl7bzxTydX1I4BQ3l=w1000" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://drive.google.com/thumbnail?id=1xPXLyX47aNUus9lO0blEKS22OubXrcNK&sz=w1000" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://drive.google.com/thumbnail?id=1uM7aeb1O2XnOAnFjhq-uH_733QNHQxyG&sz=w1000" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://drive.google.com/thumbnail?id=1PUYZVsEX19nUHfIreiHpY--UcsmusluG&sz=w1000" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://drive.google.com/thumbnail?id=1y74zDoGlqPO7d9mI4rP4ssR0D1-19vq4&sz=w1000" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1b-4Q2P6pkWV9YeEfmOxBpmQqKowrt_rX=w1000" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1s_trrwMrJzxeb_Ze2Z4OcKkLveacLWHO=s2000" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1S4SwVvVa4fcsdPNXEgYOIjsDojw3XiuI=s2000" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1RoTOcpLlqvWZOd_DN0sW_DJl1sT-J1aV=s2000" loading="lazy"></div>
+                        <!-- Duplicate for seamless scrolling -->
+                        <div class="image-marquee-item"><img src="https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_1878,h_770,al_c,q_85,usm_0.33_1.00_0.00,enc_avif,quality_auto/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1FAwb4Q6bGfn8LfGYl7bzxTydX1I4BQ3l=w1000" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://drive.google.com/thumbnail?id=1xPXLyX47aNUus9lO0blEKS22OubXrcNK&sz=w1000" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://drive.google.com/thumbnail?id=1uM7aeb1O2XnOAnFjhq-uH_733QNHQxyG&sz=w1000" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://drive.google.com/thumbnail?id=1PUYZVsEX19nUHfIreiHpY--UcsmusluG&sz=w1000" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://drive.google.com/thumbnail?id=1y74zDoGlqPO7d9mI4rP4ssR0D1-19vq4&sz=w1000" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1b-4Q2P6pkWV9YeEfmOxBpmQqKowrt_rX=w1000" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1s_trrwMrJzxeb_Ze2Z4OcKkLveacLWHO=s2000" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1S4SwVvVa4fcsdPNXEgYOIjsDojw3XiuI=s2000" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1RoTOcpLlqvWZOd_DN0sW_DJl1sT-J1aV=s2000" loading="lazy"></div>
                     </div>
                 </div>
-                <div style="text-align: center;"><a href="#" class="cta-btn">VIEW GALLERY</a></div>
-            </div>
-             <!-- Title moved to right to prevent overlap -->
-             <div class="perch-zone" style="text-align: right; padding-left: 50px;">
-                <h2 class="perch-title">TIME<br>CAPSULE</h2>
-                <div class="perch-subtitle">MOMENTS FROZEN</div>
+                <div style="text-align: center;"><a href="/Gallery/" class="cta-btn">VIEW GALLERY</a></div>
             </div>
         </div>
     </section>
@@ -518,9 +520,8 @@
         <div class="carousel-stage">
             <div class="carousel-container" id="cardCarousel"></div>
         </div>
-        <!-- UPDATED: EXPLORE MORE BUTTON -->
         <div style="text-align: center; margin-top: 30px; z-index: 5;">
-            <a href="#" class="cta-btn">EXPLORE MORE</a>
+            <a href="/EVENTS/" class="cta-btn">EXPLORE MORE</a>
         </div>
     </section>
 
@@ -537,7 +538,7 @@
                         <h3 class="team-anim-text" style="font-family: var(--font-display); color: var(--accent-gold); font-size: 2rem; margin-bottom: 25px;">MEET THE TEAM</h3>
                         <p class="team-anim-text">Behind every unforgettable moment at <span class="team-highlight">ISHYA</span>, there’s a passionate team bringing magic to life! From curating electrifying performances to crafting immersive experiences, we are a group of dedicated dreamers, artists, and organizers.</p>
                         <p class="team-anim-text">With months of planning, late-night brainstorming, and an unshakable love for arts, we’re here to make ISHYA a celebration to remember.</p>
-                        <div class="team-anim-text"><a href="#" class="cta-btn" style="margin-top: 25px;">VIEW MEMBERS</a></div>
+                        <div class="team-anim-text"><a href="/TEAM/" class="cta-btn" style="margin-top: 25px;">VIEW MEMBERS</a></div>
                     </div>
                 </div>
             </div>
@@ -567,7 +568,6 @@
             <h2 class="footer-logo">ISHYA</h2>
             
             <div class="footer-grid">
-                <!-- Column 1: Address -->
                 <div class="footer-col">
                     <h4>LOCATION</h4>
                     <p>IISER Thiruvananthapuram,<br>
@@ -576,30 +576,28 @@
                     Kerala, India.</p>
                 </div>
 
-                <!-- Column 2: Contact & Socials -->
                 <div class="footer-col">
                     <h4>CONTACT US</h4>
-                    <p>+91 97476 36164</p>
+                    <p>+91 90745 66956</p>
                     <p>ishya@iisertvm.ac.in</p>
                     
                     <div class="social-icons-footer">
-                        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="#" aria-label="X (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
-                        <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="https://www.facebook.com/ishya.iisertvm/" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/ishyaiiser/?hl=en" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://x.com/ishya_iiser" aria-label="X (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
+                        <a href="https://www.youtube.com/c/ishyaiisertvm" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
                     </div>
 
                     <div style="margin-top: 20px;">
                         <p style="font-size: 0.8rem; color: #888;">Facing Any Problems?</p>
-                        <a href="#" class="grievance-btn">Grievance Redressal</a>
+                        <a href="https://tally.so/r/Zj6zbA" target="_blank" class="grievance-btn">Grievance Redressal</a>
                     </div>
                 </div>
 
-                <!-- Column 3: Google Map -->
                 <div class="footer-col">
                     <h4>FIND US</h4>
                     <div class="map-container">
-                        <iframe class="map-frame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3941.6263884346857!2d77.15933807584109!3d8.677098491371813!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b05bbfeb5076e73%3A0x633d994e775f0376!2sIndian%20Institute%20of%20Science%20Education%20and%20Research%20Thiruvananthapuram%20(IISER%20TVM)!5e0!3m2!1sen!2sin!4v1714412345678!5m2!1sen!2sin" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        <iframe class="map-frame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3944.095804976186!2d77.13271147563017!3d8.682439094316278!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b05bec780ab70fd%3A0xc960a94d0cef086f!2sIndian%20Institute%20of%20Science%20Education%20and%20Research%20Thiruvananthapuram!5e0!3m2!1sen!2sin!4v1770744366350!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
                 </div>
             </div>
@@ -641,30 +639,34 @@
 
 <!-- MAIN LOGIC -->
 <script type="module">
+    /* 
+       UPDATED IMPORTS: Switched from skypack.dev to esm.sh 
+       This provides better stability and uptime.
+    */
     import * as THREE from 'https://esm.sh/three@0.160.0';
     import gsap from 'https://esm.sh/gsap@3.12.5';
     import ScrollTrigger from 'https://esm.sh/gsap@3.12.5/ScrollTrigger';
-    import Lenis from 'https://esm.sh/@studio-freight/lenis@1.0.33';
+    import Lenis from 'https://esm.sh/@studio-freight/lenis@1.0.39';
 
     gsap.registerPlugin(ScrollTrigger);
     
-    // DETECTION FOR OPTIMIZATION
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 950;
 
-    // OPTIMIZED CONFIGURATION FOR MOBILE
     const CONFIG = { 
         LOGO_PATH: 'logo.png', 
-        // Increase step to reduce particles (Higher number = fewer particles)
-        PARTICLE_DENSITY: isMobile ? 18 : 8, 
-        LOGO_SCALE: isMobile ? 7 : 12, 
-        LOGO_Y_OFFSET: 1.8 
+        PARTICLE_DENSITY: isMobile ? 10 : 8, 
+        LOGO_SCALE: isMobile ? 8 : 12, 
+        LOGO_Y_OFFSET: isMobile ? 2.5 : 1.8 
     };
 
     const canvas = document.getElementById('webgl'); 
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: !isMobile, alpha: true }); 
+    
+    // RENDERER SETUP
+    // Antialias true for mobile clarity.
+    // PixelRatio uses device capabilities (retina screens) for max clarity.
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); 
     renderer.setSize(window.innerWidth, window.innerHeight); 
-    // Limit pixel ratio on mobile to 1 to prevent lag
-    renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2)); 
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); 
     renderer.setClearColor(0x000000, 0);
 
     const scene = new THREE.Scene(); 
@@ -673,51 +675,80 @@
     const clock = new THREE.Clock(); 
 
     function loadAndProcessLogo(url) { 
-        return new Promise((resolve) => { 
-            const img = new Image(); img.crossOrigin = "Anonymous"; img.src = url; 
+        return new Promise((resolve, reject) => { 
+            const img = new Image(); 
+            img.crossOrigin = "Anonymous"; 
+            img.src = url; 
+            
             img.onload = () => { 
-                const w = 1024; const h = 1024; const c = document.createElement('canvas'); c.width = w; c.height = h; 
-                const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0, w, h); 
-                const pixels = ctx.getImageData(0,0,w,h).data; const points = []; 
-                for (let y = 0; y < h; y += CONFIG.PARTICLE_DENSITY) { 
-                    for (let x = 0; x < w; x += CONFIG.PARTICLE_DENSITY) { 
-                        if (pixels[(y * w + x) * 4 + 3] > 128) points.push( (x / w - 0.5) * CONFIG.LOGO_SCALE, (-(y / h - 0.5) * CONFIG.LOGO_SCALE) + CONFIG.LOGO_Y_OFFSET, 0 ); 
+                // High-Res Texture Processing
+                const textureW = 1024;
+                const textureH = 1024;
+                const textureCanvas = document.createElement('canvas');
+                textureCanvas.width = textureW;
+                textureCanvas.height = textureH;
+                const textureCtx = textureCanvas.getContext('2d');
+                textureCtx.drawImage(img, 0, 0, textureW, textureH);
+                const solidTexture = new THREE.CanvasTexture(textureCanvas);
+                solidTexture.minFilter = THREE.LinearFilter;
+                solidTexture.colorSpace = THREE.SRGBColorSpace; // Modern color handling
+
+                // Particle Position Scanning
+                const particleW = isMobile ? 400 : 1024;
+                const particleH = isMobile ? 400 : 1024;
+                const particleCanvas = (particleW === textureW) ? textureCanvas : document.createElement('canvas');
+                if (particleW !== textureW) {
+                    particleCanvas.width = particleW;
+                    particleCanvas.height = particleH;
+                    const particleCtx = particleCanvas.getContext('2d');
+                    particleCtx.drawImage(img, 0, 0, particleW, particleH);
+                }
+                
+                const pixels = particleCanvas.getContext('2d').getImageData(0, 0, particleW, particleH).data;
+                const points = []; 
+                for (let y = 0; y < particleH; y += CONFIG.PARTICLE_DENSITY) { 
+                    for (let x = 0; x < particleW; x += CONFIG.PARTICLE_DENSITY) { 
+                        if (pixels[(y * particleW + x) * 4 + 3] > 128) {
+                            points.push( (x / particleW - 0.5) * CONFIG.LOGO_SCALE, (-(y / particleH - 0.5) * CONFIG.LOGO_SCALE) + CONFIG.LOGO_Y_OFFSET, 0 ); 
+                        }
                     } 
                 } 
-                const texture = new THREE.CanvasTexture(c);
-                texture.minFilter = THREE.LinearFilter; 
-                resolve({ texture: texture, points: new Float32Array(points) }); 
+                
+                resolve({ solidTexture: solidTexture, points: new Float32Array(points) }); 
             }; 
+            
+            // Fallback if logo.png is missing or fails
             img.onerror = () => { 
+                console.warn("Logo failed to load, using text fallback");
                 const w = 512; const h = 512; const c = document.createElement('canvas'); c.width = w; c.height = h; const ctx = c.getContext('2d');
                 ctx.font = "bold 100px sans-serif"; ctx.fillStyle="white"; ctx.textAlign="center"; ctx.fillText("ISHYA", w/2, h/2);
                 const points = []; for(let i=0; i<1000; i++) points.push((Math.random()-0.5)*5, (Math.random()-0.5)*5 + 1.8, 0);
-                resolve({ texture: new THREE.CanvasTexture(c), points: new Float32Array(points) }); 
+                resolve({ solidTexture: new THREE.CanvasTexture(c), points: new Float32Array(points) }); 
             }; 
         }); 
     }
 
-    let birdMaterial;
-
+    // Initialize only after libraries are loaded
     loadAndProcessLogo(CONFIG.LOGO_PATH).then((data) => { 
         const particles = createParticles(data.points.length / 3, data.points);
-        const solidLogo = createSolidLogo(data.texture); 
+        const solidLogo = createSolidLogo(data.solidTexture); 
         const bird = createBird();
-        if (!isMobile) setupLights(); // Skip heavy lights on mobile if possible, or keep simple
+        if (!isMobile) setupLights(); 
+        
         setupAnimations(particles, solidLogo, bird);
         setupEventListeners();
         setupInteractiveElements();
-        
         init3DCarousel(); 
 
         const animate = () => { 
             const t = clock.getElapsedTime(); 
             particles.material.uniforms.uTime.value = t; 
             if (!isMobile && bird.group.visible) { const flap = Math.sin(t * 8); bird.wingL.rotation.z = flap * 0.4 + 0.1; bird.wingR.rotation.z = -flap * 0.4 - 0.1; } 
-            renderer.render(scene, camera); requestAnimationFrame(animate); 
+            renderer.render(scene, camera); 
+            requestAnimationFrame(animate); 
         };
         animate();
-    });
+    }).catch(err => console.error("Initialization failed:", err));
 
     function createParticles(count, targetData) { 
         const pGeo = new THREE.BufferGeometry(); const initialPosArr = new Float32Array(count * 3); const randArr = new Float32Array(count); 
@@ -735,7 +766,7 @@
     }
 
     function createBird() {
-        // OPTIMIZATION: Use MeshBasicMaterial (Fastest) on Mobile
+        let birdMaterial;
         if (isMobile) {
             birdMaterial = new THREE.MeshBasicMaterial({ color: 0xD6C26A, side: THREE.DoubleSide });
         } else {
@@ -755,7 +786,6 @@
         const wingR=new THREE.Mesh(wGeo, birdMaterial); wingR.position.set(0.9,0,0);
         group.add(wingL, wingR); group.rotation.x=0.2; 
         
-        // Add a simple light directly to bird group for mobile so it's always lit
         if(!isMobile) {
             const birdLight = new THREE.PointLight(0xD6C26A, 1.5, 15);
             birdLight.position.set(0, 0.5, 0);
@@ -786,8 +816,6 @@
                .fromTo(gsap.utils.toArray('.hero-title .letter'), { opacity: 0, rotationX: -95, scaleY: 0, transformOrigin: "50% 100%" }, { opacity: 1, rotationX: 0, scaleY: 1, duration: 1.5, ease: "elastic.out(1, 0.6)", stagger: 0.04 }, "<+0.2")
                .fromTo(gsap.utils.toArray('.hero-date .date-char'), { opacity: 0, rotationX: 95, scaleY: 0, transformOrigin: "50% 0%" }, { opacity: 1, rotationX: 0, scaleY: 1, duration: 1.2, ease: "back.out(1.7)", stagger: 0.03 }, "<+0.1");
 
-        const birdScale = isMobile ? 0.6 : 1;
-
         const heroTl = gsap.timeline({ scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: 1 }});
         heroTl.to(sMat, { opacity: 0, duration: 0.1 }) 
               .to(pMat.uniforms.uParticleOpacity, { value: 1, duration: 0.1 }, "<")
@@ -803,8 +831,8 @@
             .to(".team-content-wrapper", { opacity: 1, duration: 0.8 })
             .from(".team-anim-text", { y: 30, opacity: 0, duration: 0.8, stagger: 0.2, ease: "power2.out" }, "<");
         
-        // FIX: Remove bird animation on mobile
         if (!isMobile) {
+            const birdScale = 1;
             heroTl.call(() => { bird.group.visible = true; }, null, "<0.1") 
                   .fromTo(bird.group.scale, {x:0, y:0, z:0}, {x:birdScale, y:birdScale, z:birdScale, duration: 0.8}, "<");
 
@@ -830,20 +858,19 @@
         }
     }
 
-    // --- 3D CAROUSEL LOGIC ---
     function init3DCarousel() {
         const container = document.getElementById('cardCarousel');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
 
         const eventsData = [
-            { id: '01', title: 'MUDHRA', cat: 'CLASSICAL DANCE', img: 'https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?w=500&q=80' },
-            { id: '02', title: 'RHAPSODY', cat: 'BATTLE OF BANDS', img: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=500&q=80' },
-            { id: '03', title: 'PANACHE', cat: 'FASHION SHOW', img: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=500&q=80' },
-            { id: '04', title: 'THEATRIX', cat: 'THEATRE DRAMA', img: 'https://images.unsplash.com/photo-1519074069444-1ba4fff66d16?w=500&q=80' },
-            { id: '05', title: 'CANVAS', cat: 'FINE ARTS', img: 'https://images.unsplash.com/photo-1475721027767-4d0637c054e9?w=500&q=80' },
-            { id: '06', title: 'QUIZ', cat: 'LITERATURE', img: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=500&q=80' },
-            { id: '07', title: 'STEP UP', cat: 'SOLO DANCE', img: 'https://images.unsplash.com/photo-1550977186-c4582f219a4c?w=500&q=80' }
+            { id: '01', title: 'MUDRA', cat: 'ENERGISING DANCE', img: 'https://image2url.com/r2/default/images/1770743072413-e433373d-f971-4d20-a060-b90d95ee24e5.jpg'},
+            { id: '02', title: 'ISHYA-UNPLUGGED', cat: 'BAND MUSICALS', img: 'https://image2url.com/r2/default/images/1770743753970-53a65842-5753-4a6b-b11c-a6f611951c6c.jpg' },
+            { id: '03', title: 'RAWAAZ', cat: 'FASHION SHOW', img: 'https://image2url.com/r2/default/images/1770743787093-fc7b74a3-402d-47da-b92a-89c523d40c14.jpg' },
+            { id: '04', title: 'DRAMA', cat: 'THEATRE DRAMA', img: 'https://image2url.com/r2/default/images/1770744008143-1ec13f44-1237-46c5-846a-c28d2fdb7c43.jpg' },
+            { id: '05', title: 'ALEKHYA', cat: 'FINE ARTS', img: 'https://image2url.com/r2/default/images/1770743980522-7570651c-753e-4ef4-a812-d3ace2d9987e.jpg' },
+            { id: '06', title: 'PUT-FUNDA', cat: 'QUIZ', img: 'https://image2url.com/r2/default/images/1770744075484-8aad98bc-a391-439a-b8be-39c5b974f7cc.jpg' },
+            { id: '07', title: 'AND MORE', cat: '', img: 'https://image2url.com/r2/default/images/1770744212311-865b82d3-dcc5-4a19-9fb5-057ae46043b4.jpg' }
         ];
 
         let activeIndex = 0; 
@@ -940,12 +967,10 @@
         const ctx = canvas.getContext('2d');
         let width, height;
         
-        // DETECTION
         const isMobile = window.innerWidth < 950;
 
         const COLORS = { bg: 'rgba(5, 20, 8, 1)', trail: 'rgba(5, 20, 8, 0.08)', swirlGreen: 'rgba(77, 183, 72, 0.2)', swirlDark: 'rgba(30, 50, 20, 0.3)', gold: 'rgba(214, 194, 106, 0.4)', mandala: 'rgba(214, 194, 106, 0.15)' };
         
-        // Massive reduction of particles on mobile
         const particles = []; 
         const numParticles = isMobile ? 40 : 600; 
         const noiseScale = 0.002; 
@@ -955,12 +980,10 @@
             width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight;
             ctx.fillStyle = COLORS.bg; ctx.fillRect(0, 0, width, height);
             
-            // Disable complex mandalas on mobile
-            if (!isMobile) {
-                mandalas = [new Mandala(width, 0, width * 0.3, -0.002, COLORS.mandala), new Mandala(0, height, width * 0.35, 0.0015, COLORS.mandala)];
-            } else {
-                mandalas = [];
-            }
+            mandalas = [
+                new Mandala(width, 0, width * 0.3, -0.002, COLORS.mandala), 
+                new Mandala(0, height, width * 0.35, 0.0015, COLORS.mandala)
+            ];
             
             if (particles.length === 0) { for(let i=0; i<numParticles; i++) particles.push(new FlowParticle()); }
         }
@@ -974,23 +997,41 @@
         class Mandala {
             constructor(x, y, radius, speed, color) { this.x = x; this.y = y; this.radius = radius; this.speed = speed; this.angle = 0; this.color = color; }
             update() { this.angle += this.speed; }
-            draw() { ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.angle); ctx.strokeStyle = this.color; ctx.lineWidth = 1.5; const petals = 12; for (let i = 0; i < petals; i++) { ctx.rotate(Math.PI * 2 / petals); ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(this.radius * 0.5, this.radius * 0.5, 0, this.radius); ctx.quadraticCurveTo(-this.radius * 0.5, this.radius * 0.5, 0, 0); ctx.stroke(); ctx.beginPath(); ctx.arc(0, this.radius * 0.7, this.radius * 0.05, 0, Math.PI * 2); ctx.fillStyle = COLORS.gold; ctx.fill(); } ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 2); ctx.stroke(); ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.9, 0, Math.PI * 2); ctx.stroke(); ctx.restore(); }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                ctx.strokeStyle = this.color;
+                
+                if (isMobile) {
+                    ctx.lineWidth = 1;
+                    ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 2); ctx.stroke();
+                    ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.8, 0, Math.PI * 2); ctx.stroke();
+                    ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.6, 0, Math.PI * 2); ctx.stroke();
+                } else {
+                    ctx.lineWidth = 1.5;
+                    const petals = 12;
+                    for (let i = 0; i < petals; i++) {
+                        ctx.rotate(Math.PI * 2 / petals);
+                        ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(this.radius * 0.5, this.radius * 0.5, 0, this.radius); ctx.quadraticCurveTo(-this.radius * 0.5, this.radius * 0.5, 0, 0); ctx.stroke();
+                        ctx.beginPath(); ctx.arc(0, this.radius * 0.7, this.radius * 0.05, 0, Math.PI * 2); ctx.fillStyle = COLORS.gold; ctx.fill();
+                    }
+                    ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 2); ctx.stroke();
+                    ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.9, 0, Math.PI * 2); ctx.stroke();
+                }
+                ctx.restore();
+            }
         }
         function animate() { 
             ctx.fillStyle = COLORS.trail; 
             ctx.fillRect(0, 0, width, height); 
-            if(!isMobile) mandalas.forEach(m => { m.update(); m.draw(); }); 
+            mandalas.forEach(m => { m.update(); m.draw(); }); 
             particles.forEach(p => { p.update(); p.draw(); }); 
             requestAnimationFrame(animate); 
         }
         window.addEventListener('resize', resize); resize(); animate();
     });
 </script>
-<!-- SAFETY TIMEOUT: Forces content to show even if 3D crashes -->
-<script>
-    setTimeout(() => {
-        document.querySelector('main').style.opacity = '1';
-    }, 1000);
-</script>
+
 </body>
 </html>
