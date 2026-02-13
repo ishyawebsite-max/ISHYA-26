@@ -355,16 +355,16 @@
         .perch-title { font-size: 2.5rem; text-align: center; }
         .perch-subtitle { font-size: 0.8rem; }
         
-        /* --- FIXED CLUTTER: HERO TEXT --- */
+        /* --- [MODIFIED] HERO TEXT --- */
         .hero-title {
             font-family: 'Syncopate', sans-serif !important; 
             font-weight: 700;
-            font-size: 10vw; /* Reduced size */
+            font-size: 10vw;
             display: flex;
             flex-direction: column; 
             align-items: center;
             line-height: 1.1;
-            margin-top: 0;
+            margin-top: 45vh; /* Pushes title down to create space for the logo */
             margin-bottom: 0;
             gap: 5px;
             color: var(--accent-gold);
@@ -374,18 +374,19 @@
         }
         .word-group { margin: 0; }
         
-        /* --- FIXED CLUTTER: HERO LAYOUT --- */
+        /* --- [MODIFIED] HERO LAYOUT --- */
         #hero {
-            padding-top: 100px; /* Space from header */
+            padding-top: 80px; /* Reduced top padding */
             padding-bottom: 30px;
             min-height: 100vh;
-            justify-content: space-between; /* Push Top Text and Bottom Text apart */
+            justify-content: center; /* Center the content block vertically */
         }
         
+        /* --- [MODIFIED] HERO DATE --- */
         .hero-date { 
-            font-size: 8vw; /* Reduced size */
+            font-size: 8vw;
             letter-spacing: 2px; 
-            margin-top: 25vh; /* HUGE GAP FOR 3D LOGO */
+            margin-top: 15px; /* Removed the huge gap */
             margin-bottom: 15px;
         }
 
