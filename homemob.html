@@ -211,7 +211,7 @@
     }
     @keyframes scrollImages { 
         0% { transform: translateX(0); } 
-        100% { transform: translateX(-50%);}justed count */
+        100% { transform: translateX(-50%);}/* Adjusted count */
     }
 
     /* --- SECTION 3: EVENTS --- */
@@ -639,10 +639,6 @@
 
 <!-- MAIN LOGIC -->
 <script type="module">
-    /* 
-       UPDATED IMPORTS: Switched from skypack.dev to esm.sh 
-       This provides better stability and uptime.
-    */
     import * as THREE from 'https://esm.sh/three@0.160.0';
     import gsap from 'https://esm.sh/gsap@3.12.5';
     import ScrollTrigger from 'https://esm.sh/gsap@3.12.5/ScrollTrigger';
@@ -660,48 +656,44 @@
     };
 
     const canvas = document.getElementById('webgl'); 
-    
-    // RENDERER SETUP
-    // Antialias true for mobile clarity.
-    // PixelRatio uses device capabilities (retina screens) for max clarity.
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); 
     renderer.setSize(window.innerWidth, window.innerHeight); 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); 
+    renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2)); 
     renderer.setClearColor(0x000000, 0);
 
     const scene = new THREE.Scene(); 
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100); 
     camera.position.set(0, 0, 16); 
+    scene.add(camera);
+
+    if (!isMobile) {
+        const cameraDirectionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        cameraDirectionalLight.position.set(0, 0, 1);
+        camera.add(cameraDirectionalLight);
+    }
+    
     const clock = new THREE.Clock(); 
 
     function loadAndProcessLogo(url) { 
         return new Promise((resolve, reject) => { 
-            const img = new Image(); 
-            img.crossOrigin = "Anonymous"; 
-            img.src = url; 
+            const img = new Image(); img.crossOrigin = "Anonymous"; img.src = url; 
             
             img.onload = () => { 
-                // High-Res Texture Processing
-                const textureW = 1024;
-                const textureH = 1024;
+                const textureW = 1024, textureH = 1024;
                 const textureCanvas = document.createElement('canvas');
-                textureCanvas.width = textureW;
-                textureCanvas.height = textureH;
+                textureCanvas.width = textureW; textureCanvas.height = textureH;
                 const textureCtx = textureCanvas.getContext('2d');
                 textureCtx.drawImage(img, 0, 0, textureW, textureH);
                 const solidTexture = new THREE.CanvasTexture(textureCanvas);
                 solidTexture.minFilter = THREE.LinearFilter;
-                solidTexture.colorSpace = THREE.SRGBColorSpace; // Modern color handling
+                solidTexture.colorSpace = THREE.SRGBColorSpace;
 
-                // Particle Position Scanning
                 const particleW = isMobile ? 400 : 1024;
                 const particleH = isMobile ? 400 : 1024;
                 const particleCanvas = (particleW === textureW) ? textureCanvas : document.createElement('canvas');
                 if (particleW !== textureW) {
-                    particleCanvas.width = particleW;
-                    particleCanvas.height = particleH;
-                    const particleCtx = particleCanvas.getContext('2d');
-                    particleCtx.drawImage(img, 0, 0, particleW, particleH);
+                    particleCanvas.width = particleW; particleCanvas.height = particleH;
+                    particleCanvas.getContext('2d').drawImage(img, 0, 0, particleW, particleH);
                 }
                 
                 const pixels = particleCanvas.getContext('2d').getImageData(0, 0, particleW, particleH).data;
@@ -717,10 +709,9 @@
                 resolve({ solidTexture: solidTexture, points: new Float32Array(points) }); 
             }; 
             
-            // Fallback if logo.png is missing or fails
             img.onerror = () => { 
                 console.warn("Logo failed to load, using text fallback");
-                const w = 512; const h = 512; const c = document.createElement('canvas'); c.width = w; c.height = h; const ctx = c.getContext('2d');
+                const w = 512, h = 512; const c = document.createElement('canvas'); c.width = w; c.height = h; const ctx = c.getContext('2d');
                 ctx.font = "bold 100px sans-serif"; ctx.fillStyle="white"; ctx.textAlign="center"; ctx.fillText("ISHYA", w/2, h/2);
                 const points = []; for(let i=0; i<1000; i++) points.push((Math.random()-0.5)*5, (Math.random()-0.5)*5 + 1.8, 0);
                 resolve({ solidTexture: new THREE.CanvasTexture(c), points: new Float32Array(points) }); 
@@ -728,7 +719,6 @@
         }); 
     }
 
-    // Initialize only after libraries are loaded
     loadAndProcessLogo(CONFIG.LOGO_PATH).then((data) => { 
         const particles = createParticles(data.points.length / 3, data.points);
         const solidLogo = createSolidLogo(data.solidTexture); 
@@ -770,7 +760,14 @@
         if (isMobile) {
             birdMaterial = new THREE.MeshBasicMaterial({ color: 0xD6C26A, side: THREE.DoubleSide });
         } else {
-            birdMaterial = new THREE.MeshStandardMaterial({ color: 0xD6C26A, roughness: 0.3, metalness: 0.8, side: THREE.DoubleSide });
+            // --- FINAL FIX: MATERIAL TWEAK ---
+            // Made material more metallic and less rough to get better reflections
+            birdMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0xD6C26A, 
+                roughness: 0.2, 
+                metalness: 0.9, 
+                side: THREE.DoubleSide 
+            });
         }
         
         const group = new THREE.Group(); group.visible = false; scene.add(group);
@@ -788,7 +785,7 @@
         
         if(!isMobile) {
             const birdLight = new THREE.PointLight(0xD6C26A, 1.5, 15);
-            birdLight.position.set(0, 0.5, 0);
+            birdLight.position.set(0, 0.5, 2);
             group.add(birdLight);
         }
 
@@ -796,10 +793,16 @@
     }
 
     function setupLights() { 
-        scene.add(new THREE.AmbientLight(0xffffff, 0.4)); 
+        // --- FINAL FIX: 3-POINT LIGHTING SETUP ---
+        // 1. Strong Ambient light to fill all shadows
+        scene.add(new THREE.AmbientLight(0xffffff, 1.2)); 
+        
+        // 2. Main "Key" light for highlights and shape
         const spot = new THREE.SpotLight(0xD6C26A, 2.0); 
         spot.position.set(5, 10, 5); 
         scene.add(spot); 
+        
+        // 3. Backlight to separate from the background
         const back = new THREE.DirectionalLight(0x4D8F48, 1.2); 
         back.position.set(-5, 5, -5); 
         scene.add(back); 
