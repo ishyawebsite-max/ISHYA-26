@@ -7,18 +7,15 @@
     
     <!-- FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Foldit:wght@400;600;800;900&family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Syncopate:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <!-- ANIMATION LIB -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     
     <style>
         :root {
-            /* THEME COLORS */
             --bg-dark: #051408;       
             --accent-gold: #D6C26A;   
-            --accent-green: #4D8F48;  
-            --text-light: #e0e0e0;
             --font-tech: 'Share Tech Mono', monospace;
         }
 
@@ -29,36 +26,13 @@
             font-family: var(--font-tech);
         }
 
-        /* LAYERS */
+        #font-loader { 
+            font-family: 'Cinzel'; font-weight: 900; opacity: 0; position: absolute; pointer-events: none; 
+        }
+
         #animated-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; pointer-events: none; }
         #canvas-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
         
-        /* UI FOOTER (Instruction Only) */
-        #ui-footer {
-            position: absolute; bottom: 40px; width: 100%; text-align: center; pointer-events: none; z-index: 10;
-            display: flex; justify-content: center;
-        }
-        
-        .instruction-box {
-            background: rgba(5, 20, 8, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--accent-gold);
-            padding: 10px 25px;
-            border-radius: 4px;
-            opacity: 0; /* Hidden initially */
-            transition: opacity 1s ease;
-            box-shadow: 0 0 15px rgba(77, 143, 72, 0.2);
-        }
-
-        .instruction {
-            color: var(--accent-gold); 
-            font-family: var(--font-tech); 
-            font-size: 1rem; 
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        /* VINTAGE GRAIN OVERLAY */
         .overlay-grain {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
@@ -68,20 +42,9 @@
 </head>
 <body>
 
-    <!-- 1. BACKGROUND CANVAS -->
+    <div id="font-loader">ISHYA LOADING</div>
     <canvas id="animated-bg"></canvas>
-    
-    <!-- 2. GRAIN -->
     <div class="overlay-grain"></div>
-
-    <!-- 3. FOOTER UI -->
-    <div id="ui-footer">
-        <div class="instruction-box" id="instruct-box">
-            <span class="instruction">SELECT EVENT CATEGORY</span>
-        </div>
-    </div>
-
-    <!-- 4. 3D SCENE -->
     <div id="canvas-container"></div>
 
     <!-- SCRIPT 1: BACKGROUND ANIMATION -->
@@ -106,7 +69,7 @@
             function resize() {
                 width = canvas.width = window.innerWidth; 
                 height = canvas.height = window.innerHeight;
-                mandalas = [new Mandala(width/2, height/2, Math.min(width,height)*0.45, 0.0005, COLORS.mandala)];
+                mandalas = [new Mandala(width/2, height*0.4, Math.min(width,height)*0.45, 0.0005, COLORS.mandala)];
                 particles.length = 0;
                 const pCount = isMobile ? 30 : 100;
                 for(let i=0; i<pCount; i++) particles.push(new FlowParticle());
@@ -158,7 +121,7 @@
         // --- CONFIG ---
         const CONFIG = {
             bannerWidth: 50,
-            bannerHeight: 18, // Slightly taller for the Title
+            bannerHeight: 18, 
             cardWidth: 50,
             cardHeight: 14,
             closedAngle: 1.55, 
@@ -172,289 +135,289 @@
             ]
         };
 
-        let isInteracting = false; 
-        let isClosing = false;     
-
-        // --- SETUP ---
-        const container = document.getElementById('canvas-container');
-        const scene = new THREE.Scene();
-        scene.background = null; // Transparent for canvas BG
-        
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-        // Clean position: Straight on, no tilt
-        camera.position.set(0, 0, 110); 
-        
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        container.appendChild(renderer.domElement);
-
-        // --- LIGHTS ---
-        const ambLight = new THREE.AmbientLight(0x051408, 0.8);
-        scene.add(ambLight);
-
-        // Gold Key Light
-        const dirLight = new THREE.DirectionalLight(0xD6C26A, 2.0);
-        dirLight.position.set(10, 50, 60);
-        dirLight.castShadow = true;
-        dirLight.shadow.bias = -0.001; 
-        scene.add(dirLight);
-
-        // --- TEXTURES ---
-
-        // 1. Banner Texture (Title)
-        function createBannerTexture() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 1024; canvas.height = 368;
-            const ctx = canvas.getContext('2d');
-
-            // Darker Gold Background
-            const grad = ctx.createLinearGradient(0,0,0,368);
-            grad.addColorStop(0, '#3e2b18'); grad.addColorStop(0.5, '#5a461b'); grad.addColorStop(1, '#3e2b18');
-            ctx.fillStyle = grad; ctx.fillRect(0,0,1024,368);
-
-            // Grain
-            ctx.fillStyle = "rgba(0,0,0,0.2)";
-            for(let i=0; i<10000; i++) ctx.fillRect(Math.random()*1024, Math.random()*368, 2, 2);
+        async function initApp() {
+            await document.fonts.ready;
             
-            // Gold Border
-            ctx.lineWidth = 15; ctx.strokeStyle = "#D6C26A"; ctx.strokeRect(10,10,1004,348);
-
-            // Main Title
-            ctx.font = "900 110px 'Foldit', display";
-            ctx.fillStyle = "#D6C26A"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-            ctx.fillText("ISHYA '26", 512, 140);
+            // --- SCENE ---
+            const container = document.getElementById('canvas-container');
+            const scene = new THREE.Scene();
+            scene.background = null; 
             
-            // Subtitle
-            ctx.font = "700 35px 'Syncopate', sans-serif";
-            ctx.fillStyle = "#e0e0e0"; ctx.letterSpacing = "5px";
-            ctx.fillText("FLAMES IN THE FOLD", 512, 250);
-
-            const tex = new THREE.CanvasTexture(canvas);
-            tex.colorSpace = THREE.SRGBColorSpace;
-            tex.minFilter = THREE.LinearFilter;
-            return tex;
-        }
-
-        // 2. Card Texture (Categories)
-        function createCardTexture(text) {
-            const canvas = document.createElement('canvas');
-            canvas.width = 1024; canvas.height = 256;
-            const ctx = canvas.getContext('2d');
-
-            // Golden Gradient
-            const grad = ctx.createLinearGradient(0,0,0,256);
-            grad.addColorStop(0, '#8a6e28'); grad.addColorStop(0.2, '#D6C26A'); 
-            grad.addColorStop(0.5, '#fcf6ba'); grad.addColorStop(0.8, '#D6C26A'); grad.addColorStop(1, '#8a6e28');
-            ctx.fillStyle = grad; ctx.fillRect(0,0,1024,256);
-
-            // Noise
-            ctx.fillStyle = "rgba(0,0,0,0.12)";
-            for(let i=0; i<8000; i++) ctx.fillRect(Math.random()*1024, Math.random()*256, 1.5, 1.5);
-
-            // Text
-            ctx.font = "900 65px 'Syncopate', sans-serif";
-            ctx.fillStyle = "#051408"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-            ctx.fillText(text, 512, 128);
-
-            const tex = new THREE.CanvasTexture(canvas);
-            tex.colorSpace = THREE.SRGBColorSpace;
-            tex.anisotropy = 16;
-            return tex;
-        }
-
-        // --- MESH GENERATION ---
-        const hinges = [];
-        const meshes = []; // Only the interactable cards
-
-        const rootGroup = new THREE.Group();
-        // Positioned higher up to leave room for the unfolding chain
-        rootGroup.position.set(0, 42, 0); 
-        scene.add(rootGroup);
-
-        // 1. Create Fixed Banner (The Anchor)
-        const bannerGeom = new THREE.PlaneGeometry(CONFIG.bannerWidth, CONFIG.bannerHeight);
-        const bannerMat = new THREE.MeshStandardMaterial({
-            map: createBannerTexture(),
-            roughness: 0.7, metalness: 0.3, side: THREE.DoubleSide
-        });
-        const bannerMesh = new THREE.Mesh(bannerGeom, bannerMat);
-        bannerMesh.castShadow = true;
-        // Shift center so top-center is at 0,0 relative to root
-        bannerMesh.position.y = -CONFIG.bannerHeight / 2;
-        rootGroup.add(bannerMesh);
-
-        // 2. Hinge Logic
-        // The first hinge attaches to the bottom of the Banner
-        let parent = rootGroup;
-        let yOffset = -CONFIG.bannerHeight; // Start connection at bottom of banner
-
-        CONFIG.categories.forEach((cat, i) => {
-            const hinge = new THREE.Group();
+            const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+            camera.position.set(0, 0, 110); 
             
-            // Connect to previous parent at correct height
-            if(i === 0) hinge.position.y = -CONFIG.bannerHeight;
-            else hinge.position.y = -CONFIG.cardHeight;
-            
-            if(i === 0) rootGroup.add(hinge); // Connect 1st fold to root (technically aligned with banner)
-            else parent.add(hinge);           // Connect subsequent folds to previous hinge
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
 
-            hinges.push(hinge);
-            parent = hinge;
+            // --- LIGHTING ---
+            const ambLight = new THREE.AmbientLight(0x051408, 0.8);
+            scene.add(ambLight);
 
-            const geom = new THREE.PlaneGeometry(CONFIG.cardWidth, CONFIG.cardHeight, 40, 1);
-            // Translate geometry down so hinge axis is at top edge
-            geom.translate(0, -CONFIG.cardHeight/2, 0);
+            const dirLight = new THREE.DirectionalLight(0xD6C26A, 1.8);
+            dirLight.position.set(10, 50, 60);
+            dirLight.castShadow = true;
+            dirLight.shadow.bias = -0.001; 
+            scene.add(dirLight);
 
-            const mat = new THREE.MeshStandardMaterial({
-                map: createCardTexture(cat),
-                side: THREE.DoubleSide,
-                roughness: 0.5, 
-                metalness: 0.5, 
-                emissive: new THREE.Color(0x000000), 
-                emissiveIntensity: 0
-            });
+            // --- TEXTURES ---
+            function createBannerTexture() {
+                const canvas = document.createElement('canvas');
+                canvas.width = 1024; canvas.height = 368;
+                const ctx = canvas.getContext('2d');
 
-            const mesh = new THREE.Mesh(geom, mat);
-            mesh.castShadow = true;
-            mesh.receiveShadow = true;
-            mesh.userData = { id: i, name: cat };
-            
-            hinge.add(mesh);
-            meshes.push(mesh); // Store only interactable meshes
-        });
+                const grad = ctx.createLinearGradient(0,0,0,368);
+                grad.addColorStop(0, '#3e2b18'); grad.addColorStop(0.5, '#5a461b'); grad.addColorStop(1, '#3e2b18');
+                ctx.fillStyle = grad; ctx.fillRect(0,0,1024,368);
 
-        // --- ANIMATION LOGIC ---
-        function updateFolds(angle) {
-            hinges.forEach((h, i) => {
-                // Alternating fold direction
-                if(i === 0) h.rotation.x = angle;
-                else {
-                    const sign = (i % 2 === 0) ? 1 : -1;
-                    h.rotation.x = angle * 2 * sign;
-                }
-            });
-        }
-
-        // Init State
-        const animState = { angle: CONFIG.closedAngle };
-        updateFolds(CONFIG.closedAngle);
-
-        // Unfold Intro
-        gsap.to(animState, {
-            angle: CONFIG.openAngle,
-            duration: 2.5,
-            ease: "elastic.out(1, 0.6)",
-            delay: 0.5,
-            onUpdate: () => updateFolds(animState.angle),
-            onComplete: () => {
-                isInteracting = true;
-                document.getElementById('instruct-box').style.opacity = 1;
-            }
-        });
-
-        // --- HOVER INTERACTION ---
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
-        let hoveredIndex = -1;
-
-        window.addEventListener('mousemove', (e) => {
-            if(!isInteracting || isClosing) return;
-
-            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(meshes);
-
-            if(intersects.length > 0) {
-                const index = intersects[0].object.userData.id;
-                if(hoveredIndex !== index) {
-                    hoveredIndex = index;
-                    updateHoverState();
-                    document.body.style.cursor = 'pointer';
-                }
-            } else {
-                if(hoveredIndex !== -1) {
-                    hoveredIndex = -1;
-                    updateHoverState();
-                    document.body.style.cursor = 'default';
-                }
-            }
-        });
-
-        function updateHoverState() {
-            meshes.forEach((mesh, i) => {
-                if(i === hoveredIndex) {
-                    // --- ACTIVE STATE (NEON GREEN) ---
-                    // Fix: Set Emissive to Green, but Keep Base Color White (to show texture)
-                    // High roughness drop makes it "Glassy"
-                    gsap.to(mesh.material.emissive, { r: 0.3, g: 0.56, b: 0.28, duration: 0.2 }); 
-                    gsap.to(mesh.material, { 
-                        emissiveIntensity: 1.2, 
-                        metalness: 0.1, 
-                        roughness: 0.2, 
-                        duration: 0.2 
-                    });
-                    // Pull forward
-                    gsap.to(mesh.position, { z: 2.5, duration: 0.3, ease: "back.out(1.2)" }); 
-                } else {
-                    // --- INACTIVE STATE (GOLD PAPER) ---
-                    // Fix: Emissive to Black (No glow), return physics to paper
-                    gsap.to(mesh.material.emissive, { r: 0, g: 0, b: 0, duration: 0.2 });
-                    gsap.to(mesh.material, { 
-                        emissiveIntensity: 0, 
-                        metalness: 0.5, 
-                        roughness: 0.5, 
-                        duration: 0.2 
-                    });
-                    gsap.to(mesh.position, { z: 0, duration: 0.3 });
-                }
-            });
-        }
-
-        // --- SELECTION EXIT ---
-        window.addEventListener('click', () => {
-            if(hoveredIndex !== -1 && !isClosing && isInteracting) {
-                isClosing = true;
-                const selectedCategory = meshes[hoveredIndex].userData.name;
+                ctx.fillStyle = "rgba(0,0,0,0.2)";
+                for(let i=0; i<10000; i++) ctx.fillRect(Math.random()*1024, Math.random()*368, 2, 2);
                 
-                document.getElementById('instruct-box').style.opacity = 0;
+                ctx.lineWidth = 15; ctx.strokeStyle = "#D6C26A"; ctx.strokeRect(10,10,1004,348);
 
-                // 1. Reset Physics immediately so it folds like paper, not glass
-                const mesh = meshes[hoveredIndex];
-                gsap.to(mesh.material.emissive, { r: 0, g: 0, b: 0, duration: 0.1 });
-                gsap.to(mesh.material, { emissiveIntensity: 0, roughness: 0.5, duration: 0.1 });
-                gsap.to(mesh.position, { z: 0, duration: 0.1 });
+                ctx.font = "900 110px 'Cinzel', serif";
+                ctx.fillStyle = "#D6C26A"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                ctx.shadowColor="rgba(0,0,0,0.5)"; ctx.shadowBlur=10;
+                ctx.fillText("ISHYA '26", 512, 140);
+                
+                ctx.shadowBlur=0;
+                ctx.font = "700 35px 'Syncopate', sans-serif";
+                ctx.fillStyle = "#e0e0e0"; ctx.letterSpacing = "5px";
+                ctx.fillText("FLAMES IN THE FOLD", 512, 250);
 
-                // 2. Fold Animation
-                gsap.to(animState, {
-                    angle: CONFIG.closedAngle,
-                    duration: 0.8,
-                    ease: "power2.inOut",
-                    onUpdate: () => updateFolds(animState.angle),
-                    onComplete: () => {
-                        console.log(`Loading ${selectedCategory}`);
-                        alert("Navigating to: " + selectedCategory);
-                        // window.location.href = `/events/${selectedCategory.replace(/ /g, '-').toLowerCase()}`;
+                const tex = new THREE.CanvasTexture(canvas);
+                tex.colorSpace = THREE.SRGBColorSpace;
+                tex.minFilter = THREE.LinearFilter;
+                return tex;
+            }
+
+            function createCardTexture(text, type) {
+                const canvas = document.createElement('canvas');
+                canvas.width = 1024; canvas.height = 256;
+                const ctx = canvas.getContext('2d');
+
+                if (type === 'normal') {
+                    // NORMAL: Gold BG, Dark Text
+                    const grad = ctx.createLinearGradient(0,0,0,256);
+                    grad.addColorStop(0, '#8a6e28'); grad.addColorStop(0.2, '#D6C26A'); 
+                    grad.addColorStop(0.5, '#fcf6ba'); grad.addColorStop(0.8, '#D6C26A'); grad.addColorStop(1, '#8a6e28');
+                    ctx.fillStyle = grad; ctx.fillRect(0,0,1024,256);
+                    
+                    ctx.fillStyle = "rgba(0,0,0,0.12)";
+                    for(let i=0; i<8000; i++) ctx.fillRect(Math.random()*1024, Math.random()*256, 1.5, 1.5);
+                    
+                    ctx.font = "900 65px 'Cinzel', serif";
+                    ctx.fillStyle = "#051408"; 
+                } else {
+                    // HOVER: Dark BG, Bright Gold Text
+                    ctx.fillStyle = "#051408"; // Solid Dark Theme Color
+                    ctx.fillRect(0,0,1024,256);
+                    
+                    // Very subtle grain on background
+                    ctx.fillStyle = "rgba(255,255,255,0.03)";
+                    for(let i=0; i<2000; i++) ctx.fillRect(Math.random()*1024, Math.random()*256, 1, 1);
+
+                    // Bright Gold Text
+                    ctx.font = "900 65px 'Cinzel', serif";
+                    ctx.fillStyle = "#D6C26A";
+                }
+
+                ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                ctx.fillText(text, 512, 128);
+                
+                if (type === 'hover') {
+                    // Crisp gold border for visibility
+                    ctx.lineWidth = 15; ctx.strokeStyle = "#D6C26A"; ctx.strokeRect(0,0,1024,256);
+                }
+
+                const tex = new THREE.CanvasTexture(canvas);
+                tex.colorSpace = THREE.SRGBColorSpace;
+                tex.anisotropy = 16;
+                return tex;
+            }
+
+            // --- MESH GENERATION ---
+            const hinges = [];
+            const meshes = [];
+
+            const rootGroup = new THREE.Group();
+            rootGroup.position.set(0, 42, 0); 
+            scene.add(rootGroup);
+
+            // Banner (Standard Material to catch light/shadows)
+            const bannerGeom = new THREE.PlaneGeometry(CONFIG.bannerWidth, CONFIG.bannerHeight);
+            const bannerMat = new THREE.MeshStandardMaterial({
+                map: createBannerTexture(),
+                roughness: 0.7, metalness: 0.3, side: THREE.DoubleSide
+            });
+            const bannerMesh = new THREE.Mesh(bannerGeom, bannerMat);
+            bannerMesh.castShadow = true;
+            bannerMesh.position.y = -CONFIG.bannerHeight / 2;
+            rootGroup.add(bannerMesh);
+
+            // Accordion Logic
+            let parent = rootGroup;
+            let isInteracting = false; 
+            let isClosing = false; 
+
+            CONFIG.categories.forEach((cat, i) => {
+                const hinge = new THREE.Group();
+                if(i === 0) hinge.position.y = -CONFIG.bannerHeight;
+                else hinge.position.y = -CONFIG.cardHeight;
+                
+                if(i === 0) rootGroup.add(hinge); 
+                else parent.add(hinge);           
+
+                hinges.push(hinge);
+                parent = hinge;
+
+                const geom = new THREE.PlaneGeometry(CONFIG.cardWidth, CONFIG.cardHeight, 40, 1);
+                geom.translate(0, -CONFIG.cardHeight/2, 0);
+
+                // Create Texture Maps
+                const texNormal = createCardTexture(cat, 'normal');
+                const texHover = createCardTexture(cat, 'hover');
+
+                // Material 1: Standard (Reacts to light/shadow)
+                const matNormal = new THREE.MeshStandardMaterial({
+                    map: texNormal,
+                    side: THREE.DoubleSide,
+                    roughness: 0.5, 
+                    metalness: 0.5
+                });
+
+                // Material 2: Basic (Ignores light -> Uniform flat appearance)
+                const matHover = new THREE.MeshBasicMaterial({
+                    map: texHover,
+                    side: THREE.DoubleSide
+                });
+
+                const mesh = new THREE.Mesh(geom, matNormal);
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                
+                // Store materials for swapping
+                mesh.userData = { 
+                    id: i, 
+                    name: cat,
+                    matNormal: matNormal,
+                    matHover: matHover
+                };
+                
+                hinge.add(mesh);
+                meshes.push(mesh); 
+            });
+
+            // --- ANIMATION ---
+            function updateFolds(angle) {
+                hinges.forEach((h, i) => {
+                    if(i === 0) h.rotation.x = angle;
+                    else {
+                        const sign = (i % 2 === 0) ? 1 : -1;
+                        h.rotation.x = angle * 2 * sign;
                     }
                 });
             }
-        });
 
-        // Loop
-        function animate() {
-            requestAnimationFrame(animate);
-            renderer.render(scene, camera);
+            const animState = { angle: CONFIG.closedAngle };
+            updateFolds(CONFIG.closedAngle);
+
+            gsap.to(animState, {
+                angle: CONFIG.openAngle,
+                duration: 2.5,
+                ease: "elastic.out(1, 0.6)",
+                delay: 0.5,
+                onUpdate: () => updateFolds(animState.angle),
+                onComplete: () => { isInteracting = true; }
+            });
+
+            // --- INTERACTION ---
+            const raycaster = new THREE.Raycaster();
+            const mouse = new THREE.Vector2();
+            let hoveredIndex = -1;
+
+            window.addEventListener('mousemove', (e) => {
+                if(!isInteracting || isClosing) return;
+
+                mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+                raycaster.setFromCamera(mouse, camera);
+                const intersects = raycaster.intersectObjects(meshes);
+
+                if(intersects.length > 0) {
+                    const index = intersects[0].object.userData.id;
+                    if(hoveredIndex !== index) {
+                        hoveredIndex = index;
+                        updateHoverState();
+                        document.body.style.cursor = 'pointer';
+                    }
+                } else {
+                    if(hoveredIndex !== -1) {
+                        hoveredIndex = -1;
+                        updateHoverState();
+                        document.body.style.cursor = 'default';
+                    }
+                }
+            });
+
+            function updateHoverState() {
+                meshes.forEach((mesh, i) => {
+                    if(i === hoveredIndex) {
+                        // HOVER: Switch to Basic Material (Unlit/Uniform)
+                        // This makes every fold look identical regardless of angle
+                        if(mesh.material !== mesh.userData.matHover) {
+                            mesh.material = mesh.userData.matHover;
+                        }
+                    } else {
+                        // NORMAL: Switch to Standard Material (Lit)
+                        if(mesh.material !== mesh.userData.matNormal) {
+                            mesh.material = mesh.userData.matNormal;
+                        }
+                    }
+                });
+            }
+
+            // --- NAVIGATION ---
+            window.addEventListener('click', () => {
+                if(hoveredIndex !== -1 && !isClosing && isInteracting) {
+                    isClosing = true;
+                    const selectedCategory = meshes[hoveredIndex].userData.name;
+
+                    // Ensure visual reset to normal before folding
+                    const mesh = meshes[hoveredIndex];
+                    mesh.material = mesh.userData.matNormal;
+
+                    gsap.to(animState, {
+                        angle: CONFIG.closedAngle,
+                        duration: 0.8,
+                        ease: "power2.inOut",
+                        onUpdate: () => updateFolds(animState.angle),
+                        onComplete: () => {
+                            console.log(`Navigating to: ${selectedCategory}`);
+                            alert(`Loading ${selectedCategory}`);
+                            // window.location.href = `/events/${selectedCategory.replace(/\s+/g, '-').toLowerCase()}`;
+                        }
+                    });
+                }
+            });
+
+            function animate() {
+                requestAnimationFrame(animate);
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
         }
-        animate();
 
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
+        initApp();
     </script>
 </body>
 </html>
