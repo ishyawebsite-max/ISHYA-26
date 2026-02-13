@@ -164,7 +164,7 @@
     .sheet-content h3 { font-family: var(--font-display); font-size: 2rem; margin-bottom: 25px; color: #8b5a2b; border-bottom: 2px solid #8b5a2b; padding-bottom: 10px; display: inline-block; }
     .sheet-content p { font-size: 1.15rem; line-height: 1.7; margin-bottom: 15px; font-family: var(--font-serif); font-weight: 500; }
 
-    /* SECTION 2: MEMORIES - CORRECTED IMPLEMENTATION */
+    /* SECTION 2: MEMORIES */
     #memories .perch-title {
         font-family: var(--font-display);
         font-weight: 700;
@@ -211,7 +211,7 @@
     }
     @keyframes scrollImages { 
         0% { transform: translateX(0); } 
-        100% { transform: translateX(-50%);}justed count */
+        100% { transform: translateX(-50%);}
     }
 
     /* --- SECTION 3: EVENTS --- */
@@ -639,10 +639,6 @@
 
 <!-- MAIN LOGIC -->
 <script type="module">
-    /* 
-       UPDATED IMPORTS: Switched from skypack.dev to esm.sh 
-       This provides better stability and uptime.
-    */
     import * as THREE from 'https://esm.sh/three@0.160.0';
     import gsap from 'https://esm.sh/gsap@3.12.5';
     import ScrollTrigger from 'https://esm.sh/gsap@3.12.5/ScrollTrigger';
@@ -660,48 +656,40 @@
     };
 
     const canvas = document.getElementById('webgl'); 
-    
-    // RENDERER SETUP
-    // Antialias true for mobile clarity.
-    // PixelRatio uses device capabilities (retina screens) for max clarity.
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); 
     renderer.setSize(window.innerWidth, window.innerHeight); 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); 
+    renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2)); 
     renderer.setClearColor(0x000000, 0);
+    // CRITICAL: Ensure correct color space for materials to look right
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
 
     const scene = new THREE.Scene(); 
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100); 
     camera.position.set(0, 0, 16); 
+    scene.add(camera);
+    
     const clock = new THREE.Clock(); 
 
     function loadAndProcessLogo(url) { 
         return new Promise((resolve, reject) => { 
-            const img = new Image(); 
-            img.crossOrigin = "Anonymous"; 
-            img.src = url; 
+            const img = new Image(); img.crossOrigin = "Anonymous"; img.src = url; 
             
             img.onload = () => { 
-                // High-Res Texture Processing
-                const textureW = 1024;
-                const textureH = 1024;
+                const textureW = 1024, textureH = 1024;
                 const textureCanvas = document.createElement('canvas');
-                textureCanvas.width = textureW;
-                textureCanvas.height = textureH;
+                textureCanvas.width = textureW; textureCanvas.height = textureH;
                 const textureCtx = textureCanvas.getContext('2d');
                 textureCtx.drawImage(img, 0, 0, textureW, textureH);
                 const solidTexture = new THREE.CanvasTexture(textureCanvas);
                 solidTexture.minFilter = THREE.LinearFilter;
-                solidTexture.colorSpace = THREE.SRGBColorSpace; // Modern color handling
+                solidTexture.colorSpace = THREE.SRGBColorSpace;
 
-                // Particle Position Scanning
                 const particleW = isMobile ? 400 : 1024;
                 const particleH = isMobile ? 400 : 1024;
                 const particleCanvas = (particleW === textureW) ? textureCanvas : document.createElement('canvas');
                 if (particleW !== textureW) {
-                    particleCanvas.width = particleW;
-                    particleCanvas.height = particleH;
-                    const particleCtx = particleCanvas.getContext('2d');
-                    particleCtx.drawImage(img, 0, 0, particleW, particleH);
+                    particleCanvas.width = particleW; particleCanvas.height = particleH;
+                    particleCanvas.getContext('2d').drawImage(img, 0, 0, particleW, particleH);
                 }
                 
                 const pixels = particleCanvas.getContext('2d').getImageData(0, 0, particleW, particleH).data;
@@ -717,10 +705,9 @@
                 resolve({ solidTexture: solidTexture, points: new Float32Array(points) }); 
             }; 
             
-            // Fallback if logo.png is missing or fails
             img.onerror = () => { 
                 console.warn("Logo failed to load, using text fallback");
-                const w = 512; const h = 512; const c = document.createElement('canvas'); c.width = w; c.height = h; const ctx = c.getContext('2d');
+                const w = 512, h = 512; const c = document.createElement('canvas'); c.width = w; c.height = h; const ctx = c.getContext('2d');
                 ctx.font = "bold 100px sans-serif"; ctx.fillStyle="white"; ctx.textAlign="center"; ctx.fillText("ISHYA", w/2, h/2);
                 const points = []; for(let i=0; i<1000; i++) points.push((Math.random()-0.5)*5, (Math.random()-0.5)*5 + 1.8, 0);
                 resolve({ solidTexture: new THREE.CanvasTexture(c), points: new Float32Array(points) }); 
@@ -728,12 +715,11 @@
         }); 
     }
 
-    // Initialize only after libraries are loaded
     loadAndProcessLogo(CONFIG.LOGO_PATH).then((data) => { 
         const particles = createParticles(data.points.length / 3, data.points);
         const solidLogo = createSolidLogo(data.solidTexture); 
         const bird = createBird();
-        if (!isMobile) setupLights(); 
+        setupLights(); // Setup strong lights for the gold effect
         
         setupAnimations(particles, solidLogo, bird);
         setupEventListeners();
@@ -766,12 +752,18 @@
     }
 
     function createBird() {
-        let birdMaterial;
-        if (isMobile) {
-            birdMaterial = new THREE.MeshBasicMaterial({ color: 0xD6C26A, side: THREE.DoubleSide });
-        } else {
-            birdMaterial = new THREE.MeshStandardMaterial({ color: 0xD6C26A, roughness: 0.3, metalness: 0.8, side: THREE.DoubleSide });
-        }
+        // --- UPDATED GOLD MATERIAL ---
+        // MeshStandardMaterial reacts to light. 
+        // Emissive properties ensure it never looks "black" even in shadows.
+        const birdMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0xffc400,       // Rich Gold
+            roughness: 0.25,       // Shiny but not a mirror
+            metalness: 0.95,       // Highly metallic
+            emissive: 0x6e5200,    // Deep gold self-glow (prevents dark spots)
+            emissiveIntensity: 0.3,
+            side: THREE.DoubleSide,
+            flatShading: true      // IMPORTANT: Faceted look for origami
+        });
         
         const group = new THREE.Group(); group.visible = false; scene.add(group);
         
@@ -786,23 +778,28 @@
         const wingR=new THREE.Mesh(wGeo, birdMaterial); wingR.position.set(0.9,0,0);
         group.add(wingL, wingR); group.rotation.x=0.2; 
         
-        if(!isMobile) {
-            const birdLight = new THREE.PointLight(0xD6C26A, 1.5, 15);
-            birdLight.position.set(0, 0.5, 0);
-            group.add(birdLight);
-        }
-
         return { group, wingL, wingR };
     }
 
     function setupLights() { 
-        scene.add(new THREE.AmbientLight(0xffffff, 0.4)); 
-        const spot = new THREE.SpotLight(0xD6C26A, 2.0); 
-        spot.position.set(5, 10, 5); 
-        scene.add(spot); 
-        const back = new THREE.DirectionalLight(0x4D8F48, 1.2); 
-        back.position.set(-5, 5, -5); 
-        scene.add(back); 
+        // 1. Ambient Light: Increased slightly to lift the base darkness
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+        scene.add(ambientLight);
+
+        // 2. Main "Sun" Light: Strong directional light to create highlights on the gold
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 2.5);
+        directionalLight.position.set(5, 10, 7.5);
+        scene.add(directionalLight);
+
+        // 3. Gold Warmer: A warm point light that helps the gold sparkle
+        const goldPointLight = new THREE.PointLight(0xffaa00, 4, 30);
+        goldPointLight.position.set(0, 5, 5);
+        scene.add(goldPointLight);
+
+        // 4. Backlight (Rim Light): Helps separate the object from the dark background
+        const rimLight = new THREE.DirectionalLight(0x4D8F48, 1.5); // Greenish rim light
+        rimLight.position.set(-5, 0, -5);
+        scene.add(rimLight);
     }
 
     function setupAnimations(particles, solidLogo, bird) {
