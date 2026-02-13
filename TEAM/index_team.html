@@ -1210,13 +1210,13 @@
                 --bar-height: 75px; 
             }
 
-            body { margin: 0; background-color: #05050a; }
+            body { margin: 0; background-color: #05050a; padding-top: 75px; }
 
             /* 1. CONTENT SPACER */
             .ishya-header-spacer {
-                display: block;
+                display: none;
                 width: 100%;
-                height: var(--bar-height);
+                height: 75px;
             }
 
             /* 2. AERO BACKDROP WITH LIGHT FLUIDS */
@@ -1392,9 +1392,7 @@
             
             <nav class="ishya-nav-container" id="ishyaHeader">
                 <div class="ishya-logo-btn">
-                    <img src="../Logo Ishya.ico" alt="ISHYA" 
-                         onerror="this.style.display='none'; document.getElementById('ishyaFallback').style.display='block';">
-                    <span id="ishyaFallback" style="display:none; color:var(--ishya-gold); font-size:14px; font-weight:bold; letter-spacing:2px;">ISHYA</span>
+                    <img src="../Logo Ishya.ico" alt="ISHYA">
                 </div>
 
                 <div class="ishya-menu-grid">
