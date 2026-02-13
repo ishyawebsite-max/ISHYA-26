@@ -15,7 +15,15 @@
         <link href="https://fonts.googleapis.com/css2?family=Texturina&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Jim+Nightshade&display=swap" rel="stylesheet">
         <script src="https://accounts.google.com/gsi/client" async defer></script>
-        <link src="../header.html" rel="import">
+        <script>
+          // Replace 'header.html' with the actual path in your repo
+          fetch("../header.html")
+            .then(response => response.text())
+            .then(data => {
+              document.getElementById('header-plugin').innerHTML = data;
+            })
+            .catch(error => console.error('Error loading the header:', error));
+        </script>
         <!-- this is the script for header -->
         <style>
             /* --- CSS Variables --- */
@@ -1208,7 +1216,7 @@
                 <!--<h1>TEAM ISHYA</h1>
                 <p class="subtitle">Bringing Culture to Life | Annual Fest 2026</p>-->
             <!--</header>-->
-    
+            <header><div id="header-plugin"></div></header>
             <!-- Main Content -->
             <main>
                 <div class="container">
