@@ -3,189 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EVENTS | GREEN FLAME</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Flames in the Fold - Event Selection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@500&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@900&family=Outfit:wght@300;500;800&display=swap" rel="stylesheet">
-
+    
     <style>
-        :root { --neon: #00ff66; --bg: #010402; }
-        body { background: var(--bg); color: white; font-family: 'Outfit', sans-serif; overflow-x: hidden; }
-        .font-huge { font-family: 'Unbounded', sans-serif; }
-
-        /* Buffering Overlay */
-        #loader {
-            position: fixed; inset: 0; z-index: 999; background: var(--bg);
-            display: flex; align-items: center; justify-content: center;
+        body { margin: 0; overflow: hidden; background-color: #020202; }
+        #canvas-container { width: 100vw; height: 100vh; display: block; }
+        
+        #ui-layer {
+            position: absolute; bottom: 30px; width: 100%; text-align: center; pointer-events: none;
         }
-        .spinner {
-            width: 50px; height: 50px; border: 4px solid rgba(0, 255, 102, 0.1);
-            border-top: 4px solid var(--neon); border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+        .instruction {
+            color: #d4af37; font-family: 'Cinzel', serif; font-size: 0.9rem; letter-spacing: 3px;
+            opacity: 0; transition: opacity 1s ease;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Plasma Layer */
-        #plasma-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; pointer-events: none; mix-blend-mode: screen; filter: blur(10px);
-        }
-
-        /* Bento Grid Architecture */
-        .bento-card {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(0, 255, 102, 0.05);
-            border-radius: 35px;
-            clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
-            transition: 0.4s ease;
-        }
-        .bento-card:hover { border-color: var(--neon); background: rgba(0, 255, 102, 0.04); }
-
-        .image-box { border-radius: 25px; height: 260px; overflow: hidden; background: #000; }
-        .image-box img { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; filter: grayscale(1); transition: 0.8s ease; }
-        .bento-card:hover img { opacity: 1; filter: grayscale(0); transform: scale(1.05); }
-
-        /* Popup Modal */
-        #modal {
-            display: none; position: fixed; inset: 0; z-index: 100;
-            background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(15px);
-            align-items: center; justify-content: center; padding: 20px;
-        }
-        .modal-body {
-            width: 100%; max-width: 1000px; height: 85vh; background: #050a06;
-            border: 1px solid var(--neon); border-radius: 30px; overflow: hidden;
-        }
-        iframe { width: 100%; height: calc(100% - 60px); border: none; background: white; }
-
-        .nav-btn {
-            padding: 10px 25px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.1);
-            font-size: 10px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
-            transition: 0.3s;
-        }
-        .nav-btn.active { background: var(--neon); color: #000; box-shadow: 0 0 20px rgba(0, 255, 102, 0.4); }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body>
 
-    <!-- Buffering Circle -->
-    <div id="loader"><div class="spinner"></div></div>
-
-    <canvas id="plasma-canvas"></canvas>
-
-    <!-- Popup Modal -->
-    <div id="modal" onclick="closePopup()">
-        <div class="modal-body" onclick="event.stopPropagation()">
-            <div class="h-[60px] flex items-center justify-between px-8 bg-[#0a150c]">
-                <span class="text-[10px] font-black uppercase text-[#00ff66] tracking-widest">Registration</span>
-                <button onclick="closePopup()" class="font-bold text-white hover:text-[#00ff66]">CLOSE ✕</button>
-            </div>
-            <iframe id="frame" src=""></iframe>
-        </div>
+    <div id="ui-layer">
+        <div class="instruction" id="instruct-text">SELECT A CATEGORY</div>
     </div>
+    <div id="canvas-container"></div>
 
-    <header class="pt-32 pb-16 px-8 md:px-24">
-        <h1 class="font-huge text-[18vw] leading-[0.75] uppercase tracking-tighter text-[#00ff66] select-none">Events</h1>
-    </header>
+    <script type="module">
+        import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
-    <main class="px-8 md:px-24 pb-60">
-        <div id="nav" class="flex gap-4 mb-20 overflow-x-auto no-scrollbar py-2"></div>
-        <div id="grid" class="grid grid-cols-1 md:grid-cols-12 gap-8"></div>
-    </main>
+        // --- CONFIGURATION ---
+        const CONFIG = {
+            cardWidth: 50,
+            cardHeight: 14,
+            closedAngle: 1.55,  // ~89 degrees (Closed)
+            openAngle: 0.25,    // ~15 degrees (Open)
+            categories: [
+                "PERFORMING ARTS",
+                "LITERARY & ORATORY",
+                "VISUAL & FINE ARTS",
+                "GAMING & ESPORTS",
+                "MEDIA & PHOTO"
+            ]
+        };
 
-    <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbym4_gPbWluauk0c3kIKdj0CFRm4hTlo9jmh8AgGsUmVt-PphqRfRaByIJLDaz-2c0BwA/exec";
+        let isInteracting = false; 
+        let isClosing = false;     
 
-        // 1. FLEETING PLASMA (FASTER DECAY)
-        const canvas = document.getElementById('plasma-canvas');
-        const ctx = canvas.getContext('2d');
-        let points = [];
-        const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
-        window.addEventListener('resize', resize); resize();
-        window.addEventListener('mousemove', (e) => {
-            points.push({ x: e.clientX, y: e.clientY, life: 1 });
+        // --- SCENE ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x020202); 
+        
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+        camera.position.set(0, 0, 90); 
+        
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        container.appendChild(renderer.domElement);
+
+        // --- LIGHTING ---
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        dirLight.position.set(0, 50, 60);
+        dirLight.castShadow = true;
+        dirLight.shadow.mapSize.width = 2048;
+        dirLight.shadow.mapSize.height = 2048;
+        dirLight.shadow.bias = -0.001; 
+        scene.add(dirLight);
+
+        const greenLight = new THREE.PointLight(0x39ff14, 2, 80);
+        greenLight.position.set(0, -60, 30);
+        scene.add(greenLight);
+
+        const shadowPlane = new THREE.Mesh(
+            new THREE.PlaneGeometry(500, 500),
+            new THREE.MeshStandardMaterial({ color: 0x020202, roughness: 1 })
+        );
+        shadowPlane.position.z = -20;
+        shadowPlane.receiveShadow = true;
+        scene.add(shadowPlane);
+
+        // --- TEXTURE ---
+        function createCardTexture(text) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1024; canvas.height = 256;
+            const ctx = canvas.getContext('2d');
+
+            // Gold Gradient
+            const grad = ctx.createLinearGradient(0,0,0,256);
+            grad.addColorStop(0, '#8a6e28'); 
+            grad.addColorStop(0.2, '#d4af37'); 
+            grad.addColorStop(0.5, '#fcf6ba'); 
+            grad.addColorStop(0.8, '#d4af37'); 
+            grad.addColorStop(1, '#8a6e28'); 
+            ctx.fillStyle = grad;
+            ctx.fillRect(0,0,1024,256);
+
+            // Noise
+            ctx.fillStyle = "rgba(0,0,0,0.08)";
+            for(let i=0; i<8000; i++) ctx.fillRect(Math.random()*1024, Math.random()*256, 2, 2);
+
+            // Text
+            ctx.font = "bold 80px 'Cinzel', serif";
+            ctx.fillStyle = "#011f18"; 
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(text, 512, 128);
+
+            const tex = new THREE.CanvasTexture(canvas);
+            tex.anisotropy = 16;
+            return tex;
+        }
+
+        // --- MESH SETUP ---
+        const hinges = [];
+        const meshes = [];
+
+        const rootGroup = new THREE.Group();
+        rootGroup.position.set(0, 35, 0); 
+        scene.add(rootGroup);
+
+        let parent = rootGroup;
+
+        CONFIG.categories.forEach((cat, i) => {
+            const hinge = new THREE.Group();
+            if(i > 0) hinge.position.y = -CONFIG.cardHeight;
+            parent.add(hinge);
+            hinges.push(hinge);
+            parent = hinge;
+
+            const geom = new THREE.PlaneGeometry(CONFIG.cardWidth, CONFIG.cardHeight, 40, 1);
+            geom.translate(0, -CONFIG.cardHeight/2, 0);
+
+            const mat = new THREE.MeshStandardMaterial({
+                map: createCardTexture(cat),
+                side: THREE.DoubleSide,
+                roughness: 0.5, // Standard paper roughness
+                metalness: 0.6, // Standard gold shine
+                emissive: new THREE.Color(0x000000), 
+                emissiveIntensity: 0
+            });
+
+            const mesh = new THREE.Mesh(geom, mat);
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            mesh.userData = { id: i, name: cat };
+            
+            hinge.add(mesh);
+            meshes.push(mesh);
         });
 
-        function draw() {
-            ctx.clearRect(0,0,canvas.width,canvas.height);
-            for(let i=0; i<points.length; i++){
-                const p = points[i];
-                ctx.fillStyle = `rgba(0, 255, 102, ${p.life})`;
-                ctx.beginPath(); ctx.arc(p.x, p.y, 8, 0, Math.PI*2); ctx.fill();
-                p.life -= 0.08; // Very fleeting
-                if(p.life <= 0) points.splice(i, 1);
-            }
-            requestAnimationFrame(draw);
-        }
-        draw();
-
-        // 2. MODAL & DATA
-        let store = [];
-        async function fetchEvents() {
-            try {
-                const r = await fetch(API_URL);
-                store = await r.json();
-                renderFilters(store);
-                renderGrid(store);
-            } finally {
-                gsap.to("#loader", { opacity: 0, duration: 0.5, onComplete: () => document.getElementById('loader').remove() });
-            }
-        }
-
-        function renderFilters(data) {
-            const nav = document.getElementById('nav');
-            const cats = ['All', ...new Set(data.map(d => d.EventCategory))];
-            nav.innerHTML = cats.map(c => `<button onclick="applyFilter('${c}', this)" class="nav-btn ${c==='All'?'active':''}">${c}</button>`).join('');
-        }
-
-        function renderGrid(data) {
-            const grid = document.getElementById('grid');
-            grid.innerHTML = '';
-            data.forEach((ev, i) => {
-                const col = (i % 3 === 0) ? 'md:col-span-8' : 'md:col-span-4';
-                const el = document.createElement('div');
-                el.className = `bento-card ${col} p-10 flex flex-col justify-between min-h-[550px]`;
-                el.innerHTML = `
-                    <div>
-                        <div class="image-box mb-8">
-                            <img src="${ev.ImageURL || 'https://via.placeholder.com/800x600'}">
-                        </div>
-                        <span class="text-[9px] font-black uppercase text-[#00ff66] tracking-[2px]">${ev.EventCategory}</span>
-                        <h2 class="font-huge text-4xl mb-4 leading-none uppercase">${ev.EventName}</h2>
-                        <p class="text-white/40 text-sm line-clamp-3">${ev.Description}</p>
-                    </div>
-                    <div class="mt-12 flex justify-between items-end border-t border-white/5 pt-8">
-                        <div class="text-[10px] text-white/20 uppercase font-bold">${ev.Venue} <br> ${ev.Date} @ ${ev.Time}</div>
-                        <button onclick="openPopup('${ev.RegisterLink}')" class="px-10 py-4 bg-white text-black font-black uppercase text-[10px] rounded-2xl hover:bg-[#00ff66] transition-all">Register</button>
-                    </div>
-                `;
-                grid.appendChild(el);
+        // --- ANIMATION HELPER ---
+        function updateFolds(angle) {
+            hinges.forEach((h, i) => {
+                if(i === 0) h.rotation.x = angle;
+                else {
+                    const sign = (i % 2 === 0) ? 1 : -1;
+                    h.rotation.x = angle * 2 * sign;
+                }
             });
-            gsap.to(".bento-card", { clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)", duration: 1, stagger: 0.1 });
         }
 
-        function openPopup(url) {
-            if(!url || url === "#") return;
-            document.getElementById('frame').src = url;
-            document.getElementById('modal').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
-        function closePopup() {
-            document.getElementById('modal').style.display = 'none';
-            document.getElementById('frame').src = "";
-            document.body.style.overflow = 'auto';
-        }
-        function applyFilter(cat, btn) {
-            document.querySelectorAll('.nav-btn').forEach(p => p.classList.remove('active'));
-            btn.classList.add('active');
-            const filtered = cat === 'All' ? store : store.filter(d => d.EventCategory === cat);
-            renderGrid(filtered);
+        // --- INTRO ---
+        const animState = { angle: CONFIG.closedAngle };
+        updateFolds(CONFIG.closedAngle);
+
+        gsap.to(animState, {
+            angle: CONFIG.openAngle,
+            duration: 2.5,
+            ease: "elastic.out(1, 0.75)",
+            delay: 0.5,
+            onUpdate: () => updateFolds(animState.angle),
+            onComplete: () => {
+                isInteracting = true;
+                document.getElementById('instruct-text').style.opacity = 1;
+            }
+        });
+
+        // --- INTERACTION ---
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        let hoveredIndex = -1;
+
+        window.addEventListener('mousemove', (e) => {
+            if(!isInteracting || isClosing) return;
+
+            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(meshes);
+
+            if(intersects.length > 0) {
+                const index = intersects[0].object.userData.id;
+                if(hoveredIndex !== index) {
+                    hoveredIndex = index;
+                    updateHoverState();
+                    document.body.style.cursor = 'pointer';
+                }
+            } else {
+                if(hoveredIndex !== -1) {
+                    hoveredIndex = -1;
+                    updateHoverState();
+                    document.body.style.cursor = 'default';
+                }
+            }
+        });
+
+        function updateHoverState() {
+            meshes.forEach((mesh, i) => {
+                if(i === hoveredIndex) {
+                    // ACTIVE STATE:
+                    // 1. Set Emissive to Neon Green
+                    // 2. Set Intensity High (overpowers shadows)
+                    // 3. Set Metalness to 0 (removes reflections that reveal angle)
+                    // 4. Set Roughness to 1 (makes surface matte/flat)
+                    gsap.to(mesh.material.emissive, { r: 0.22, g: 1, b: 0.08, duration: 0.2 }); 
+                    gsap.to(mesh.material, { 
+                        emissiveIntensity: 1.5, // High intensity for "Flat" look
+                        metalness: 0.0, 
+                        roughness: 1.0, 
+                        duration: 0.2 
+                    });
+                    // Slight lift
+                    gsap.to(mesh.position, { z: 2, duration: 0.3 }); 
+                } else {
+                    // INACTIVE STATE: Reset to Gold Paper physics
+                    gsap.to(mesh.material.emissive, { r: 0, g: 0, b: 0, duration: 0.2 });
+                    gsap.to(mesh.material, { 
+                        emissiveIntensity: 0, 
+                        metalness: 0.6, 
+                        roughness: 0.5, 
+                        duration: 0.2 
+                    });
+                    gsap.to(mesh.position, { z: 0, duration: 0.3 });
+                }
+            });
         }
 
-        window.onload = fetchEvents;
+        // --- EXIT ANIMATION ---
+        window.addEventListener('click', () => {
+            if(hoveredIndex !== -1 && !isClosing && isInteracting) {
+                isClosing = true;
+                const selectedCategory = meshes[hoveredIndex].userData.name;
+                
+                document.getElementById('instruct-text').style.opacity = 0;
+
+                // 1. IMMEDIATELY KILL THE GLOW
+                // We force the currently hovered mesh back to normal physics
+                // so it looks like gold when it folds up.
+                gsap.to(meshes[hoveredIndex].material.emissive, { r: 0, g: 0, b: 0, duration: 0.2 });
+                gsap.to(meshes[hoveredIndex].material, { 
+                    emissiveIntensity: 0, 
+                    metalness: 0.6, 
+                    roughness: 0.5, 
+                    duration: 0.2 
+                });
+                gsap.to(meshes[hoveredIndex].position, { z: 0, duration: 0.2 });
+
+                // 2. FOLD UP
+                gsap.to(animState, {
+                    angle: CONFIG.closedAngle,
+                    duration: 1.0,
+                    ease: "power3.inOut",
+                    onUpdate: () => updateFolds(animState.angle),
+                    onComplete: () => {
+                        console.log(`Navigating to: ${selectedCategory}`);
+                        alert("Navigating to " + selectedCategory);
+                    }
+                });
+            }
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
     </script>
 </body>
 </html>
