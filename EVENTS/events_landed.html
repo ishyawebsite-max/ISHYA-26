@@ -17,9 +17,7 @@
         :root {
             --bg-dark: #051408;       
             --accent-gold: #D6C26A;
-            /* New Gradients for the Gold Card Look */
             --card-gold-gradient: linear-gradient(135deg, #c4ae58 0%, #e8d689 40%, #D6C26A 100%);
-            --card-shadow: 0 10px 30px rgba(0,0,0,0.5);
             --text-on-gold: #051408; 
             
             --font-cinzel: 'Cinzel', serif;
@@ -31,7 +29,7 @@
             margin: 0; 
             background-color: var(--bg-dark); 
             font-family: var(--font-tech);
-            color: var(--text-light);
+            color: #e0e0e0;
             overflow-x: hidden; 
             overflow-y: auto;
             min-height: 100vh;
@@ -42,15 +40,13 @@
         .overlay-grain {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
-            pointer-events: none; z-index: 500; opacity: 0.4; /* Grain sits on top of everything to blend */
+            pointer-events: none; z-index: 500; opacity: 0.4;
         }
 
         /* --- HEADER --- */
         header {
             padding: 2rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
+            display: flex; justify-content: space-between; align-items: flex-end;
             border-bottom: 1px solid rgba(214, 194, 106, 0.2);
             background: linear-gradient(to bottom, #051408 0%, rgba(5,20,8,0.95) 100%);
             position: sticky; top: 0; z-index: 100;
@@ -65,31 +61,24 @@
         }
 
         .back-btn {
-            font-family: var(--font-sync);
-            color: #e0e0e0;
-            text-decoration: none;
+            font-family: var(--font-sync); color: #e0e0e0; text-decoration: none;
             font-size: 0.8rem; letter-spacing: 2px;
-            border: 1px solid var(--accent-gold);
-            padding: 0.5rem 1.5rem;
+            border: 1px solid var(--accent-gold); padding: 0.5rem 1.5rem;
             transition: 0.3s; text-transform: uppercase;
         }
         .back-btn:hover { background: var(--accent-gold); color: var(--bg-dark); }
 
         /* --- FILTER BAR --- */
         .filter-container {
-            padding: 2rem 5%;
-            display: flex; gap: 2rem;
-            overflow-x: auto;
+            padding: 2rem 5%; display: flex; gap: 2rem; overflow-x: auto;
             border-bottom: 1px solid rgba(214, 194, 106, 0.1);
         }
         .filter-container::-webkit-scrollbar { height: 4px; }
         .filter-container::-webkit-scrollbar-thumb { background: var(--accent-gold); }
 
         .filter-btn {
-            background: none; border: none;
-            color: #888;
-            font-family: var(--font-sync);
-            font-size: 0.9rem; cursor: pointer;
+            background: none; border: none; color: #888;
+            font-family: var(--font-sync); font-size: 0.9rem; cursor: pointer;
             white-space: nowrap; padding-bottom: 0.5rem;
             position: relative; transition: 0.3s; text-transform: uppercase;
         }
@@ -109,65 +98,73 @@
             min-height: 50vh;
         }
 
-        /* --- NEW GOLD CARD DESIGN --- */
+        /* --- GOLD CARD (SHUTTER REVEAL DESIGN) --- */
         .event-card {
-            /* The Gold Parchment Look */
             background: var(--card-gold-gradient);
             position: relative;
+            height: 380px; /* Fixed height is important for the slide effect */
             display: flex; flex-direction: column;
-            
-            /* Physical properties */
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            
-            /* The Fold Shape */
             clip-path: polygon(0 0, calc(100% - 40px) 0, 100% 40px, 100% 100%, 0 100%);
-            
-            /* Ensure it renders immediately (Fixes ghosting bug) */
-            opacity: 1; 
+            overflow: hidden; /* Contains the sliding content */
         }
 
-        /* Noise Texture on the Card specifically */
+        /* Noise Texture */
         .event-card::after {
             content: ''; position: absolute; top:0; left:0; width:100%; height:100%;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.15'/%3E%3C/svg%3E");
-            pointer-events: none; mix-blend-mode: multiply;
+            pointer-events: none; mix-blend-mode: multiply; z-index: 1;
         }
 
-        /* The Fold Shadow Accent (Top Right) */
+        /* Fold Corner */
         .event-card::before {
             content: ''; position: absolute; top: 0; right: 0;
             width: 41px; height: 41px;
-            /* Creates a dark triangle to simulate the back of the fold */
             background: linear-gradient(to bottom left, transparent 48%, #5a461b 50%, transparent 52%);
             z-index: 10; pointer-events: none;
         }
 
         .event-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(214, 194, 106, 0.15); /* Golden Glow */
+            box-shadow: 0 20px 40px rgba(214, 194, 106, 0.15);
         }
 
+        /* --- IMAGE (BACKGROUND LAYER) --- */
         .card-img-container {
-            width: 100%; height: 200px;
-            overflow: hidden; position: relative;
-            border-bottom: 2px solid var(--bg-dark);
-            background: #000;
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 75%; /* Image takes up most of the card initially */
+            z-index: 0;
         }
 
         .card-img {
             width: 100%; height: 100%; object-fit: cover;
-            /* Sepia tone to blend with gold */
             filter: sepia(40%) grayscale(20%) contrast(1.1);
             transition: 0.5s;
         }
-
-        .event-card:hover .card-img {
-            filter: sepia(0%) grayscale(0%);
-            transform: scale(1.05);
+        
+        /* --- CONTENT (SLIDING LAYER) --- */
+        .card-content {
+            position: absolute; 
+            bottom: 0; left: 0; width: 100%; 
+            height: auto;
+            max-height: 25%; /* Initially just the title/footer */
+            background: var(--card-gold-gradient); /* Ensure it's opaque */
+            padding: 1.5rem; 
+            box-sizing: border-box;
+            z-index: 5;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column;
+            border-top: 2px solid rgba(5,20,8,0.1);
         }
 
-        /* Badge is now Dark with Gold Text */
+        /* THE REVEAL MAGIC */
+        .event-card:hover .card-content {
+            max-height: 100%; /* Slide up to cover image */
+            border-top: none;
+            padding-top: 2.5rem; /* Add space for the type badge */
+        }
+        
         .type-badge {
             position: absolute; top: 12px; left: 12px;
             background: var(--bg-dark);
@@ -175,68 +172,104 @@
             color: var(--accent-gold);
             padding: 5px 10px; font-size: 0.7rem; font-weight: bold;
             font-family: var(--font-sync);
-            z-index: 2;
+            z-index: 20; /* Above everything */
             box-shadow: 0 2px 5px rgba(0,0,0,0.5);
         }
 
-        /* Content Area */
-        .card-content { 
-            padding: 1.5rem; 
-            display: flex; flex-direction: column; flex-grow: 1; 
-            position: relative; z-index: 2; /* Above noise texture */
-        }
-
-        /* TEXT IS NOW DARK TO CONTRAST WITH GOLD CARD */
         .card-title {
             font-family: var(--font-cinzel);
-            font-size: 1.5rem; 
+            font-size: 1.4rem; 
             color: var(--text-on-gold); 
             margin: 0 0 0.5rem 0; font-weight: 900;
             line-height: 1.1;
+            flex-shrink: 0;
         }
 
         .card-desc {
-            font-size: 0.9rem; 
-            color: #2a3a2a; /* Dark Green/Grey */
-            line-height: 1.4;
+            font-size: 0.95rem; 
+            color: #2a3a2a;
+            line-height: 1.5;
             margin-bottom: 1.5rem;
-            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
             font-weight: 600;
+            
+            /* Logic for Hide/Show */
+            opacity: 0; 
+            transform: translateY(20px);
+            transition: 0.3s;
+            overflow-y: auto; /* Scrollable if text is huge */
+            max-height: 0;    /* Hidden initially */
+            
+            /* Scrollbar styling for description */
+            scrollbar-width: thin;
+            scrollbar-color: #5a461b transparent;
+        }
+
+        .event-card:hover .card-desc {
+            opacity: 1;
+            transform: translateY(0);
+            max-height: 200px; /* Expand to fill space */
+            margin-top: 1rem;
         }
 
         .card-footer {
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex; justify-content: flex-end; align-items: center;
             margin-top: auto; 
-            border-top: 1px solid rgba(5, 20, 8, 0.2); 
             padding-top: 1rem;
+            gap: 1rem;
+            flex-shrink: 0;
         }
 
-        /* Status Colors adjusted for Light Background */
-        .status-text { font-size: 0.8rem; font-weight: 800; letter-spacing: 1px; }
-        .status-open { color: #006400; /* Dark Green */ }
-        .status-closed { color: #8b0000; /* Dark Red */ }
-        .status-tba { color: #555; }
-
-        /* Buttons on Gold Card */
-        .btn-group { display: flex; gap: 0.8rem; }
-        .action-btn {
-            background: transparent; 
-            color: var(--bg-dark);
-            border: 2px solid var(--bg-dark);
-            padding: 8px 14px; font-family: var(--font-sync);
-            font-size: 0.7rem; cursor: pointer;
-            text-decoration: none; transition: 0.2s;
+        /* --- UNIFIED BUTTON STYLES --- */
+        .status-btn {
+            font-family: var(--font-sync);
+            font-size: 0.8rem;
             font-weight: 700;
+            padding: 10px 16px;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            display: inline-block;
+            text-align: center;
+            min-width: 100px;
         }
-        .action-btn:hover { 
-            background: var(--bg-dark); 
-            color: var(--accent-gold); 
+
+        /* 1. OPEN / REGISTER */
+        .btn-register {
+            background: var(--bg-dark);
+            color: var(--accent-gold);
+            border: 2px solid var(--bg-dark);
         }
-        .btn-disabled { 
-            border: 1px dashed #555; color: #555; 
-            pointer-events: none; padding: 8px 14px; 
-            font-size: 0.7rem; font-family: var(--font-sync); 
+        .btn-register:hover {
+            background: transparent;
+            color: var(--bg-dark);
         }
+
+        /* 2. CLOSED */
+        .btn-closed {
+            background: transparent;
+            color: #611818;
+            border: 2px solid #611818;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        /* 3. TBA */
+        .btn-tba {
+            background: transparent;
+            color: #444;
+            border: 2px dashed #444;
+            pointer-events: none;
+        }
+
+        /* Info/PDF Button (Icon Only) */
+        .btn-info {
+            color: var(--bg-dark);
+            font-size: 1.2rem;
+            transition: 0.2s;
+            display: flex; align-items: center;
+        }
+        .btn-info:hover { color: #5a461b; transform: scale(1.1); }
 
         /* --- MANDALA LOADER --- */
         #loader {
@@ -244,7 +277,7 @@
             background: var(--bg-dark);
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
-            z-index: 5000; /* Topmost */
+            z-index: 5000;
         }
         #loader-canvas { width: 150px; height: 150px; }
         
@@ -343,7 +376,6 @@
 
     <!-- DATA SCRIPT -->
     <script>
-        // *** REPLACE WITH YOUR DEPLOYED URL ***
         const API_URL = "https://script.google.com/macros/s/AKfycbzavv7_8jmJfR15WeS6U91o0gFTf1Nnvr0s7kIQ4hS_8PBghM2Tnz14z6vh2U1-0BN2/exec"; 
 
         const CATEGORY_MAP = {
@@ -373,7 +405,6 @@
                 const response = await fetch(API_URL);
                 const data = await response.json();
                 
-                // Strict Filter
                 allEvents = data.filter(e => e.Category && e.Category.trim().toLowerCase() === targetCategory.toLowerCase());
                 
                 initFilters();
@@ -431,46 +462,38 @@
             }
 
             filtered.forEach(event => {
-                let statusClass = "status-tba";
-                let statusLabel = "TBA";
-                let regBtn = `<span class="btn-disabled">REGISTER</span>`; 
-
-                // Conditional Info Button
-                let infoBtn = "";
-                if(event.Details && event.Details.length > 5) {
-                    infoBtn = `<a href="${event.Details}" target="_blank" class="action-btn"><i class="fa-solid fa-file-pdf"></i> INFO</a>`;
-                }
+                // Logic for Main Button (Status incorporated)
+                let btnHtml = `<span class="status-btn btn-tba">COMING SOON</span>`; // Default TBA
 
                 if (event.Status) {
                     const s = event.Status.toUpperCase();
                     if (s === "OPEN") {
-                        statusClass = "status-open"; statusLabel = "OPEN";
-                        regBtn = `<a href="${event['Reg link'] || '#'}" target="_blank" class="action-btn">REGISTER</a>`;
+                        btnHtml = `<a href="${event['Reg link'] || '#'}" target="_blank" class="status-btn btn-register">REGISTER</a>`;
                     } else if (s === "CLOSED") {
-                        statusClass = "status-closed"; statusLabel = "CLOSED";
-                        regBtn = `<span class="btn-disabled">CLOSED</span>`;
+                        btnHtml = `<span class="status-btn btn-closed">REG CLOSED</span>`;
                     }
                 }
 
+                // Info Button (Only if details exist)
+                let infoBtn = "";
+                if(event.Details && event.Details.length > 5) {
+                    infoBtn = `<a href="${event.Details}" target="_blank" class="btn-info" title="More Details"><i class="fa-solid fa-file-pdf"></i></a>`;
+                }
+
                 const card = document.createElement('div');
-                card.className = "event-card"; // GSAP animation removed to prevent ghosting
+                card.className = "event-card";
                 card.innerHTML = `
+                    <span class="type-badge">${event.Type || 'Event'}</span>
                     <div class="card-img-container">
-                        <span class="type-badge">${event.Type || 'Event'}</span>
                         <img src="${getDriveImage(event.Picture)}" alt="${event.Event}" class="card-img" loading="lazy">
                     </div>
                     <div class="card-content">
                         <h3 class="card-title">${event.Event}</h3>
-                        <div class="card-desc">${event.Description || 'Description coming soon...'}</div>
+                        <div class="card-desc">${event.Description || 'Details unavailable at this time.'}</div>
                         
                         <div class="card-footer">
-                            <span class="status-text ${statusClass}">
-                                <i class="fa-solid fa-circle" style="font-size:0.5em; vertical-align:middle;"></i> ${statusLabel}
-                            </span>
-                            <div class="btn-group">
-                                ${infoBtn}
-                                ${regBtn}
-                            </div>
+                            ${infoBtn}
+                            ${btnHtml}
                         </div>
                     </div>
                 `;
