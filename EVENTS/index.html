@@ -255,18 +255,19 @@
                 }
             });
         }
+        // --- FIX FOR MOBILE BACK BUTTON (BFCache) ---
+        // This detects if the page is being loaded from the "Back-Forward Cache"
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted) {
+                // If the page is restored from cache, the 3D context might be stuck
+                // in the "Closed" state. The safest fix for 3D canvases is to force a reload.
+                window.location.reload();
+            }
+        });
         initApp();
 
         // FIX FOR MOBILE BACK NAVIGATION
         // This listens for when the page is shown (even from back-cache)
-        window.addEventListener('pageshow', (event) => {
-            // If the page was restored from bfcache OR if we just want to force a reset
-            if (event.persisted || window.performance && window.performance.navigation.type === 2) {
-                if(window.playOpeningSequence) {
-                    window.playOpeningSequence();
-                }
-            }
-        });
     </script>
 </body>
 </html>
