@@ -256,6 +256,17 @@
             });
         }
         initApp();
+
+        // FIX FOR MOBILE BACK NAVIGATION
+        // This listens for when the page is shown (even from back-cache)
+        window.addEventListener('pageshow', (event) => {
+            // If the page was restored from bfcache OR if we just want to force a reset
+            if (event.persisted || window.performance && window.performance.navigation.type === 2) {
+                if(window.playOpeningSequence) {
+                    window.playOpeningSequence();
+                }
+            }
+        });
     </script>
 </body>
 </html>
