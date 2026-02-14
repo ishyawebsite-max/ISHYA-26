@@ -1,148 +1,581 @@
-/* --- COMPLETE & FINAL style.css (FIXED TEXT VISIBILITY) --- */
+/* =========================================
+   1. VARIABLES & THEME SETUP
+   ========================================= */
 :root {
-    --bg-color: #0d1117;
-    --primary-color: #161b22;
-    --border-color: #30363d;
-    --text-color: #c9d1d9;
-    --text-secondary: #8b949e;
-    --accent-color: #f0b90b; /* Gold/Yellow for selected */
-    --accent-hover: #f8d32b;
-    --waitlist-color: #388bfd; /* Bright Blue for waitlist */
-    --booked-color: #8B0000; /* Dark Red for booked */
+    /* --- COLOR PALETTE (From Request) --- */
+    --color-black: #060606;          /* Deepest Background */
+    --color-dark-green: #181C10;     /* Card/Container Background */
+    --color-gold: #D6C26A;           /* Accents, Headings, Waitlist */
+    --color-olive: #3D4324;          /* Borders, Booked State */
+    --color-primary-green: #4D8F48;  /* Main Action, Selection, Hover */
+    
+    /* --- FUNCTIONAL MAPPING --- */
+    --bg-color: var(--color-black);
+    --card-bg: var(--color-dark-green);
+    --text-color: #e6e6e6;
+    --text-muted: #a0a0a0;
+    --border-color: var(--color-olive);
+    
+    /* Variables matched to HTML inline styles */
+    --accent-color: var(--color-primary-green);
+    --waitlist-color: var(--color-gold);
+    --booked-color: var(--color-olive);
+
     --font-family: 'Poppins', sans-serif;
+    --radius: 12px;
 }
 
-/* --- Keyframe Animations --- */
+/* =========================================
+   2. GLOBAL RESET & ANIMATIONS
+   ========================================= */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--color-black); }
+::-webkit-scrollbar-thumb { background: var(--color-olive); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-primary-green); }
+
+/* Keyframe Animations */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--font-family); background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
-#app { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+@keyframes spin { 
+    0% { transform: rotate(0deg); } 
+    100% { transform: rotate(360deg); } 
+}
 
-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; flex-wrap: wrap; gap: 1rem; }
-h1, h2, h3 { color: white; font-weight: 600; }
-h2 { text-align: center; margin-bottom: 2rem; font-size: 2rem; }
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
 
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-color);
+    background: linear-gradient(135deg, #060606 0%, #181C10 100%); /* Subtle gradient */
+    color: var(--text-color);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* =========================================
+   3. LAYOUT & HEADER
+   ========================================= */
+#app {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: 85vh;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+header h1 {
+    color: var(--color-gold);
+    font-weight: 600;
+    font-size: 2rem;
+    text-shadow: 0 0 10px rgba(214, 194, 106, 0.15);
+}
+
+#auth-container {
+    display: flex;
+    align-items: center;
+}
+
+/* =========================================
+   4. STEP 1: ROOM SELECTION
+   ========================================= */
 .step { display: none; }
-.step.active { display: block; animation: fadeIn 0.5s ease-in-out; }
 
-.card-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
-.room-card { background-color: var(--primary-color); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; }
-.room-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
-.room-card img { width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid var(--border-color); }
-.room-card-content { padding: 1.5rem; }
-.room-card-content h3 { margin-bottom: 0.5rem; }
-.room-card-content p { color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem; }
+.step.active { 
+    display: block; 
+    animation: fadeIn 0.5s ease-in-out; 
+}
 
-.cta-btn, .back-btn { display: inline-block; background-color: var(--accent-color); color: var(--bg-color); border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 600; text-decoration: none; transition: background-color 0.3s ease, transform 0.2s ease; }
-.cta-btn:hover, .back-btn:hover { background-color: var(--accent-hover); transform: translateY(-2px); }
-.cta-btn:disabled { background-color: #555; cursor: not-allowed; transform: none; }
-.back-btn { background-color: transparent; border: 1px solid var(--border-color); color: var(--text-color); margin-bottom: 1.5rem; }
+h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    color: var(--text-color);
+}
 
-.schedule-container { display: flex; gap: 2rem; flex-wrap: wrap; }
-#calendar-container, #timeslot-container { flex: 1; min-width: 300px; background: var(--primary-color); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border-color); }
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
 
-.calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-.calendar-header button { background: none; border: none; color: var(--accent-color); font-size: 1.5rem; cursor: pointer; transition: color 0.2s; }
-.calendar-header button:hover { color: var(--accent-hover); }
-#month-year { font-weight: 600; font-size: 1.2rem; }
-
-.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
-.calendar-grid div { padding: 10px 5px; border-radius: 4px; }
-.calendar-day-name { font-weight: 600; color: var(--text-secondary); font-size: 0.8rem;}
-.calendar-day { cursor: pointer; transition: background-color 0.2s, color 0.2s; }
-.calendar-day:hover, .calendar-day.today { background-color: var(--border-color); }
-.calendar-day.selected { background-color: var(--accent-color); color: var(--bg-color); font-weight: 600; }
-.calendar-day.disabled { color: var(--text-secondary); cursor: not-allowed; opacity: 0.5; }
-
-#timeslot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 10px; margin-top: 1rem; }
-.timeslot-btn { padding: 10px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); border-radius: 5px; cursor: pointer; transition: all 0.2s; font-weight: 500;}
-
-/* SLOT STYLES */
-.timeslot-btn.available { border-style: solid; border-color: var(--accent-color); color: var(--accent-color); }
-.timeslot-btn.available:hover { background: rgba(240, 185, 11, 0.1); }
-.timeslot-btn.selected { background-color: var(--accent-color); border-color: var(--accent-color); color: var(--bg-color); font-weight: 600; transform: scale(1.05); }
-.timeslot-btn.waitlist { border: 1px dashed var(--waitlist-color); color: var(--waitlist-color); }
-.timeslot-btn.waitlist:hover { background: rgba(56, 139, 253, 0.15); }
-.timeslot-btn.booked { background-color: var(--booked-color); border-color: var(--booked-color); color: rgba(255, 255, 255, 0.4); text-decoration: line-through; cursor: not-allowed; }
-
-/* Legend Styles */
-.timeslot-legend { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border-color); }
-.legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
-.legend-color-box { width: 15px; height: 15px; border-radius: 3px; }
-
-.info-text { font-size: 0.8rem; color: var(--text-secondary); text-align: center; margin: 1rem 0; }
-
-.modal-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 1rem; transition: opacity 0.3s ease; }
-.modal-wrapper.hidden { opacity: 0; pointer-events: none; }
-.modal-content { background: var(--primary-color); padding: 2rem; border-radius: 8px; width: 100%; max-width: 500px; position: relative; border: 1px solid var(--border-color); max-height: 90vh; overflow-y: auto; transition: transform 0.3s ease; transform: scale(0.95); }
-.modal-wrapper:not(.hidden) .modal-content { transform: scale(1); }
-.close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; }
-
-#booking-form .form-group { margin-bottom: 1rem; }
-#booking-form label { display: block; margin-bottom: 5px; color: var(--text-secondary); }
-#booking-form input, #booking-form textarea { width: 100%; padding: 10px; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 5px; color: var(--text-color); }
-#booking-form input:disabled { background: #222; }
-#booking-summary { background: var(--bg-color); padding: 1rem; border-radius: 5px; margin-bottom: 1.5rem; }
-
-/* --- FIXED: USER BOOKINGS VISIBILITY --- */
-#user-bookings-list .booking-item { 
-    background: var(--primary-color); /* Changed from bg-color for better contrast */
-    padding: 1.2rem; 
-    border-radius: 8px; 
-    margin-bottom: 1rem; 
+.room-card {
+    background-color: var(--card-bg);
     border: 1px solid var(--border-color);
-    border-left: 4px solid var(--accent-color); 
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Forces the Heading (Room Name) to be white */
-#user-bookings-list .booking-item h3 {
-    color: #ffffff !important;
-    font-size: 1.1rem;
-    margin-bottom: 5px;
+.room-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    border-color: var(--color-primary-green);
 }
 
-/* Forces the Date/Time Text to be Light Gray */
-#user-bookings-list .booking-item p {
-    color: #e6e6e6 !important; /* High contrast light gray */
-    font-size: 0.95rem;
-    margin-bottom: 10px;
+.room-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-bottom: 1px solid var(--border-color);
 }
 
-/* Status-specific border colors */
-#user-bookings-list .booking-item[data-status="Waitlisted"] { border-left-color: var(--waitlist-color); }
-#user-bookings-list .booking-item[data-status="Canceled"] { border-left-color: #555; opacity: 0.7; }
+.room-card-content {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
 
-/* Cancel Button Style inside the card */
-#user-bookings-list .booking-item button {
-    background-color: transparent;
-    border: 1px solid #ff4444;
-    color: #ff4444;
-    padding: 5px 10px;
-    border-radius: 4px;
+.room-card-content h3 {
+    margin-bottom: 0.5rem;
+    color: var(--color-gold);
+}
+
+.room-card-content p {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
+/* =========================================
+   5. BUTTONS
+   ========================================= */
+.cta-btn, .back-btn {
+    display: inline-block;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 0.8rem;
-    margin-top: 5px;
-    transition: all 0.2s;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-family: var(--font-family);
 }
-#user-bookings-list .booking-item button:hover {
-    background-color: #ff4444;
-    color: white;
-}
-/* ------------------------------------- */
 
-#loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 9999; }
-.spinner { border: 5px solid var(--border-color); border-top: 5px solid var(--accent-color); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+/* Primary Action Button (Green) */
+.cta-btn {
+    background-color: var(--color-primary-green);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(77, 143, 72, 0.2);
+}
+
+.cta-btn:hover:not(:disabled) {
+    background-color: #5fb359; /* Slightly lighter green */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(77, 143, 72, 0.4);
+}
+
+.cta-btn:disabled {
+    background-color: var(--color-olive);
+    color: #888;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* Back Button (Outline Gold) */
+.back-btn {
+    background-color: transparent;
+    border: 1px solid var(--color-gold);
+    color: var(--color-gold);
+    margin-bottom: 1.5rem;
+}
+
+.back-btn:hover {
+    background-color: var(--color-gold);
+    color: var(--color-black);
+    transform: translateY(-2px);
+}
+
+/* =========================================
+   6. STEP 2: SCHEDULE
+   ========================================= */
+.schedule-container {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+#calendar-container, #timeslot-container {
+    flex: 1;
+    min-width: 300px;
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+}
+
+#calendar-container h3, #timeslot-container h3 {
+    color: var(--color-primary-green);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+/* Calendar Header */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    background-color: var(--bg-color);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.calendar-header button {
+    background: none;
+    border: none;
+    color: var(--color-gold);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.calendar-header button:hover {
+    transform: scale(1.2);
+    color: var(--color-primary-green);
+}
+
+#month-year {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #fff;
+}
+
+/* Calendar Grid */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    text-align: center;
+}
+
+.calendar-day-name {
+    font-weight: 600;
+    color: var(--color-gold); /* Gold for day names */
+    font-size: 0.8rem;
+    padding-bottom: 5px;
+}
+
+.calendar-day {
+    padding: 10px 5px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    color: var(--text-color);
+}
+
+.calendar-day:hover:not(.empty) {
+    background-color: var(--color-olive);
+}
+
+.calendar-day.selected {
+    background-color: var(--color-primary-green);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(77, 143, 72, 0.4);
+}
+
+.calendar-day.today {
+    border: 1px solid var(--color-gold);
+    color: var(--color-gold);
+}
+
+/* Time Slots */
+#timeslot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 12px;
+    margin-top: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* Logic for Slot Classes (supporting both naming conventions) */
+.time-slot, .timeslot-btn {
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-color);
+    color: var(--text-color);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* Slot States */
+/* Available: Highlighted Border */
+.time-slot:hover, .timeslot-btn:hover {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+}
+
+/* Selected: Filled Green */
+.time-slot.selected, .timeslot-btn.selected {
+    background-color: var(--color-primary-green);
+    border-color: var(--color-primary-green);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* Waitlist: Dashed Gold */
+.time-slot.waitlist, .timeslot-btn.waitlist {
+    border: 1px dashed var(--color-gold);
+    color: var(--color-gold);
+}
+
+/* Booked: Olive Background, Disabled */
+.time-slot.booked, .timeslot-btn.booked {
+    background-color: var(--color-olive);
+    border-color: var(--color-olive);
+    color: #888; /* Dimmed text */
+    text-decoration: line-through;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Legend */
+.timeslot-legend {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.legend-color-box {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+}
+
+/* =========================================
+   7. MODALS & FORMS
+   ========================================= */
+.modal-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(6, 6, 6, 0.85); /* Darker overlay */
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 1rem;
+    transition: opacity 0.3s ease;
+}
+
+.modal-wrapper.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    padding: 2.5rem;
+    border-radius: var(--radius);
+    width: 100%;
+    max-width: 500px;
+    position: relative;
+    border: 1px solid var(--color-gold); /* Gold border for modal */
+    box-shadow: 0 0 40px rgba(0,0,0,0.7);
+    max-height: 90vh;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+    transform: scale(0.95);
+}
+
+.modal-wrapper:not(.hidden) .modal-content {
+    transform: scale(1);
+    animation: slideUp 0.3s ease;
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: color 0.2s;
+}
+
+.close-btn:hover {
+    color: var(--color-primary-green);
+}
+
+/* Form Styles */
+.modal-content h3 {
+    text-align: center;
+    color: var(--color-gold);
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-color);
+    font-family: var(--font-family);
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--color-primary-green);
+    box-shadow: 0 0 0 2px rgba(77, 143, 72, 0.2);
+}
+
+input:disabled {
+    background: #111;
+    color: #666;
+    border-color: #222;
+}
+
+#booking-summary {
+    background: var(--bg-color);
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+    border-left: 3px solid var(--color-primary-green);
+}
+
+/* User Bookings List */
+#user-bookings-list .booking-item {
+    background: var(--bg-color);
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--color-primary-green);
+}
+
+/* =========================================
+   8. UTILITIES & LOADING
+   ========================================= */
 .hidden { display: none !important; }
 
-#auth-container button { background: var(--primary-color); border: 1px solid var(--border-color); color: var(--text-color); padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-left: 10px; }
-#auth-container #user-profile { display: flex; align-items: center; gap: 10px; }
-#auth-container img { width: 32px; height: 32px; border-radius: 50%; }
+.info-text {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin: 1rem 0;
+}
 
-/* MOBILE OPTIMIZATION */
-@media (max-width: 768px) { #app { padding: 1rem; } header { flex-direction: column; align-items: flex-start; } h1 { font-size: 1.8rem; } .schedule-container { flex-direction: column; } #timeslot-grid { grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); } .modal-content { padding: 1.5rem; } }
+#loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(6, 6, 6, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.spinner {
+    border: 5px solid var(--color-olive);
+    border-top: 5px solid var(--color-primary-green);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+/* Auth Profile */
+#auth-container img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--color-primary-green);
+}
+
+/* =========================================
+   9. MOBILE OPTIMIZATION
+   ========================================= */
+@media (max-width: 768px) {
+    #app {
+        padding: 1rem;
+    }
+    
+    header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    .schedule-container {
+        flex-direction: column;
+    }
+    
+    #timeslot-grid {
+        grid-template-columns: repeat(3, 1fr); /* Ensure 3 cols on mobile */
+    }
+    
+    .modal-content {
+        padding: 1.5rem;
+        width: 95%;
+    }
+}
