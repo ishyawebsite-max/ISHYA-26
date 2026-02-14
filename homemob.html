@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
     <link rel="shortcut icon" type="image/x-icon" href="../Logo Ishya.ico">
+    <link rel="stylesheet" href="/global.css"> <!--H&F change 1-->
     <meta charset="UTF-8">
     <script async src="https://tally.so/widgets/embed.js"></script>
+    <script src="/layout.js" defer></script> <!--H&F change 2-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ISHYA '26 | FLAMES IN EVERY FOLD</title>
 
@@ -438,7 +440,7 @@
 </head>
 <body>
     <!-- ISHYA AERO / STICKY GLASS HEADER -->
-    <style>
+    <!-- <style>
         :root {
             --ishya-gold: #f0d57a;
             --ishya-green: #4ade80;
@@ -511,7 +513,8 @@
             nav.addEventListener('click', (e) => { if (e.target.closest('a')) return; toggleNav(); });
             document.addEventListener('click', (e) => { if (!nav.contains(e.target) && isExpanded) toggleNav(false); });
         })();
-    </script>
+    </script> -->
+    <ishya-header></ishya-header>
 
 <!-- 1. BACKGROUND CANVAS -->
 <canvas id="animated-bg"></canvas>
@@ -665,7 +668,7 @@
     </section>
 
     <!-- FOOTER -->
-    <footer class="footer-section">
+    <!-- <footer class="footer-section">
         <div class="footer-content">
             <h2 class="footer-logo">ISHYA</h2>
             
@@ -706,7 +709,7 @@
 
             <p class="copyright">© 2026 ISHYA. FLAMES IN EVERY FOLD.</p>
         </div>
-    </footer>
+    </footer> -->
 </main>
 
 <!-- WEBGL 3D SHADERS -->
@@ -1133,6 +1136,6 @@
         window.addEventListener('resize', resize); resize(); animate();
     });
 </script>
-
+<ishya-footer></ishya-footer>
 </body>
 </html>
