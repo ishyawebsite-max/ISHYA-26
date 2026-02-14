@@ -98,26 +98,24 @@
             min-height: 50vh;
         }
 
-        /* --- GOLD CARD (SHUTTER REVEAL DESIGN) --- */
+        /* --- GOLD CARD --- */
         .event-card {
             background: var(--card-gold-gradient);
             position: relative;
-            height: 380px; /* Fixed height is important for the slide effect */
+            height: 380px; 
             display: flex; flex-direction: column;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             clip-path: polygon(0 0, calc(100% - 40px) 0, 100% 40px, 100% 100%, 0 100%);
-            overflow: hidden; /* Contains the sliding content */
+            overflow: hidden; 
         }
 
-        /* Noise Texture */
         .event-card::after {
             content: ''; position: absolute; top:0; left:0; width:100%; height:100%;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.15'/%3E%3C/svg%3E");
             pointer-events: none; mix-blend-mode: multiply; z-index: 1;
         }
 
-        /* Fold Corner */
         .event-card::before {
             content: ''; position: absolute; top: 0; right: 0;
             width: 41px; height: 41px;
@@ -130,26 +128,30 @@
             box-shadow: 0 20px 40px rgba(214, 194, 106, 0.15);
         }
 
-        /* --- IMAGE (BACKGROUND LAYER) --- */
+        /* --- IMAGE --- */
         .card-img-container {
             position: absolute; top: 0; left: 0;
-            width: 100%; height: 75%; /* Image takes up most of the card initially */
+            width: 100%; height: 75%; 
             z-index: 0;
         }
 
         .card-img {
             width: 100%; height: 100%; object-fit: cover;
-            filter: sepia(40%) grayscale(20%) contrast(1.1);
+            /* REFINEMENT: No filters, full color */
             transition: 0.5s;
         }
+
+        .event-card:hover .card-img {
+            transform: scale(1.05); /* Just Zoom, no color change */
+        }
         
-        /* --- CONTENT (SLIDING LAYER) --- */
+        /* --- CONTENT --- */
         .card-content {
             position: absolute; 
             bottom: 0; left: 0; width: 100%; 
             height: auto;
-            max-height: 25%; /* Initially just the title/footer */
-            background: var(--card-gold-gradient); /* Ensure it's opaque */
+            max-height: 25%; 
+            background: var(--card-gold-gradient); 
             padding: 1.5rem; 
             box-sizing: border-box;
             z-index: 5;
@@ -158,11 +160,10 @@
             border-top: 2px solid rgba(5,20,8,0.1);
         }
 
-        /* THE REVEAL MAGIC */
         .event-card:hover .card-content {
-            max-height: 100%; /* Slide up to cover image */
+            max-height: 100%; 
             border-top: none;
-            padding-top: 2.5rem; /* Add space for the type badge */
+            padding-top: 2.5rem; 
         }
         
         .type-badge {
@@ -172,7 +173,7 @@
             color: var(--accent-gold);
             padding: 5px 10px; font-size: 0.7rem; font-weight: bold;
             font-family: var(--font-sync);
-            z-index: 20; /* Above everything */
+            z-index: 20; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.5);
         }
 
@@ -191,15 +192,11 @@
             line-height: 1.5;
             margin-bottom: 1.5rem;
             font-weight: 600;
-            
-            /* Logic for Hide/Show */
             opacity: 0; 
             transform: translateY(20px);
             transition: 0.3s;
-            overflow-y: auto; /* Scrollable if text is huge */
-            max-height: 0;    /* Hidden initially */
-            
-            /* Scrollbar styling for description */
+            overflow-y: auto; 
+            max-height: 0;    
             scrollbar-width: thin;
             scrollbar-color: #5a461b transparent;
         }
@@ -207,7 +204,7 @@
         .event-card:hover .card-desc {
             opacity: 1;
             transform: translateY(0);
-            max-height: 200px; /* Expand to fill space */
+            max-height: 200px; 
             margin-top: 1rem;
         }
 
@@ -215,63 +212,62 @@
             display: flex; justify-content: flex-end; align-items: center;
             margin-top: auto; 
             padding-top: 1rem;
-            gap: 1rem;
+            gap: 0.8rem;
             flex-shrink: 0;
         }
 
-        /* --- UNIFIED BUTTON STYLES --- */
+        /* --- BUTTONS --- */
         .status-btn {
             font-family: var(--font-sync);
-            font-size: 0.8rem;
-            font-weight: 700;
+            font-size: 0.8rem; font-weight: 700;
             padding: 10px 16px;
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: 0.3s;
-            display: inline-block;
-            text-align: center;
+            text-decoration: none; text-transform: uppercase; letter-spacing: 1px;
+            transition: 0.3s; display: inline-block; text-align: center;
             min-width: 100px;
         }
 
-        /* 1. OPEN / REGISTER */
+        /* 1. REGISTER */
         .btn-register {
-            background: var(--bg-dark);
-            color: var(--accent-gold);
+            background: var(--bg-dark); color: var(--accent-gold);
             border: 2px solid var(--bg-dark);
         }
         .btn-register:hover {
-            background: transparent;
-            color: var(--bg-dark);
+            background: transparent; color: var(--bg-dark);
         }
 
         /* 2. CLOSED */
         .btn-closed {
-            background: transparent;
-            color: #611818;
-            border: 2px solid #611818;
-            pointer-events: none;
-            opacity: 0.7;
+            background: transparent; color: #611818;
+            border: 2px solid #611818; pointer-events: none; opacity: 0.7;
         }
 
         /* 3. TBA */
         .btn-tba {
-            background: transparent;
-            color: #444;
-            border: 2px dashed #444;
-            pointer-events: none;
+            background: transparent; color: #444;
+            border: 2px dashed #444; pointer-events: none;
         }
 
-        /* Info/PDF Button (Icon Only) */
+        /* 4. INFO (Refined to be a button) */
         .btn-info {
+            background: transparent;
             color: var(--bg-dark);
-            font-size: 1.2rem;
-            transition: 0.2s;
-            display: flex; align-items: center;
+            border: 1px solid var(--bg-dark);
+            padding: 10px 16px;
+            font-family: var(--font-sync);
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
         }
-        .btn-info:hover { color: #5a461b; transform: scale(1.1); }
+        .btn-info:hover {
+            background: var(--bg-dark);
+            color: var(--accent-gold);
+        }
 
-        /* --- MANDALA LOADER --- */
+        /* --- LOADER --- */
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-dark);
@@ -462,8 +458,7 @@
             }
 
             filtered.forEach(event => {
-                // Logic for Main Button (Status incorporated)
-                let btnHtml = `<span class="status-btn btn-tba">COMING SOON</span>`; // Default TBA
+                let btnHtml = `<span class="status-btn btn-tba">COMING SOON</span>`; 
 
                 if (event.Status) {
                     const s = event.Status.toUpperCase();
@@ -474,10 +469,10 @@
                     }
                 }
 
-                // Info Button (Only if details exist)
+                // REFINEMENT: Info button with text
                 let infoBtn = "";
                 if(event.Details && event.Details.length > 5) {
-                    infoBtn = `<a href="${event.Details}" target="_blank" class="btn-info" title="More Details"><i class="fa-solid fa-file-pdf"></i></a>`;
+                    infoBtn = `<a href="${event.Details}" target="_blank" class="btn-info"><i class="fa-solid fa-file-pdf"></i> INFO</a>`;
                 }
 
                 const card = document.createElement('div');
