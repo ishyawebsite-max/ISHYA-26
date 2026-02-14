@@ -7,6 +7,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Team | Ishya '26</title>
         
+        <!-- Header/Footer System -->
+        <link rel="stylesheet" href="/global.css">
+        <script src="/layout.js" defer></script>
+
         <!-- Performance: Preconnect to external domains -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -125,7 +129,6 @@
                 padding: 80px 20px;
                 box-sizing: border-box;
                 
-                /* Dark Overlay to make text readable over images */
                 background-blend-mode: overlay;
                 background-color: rgba(6, 6, 6, 0.85); 
                 background-size: cover;
@@ -133,9 +136,8 @@
                 background-attachment: fixed;
                 border-bottom: 1px solid var(--olive-shadow);
 
-                /* Performance: Skip rendering off-screen content */
                 content-visibility: auto; 
-                contain-intrinsic-size: 1000px; /* Estimate height to prevent scrollbar jump */
+                contain-intrinsic-size: 1000px; 
             }
 
             /* Specific Backgrounds */
@@ -145,8 +147,10 @@
             .finance-section { background-image: url('../Images_BG/finance.png'); }
             .design-section { background-image: url('../Images_BG/design.png'); }
             .anchoring-section { background-image: url('../Images_BG/anchoring.png'); }
+            .content-section { background-image: url('../Images_BG/anchoring.png'); } 
             .socialmedia-section { background-image: url('../Images_BG/socialmedia.png'); }
             .hospitality-section { background-image: url('../Images_BG/hospitality.png'); }
+            .transport-section { background-image: url('../Images_BG/hospitality.png'); } 
             .informals-section { background-image: url('../Images_BG/informals.png'); }
             .judges-section { background-image: url('../Images_BG/judges.png'); }
             .events-section { background-image: url('../Images_BG/events.png'); }
@@ -159,7 +163,7 @@
             .technical-section { background-image: url('../Images_BG/website.png'); }
             .stall-section { background-image: url('../Images_BG/stalls.png'); }
 
-            /* --- 6. THE ORIGAMI TEAM CARD (REDESIGNED) --- */
+            /* --- 6. THE ORIGAMI TEAM CARD --- */
             .team-grid {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(280px, 320px));
@@ -181,7 +185,6 @@
                 transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
                 border: 1px solid rgba(214, 194, 106, 0.1);
                 overflow: hidden;
-                /* Performance: Hint browser about changes */
                 will-change: transform, opacity;
             }
 
@@ -217,7 +220,6 @@
                 object-position: center 25%; 
                 transition: transform 0.6s ease;
                 filter: grayscale(20%) sepia(10%);
-                /* Performance: Hardware accelerate filter transition */
                 will-change: transform, filter;
             }
 
@@ -297,8 +299,10 @@
                 justify-content: center;
                 align-items: center;
                 gap: 60px;
-                background: linear-gradient(rgba(6,6,6,0.9), rgba(6,6,6,0.8)), url('../logo_old.png');
-                background-size: cover;
+                background: linear-gradient(rgba(6,6,6,0.9), rgba(6,6,6,0.8)), url('../logo.png');
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
                 background-attachment: fixed;
                 padding: 50px;
             }
@@ -345,7 +349,7 @@
                 box-shadow: 0 0 30px rgba(214, 194, 106, 0.2);
             }
 
-            /* --- 8. FOOTER & UI --- */
+            /* --- 8. UI --- */
             #scroll-down-btn {
                 position: fixed;
                 bottom: 30px;
@@ -384,6 +388,7 @@
                 }
                 .stats-section {
                     flex-direction: column;
+                    background-attachment: scroll; /* Smoother for mobile */
                 }
                 .stat-card {
                     margin: 20px 0;
@@ -400,225 +405,8 @@
     </head>
     
     <body>
-        <!-- ISHYA AERO / STICKY GLASS HEADER -->
-        <style>
-            :root {
-                --ishya-gold: #f0d57a;
-                --ishya-green: #4ade80;
-                --ishya-peach: #ffb08e;
-                --ishya-creme: #fef9c3;
-                --ishya-white: #ffffff;
-                --ishya-dark-aero: rgba(5, 8, 15, 0.6); /* Translucent dark base */
-                --ishya-glass-bright: rgba(255, 255, 255, 0.12); /* Light whitening */
-                --anim-fluid: cubic-bezier(0.16, 1, 0.3, 1);
-                --bar-height: 75px; 
-            }
-
-            /* 1. CONTENT SPACER */
-            .ishya-header-spacer {
-                display: block;
-                width: 100%;
-                height: var(--bar-height);
-            }
-
-            /* 2. AERO BACKDROP WITH LIGHT FLUIDS */
-            .ishya-nav-backdrop {
-                position: fixed;
-                top: 0; left: 0;
-                width: 100%; height: var(--bar-height);
-                background: var(--ishya-dark-aero);
-                backdrop-filter: blur(35px) saturate(160%);
-                -webkit-backdrop-filter: blur(35px) saturate(160%);
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-                z-index: 9997;
-                overflow: hidden;
-            }
-
-            /* Subtle Light Fluid Layer */
-            .ishya-fluid-layer {
-                position: absolute;
-                inset: -30%;
-                z-index: -1;
-                opacity: 0.2; /* Toned down density as requested */
-                filter: blur(60px);
-                background: 
-                    radial-gradient(circle at 15% 25%, var(--ishya-green) 0%, transparent 40%),
-                    radial-gradient(circle at 85% 75%, var(--ishya-gold) 0%, transparent 40%),
-                    radial-gradient(circle at 50% 50%, var(--ishya-peach) 0%, transparent 35%),
-                    radial-gradient(circle at 30% 85%, var(--ishya-creme) 0%, transparent 30%);
-                animation: fluidDrift 30s ease-in-out infinite alternate;
-                will-change: transform;
-            }
-
-            @keyframes fluidDrift {
-                from { transform: translate(0, 0) scale(1); }
-                to { transform: translate(4%, 3%) scale(1.15); }
-            }
-
-            /* Top Whitening Glow */
-            .ishya-nav-backdrop::before {
-                content: "";
-                position: absolute;
-                top: 0; left: 0; right: 0; height: 1px;
-                background: linear-gradient(90deg, transparent, var(--ishya-glass-bright), transparent);
-                z-index: 2;
-            }
-
-            /* 3. NAV CONTAINER PILL */
-            .ishya-nav-container {
-                position: fixed;
-                z-index: 9999;
-                top: 10px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 56px; /* Increased to fit larger logo */
-                height: 56px;
-                background: rgba(255, 255, 255, 0.04); /* Highly translucent */
-                border: 1px solid var(--ishya-gold);
-                border-radius: 30px;
-                box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-                overflow: hidden;
-                cursor: pointer;
-                will-change: width, height, background;
-                transition: 
-                    width 0.6s var(--anim-fluid),
-                    height 0.6s var(--anim-fluid),
-                    background 0.4s ease,
-                    border-radius 0.4s ease;
-            }
-
-            /* LOGO - Increased Size */
-            .ishya-logo-btn {
-                position: absolute;
-                top: 0; left: 0; width: 100%; height: 56px;
-                display: flex; justify-content: center; align-items: center;
-                transition: opacity 0.3s ease, transform 0.3s ease;
-            }
-            .ishya-logo-btn img { 
-                height: 38px; /* Increased Size */
-                width: auto;
-                filter: drop-shadow(0 0 10px var(--ishya-green));
-            }
-
-            /* MENU GRID */
-            .ishya-menu-grid {
-                display: flex; width: 100%; height: 100%;
-                align-items: center; justify-content: space-evenly;
-                opacity: 0; pointer-events: none;
-                box-sizing: border-box;
-            }
-
-            .ishya-link {
-                display: flex; flex-direction: column; 
-                align-items: center; justify-content: center;
-                text-decoration: none; color: #fff;
-                padding: 8px; min-width: 90px;
-                transition: transform 0.3s var(--anim-fluid);
-            }
-
-            .ishya-link svg {
-                width: 24px; height: 24px;
-                stroke: var(--ishya-green);
-                fill: none; stroke-width: 1.8;
-                margin-bottom: 5px;
-                transition: stroke 0.3s ease, transform 0.3s ease;
-            }
-
-            .ishya-link span {
-                font-size: 10px; font-weight: 800;
-                letter-spacing: 1px; text-transform: uppercase;
-                color: var(--ishya-creme); opacity: 0.8;
-            }
-
-            /* 4. EXPANDED STATE (Translucent & Sticky) */
-            .ishya-nav-container.expanded {
-                width: 880px; 
-                height: 68px;
-                border-radius: 14px;
-                background: rgba(255, 255, 255, 0.03); /* Ultra translucent expanded menu */
-                border-color: rgba(255, 255, 255, 0.15);
-                top: 4px;
-            }
-
-            .ishya-nav-container.expanded .ishya-logo-btn { 
-                opacity: 0; 
-                transform: scale(0.8);
-                pointer-events: none; 
-            }
-            .ishya-nav-container.expanded .ishya-menu-grid { 
-                opacity: 1; 
-                pointer-events: auto; 
-            }
-
-            .ishya-link:hover { transform: translateY(-3px); }
-            .ishya-link:hover svg { stroke: var(--ishya-gold); }
-            .ishya-link:hover span { opacity: 1; color: #fff; text-shadow: 0 0 10px var(--ishya-gold); }
-
-            /* 5. MOBILE OPTIMIZATION */
-            @media screen and (max-width: 900px) {
-                .ishya-nav-container { top: 10px; width: 56px; height: 56px; }
-
-                .ishya-nav-container.expanded {
-                    width: 94%; height: auto; min-height: 380px;
-                    top: 10px; border-radius: 24px;
-                    background: rgba(10, 15, 20, 0.9); /* Darker on mobile for readability */
-                    padding-bottom: 30px;
-                }
-
-                .ishya-nav-container.expanded .ishya-menu-grid {
-                    display: grid; grid-template-columns: repeat(2, 1fr);
-                    gap: 15px; padding: 75px 15px 0 15px;
-                }
-
-                .ishya-link {
-                    background: rgba(255,255,255,0.04);
-                    padding: 25px 10px;
-                    clip-path: polygon(0 0, 100% 0, 100% 88%, 88% 100%, 0 100%);
-                    border: 1px solid rgba(255,255,255,0.06);
-                }
-
-                /* Keep logo visible as a header inside the mobile menu */
-                .ishya-nav-container.expanded .ishya-logo-btn {
-                    opacity: 1; transform: scale(1); height: 60px;
-                    border-bottom: 1px solid rgba(255,255,255,0.1);
-                }
-            }
-        </style>
-
-        <div class="ishya-header-spacer"></div>
-
-        <script>
-            (function(){
-                const nav = document.getElementById('ishyaHeader');
-                let isExpanded = false;
-
-                const toggleNav = (state) => {
-                    isExpanded = (state !== undefined) ? state : !isExpanded;
-                    nav.classList.toggle('expanded', isExpanded);
-                };
-
-                // Desktop Hover functionality (Optional, but usually expected)
-                nav.addEventListener('mouseenter', () => { 
-                    if(window.innerWidth > 900 && !isExpanded) nav.classList.add('expanded'); 
-                });
-                nav.addEventListener('mouseleave', () => { 
-                    if(window.innerWidth > 900 && !isExpanded) nav.classList.remove('expanded'); 
-                });
-
-                // Sticky Click functionality
-                nav.addEventListener('click', (e) => {
-                    if (e.target.closest('a')) return; // Allow links to be clicked
-                    toggleNav(); // This "latches" it open
-                });
-
-                // Close when clicking anywhere outside
-                document.addEventListener('click', (e) => {
-                    if (!nav.contains(e.target) && isExpanded) {
-                        toggleNav(false);
-                    }
-                });
-            })();
-        </script>
+        <!-- Header from layout.js -->
+        <ishya-header></ishya-header>
         
         <!-- Rising Embers Canvas -->
         <canvas id="emberCanvas"></canvas>
@@ -662,27 +450,21 @@
                     </div>
                     <div class="team-grid">
                         <div class="team-card">
-                            <div class="element-avatar">
-                                <img src="../Heads_Photos/hridya.jpg" alt="Hridya" loading="lazy" decoding="async">
-                            </div>
+                            <div class="element-avatar"><img src="../Heads_Photos/hridya.jpg" alt="Hridya" loading="lazy"></div>
                             <div class="card-content">
                                 <div class="element-name">Hridya Hareesh</div>
                                 <div class="element-title">Convener</div>
                             </div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar">
-                                <img src="../Heads_Photos/annrose.jpg" style="object-position: 20% 50%;" alt="Ann Rose" loading="lazy" decoding="async">
-                            </div>
+                            <div class="element-avatar"><img src="../Heads_Photos/annrose.jpg" style="object-position: 20% 50%;" alt="Ann Rose" loading="lazy"></div>
                             <div class="card-content">
                                 <div class="element-name">Ann Rose Saji</div>
                                 <div class="element-title">Co-Convener</div>
                             </div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar">
-                                <img src="https://static.wixstatic.com/media/0ad737_fcc472cc1e5c45a0b0a477b7f6e49ef7~mv2.jpg/v1/crop/x_0,y_184,w_519,h_491/fill/w_213,h_201,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/Sponsorship%20_Raniya%20Oc.jpg" alt="Raniya" loading="lazy" decoding="async">
-                            </div>
+                            <div class="element-avatar"><img src="https://static.wixstatic.com/media/0ad737_fcc472cc1e5c45a0b0a477b7f6e49ef7~mv2.jpg/v1/crop/x_0,y_184,w_519,h_491/fill/w_213,h_201,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/Sponsorship%20_Raniya%20Oc.jpg" alt="Raniya" loading="lazy"></div>
                             <div class="card-content">
                                 <div class="element-name">Raniya</div>
                                 <div class="element-title">Co-Convener</div>
@@ -699,15 +481,15 @@
                     </div>
                     <div class="team-grid">
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/gayathribinu.png" alt="Gayathri" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/gayathribinu.png" alt="Gayathri" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Gayathri Binu</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/dheeraj.png"  alt="Dheeraj" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/dheeraj.png"  alt="Dheeraj" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Dheeraj R</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/sreerag.png" style="object-position: 20% 50%;" alt="Sreerag" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/sreerag.png" style="object-position: 20% 50%;" alt="Sreerag" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Sreerag</div></div>
                         </div>
                     </div>
@@ -721,15 +503,15 @@
                     </div>
                     <div class="team-grid">
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/adithye.jpg" alt="Adithye" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/adithye.jpg" alt="Adithye" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Adithye M Ajai</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/amisha.jpg" alt="Amisha" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/amisha.jpg" alt="Amisha" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Amisha A K</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/sudeshna.jpg" alt="Sudeshna" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/sudeshna.jpg" alt="Sudeshna" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Sudeshna P D</div></div>
                         </div>
                     </div>
@@ -743,15 +525,15 @@
                     </div>
                     <div class="team-grid">
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/ananthika.JPG" alt="Ananthika" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/ananthika.JPG" alt="Ananthika" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Ananthika Sajith</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/emylin.png" alt="Emylin" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/emylin.png" alt="Emylin" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Emylin Mary</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/nandhana.jpg" alt="Nandhana" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/nandhana.jpg" alt="Nandhana" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Nandhana T S</div></div>
                         </div>
                     </div>
@@ -765,19 +547,19 @@
                     </div>
                     <div class="team-grid">
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/pranav.jpeg" alt="Pranav" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/pranav.jpeg" alt="Pranav" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Pranav M</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/ajumiya.jpg" alt="Ajumiya" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/ajumiya.jpg" alt="Ajumiya" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Ajumiya Ashraf</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/ardra.jpg" alt="Ardra" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/ardra.jpg" alt="Ardra" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Ardra S</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/rohit.jpg" alt="Rohit" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/rohit.jpg" alt="Rohit" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Rohit</div></div>
                         </div>
                     </div>
@@ -791,19 +573,33 @@
                     </div>
                     <div class="team-grid">
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/avanthika.jpeg" alt="Avanthika" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/avanthika.jpeg" alt="Avanthika" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Avanthika</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/adarsh.jpg" alt="Adarsh" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/adarsh.jpg" alt="Adarsh" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Adarsh A</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/ramith.jpeg" alt="Ramith" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="https://static.wixstatic.com/media/2304ec_bf383d58c32448babf3f868d585c4cd0~mv2.jpg/v1/crop/x_1055,y_668,w_3374,h_3191/fill/w_213,h_201,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/Nidhin.jpg" alt="Nidhin" loading="lazy"></div>
+                            <div class="card-content"><div class="element-name">Nidhin Thomas</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TRANSPORT -->
+                <div class="department-section transport-section">
+                    <div class="section-title">
+                        <h2>Transport Team</h2>
+                        <div class="line"></div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/ramith.jpeg" alt="Ramith" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Ramith Krishna</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/devanath.jpg" alt="Devanath" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/devanath.jpg" alt="Devanath" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Devanath M</div></div>
                         </div>
                     </div>
@@ -817,15 +613,15 @@
                     </div>
                     <div class="team-grid">
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/maheshwar.jpg" alt="Maheshwar" loading="lazy" decoding="async"></div>
-                            <div class="card-content"><div class="element-name">Maheshwar Sajith</div></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/maheshwar.jpg" alt="Maheswar" loading="lazy"></div>
+                            <div class="card-content"><div class="element-name">Maheswar Sajith P</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/sidharth.jpg" alt="Sidharth" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/sidharth.jpg" alt="Sidharth" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Sidharth S Krishna</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/fidel.jpeg" alt="Fidel" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/fidel.jpeg" alt="Fidel" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Fidel N Sharaf</div></div>
                         </div>
                     </div>
@@ -839,15 +635,15 @@
                     </div>
                     <div class="team-grid">
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/ananya.jpg"  alt="Ananya" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/ananya.jpg"  alt="Ananya" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Ananya J R</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/abhirag.jpeg" alt="Abhirag" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/abhirag.jpeg" alt="Abhirag" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Abhirag A</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/aswathy.png" alt="Aswathy" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/aswathy.png" alt="Aswathy" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Aswathy Sunil</div></div>
                         </div>
                     </div>
@@ -861,19 +657,19 @@
                     </div>
                     <div class="team-grid">
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/gowri_nair.jpg" style="object-position: 20% 50%;" alt="Gowri" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/gowri_nair.jpg" style="object-position: 20% 50%;" alt="Gowri" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Gowri S Nair</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/gopika_krishnan.jpeg"  alt="Gopika" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/gopika_krishnan.jpeg"  alt="Gopika" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Gopika R Krishnan</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/athul.jpg" style="object-position: 20% 50%;" alt="Athul" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/athul.jpg" style="object-position: 20% 50%;" alt="Athul" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">S Athtul Krishna</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/aleena.jpg" style="object-position: 20% 50%;" alt="Aleena" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/aleena.jpg" style="object-position: 20% 50%;" alt="Aleena" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Aleena Sabu</div></div>
                         </div>
                     </div>
@@ -887,19 +683,19 @@
                     </div>
                     <div class="team-grid">
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/angel.png" style="object-position: 50% 50%;" alt="Angel" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/angel.png" alt="Angel" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Angel CJ</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/sreelekshmi.jpeg" alt="Sreelekshmi" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/sreelekshmi.jpeg" alt="Sreelekshmi" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Sreelekshmi S</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="https://static.wixstatic.com/media/2304ec_ae516b1a82ef4e73bf77412873a759a0~mv2.jpg/v1/crop/x_0,y_586,w_3024,h_2860/fill/w_213,h_201,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/IMG-20241101-WA0052.jpg" alt="Olivia" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="https://static.wixstatic.com/media/2304ec_ae516b1a82ef4e73bf77412873a759a0~mv2.jpg/v1/crop/x_0,y_586,w_3024,h_2860/fill/w_213,h_201,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/IMG-20241101-WA0052.jpg" alt="Olivia" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Olivia</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="https://static.wixstatic.com/media/2304ec_6a097919b91247f4b6d86355c7a9e78d~mv2.jpg/v1/crop/x_0,y_1029,w_3712,h_3510/fill/w_213,h_201,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/AVI_9921_JPG.jpg" alt="Ameen" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="https://static.wixstatic.com/media/2304ec_6a097919b91247f4b6d86355c7a9e78d~mv2.jpg/v1/crop/x_0,y_1029,w_3712,h_3510/fill/w_213,h_201,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/AVI_9921_JPG.jpg" alt="Ameen" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Ameen</div></div>
                         </div>
                     </div>
@@ -913,15 +709,15 @@
                     </div>
                     <div class="team-grid">
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/karthik.png" alt="Karthik" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/karthik.png" alt="Karthik" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">C Karthik Krishna</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/gowri_ramesh.jpg" alt="Gowri" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/gowri_ramesh.jpg" alt="Gowri" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Gowri S Ramesh</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/alga.jpg" alt="Alga" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/alga.jpg" alt="Alga" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Alga M D</div></div>
                         </div>
                     </div>
@@ -935,16 +731,16 @@
                     </div>
                     <div class="team-grid">
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/riswan.png" alt="Riswan" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/riswan.png" alt="Riswan" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Riswan</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" alt="Dummy" loading="lazy" decoding="async"></div>
-                            <div class="card-content"><div class="element-name">Member 2</div></div>
+                            <div class="element-avatar"><img src="https://image2url.com/r2/default/images/1771052962209-f57ad36d-7cfa-4dec-a001-230669962983.jpg" alt="Aslaha" style="object-position: 20% 50%; loading="lazy"></div>
+                            <div class="card-content"><div class="element-name">Aslaha P P</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="https://i.ytimg.com/vi/Gl2aSNJqRe0/maxresdefault.jpg" alt="Dummy" loading="lazy" decoding="async"></div>
-                            <div class="card-content"><div class="element-name">Member 3</div></div>
+                            <div class="element-avatar"><img src="https://image2url.com/r2/default/images/1771053012386-e39b21c4-ec05-40c1-bba2-22a4cc0d199c.jpeg" alt="Raniya" loading="lazy"></div>
+                            <div class="card-content"><div class="element-name">Raniya OC</div></div>
                         </div>
                     </div>
                 </div>
@@ -957,15 +753,15 @@
                     </div>
                     <div class="team-grid">
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/gouri.jpg" style="object-position: 20% 50%;" alt="Gouri" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/gouri.jpg" style="object-position: 20% 50%;" alt="Gouri" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Gouri M</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/gopika_krishna.jpg" style="object-position: 20% 50%;" alt="Gopika" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/gopika_krishna.jpg" style="object-position: 20% 50%;" alt="Gopika" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Gopika Krishna J</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/sreelakshmi.jpg" style="object-position: 20% 50%;" alt="Sreelakshmi" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/sreelakshmi.jpg" style="object-position: 20% 50%;" alt="Sreelakshmi" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Sreelakshmi V V</div></div>
                         </div>
                     </div>
@@ -979,15 +775,15 @@
                     </div>
                     <div class="team-grid">
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/aswath.jpg" style="object-position: 20% 50%;" alt="Aswath" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/aswath.jpg" style="object-position: 20% 50%;" alt="Aswath" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Aswath Vinod M</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/samarth.jpg" style="object-position: 20% 50%;" alt="Samarth" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/samarth.jpg" style="object-position: 20% 50%;" alt="Samarth" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Samarth V</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/harshwin.jpg" style="object-position: 20% 50%;" alt="Harshwin" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/harshwin.jpg" style="object-position: 20% 50%;" alt="Harshwin" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Harshwin M</div></div>
                         </div>
                     </div>
@@ -996,21 +792,39 @@
                 <!-- ANCHORING -->
                 <div class="department-section anchoring-section">
                     <div class="section-title">
-                        <h2>Content & Anchoring</h2>
+                        <h2>Anchoring Team</h2>
                         <div class="line"></div>
                     </div>
                     <div class="team-grid">
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/fathima_basheer.jpeg" alt="Fathima" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/fathima_basheer.jpeg" alt="Fathima" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Fathima Basheer</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/dhriti.jpeg" style="object-position: 20% 50%;" alt="Dhriti" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/dhriti.jpeg" style="object-position: 20% 50%;" alt="Dhriti" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Dhriti A Bengalore</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/annrose.jpg" style="object-position: 20% 50%;" alt="Ann Rose" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/annrose.jpg" style="object-position: 20% 50%;" alt="Ann Rose" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Ann Rose Saji</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTENT TEAM -->
+                <div class="department-section content-section">
+                    <div class="section-title">
+                        <h2>Content Team</h2>
+                        <div class="line"></div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="https://image2url.com/r2/default/images/1771051305627-06bd1546-a0df-4262-be4b-de956986a165.jpg" alt="Athira" loading="lazy"></div>
+                            <div class="card-content"><div class="element-name">Athira C</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="https://image2url.com/r2/default/images/1771051402909-488bdcf7-a943-494e-bafd-dc4c877b0613.jpg" alt="Khirabdhi" loading="lazy"></div>
+                            <div class="card-content"><div class="element-name">Khirabdhi Tanaya</div></div>
                         </div>
                     </div>
                 </div>
@@ -1023,12 +837,16 @@
                     </div>
                     <div class="team-grid">
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/jefrin.png"  alt="Jefrin" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/jefrin.png"  alt="Jefrin" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Jefrin</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/aashique.jpeg" alt="Aashique" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/aashique.jpeg" alt="Aashique" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Aashique M A</div></div>
+                        </div>
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="https://image2url.com/r2/default/images/1771052672326-9635f0d0-578b-4e0d-9b36-f2a9cd05a28f.jpg" alt="Abhinav" loading="lazy"></div>
+                            <div class="card-content"><div class="element-name">Abhinav PA</div></div>
                         </div>
                     </div>
                 </div>
@@ -1041,15 +859,15 @@
                     </div>
                     <div class="team-grid">
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/ashmith.png" alt="Ashmith" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/ashmith.png" alt="Ashmith" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Ashmith S S</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/ajin.jpeg" alt="Ajin" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/ajin.jpeg" alt="Ajin" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Ajin V L</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/akash.jpg" alt="Akash" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/akash.jpg" alt="Akash" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Akash S Ajith</div></div>
                         </div>
                     </div>
@@ -1063,15 +881,15 @@
                     </div>
                     <div class="team-grid">
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/farhana.jpeg" style="object-position: 20% 50%;" alt="Farhana" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/farhana.jpeg" style="object-position: 20% 50%;" alt="Farhana" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Fathima Farhana</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/jerome.JPG" alt="Jerome" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/jerome.JPG" alt="Jerome" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Jerome Baspin</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/ashin.jpg" alt="Ashin" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/ashin.jpg" alt="Ashin" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Ashin Saj P</div></div>
                         </div>
                     </div>
@@ -1085,15 +903,15 @@
                     </div>
                     <div class="team-grid">
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/eldho.png" alt="Eldho" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/eldho.png" alt="Eldho" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Eldho Sam Varghese</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/nikhil.jpeg" alt="Nikhil" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/nikhil.jpeg" alt="Nikhil" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Nikhil Raju</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/aditya.jpg" alt="Aditya" loading="lazy" decoding="async"></div>
+                            <div class="element-avatar"><img src="../Heads_Photos/aditya.jpg" alt="Aditya" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Aditya Katti</div></div>
                         </div>
                     </div>
@@ -1107,6 +925,9 @@
             <i class="fas fa-chevron-down"></i>
         </div>
 
+        <!-- Footer from layout.js -->
+        <ishya-footer></ishya-footer>
+
         <script>
             // --- 1. RISING EMBERS PARTICLE SYSTEM ---
             const canvas = document.getElementById('emberCanvas');
@@ -1114,168 +935,88 @@
             let width = window.innerWidth;
             let height = window.innerHeight;
 
-            // Debounce resize to improve performance
-            let resizeTimeout;
             function resize() {
-                clearTimeout(resizeTimeout);
-                resizeTimeout = setTimeout(() => {
-                    width = window.innerWidth;
-                    height = window.innerHeight;
-                    canvas.width = width;
-                    canvas.height = height;
-                }, 100);
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
             }
             window.addEventListener('resize', resize);
-            // Initial call
-            width = window.innerWidth;
-            height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
+            resize();
 
             class Ember {
                 constructor() {
                     this.reset();
-                    // Initial random positions
                     this.y = Math.random() * height;
                 }
-
                 reset() {
                     this.x = Math.random() * width;
                     this.y = height + Math.random() * 100;
-                    this.size = Math.random() * 3 + 1; // 1px to 4px
-                    this.speedY = Math.random() * 2 + 0.5; // Upward speed
-                    this.speedX = (Math.random() - 0.5) * 1.5; // Slight drift
-                    this.life = 1; // Opacity
+                    this.size = Math.random() * 2 + 1;
+                    this.speedY = Math.random() * 2 + 0.5;
+                    this.speedX = (Math.random() - 0.5) * 1.5;
+                    this.life = 1;
                     this.decay = Math.random() * 0.005 + 0.002;
-                    
-                    // Colors from palette (Gold to Orange)
                     const colors = ['#D6C26A', '#c98a2c', '#d65a2a'];
                     this.color = colors[Math.floor(Math.random() * colors.length)];
                 }
-
                 update() {
                     this.y -= this.speedY;
                     this.x += this.speedX;
                     this.life -= this.decay;
-
-                    if (this.life <= 0 || this.y < 0) {
-                        this.reset();
-                    }
+                    if (this.life <= 0 || this.y < 0) this.reset();
                 }
-
                 draw() {
                     ctx.beginPath();
                     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                     ctx.fillStyle = this.color;
                     ctx.globalAlpha = this.life;
                     ctx.fill();
-                    // Add glow
-                    ctx.shadowBlur = 10;
+                    ctx.shadowBlur = 8;
                     ctx.shadowColor = this.color;
                 }
             }
 
-            const embers = [];
-            const emberCount = 100;
-
-            for(let i=0; i<emberCount; i++) {
-                embers.push(new Ember());
-            }
+            const embers = Array.from({ length: 80 }, () => new Ember());
 
             function animateEmbers() {
                 ctx.clearRect(0, 0, width, height);
-                
-                embers.forEach(ember => {
-                    ember.update();
-                    ember.draw();
-                });
-                
-                ctx.globalAlpha = 1;
-                ctx.shadowBlur = 0;
+                embers.forEach(e => { e.update(); e.draw(); });
                 requestAnimationFrame(animateEmbers);
             }
             animateEmbers();
 
-
-            // --- 2. INTERSECTION OBSERVER (ANIMATIONS) ---
-            const observerOptions = {
-                threshold: 0.15,
-                rootMargin: '0px'
-            };
-
+            // --- 2. INTERSECTION OBSERVER ---
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0) rotate(0deg)';
-                        
-                        // Special logic for rotated stat cards
-                        if(entry.target.classList.contains('stat-card')) {
-                             if(window.innerWidth > 768) {
-                                entry.target.style.transform = 'rotate(45deg)'; 
-                             } else {
-                                entry.target.style.transform = 'rotate(0deg)';
-                             }
-                        }
-                        
-                        // Performance: Stop observing element once it has animated in
+                        entry.target.style.transform = entry.target.classList.contains('stat-card') && window.innerWidth > 768 ? 'rotate(45deg)' : 'translateY(0)';
                         observer.unobserve(entry.target);
                     }
                 });
-            }, observerOptions);
+            }, { threshold: 0.1 });
 
-            // Set initial state for animations
-            document.querySelectorAll('.team-card').forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(50px)';
-                card.style.transitionDelay = `${index * 0.1}s`; // Stagger effect
-                observer.observe(card);
+            document.querySelectorAll('.team-card, .stat-card').forEach((el, i) => {
+                el.style.opacity = '0';
+                el.style.transition = 'all 0.6s ease-out';
+                if(!el.classList.contains('stat-card')) el.style.transform = 'translateY(40px)';
+                observer.observe(el);
             });
-
-            document.querySelectorAll('.stat-card').forEach((card, index) => {
-                card.style.opacity = '0';
-                observer.observe(card);
-            });
-
 
             // --- 3. SCROLL LOGIC ---
             function scrollToNextSection() {
                 const sections = document.querySelectorAll('.stats-section, .department-section');
-                let currentIndex = -1;
-                
-                // Find visible section
+                let nextSection = sections[0];
                 for (let i = 0; i < sections.length; i++) {
                     const rect = sections[i].getBoundingClientRect();
-                    // If top is near middle of screen or taking up most of screen
-                    if (rect.top >= -window.innerHeight/2 && rect.top < window.innerHeight/2) {
-                        currentIndex = i;
+                    if (rect.top > 10) {
+                        nextSection = sections[i];
                         break;
                     }
                 }
-
-                // If nothing found or at end, loop or go next
-                let nextIndex = currentIndex + 1;
-                if(currentIndex === -1) nextIndex = 0;
-                if(nextIndex >= sections.length) nextIndex = 0;
-
-                sections[nextIndex].scrollIntoView({ behavior: 'smooth' });
+                nextSection.scrollIntoView({ behavior: 'smooth' });
             }
-
-            // --- 4. HEADER INJECTION ---
-            fetch('/ISHYA-26/header.html')
-                .then(response => response.text())
-                .then(data => {
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = data;
-                    const script = tempDiv.querySelector('script');
-                    document.body.prepend(tempDiv);
-                    if (script) {
-                        const newScript = document.createElement('script');
-                        newScript.textContent = script.textContent;
-                        document.body.appendChild(newScript);
-                    }
-                })
-                .catch(err => console.error('Error loading header:', err));
         </script>
     </body>
 </html>
