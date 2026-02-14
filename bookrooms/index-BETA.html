@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Room Booking System</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/global.css"> <!--H&F #1-->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="/layout.js" defer></script><!--H&F #2-->
     <!-- this is the script for header -->
      <style>
         body{
@@ -21,7 +23,7 @@
 
 </head>
 <body>
-                 
+    <ishya-header></ishya-header> <!--H&F #3-->
 
     <div id="app">
 
@@ -132,7 +134,7 @@
 
     <script src="scriptv5.js"></script>
     <!-- ADD THIS AT THE BOTTOM OF YOUR PAGES BEFORE </body> -->
-<script>
+<!-- <script>
     fetch('/ISHYA-26/header.html')
         .then(response => response.text())
         .then(data => {
@@ -154,7 +156,8 @@
             }
         })
         .catch(err => console.error('Error loading header:', err));
-</script>
+</script> -->
     <!-- 3. The loader script is added here, at the end -->
+     <ishya-footer></ishya-footer> <!--H&F #4-->
 </body>
 </html>
