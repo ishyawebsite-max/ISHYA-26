@@ -1,3 +1,4 @@
+@ -1,1023 +1,1023 @@
 <!DOCTYPE html>
 <html lang="en">
     
@@ -36,7 +37,7 @@
                 --font-body: 'Poppins', sans-serif;
                 --font-deco: 'Cinzel Decorative', cursive;
 
-                --origami-clip: polygon(20% 0%, 100% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 100%, 0% 20%);
+                --origami-clip: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);
             }
     
             /* --- 2. GLOBAL RESET & BODY --- */
@@ -167,18 +168,10 @@
             .team-grid {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(280px, 320px));
-                gap: 50px;
+                gap: 40px;
                 justify-content: center;
                 width: 100%;
                 perspective: 1000px;
-            }
-            /*to chenge gap for different no of cards in grid*/
-            .department-section:has(.team-card:nth-child(3):last-child) .team-grid{
-                gap: 80px;
-            }
-
-            .department-section:has(.team-card:nth-child(2):last-child) .team-grid{
-                gap: 100px;
             }
 
             .team-card {
@@ -217,7 +210,7 @@
                 border-radius: 0;
                 background: transparent;
                 box-shadow: none;
-                clip-path:  polygon(20% 0%, 100% 0%, 100% 20%, 100% 80%, 100% 100%, 20% 100%, 0% 100%, 0% 20%);
+                clip-path: polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%);
                 transition: transform 0.5s ease;
             }
 
@@ -252,7 +245,6 @@
                 text-align: center;
                 text-transform: uppercase;
                 margin-bottom: 5px;
-                clip-path:  polygon(20% 0%, 100% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 100%, 0% 20%);
                 text-shadow: 0 2px 4px rgba(0,0,0,0.8);
                 letter-spacing: 1px;
             }
@@ -410,53 +402,10 @@
                     transform: rotate(0deg);
                 }
             }
-
-            .card-wrapper {
-  /* We bypass the variable and link directly to the SVG ID */
-  clip-path: url(#fest-ticket-clip);
-  
-  /* Adding fest-specific styling */
-  background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
-  border: 1px solid rgba(255, 215, 0, 0.3); /* Subtle gold border */
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.card-wrapper:hover {
-  transform: scale(1.03) rotate(1deg);
-  border-color: #f9d423; /* Brighter gold on hover */
-  filter: drop-shadow(0 0 15px rgba(249, 212, 35, 0.2));
-}
         </style>
     </head>
     
     <body>
-<svg width="0" height="0" style="position: absolute;">
-  <defs>
-    <clipPath id="default" clipPathUnits="objectBoundingBox">
-      <path d="M 0.5,0.1 
-               C 0.7,0 1,0.1 1,0.4 
-               C 1,0.6 0.8,0.7 0.7,0.8 
-               L 0.5,1 
-               L 0.3,0.8 
-               C 0.2,0.7 0,0.6 0,0.4 
-               C 0,0.1 0.3,0 0.5,0.1 Z" />
-    </clipPath>
-  </defs>
-</svg>
-
-<svg width="0" height="0" style="position: absolute;">
-  <defs>
-    <clipPath id="butterfly-clip" clipPathUnits="objectBoundingBox">
-      <path d="M 0.5,0.1 
-               C 0.7,0 1,0.1 1,0.4 
-               C 1,0.6 0.8,0.7 0.7,0.8 
-               L 0.5,1 
-               L 0.3,0.8 
-               C 0.2,0.7 0,0.6 0,0.4 
-               C 0,0.1 0.3,0 0.5,0.1 Z" />
-    </clipPath>
-  </defs>
-</svg>
         <!-- Header from layout.js -->
         <ishya-header></ishya-header>
         
@@ -516,7 +465,7 @@
                             </div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="https://image2url.com/r2/default/images/1771053012386-e39b21c4-ec05-40c1-bba2-22a4cc0d199c.jpeg" alt="Raniya" loading="lazy"></div>
+                            <div class="element-avatar"><img src="https://static.wixstatic.com/media/0ad737_fcc472cc1e5c45a0b0a477b7f6e49ef7~mv2.jpg/v1/crop/x_0,y_184,w_519,h_491/fill/w_213,h_201,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/Sponsorship%20_Raniya%20Oc.jpg" alt="Raniya" loading="lazy"></div>
                             <div class="card-content">
                                 <div class="element-name">Raniya</div>
                                 <div class="element-title">Co-Convener</div>
@@ -634,6 +583,7 @@
                         </div>
                         <div class="team-card">
                             <div class="element-avatar"><img src="https://static.wixstatic.com/media/2304ec_bf383d58c32448babf3f868d585c4cd0~mv2.jpg/v1/crop/x_1055,y_668,w_3374,h_3191/fill/w_213,h_201,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/Nidhin.jpg" alt="Nidhin" loading="lazy"></div>
+                            <div class="element-avatar"><img src="https://image2url.com/r2/default/images/1771061861625-929d8568-8afd-4461-a0ad-cd04983dc835.jpg" alt="Nidhin" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Nidhin Thomas</div></div>
                         </div>
                     </div>
@@ -782,7 +732,10 @@
                         <div class="line"></div>
                     </div>
                     <div class="team-grid">
-                        
+                        <div class="team-card">
+                            <div class="element-avatar"><img src="../Heads_Photos/riswan.png" alt="Riswan" loading="lazy"></div>
+                            <div class="card-content"><div class="element-name">Riswan</div></div>
+                        </div>
                         <div class="team-card">
                             <div class="element-avatar"><img src="https://image2url.com/r2/default/images/1771052962209-f57ad36d-7cfa-4dec-a001-230669962983.jpg" alt="Aslaha" style="object-position: 20% 50%; loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Aslaha P P</div></div>
@@ -868,11 +821,12 @@
                     </div>
                     <div class="team-grid">
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/athira.jpg"style="object-position: 20% 50%;"  alt="Athira" loading="lazy"></div>
+                            <div class="element-avatar"><img src="https://image2url.com/r2/default/images/1771051305627-06bd1546-a0df-4262-be4b-de956986a165.jpg" alt="Athira" loading="lazy"></div>
+                            <div class="element-avatar"><img src="https://image2url.com/r2/default/images/1771053870489-345bfd3e-a286-4cee-8002-84da3c628032.jpg" alt="Athira" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Athira C</div></div>
                         </div>
                         <div class="team-card">
-                            <div class="element-avatar"><img src="../Heads_Photos/tanaya.jpg" style="object-position: 20% 50%;" alt="Khirabdhi" loading="lazy"></div>
+                            <div class="element-avatar"><img src="https://image2url.com/r2/default/images/1771051402909-488bdcf7-a943-494e-bafd-dc4c877b0613.jpg" alt="Khirabdhi" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Khirabdhi Tanaya</div></div>
                         </div>
                     </div>
@@ -953,6 +907,7 @@
                     <div class="team-grid">
                         <div class="team-card">
                             <div class="element-avatar"><img src="../Heads_Photos/eldho.png" alt="Eldho" loading="lazy"></div>
+                            <div class="element-avatar"><img src="https://image2url.com/r2/default/images/1771061561626-4e11d8c5-b0e8-4bd9-b29e-1c99e0692c45.jpeg" alt="Eldho" loading="lazy"></div>
                             <div class="card-content"><div class="element-name">Eldho Sam Varghese</div></div>
                         </div>
                         <div class="team-card">
