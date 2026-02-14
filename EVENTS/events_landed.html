@@ -9,10 +9,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Syncopate:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    
+    <link rel="stylesheet" href="/global.css"> <!--H&F change #1-->
     <!-- GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    
+    <script src="/layout.js" defer></script> <!--H&F change #2-->
     <style>
         :root {
             --bg-dark: #051408;       
@@ -280,6 +280,7 @@
     </style>
 </head>
 <body>
+    <ishya-header></ishya-header>
 
     <div id="loader">
         <canvas id="loader-canvas"></canvas>
@@ -498,5 +499,6 @@
 
         fetchEvents();
     </script>
+    <ishya-footer></ishya-footer>
 </body>
 </html>
