@@ -59,12 +59,32 @@
             text-shadow: 0 0 15px rgba(214, 194, 106, 0.4);
             margin: 0;
         }
-
+        /*Fix for mobile irregularity*/
         .back-btn {
-            font-family: var(--font-sync); color: #e0e0e0; text-decoration: none;
-            font-size: 0.8rem; letter-spacing: 2px;
-            border: 1px solid var(--accent-gold); padding: 0.5rem 1.5rem;
-            transition: 0.3s; text-transform: uppercase;
+            font-family: var(--font-sync); 
+            color: #e0e0e0; 
+            text-decoration: none;
+            font-size: 0.8rem; 
+            letter-spacing: 2px;
+            border: 1px solid var(--accent-gold); 
+            padding: 0.5rem 1.5rem;
+            transition: 0.3s; 
+            text-transform: uppercase;
+            
+            /* FIXES FOR MOBILE ALIGNMENT */
+            display: inline-flex;  /* Keeps icon and text together */
+            align-items: center;   /* Vertically centers them */
+            white-space: nowrap;   /* Forces text to stay on one line */
+            gap: 8px;              /* Adds space between icon and text */
+        }
+        /* ADD THIS MEDIA QUERY FOR MOBILE */
+        @media (max-width: 600px) {
+            header { padding: 1.5rem 5%; }
+            .page-title { font-size: 1.5rem; } /* Scale down title */
+            .back-btn { 
+                padding: 0.4rem 0.8rem; /* Smaller padding */
+                font-size: 0.7rem;      /* Smaller text */
+            }
         }
         .back-btn:hover { background: var(--accent-gold); color: var(--bg-dark); }
 
