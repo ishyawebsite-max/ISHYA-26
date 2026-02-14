@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="shortcut icon" type="image/x-icon" href="../Logo Ishya.ico">
+    <link rel="stylesheet" href="/global.css">
+    <meta charset="UTF-8">
+    <script async src="https://tally.so/widgets/embed.js"></script>
+    <script src="/layout.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ISHYA '26 | FLAMES IN EVERY FOLD</title>
+
+    <!-- FAVICON LINK -->
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
+
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Foldit:wght@400;600;800;900&family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;500;700&family=Cormorant+Garamond:ital,wght@1,300;1,600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<style>
+    :root {
+        /* --- COLORS --- */
+        --bg-dark: #051408;       
+        --accent-gold: #D6C26A;   
+        --accent-olive: #6B7540;  
+        --accent-green: #4D8F48;  
+        --text-light: #e0e0e0;
+        
+        /* FONTS */
+        --font-display: 'Syncopate', sans-serif;
+        --font-fold: 'Foldit', display;
+        --font-body: 'Space Grotesk', sans-serif;
+        --font-tech: 'Share Tech Mono', monospace;
+        --font-serif: 'Cormorant Garamond', serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+    
+    html, body { 
+        background: transparent; 
+        color: var(--text-light); 
+        font-family: var(--font-body); 
+        overflow-x: hidden; 
+        width: 100vw; 
+        min-height: 100vh;
+    }
+    .ishya-floating-nav-wrapper{
+        padding-top: 85vh;
+    }
+    .ishya-nav-backdrop {
+        position: fixed;
+        top: 0;
+        height: var(--bar-height);
+    }
+
+    /* --- LAYERS --- */
+    #animated-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; background-color: var(--bg-dark); pointer-events: none; }
+    #webgl { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+    #bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, transparent 0%, rgba(5, 20, 8, 0.85) 100%); z-index: -5; pointer-events: none; }
+
+    main { position: relative; z-index: 10; will-change: opacity; }
+    
+    /* --- UTILITIES & GLASSMORPHISM --- */
+    section { min-height: 100vh; padding: 0 5vw; position: relative; display: flex; align-items: center; justify-content: center; }
+    
+    .glass-panel {
+        background: rgba(24, 28, 16, 0.4) !important;
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(214, 194, 106, 0.2);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(77, 143, 72, 0.1);
+    }
+
+    .section-layout { width: 100%; max-width: 1600px; display: flex; align-items: center; justify-content: space-between; }
+    
+    .perch-title { 
+        font-family: var(--font-fold), var(--font-display), sans-serif; /* Added Backup Font */
+        font-size: clamp(3rem, 6vw, 5rem); 
+        color: var(--accent-gold); opacity: 0.9; text-shadow: 0 0 20px rgba(0,0,0,0.8); 
+        line-height: 1; margin-bottom: 10px;
+    }
+    .perch-subtitle { 
+        font-family: var(--font-tech); font-size: 1rem; color: var(--accent-green); 
+        letter-spacing: 2px; padding: 5px 10px; display: inline-block; 
+        background: rgba(0,0,0,0.5); border: 1px solid var(--accent-olive); 
+    }
+    
+    .cta-btn { 
+        display: inline-block; margin-top: 30px; padding: 15px 40px; 
+        background: rgba(24, 28, 16, 0.6); border: 1px solid var(--accent-green); 
+        color: var(--accent-gold); font-family: var(--font-display); 
+        font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; 
+        cursor: pointer; transition: all 0.3s ease; text-decoration: none; position: relative; overflow: hidden; 
+    }
+    .cta-btn:hover { color: #fff; border-color: var(--accent-gold); box-shadow: 0 0 20px rgba(77, 143, 72, 0.4); background: rgba(77, 143, 72, 0.2); }
+
+    /* --- HERO --- */
+    #hero { 
+        flex-direction: column; 
+        text-align: center; 
+        padding-top: 85vh; 
+        padding-bottom: 10vh; 
+    }
+    .hero-content { pointer-events: none; width: 100%; position: relative; z-index: 20; }
+    
+    /* --- FIX IMPLEMENTED HERE --- */
+    .hero-title { 
+        perspective: 1000px; 
+        font-family: var(--font-fold), 'Syncopate', 'Impact', sans-serif; 
+        font-size: clamp(3rem, 7vw, 8rem); 
+        line-height: 1.1; 
+        text-transform: uppercase; 
+        
+        /* REPLACED GRADIENT TEXT WITH SOLID COLOR FOR VISIBILITY SAFETY */
+        color: #D6C26A; 
+        background: none;
+        -webkit-text-fill-color: initial; /* Forces browser to paint the text color */
+        
+        text-shadow: 0 0 30px rgba(214, 194, 106, 0.6); /* Glow effect instead of gradient */
+        
+        margin-bottom: 1vh; font-weight: 900; 
+        width: 100%;
+        max-width: 95vw;
+        margin-left: auto; margin-right: auto;
+    }
+    
+    .word-group { display: inline-block; white-space: nowrap; margin: 0 15px; }
+    .hero-title .letter { display: inline-block; transform-style: preserve-3d; opacity: 1; }
+    
+    .hero-date { 
+        perspective: 1000px; 
+        font-family: var(--font-fold), var(--font-display), sans-serif; 
+        font-weight: 900; 
+        font-size: clamp(1.8rem, 5vw, 4rem); 
+        color: var(--accent-gold); 
+        letter-spacing: 5px; 
+        text-transform: uppercase; 
+        margin-top: 2vh; 
+        text-shadow: 4px 4px 0px #3e2b18;
+    }
+    .hero-date .date-char { display: inline-block; transform-style: preserve-3d; opacity: 1; }
+    
+    .hero-countdown { display: flex; justify-content: center; gap: 15px; margin-top: 40px; font-family: var(--font-tech); color: var(--accent-green); opacity: 0; flex-wrap: wrap; }
+    .time-block { 
+        display: flex; flex-direction: column; align-items: center; padding: 15px 20px; 
+        border-radius: 8px; min-width: 80px; 
+    }
+    .time-block span { font-size: clamp(2rem, 5vw, 3rem); line-height: 1; text-shadow: 0 0 10px rgba(77, 143, 72, 0.6); }
+
+    /* --- SECTIONS LAYOUT --- */
+    .layout-content-right { flex-direction: row; }
+    .layout-content-right .perch-zone { width: 40%; text-align: left; padding-right: 50px; }
+    .layout-content-right .content-zone { width: 60%; }
+    .layout-content-left { flex-direction: row-reverse; }
+    .layout-content-left .perch-zone { width: 40%; text-align: right; padding-left: 50px; }
+    .layout-content-left .content-zone { width: 60%; }
+
+    /* SECTION 1: ABOUT */
+    .chat-question { 
+        align-self: flex-start; 
+        color: var(--accent-gold); padding: 20px 40px; font-family: var(--font-display); 
+        font-size: 1.2rem; border-radius: 30px 30px 30px 0; 
+        transform: translateY(20px); margin-bottom: 20px; 
+    }
+    
+    .origami-sheet { 
+        background-color: #f4e4bc;
+        background-image: url('https://www.transparenttextures.com/patterns/crumpled-paper.png');
+        color: #3e2b18; 
+        padding: 60px; 
+        border-radius: 2px; 
+        box-shadow: 0 20px 60px rgba(0,0,0,0.8), inset 0 0 80px rgba(139, 90, 43, 0.1); 
+        border: none;
+        position: relative;
+        transform-origin: top center; 
+        perspective: 1000px;
+        will-change: transform;
+        opacity: 0; 
+    }
+    
+    .origami-sheet::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: rgba(0,0,0,0.1); }
+
+    .sheet-content h3 { font-family: var(--font-display); font-size: 2rem; margin-bottom: 25px; color: #8b5a2b; border-bottom: 2px solid #8b5a2b; padding-bottom: 10px; display: inline-block; }
+    .sheet-content p { font-size: 1.15rem; line-height: 1.7; margin-bottom: 15px; font-family: var(--font-serif); font-weight: 500; }
+
+    /* SECTION 2: MEMORIES */
+    #memories .perch-title {
+        font-family: var(--font-display);
+        font-weight: 700;
+        color: var(--text-light);
+        opacity: 0.9;
+        text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+    #memories .perch-subtitle {
+        background: rgba(0,0,0,0.3);
+        border: 1px solid var(--accent-olive);
+        color: var(--text-light);
+    }
+    .image-marquee-container { 
+        width: 100%; 
+        padding: 30px 0; 
+        overflow: hidden; 
+        transform: rotate(-2deg) scale(1.05); 
+        will-change: transform; 
+    }
+    .image-marquee-track { 
+        display: flex; 
+        gap: 20px; 
+        width: max-content; 
+        animation: scrollImages 80s linear infinite; 
+        will-change: transform; 
+    }
+    .image-marquee-item { 
+        width: 400px; 
+        height: 260px; 
+        border-radius: 8px; 
+        overflow: hidden; 
+        border: 1px solid rgba(255,255,255,0.2); 
+        filter: grayscale(100%); 
+        transition: 0.4s; 
+        backface-visibility: hidden; 
+        transform: translateZ(0); 
+    }
+    .image-marquee-item:hover { 
+        filter: grayscale(0%); 
+        transform: scale(1.03); 
+        border-color: var(--accent-gold); 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+    }
+    .image-marquee-item img { 
+        width: 100%; 
+        height: 100%; 
+        object-fit: cover; 
+    }
+    @keyframes scrollImages { 
+        0% { transform: translateX(0); } 
+        100% { transform: translateX(-50%);}
+    }
+
+    /* --- SECTION 3: EVENTS (OPTIMIZED) --- */
+    .events-3d-section { flex-direction: column; overflow: hidden; position: relative; padding-top: 5vh; padding-bottom: 5vh; justify-content: flex-start; }
+    .events-header { padding: 0 5vw; margin-bottom: 20px; width: 100%; display: flex; justify-content: space-between; align-items: flex-end; z-index: 5; }
+    .carousel-stage { 
+        width: 100%; height: 600px; position: relative; 
+        display: flex; justify-content: center; align-items: center; 
+        perspective: 1200px; margin-top: 20px;
+        perspective-origin: center; 
+    }
+    .carousel-container { 
+        width: 100%; height: 100%; position: relative; 
+        transform-style: preserve-3d; display: flex; 
+        justify-content: center; align-items: center; 
+    }
+
+    .carousel-card-3d {
+        position: absolute; 
+        width: 320px; height: 500px;
+        background: rgba(10, 15, 8, 0.85); 
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transform-origin: center center; 
+        left: 0; right: 0; margin: auto;
+        overflow: hidden; cursor: pointer;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+        transition: border-color 0.3s; 
+        will-change: transform, opacity; 
+        backface-visibility: hidden;
+        transform-style: preserve-3d;
+    }
+    .carousel-card-3d::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(5,20,8,0.95) 100%); z-index: 2; pointer-events: none; }
+    .carousel-card-3d:hover { border-color: var(--accent-gold); }
+    
+    .card-bg-img { 
+        width: 100%; height: 100%; object-fit: cover; 
+        filter: grayscale(100%); transition: filter 0.5s; 
+        position: absolute; top: 0; left: 0; z-index: 1; 
+        will-change: filter;
+    }
+    .carousel-card-3d.active-card .card-bg-img { filter: grayscale(0%); }
+    .card-content { position: absolute; z-index: 3; padding: 25px; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
+    .card-number { font-family: var(--font-serif); font-style: italic; font-weight: 300; font-size: 5rem; color: rgba(255,255,255,0.9); line-height: 0.8; margin-left: -5px; }
+    
+    .card-details { transform: translateY(20px); opacity: 0; transition: all 0.4s ease 0.2s; }
+    .carousel-card-3d.active-card .card-details { transform: translateY(0); opacity: 1; }
+    
+    .card-cat { font-family: var(--font-tech); color: var(--accent-gold); font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 8px; text-transform: uppercase; }
+    .card-title { font-family: var(--font-display); font-size: 2rem; color: #fff; line-height: 1; margin-bottom: 5px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+    .card-arrow-icon { position: absolute; top: 25px; right: 25px; color: #fff; font-size: 1.2rem; opacity: 0.7; transform: rotate(45deg); }
+    .carousel-nav { display: flex; gap: 15px; }
+    .nav-btn { width: 50px; height: 50px; border-radius: 50%; border: 1px solid var(--accent-olive); background: rgba(24, 28, 16, 0.6); color: var(--text-light); cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+
+    /* SECTION 4: TEAM */
+    .team-content-wrapper { padding: 50px 70px; display: block; text-align: center; position: relative; overflow: hidden; opacity: 0; }
+    .team-text { font-family: var(--font-serif); font-size: 1.3rem; line-height: 1.6; color: #ddd; }
+    .team-text p { margin-bottom: 20px; }
+    .team-highlight { color: var(--accent-gold); font-style: italic; font-weight: 600; }
+
+    /* SECTION 5: PROSHOWS */
+    .proshow-container { display: flex; justify-content: center; align-items: center; width: 100%; }
+    .wait-see-wrapper { text-align: center; padding: 50px; border: 1px solid var(--accent-gold); background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); transform: skewX(-10deg); }
+    .wait-see-text { font-family: var(--font-display); font-size: clamp(3rem, 8vw, 7rem); font-weight: 700; color: transparent; -webkit-text-stroke: 2px var(--accent-gold); text-shadow: 0 0 30px rgba(214, 194, 106, 0.3); transform: skewX(10deg); animation: pulseText 3s infinite ease-in-out; }
+    @keyframes pulseText { 0%, 100% { opacity: 0.6; text-shadow: 0 0 10px rgba(214, 194, 106, 0.1); } 50% { opacity: 1; text-shadow: 0 0 50px rgba(214, 194, 106, 0.6), 0 0 20px #fff; } }
+
+    /* --- FOOTER --- */
+    .footer-section { 
+        background: rgba(24, 28, 16, 0.95); 
+        border-radius: 50px 50px 0 0; 
+        padding: 60px 5vw 30px; 
+        text-align: center; 
+        border-top: 1px solid var(--accent-olive); 
+        backdrop-filter: blur(10px); 
+        margin-top: 10vh; 
+    }
+    .footer-logo { font-family: var(--font-fold); font-size: 10vw; color: transparent; -webkit-text-stroke: 1px #444; line-height: 0.8; opacity: 0.6; transition: 0.5s; display: block; margin-bottom: 40px; }
+    .footer-logo:hover { color: var(--accent-olive); opacity: 1; text-shadow: 0 0 30px var(--accent-green); }
+
+    .footer-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr 1.5fr; 
+        gap: 30px;
+        max-width: 1400px;
+        margin: 0 auto;
+        text-align: left;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        padding-top: 40px;
+        align-items: start;
+    }
+
+    .footer-col h4 { color: var(--accent-gold); font-family: var(--font-tech); font-size: 1.1rem; margin-bottom: 15px; letter-spacing: 1px; }
+    .footer-col p, .footer-col a { font-family: var(--font-body); font-size: 0.95rem; color: #bbb; line-height: 1.6; text-decoration: none; display: block; transition: 0.3s; }
+    .footer-col a:hover { color: var(--accent-gold); }
+
+    .social-icons-footer { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 15px; }
+    .social-icons-footer a { 
+        color: #888; transition: 0.3s; font-size: 1.3rem; 
+        width: 40px; height: 40px; border-radius: 50%; border: 1px solid #444; 
+        display: flex; align-items: center; justify-content: center;
+    }
+    .social-icons-footer a:hover { color: var(--bg-dark); background: var(--accent-gold); border-color: var(--accent-gold); transform: translateY(-3px); }
+
+    .map-container {
+        width: 100%; height: 200px; border-radius: 12px; overflow: hidden;
+        border: 1px solid rgba(214, 194, 106, 0.3);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    }
+    .map-frame { width: 100%; height: 100%; border: 0; filter: invert(90%) hue-rotate(180deg) brightness(0.9); } 
+
+    .grievance-btn { margin-top: 15px; color: var(--accent-gold) !important; text-decoration: underline !important; font-weight: bold; }
+    .copyright { color: #555; margin-top: 50px; font-size: 0.7rem; font-family: var(--font-tech); text-align: center; width: 100%; }
+
+    /* --- MOBILE & TABLET OPTIMIZATION --- */
+    @media (max-width: 950px) {
+        section {
+            min-height: calc(100vh - var(--header-h));
+            padding: var(--header-h) 5vw 0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .section-layout { flex-direction: column !important; gap: 30px; width: 100%; }
+        
+        .layout-content-right .perch-zone, 
+        .layout-content-left .perch-zone,
+        .events-header .perch-zone { 
+            width: 100%; 
+            text-align: center !important; 
+            padding: 0; 
+            order: 1; 
+            margin-bottom: 10px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .layout-content-right .content-zone, .layout-content-left .content-zone { width: 100%; order: 2; }
+        
+        .perch-title { font-size: 2.5rem; text-align: center; }
+        .perch-subtitle { font-size: 0.8rem; }
+        
+        .hero-title {
+            /* --- FIX: Robust Stack for Mobile Too --- */
+            font-family: var(--font-fold), 'Syncopate', 'Impact', sans-serif !important; 
+            font-weight: 700;
+            font-size: 10vw;
+            display: flex;
+            flex-direction: column; 
+            align-items: center;
+            line-height: 1.1;
+            margin-top: 45vh; 
+            margin-bottom: 0;
+            gap: 5px;
+            
+            /* REPLACED GRADIENT TEXT WITH SOLID COLOR ON MOBILE TOO */
+            color: #D6C26A; 
+            background: none !important; 
+            -webkit-text-fill-color: initial !important; /* Force solid color */
+            
+            flex-grow: 0;
+        }
+        .word-group { margin: 0; }
+        
+        #hero {
+            padding-top: 80px; 
+            padding-bottom: 30px;
+            min-height: 100vh;
+            justify-content: center; 
+        }
+        
+        .hero-date { 
+            font-size: 8vw;
+            letter-spacing: 2px; 
+            margin-top: 15px; 
+            margin-bottom: 15px;
+        }
+
+        .origami-sheet { padding: 30px 20px; }
+        .sheet-content h3 { font-size: 1.5rem; }
+        .sheet-content p { font-size: 1rem; }
+        .chat-question { width: 100%; text-align: center; padding: 15px; font-size: 1rem; border-radius: 20px; }
+        
+        .image-marquee-item { width: 70vw; height: 200px; }
+        .image-marquee-container { 
+            width: 120%; 
+            margin-left: -10%; 
+            transform: rotate(0) scale(1);
+        } 
+        #memories .content-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #memories .perch-title {
+            font-family: var(--font-fold), var(--font-display), sans-serif;
+        }
+        
+        .events-header {
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .carousel-stage { height: 450px; width: 100%; overflow: visible; }
+        .carousel-card-3d { width: 80vw; height: 400px; max-width: 320px; }
+        .card-number { font-size: 3rem; }
+        .card-title { font-size: 1.5rem; }
+        
+        .team-content-wrapper { padding: 30px 20px; text-align: center; }
+        .team-text { font-size: 1rem; }
+        
+        .hero-countdown { gap: 10px; }
+        .time-block { padding: 10px; min-width: 60px; }
+        .time-block span { font-size: 1.8rem; }
+        
+        .footer-logo { font-size: 18vw; margin-bottom: 30px; }
+        .footer-grid { grid-template-columns: 1fr; gap: 40px; text-align: center; }
+        .footer-col { display: flex; flex-direction: column; align-items: center; }
+        .social-icons-footer { justify-content: center; }
+        .map-container { height: 250px; width: 100%; }
+        .footer-section { padding-top: 40px; }
+    }
+</style>
+</head>
+<body>
+    <ishya-header></ishya-header>
+
+<!-- 1. BACKGROUND CANVAS -->
+<canvas id="animated-bg"></canvas>
+<div id="bg-overlay"></div>
+
+<!-- 2. WEBGL FOREGROUND -->
+<canvas id="webgl"></canvas>
+
+<!-- 3. CONTENT -->
+<main id="smooth-wrapper">
+    <section id="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="word-group"><span class="letter">F</span><span class="letter">L</span><span class="letter">A</span><span class="letter">M</span><span class="letter">E</span><span class="letter">S</span></span>
+                <span class="word-group"><span class="letter">I</span><span class="letter">N</span></span>
+                <span class="word-group"><span class="letter">E</span><span class="letter">V</span><span class="letter">E</span><span class="letter">R</span><span class="letter">Y</span></span>
+                <span class="word-group"><span class="letter">F</span><span class="letter">O</span><span class="letter">L</span><span class="letter">D</span></span>
+            </h1>
+            <h2 class="hero-date"><span class="date-char">M</span><span class="date-char">A</span><span class="date-char">R</span><span class="date-char">C</span><span class="date-char">H</span><span class="date-char"> </span><span class="date-char">1</span><span class="date-char">3</span><span class="date-char"> </span><span class="date-char">-</span><span class="date-char"> </span><span class="date-char">1</span><span class="date-char">5</span></h2>
+            
+            <div id="countdown" class="hero-countdown">
+                <div class="time-block glass-panel"><span id="days">00</span><span class="label">Days</span></div>
+                <div class="time-block glass-panel"><span id="hours">00</span><span class="label">Hrs</span></div>
+                <div class="time-block glass-panel"><span id="minutes">00</span><span class="label">Min</span></div>
+                <div class="time-block glass-panel"><span id="seconds">00</span><span class="label">Sec</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 1: ABOUT ISHYA -->
+    <section id="about-ishya">
+        <div class="section-layout layout-content-right">
+            <div class="perch-zone">
+                <h2 class="perch-title">THE<br>ORIGIN</h2>
+                <div class="perch-subtitle">WHERE IT ALL BEGAN</div>
+            </div>
+            <div class="content-zone">
+                <div class="dialogue-wrapper">
+                    <div class="chat-question glass-panel">WHAT IS ISHYA?</div>
+                    <div class="origami-answer-container">
+                        <div class="origami-sheet" id="paper-sheet">
+                            <div class="sheet-content">
+                                <h3>LEGACY</h3>
+                                <p><strong>Ishya</strong> is the annual cultural fest of <strong>IISER Thiruvananthapuram</strong> which, since her inception in 2010, has set stage to nurture imagination and nourish originality.</p>
+                                <p>Staying true to her name, Ishya flows with the advent of spring in April, when life blooms from the earth.</p>
+                                <p>We have been flying for the past sixteen years, higher each time, from inspiring minds and blossoming creativity to spreading smiles and instilling hope.</p>
+                                <p>Ishya is made possible every year with the hardwork and dedication of its organizers, participants and support from sponsors.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: MEMORIES -->
+    <section id="memories">
+        <div class="section-layout layout-content-left">
+            <div class="perch-zone">
+                <h2 class="perch-title">TIME<br>CAPSULE</h2>
+                <div class="perch-subtitle">MOMENTS FROZEN</div>
+            </div>
+            <div class="content-zone">
+                <div class="image-marquee-container glass-panel">
+                    <div class="image-marquee-track">
+                        <!-- Added loading="lazy" for performance -->
+                        <div class="image-marquee-item"><img src="https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_400,h_200,al_c,q_80/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1FAwb4Q6bGfn8LfGYl7bzxTydX1I4BQ3l=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1xPXLyX47aNUus9lO0blEKS22OubXrcNK=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1uM7aeb1O2XnOAnFjhq-uH_733QNHQxyG=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1PUYZVsEX19nUHfIreiHpY--UcsmusluG=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1y74zDoGlqPO7d9mI4rP4ssR0D1-19vq4=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1b-4Q2P6pkWV9YeEfmOxBpmQqKowrt_rX=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1s_trrwMrJzxeb_Ze2Z4OcKkLveacLWHO=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1S4SwVvVa4fcsdPNXEgYOIjsDojw3XiuI=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1RoTOcpLlqvWZOd_DN0sW_DJl1sT-J1aV=w500" loading="lazy"></div>
+                        
+                        <div class="image-marquee-item"><img src="https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_400,h_200,al_c,q_80/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1FAwb4Q6bGfn8LfGYl7bzxTydX1I4BQ3l=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1xPXLyX47aNUus9lO0blEKS22OubXrcNK=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1uM7aeb1O2XnOAnFjhq-uH_733QNHQxyG=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1PUYZVsEX19nUHfIreiHpY--UcsmusluG=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1y74zDoGlqPO7d9mI4rP4ssR0D1-19vq4=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1b-4Q2P6pkWV9YeEfmOxBpmQqKowrt_rX=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1s_trrwMrJzxeb_Ze2Z4OcKkLveacLWHO=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1S4SwVvVa4fcsdPNXEgYOIjsDojw3XiuI=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1RoTOcpLlqvWZOd_DN0sW_DJl1sT-J1aV=w500" loading="lazy"></div>
+                    </div>
+                </div>
+                <div style="text-align: center;"><a href="/Gallery/" class="cta-btn">VIEW GALLERY</a></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: EVENTS (3D CAROUSEL) -->
+    <section id="events" class="events-3d-section">
+        <div class="events-header">
+            <div class="perch-zone">
+                <h2 class="perch-title">THE<br>EVENTS</h2>
+                <div class="perch-subtitle">COMPETE & CONQUER</div>
+            </div>
+            <div class="carousel-nav">
+                <button id="prevBtn" class="nav-btn"><i class="fa-solid fa-arrow-left"></i></button>
+                <button id="nextBtn" class="nav-btn"><i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </div>
+        <div class="carousel-stage">
+            <div class="carousel-container" id="cardCarousel"></div>
+        </div>
+        <div style="text-align: center; margin-top: 30px; z-index: 5;">
+            <a href="/EVENTS/" class="cta-btn">EXPLORE MORE</a>
+        </div>
+    </section>
+
+    <!-- SECTION 4: TEAM -->
+    <section id="team">
+        <div class="section-layout layout-content-left">
+            <div class="perch-zone">
+                <h2 class="perch-title">THE<br>CREW</h2>
+                <div class="perch-subtitle">BEHIND THE SCENES</div>
+            </div>
+            <div class="content-zone">
+                <div class="team-content-wrapper glass-panel">
+                    <div class="team-text">
+                        <h3 class="team-anim-text" style="font-family: var(--font-display); color: var(--accent-gold); font-size: 2rem; margin-bottom: 25px;">MEET THE TEAM</h3>
+                        <p class="team-anim-text">Behind every unforgettable moment at <span class="team-highlight">ISHYA</span>, there’s a passionate team bringing magic to life! From curating electrifying performances to crafting immersive experiences, we are a group of dedicated dreamers, artists, and organizers.</p>
+                        <p class="team-anim-text">With months of planning, late-night brainstorming, and an unshakable love for arts, we’re here to make ISHYA a celebration to remember.</p>
+                        <div class="team-anim-text"><a href="/TEAM/" class="cta-btn" style="margin-top: 25px;">VIEW MEMBERS</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: PROSHOWS -->
+    <section id="proshows">
+        <div class="section-layout layout-content-left">
+            <div class="perch-zone">
+                <h2 class="perch-title">PROSHOW</h2>
+                <div class="perch-subtitle">THE GRAND FINALE</div>
+            </div>
+            <div class="content-zone">
+                <div class="proshow-container">
+                    <div class="wait-see-wrapper">
+                        <div class="wait-see-text">COMING SOON....</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- WEBGL 3D SHADERS -->
+<script type="x-shader/x-vertex" id="vParticles">
+    attribute float aRandom; attribute vec3 targetPos; uniform float uTime; uniform float uProgress; uniform float uExplode; uniform float uParticleOpacity; varying vec3 vColor; varying float vOpacity;
+    vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; } vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; } vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
+    float snoise(vec2 v) { const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439); vec2 i  = floor(v + dot(v, C.yy) ); vec2 x0 = v - i + dot(i, C.xx); vec2 i1; i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0); vec4 x12 = x0.xyxy + C.xxzz; x12.xy -= i1; i = mod289(i); vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 )); vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0); m = m*m; m = m*m; vec3 x = 2.0 * fract(p * C.www) - 1.0; vec3 h = abs(x) - 0.5; vec3 ox = floor(x + 0.5); vec3 a0 = x - ox; m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h ); vec3 g; g.x  = a0.x  * x0.x  + h.x  * x0.y; g.yz = a0.yz * x12.xz + h.yz * x12.yw; return 130.0 * dot(m, g); }
+    
+    void main() { 
+        vec3 firePos = position; 
+        float t = uTime * 1.0; 
+        float noise = snoise(vec2(firePos.x * 0.5, t + firePos.y * 0.2)); 
+        firePos.y += mod(t * (3.0 + aRandom), 18.0); 
+        if(firePos.y > 7.0) firePos.y -= 18.0; 
+        firePos.x += noise * 1.5 * (0.5 + firePos.y * 0.1); 
+        float progress = smoothstep(0.0, 1.0, uProgress); 
+        vec3 pos = mix(firePos, targetPos, progress); 
+        vec3 cFire = mix(vec3(0.24, 0.26, 0.14), vec3(0.3, 0.56, 0.28), aRandom); 
+        vec3 cLogo = mix(vec3(0.84, 0.76, 0.41), vec3(0.3, 0.56, 0.28), aRandom);
+        vColor = mix(cFire, cLogo, progress); 
+        if(uExplode > 0.0) { pos += normalize(pos) * uExplode * 60.0; vColor *= (1.0 - uExplode); } 
+        vOpacity = uParticleOpacity; 
+        vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0); 
+        gl_Position = projectionMatrix * mvPosition; 
+        gl_PointSize = (4.0 + aRandom * 3.0) * (20.0 / -mvPosition.z); 
+    }
+</script>
+<script type="x-shader/x-fragment" id="fParticles">
+    varying vec3 vColor; varying float vOpacity;
+    void main() { if(length(gl_PointCoord - vec2(0.5)) > 0.5) discard; float alpha = (1.0 - smoothstep(0.4, 0.5, length(gl_PointCoord - vec2(0.5)))) * vOpacity; gl_FragColor = vec4(vColor, alpha); }
+</script>
+
+<!-- MAIN LOGIC -->
+<script type="module">
+    import * as THREE from 'https://esm.sh/three@0.160.0';
+    import gsap from 'https://esm.sh/gsap@3.12.5';
+    import ScrollTrigger from 'https://esm.sh/gsap@3.12.5/ScrollTrigger';
+    import Lenis from 'https://esm.sh/@studio-freight/lenis@1.0.39';
+
+    gsap.registerPlugin(ScrollTrigger);
+    
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 950;
+
+    const CONFIG = { 
+        LOGO_PATH: 'logo.png', 
+        PARTICLE_DENSITY: isMobile ? 12 : 8, 
+        LOGO_SCALE: isMobile ? 5 : 12, 
+        LOGO_Y_OFFSET: isMobile ? 2 : 0.5 
+    };
+
+    const canvas = document.getElementById('webgl'); 
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); 
+    renderer.setSize(window.innerWidth, window.innerHeight); 
+    
+    // Performance: Limit Pixel Ratio 
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); 
+    renderer.setClearColor(0x000000, 0);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    const scene = new THREE.Scene(); 
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100); 
+    camera.position.set(0, 0, 16); 
+    scene.add(camera);
+    
+    const clock = new THREE.Clock(); 
+
+    function loadAndProcessLogo(url) { 
+        return new Promise((resolve, reject) => { 
+            const img = new Image(); img.crossOrigin = "Anonymous"; img.src = url; 
+            
+            img.onload = () => { 
+                const textureW = 1024, textureH = 1024;
+                const textureCanvas = document.createElement('canvas');
+                textureCanvas.width = textureW; textureCanvas.height = textureH;
+                const textureCtx = textureCanvas.getContext('2d');
+                textureCtx.drawImage(img, 0, 0, textureW, textureH);
+                const solidTexture = new THREE.CanvasTexture(textureCanvas);
+                solidTexture.minFilter = THREE.LinearFilter;
+                solidTexture.colorSpace = THREE.SRGBColorSpace;
+
+                const particleW = isMobile ? 300 : 1024; 
+                const particleH = isMobile ? 300 : 1024;
+                const particleCanvas = (particleW === textureW) ? textureCanvas : document.createElement('canvas');
+                if (particleW !== textureW) {
+                    particleCanvas.width = particleW; particleCanvas.height = particleH;
+                    particleCanvas.getContext('2d').drawImage(img, 0, 0, particleW, particleH);
+                }
+                
+                const pixels = particleCanvas.getContext('2d').getImageData(0, 0, particleW, particleH).data;
+                const points = []; 
+                for (let y = 0; y < particleH; y += CONFIG.PARTICLE_DENSITY) { 
+                    for (let x = 0; x < particleW; x += CONFIG.PARTICLE_DENSITY) { 
+                        if (pixels[(y * particleW + x) * 4 + 3] > 128) {
+                            points.push( (x / particleW - 0.5) * CONFIG.LOGO_SCALE, (-(y / particleH - 0.5) * CONFIG.LOGO_SCALE) + CONFIG.LOGO_Y_OFFSET, 0 ); 
+                        }
+                    } 
+                } 
+                resolve({ solidTexture: solidTexture, points: new Float32Array(points) }); 
+            }; 
+            
+            img.onerror = () => { 
+                console.warn("Logo failed to load, using text fallback");
+                const w = 512, h = 512; const c = document.createElement('canvas'); c.width = w; c.height = h; const ctx = c.getContext('2d');
+                ctx.font = "bold 100px sans-serif"; ctx.fillStyle="white"; ctx.textAlign="center"; ctx.fillText("ISHYA", w/2, h/2);
+                const points = []; for(let i=0; i<1000; i++) points.push((Math.random()-0.5)*5, (Math.random()-0.5)*5 + 0.5, 0);
+                resolve({ solidTexture: new THREE.CanvasTexture(c), points: new Float32Array(points) }); 
+            }; 
+        }); 
+    }
+
+    loadAndProcessLogo(CONFIG.LOGO_PATH).then((data) => { 
+        const particles = createParticles(data.points.length / 3, data.points);
+        const solidLogo = createSolidLogo(data.solidTexture); 
+        const bird = createBird();
+        setupLights();
+        
+        setupAnimations(particles, solidLogo, bird);
+        setupEventListeners();
+        setupInteractiveElements();
+        init3DCarousel(); 
+
+        const animate = () => { 
+            const t = clock.getElapsedTime(); 
+            particles.material.uniforms.uTime.value = t; 
+            if (!isMobile && bird.group.visible) { const flap = Math.sin(t * 8); bird.wingL.rotation.z = flap * 0.4 + 0.1; bird.wingR.rotation.z = -flap * 0.4 - 0.1; } 
+            renderer.render(scene, camera); 
+            requestAnimationFrame(animate); 
+        };
+        animate();
+    }).catch(err => console.error("Initialization failed:", err));
+
+    function createParticles(count, targetData) { 
+        const pGeo = new THREE.BufferGeometry(); const initialPosArr = new Float32Array(count * 3); const randArr = new Float32Array(count); 
+        for (let i = 0; i < count; i++) { initialPosArr[i * 3] = (Math.random() - 0.5) * 4; initialPosArr[i * 3 + 1] = -8 + (Math.random() * 4); initialPosArr[i * 3 + 2] = (Math.random() - 0.5) * 4; randArr[i]=Math.random(); } 
+        pGeo.setAttribute('position', new THREE.BufferAttribute(initialPosArr, 3)); pGeo.setAttribute('targetPos', new THREE.BufferAttribute(targetData, 3)); pGeo.setAttribute('aRandom', new THREE.BufferAttribute(randArr, 1)); 
+        const pMat = new THREE.ShaderMaterial({ vertexShader: document.getElementById('vParticles').textContent, fragmentShader: document.getElementById('fParticles').textContent, uniforms: { uTime: { value: 0 }, uProgress: { value: 0 }, uExplode: { value: 0 }, uParticleOpacity: { value: 1.0 } }, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }); 
+        const ps = new THREE.Points(pGeo, pMat); scene.add(ps); return ps; 
+    }
+
+    function createSolidLogo(texture) { 
+        const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, opacity: 0 }); 
+        const logoMesh = new THREE.Mesh(new THREE.PlaneGeometry(CONFIG.LOGO_SCALE, CONFIG.LOGO_SCALE), material); 
+        logoMesh.position.set(0, CONFIG.LOGO_Y_OFFSET, 0.1); 
+        scene.add(logoMesh); return logoMesh; 
+    }
+
+    function createBird() {
+        const birdMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0xffc400,       
+            roughness: 0.25,      
+            metalness: 0.95,       
+            emissive: 0x6e5200,    
+            emissiveIntensity: 0.3,
+            side: THREE.DoubleSide,
+            flatShading: true      
+        });
+        
+        const group = new THREE.Group(); group.visible = false; scene.add(group);
+        const vBody=[0,0,1,1,0,0,0,0,-1,0,0,1,0,0,-1,-1,0,0,0,0.8,-0.2,0,0,1,1,0,0,0,0.8,-0.2,-1,0,0,0,0,1,0,0.8,-0.2,1,0,0,0,0,-1,0,0.8,-0.2,0,0,-1,-1,0,0,0,0,1,0.15,0,0.8,0,2.5,2.0,0,0,1,0,2.5,2.0,-0.15,0,0.8,0,2.5,2.0,0.1,2.2,2.0,0,1.8,2.5,0,2.5,2.0,0,1.8,2.5,-0.1,2.2,2.0,0,0,-1,0.15,0,-0.8,0,2.0,-2.5,0,0,-1,0,2.0,-2.5,-0.15,0,-0.8];
+        const vWing=[0,0,0.8,0,0,-0.8,3.5,1.5,0,0,0,0.8,3.5,1.5,0,0,0.8,-0.2];
+        const bGeo=new THREE.BufferGeometry(); bGeo.setAttribute('position', new THREE.Float32BufferAttribute(vBody,3)); bGeo.computeVertexNormals();
+        const wGeo=new THREE.BufferGeometry(); wGeo.setAttribute('position', new THREE.Float32BufferAttribute(vWing,3)); wGeo.computeVertexNormals();
+        
+        group.add(new THREE.Mesh(bGeo, birdMaterial));
+        const wingL=new THREE.Mesh(wGeo, birdMaterial); wingL.position.set(-0.9,0,0); wingL.scale.x=-1; 
+        const wingR=new THREE.Mesh(wGeo, birdMaterial); wingR.position.set(0.9,0,0);
+        group.add(wingL, wingR); group.rotation.x=0.2; 
+        return { group, wingL, wingR };
+    }
+
+    function setupLights() { 
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 2.5); directionalLight.position.set(5, 10, 7.5); scene.add(directionalLight);
+        const goldPointLight = new THREE.PointLight(0xffaa00, 4, 30); goldPointLight.position.set(0, 5, 5); scene.add(goldPointLight);
+        const rimLight = new THREE.DirectionalLight(0x4D8F48, 1.5); rimLight.position.set(-5, 0, -5); scene.add(rimLight);
+    }
+
+    function setupAnimations(particles, solidLogo, bird) {
+        const pMat = particles.material; const sMat = solidLogo.material;
+        gsap.fromTo('main', { opacity: 0 }, { opacity: 1, duration: 2, ease: "power2.out", delay: 0.5 });
+        const introTl = gsap.timeline({delay: 0.5, onComplete: () => {gsap.to(".hero-countdown", {opacity:1, duration:1})} });
+        
+        introTl.to(pMat.uniforms.uProgress, { value: 1.0, duration: 4.0, ease: "power2.inOut" })
+               .to(pMat.uniforms.uParticleOpacity, { value: 0, duration: 0.8 }, "-=1.0")
+               .to(sMat, { opacity: 1, duration: 0.8 }, "<") 
+               .fromTo(gsap.utils.toArray('.hero-title .letter'), { opacity: 0, rotationX: -95, scaleY: 0, transformOrigin: "50% 100%" }, { opacity: 1, rotationX: 0, scaleY: 1, duration: 1.5, ease: "elastic.out(1, 0.6)", stagger: 0.04 }, "<+0.2")
+               .fromTo(gsap.utils.toArray('.hero-date .date-char'), { opacity: 0, rotationX: 95, scaleY: 0, transformOrigin: "50% 0%" }, { opacity: 1, rotationX: 0, scaleY: 1, duration: 1.2, ease: "back.out(1.7)", stagger: 0.03 }, "<+0.1");
+
+        const heroTl = gsap.timeline({ scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: 1 }});
+        heroTl.to(sMat, { opacity: 0, duration: 0.1 }) 
+              .to(pMat.uniforms.uParticleOpacity, { value: 1, duration: 0.1 }, "<")
+              .to(pMat.uniforms.uExplode, { value: 1, duration: 1 });
+
+        gsap.fromTo("#paper-sheet",
+            { opacity: 0, rotationX: 90, transformOrigin: "top center", z: -200 },
+            { scrollTrigger: { trigger: "#about-ishya", start: "top 60%", end: "center center", toggleActions: "play none none reverse" },
+              opacity: 1, rotationX: 0, z: 0, duration: 1.5, ease: "elastic.out(1, 0.5)" }
+        );
+
+        gsap.timeline({ scrollTrigger: { trigger: "#team", start: "top 70%", toggleActions: "play none none reverse" } })
+            .to(".team-content-wrapper", { opacity: 1, duration: 0.8 })
+            .from(".team-anim-text", { y: 30, opacity: 0, duration: 0.8, stagger: 0.2, ease: "power2.out" }, "<");
+        
+        if (!isMobile) {
+            const birdScale = 1;
+            heroTl.call(() => { bird.group.visible = true; }, null, "<0.1") 
+                  .fromTo(bird.group.scale, {x:0, y:0, z:0}, {x:birdScale, y:birdScale, z:birdScale, duration: 0.8}, "<");
+
+            gsap.timeline({ scrollTrigger: { trigger: "#about-ishya", start: "top bottom", end: "center center", scrub: 1.5 }})
+                .to(bird.group.position, { x: -6, y: -0.5, z: 2 }).to(bird.group.rotation, { y: -0.5, x: 0.2, z: 0 }, "<");
+            gsap.timeline({ scrollTrigger: { trigger: "#memories", start: "top bottom", end: "center center", scrub: 1.5 }})
+                .to(bird.group.position, { x: 6, y: 0, z: 0 }).to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
+            gsap.timeline({ scrollTrigger: { trigger: "#events", start: "top bottom", end: "center center", scrub: 1.5 }})
+                .to(bird.group.position, { x: -5.5, y: -0.5, z: 1 }).to(bird.group.rotation, { y: -0.6, x: 0.1, z: 0 }, "<");
+            gsap.timeline({ scrollTrigger: { trigger: "#team", start: "top bottom", end: "center center", scrub: 1.5 }})
+                .to(bird.group.position, { x: 6, y: 0.5, z: 1 }).to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
+            gsap.timeline({ scrollTrigger: { trigger: "#proshows", start: "top bottom", end: "center center", scrub: 1.5 }})
+                .to(bird.group.position, { x: 0, y: 0, z: 3 }).to(bird.group.rotation, { y: 0, x: 0, z: 0 }, "<"); 
+        }
+    }
+
+    // --- CAROUSEL OPTIMIZATION FIX ---
+    function init3DCarousel() {
+        const container = document.getElementById('cardCarousel');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        const eventsData = [
+            { id: '01', title: 'MUDRA', cat: 'ENERGISING DANCE', img: 'https://image2url.com/r2/default/images/1770743072413-e433373d-f971-4d20-a060-b90d95ee24e5.jpg'},
+            { id: '02', title: 'ISHYA-UNPLUGGED', cat: 'BAND MUSICALS', img: 'https://image2url.com/r2/default/images/1770743753970-53a65842-5753-4a6b-b11c-a6f611951c6c.jpg' },
+            { id: '03', title: 'RAWAAZ', cat: 'FASHION SHOW', img: 'https://image2url.com/r2/default/images/1770743787093-fc7b74a3-402d-47da-b92a-89c523d40c14.jpg' },
+            { id: '04', title: 'DRAMA', cat: 'THEATRE DRAMA', img: 'https://image2url.com/r2/default/images/1770744008143-1ec13f44-1237-46c5-846a-c28d2fdb7c43.jpg' },
+            { id: '05', title: 'ALEKHYA', cat: 'FINE ARTS', img: 'https://image2url.com/r2/default/images/1770743980522-7570651c-753e-4ef4-a812-d3ace2d9987e.jpg' },
+            { id: '06', title: 'PUT-FUNDA', cat: 'QUIZ', img: 'https://image2url.com/r2/default/images/1770744075484-8aad98bc-a391-439a-b8be-39c5b974f7cc.jpg' },
+            { id: '07', title: 'AND MORE', cat: '', img: 'https://image2url.com/r2/default/images/1770744212311-865b82d3-dcc5-4a19-9fb5-057ae46043b4.jpg' }
+        ];
+
+        let activeIndex = 0; 
+        const cardElements = [];
+
+        eventsData.forEach((item, index) => {
+            const card = document.createElement('div');
+            // 'glass-panel' is removed here to improve FPS, styling handled in CSS with transparency
+            card.className = 'carousel-card-3d'; 
+            card.innerHTML = `
+                <img src="${item.img}" class="card-bg-img" alt="${item.title}" loading="lazy" decoding="async">
+                <div class="card-content">
+                    <div>
+                        <div class="card-number">${item.id}</div>
+                        <i class="fa-solid fa-arrow-up card-arrow-icon"></i>
+                    </div>
+                    <div class="card-details">
+                        <div class="card-cat">${item.cat}</div>
+                        <div class="card-title">${item.title}</div>
+                    </div>
+                </div>
+            `;
+            card.addEventListener('click', () => { if (activeIndex !== index) { activeIndex = index; updateCarousel(); } });
+            container.appendChild(card);
+            cardElements.push(card);
+        });
+
+        function updateCarousel() {
+            const scaleIntensity = 0.15; 
+            const xDistance = isMobile ? 40 : 250; 
+            const rotationIntensity = 25; 
+            const depthIntensity = 200; 
+
+            cardElements.forEach((card, index) => {
+                const offset = index - activeIndex;
+                const absOffset = Math.abs(offset);
+                
+                // Hide off-screen cards to save resources
+                if (absOffset > 3) {
+                    gsap.to(card, { opacity: 0, duration: 0.3, pointerEvents: 'none', overwrite: 'auto' });
+                } else {
+                    const zIndex = 100 - absOffset;
+                    const scale = 1 - (absOffset * scaleIntensity);
+                    const rotateY = offset * -rotationIntensity; 
+                    const translateX = offset * xDistance; 
+                    const translateZ = -absOffset * depthIntensity;
+                    const opacity = 1 - (absOffset * 0.3);
+
+                    if (offset === 0) card.classList.add('active-card');
+                    else card.classList.remove('active-card');
+
+                    // ADDED: overwrite: 'auto' to prevent animation conflict lag
+                    gsap.to(card, { 
+                        x: translateX, 
+                        z: translateZ, 
+                        rotateY: rotateY, 
+                        scale: scale, 
+                        opacity: opacity, 
+                        zIndex: zIndex, 
+                        duration: 0.8, 
+                        ease: "power2.out", 
+                        pointerEvents: 'auto',
+                        overwrite: 'auto' 
+                    });
+                }
+            });
+        }
+
+        nextBtn.addEventListener('click', () => { if (activeIndex < eventsData.length - 1) { activeIndex++; updateCarousel(); } });
+        prevBtn.addEventListener('click', () => { if (activeIndex > 0) { activeIndex--; updateCarousel(); } });
+
+        let touchStartX = 0;
+        container.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX, {passive: true});
+        container.addEventListener('touchend', e => {
+            const touchEndX = e.changedTouches[0].screenX;
+            if (touchStartX - touchEndX > 50) nextBtn.click(); 
+            if (touchEndX - touchStartX > 50) prevBtn.click(); 
+        }, {passive: true});
+        updateCarousel();
+    }
+
+    function setupInteractiveElements() {
+        const targetDate = new Date("March 13, 2026 00:00:00").getTime();
+        setInterval(() => {
+            const now = new Date().getTime(); const distance = targetDate - now; 
+            if (distance > 0) {
+                document.getElementById('days').innerText = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+                document.getElementById('hours').innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+                document.getElementById('minutes').innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                document.getElementById('seconds').innerText = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+            }
+        }, 1000);
+    }
+
+    function setupEventListeners() {
+        // --- SYNC FIX: Lenis and ScrollTrigger must be perfectly synced ---
+        const lenis = new Lenis({ lerp: 0.1, smooth: true });
+        
+        function raf(time) { 
+            lenis.raf(time); 
+            ScrollTrigger.update(); 
+            requestAnimationFrame(raf); 
+        } 
+        requestAnimationFrame(raf);
+        
+        let resizeTimeout;
+        window.addEventListener('resize', () => { clearTimeout(resizeTimeout); resizeTimeout = setTimeout(() => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); }, 100); });
+    }
+</script>   
+
+<!-- OPTIMIZED GREEN BACKGROUND ANIMATION -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const canvas = document.getElementById('animated-bg');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        
+        const isMobile = window.innerWidth < 950;
+        const COLORS = { bg: 'rgba(5, 20, 8, 1)', trail: 'rgba(5, 20, 8, 0.08)', swirlGreen: 'rgba(77, 183, 72, 0.2)', swirlDark: 'rgba(30, 50, 20, 0.3)', gold: 'rgba(214, 194, 106, 0.4)', mandala: 'rgba(214, 194, 106, 0.15)' };
+        
+        const particles = []; 
+        const numParticles = isMobile ? 30 : 400; 
+        const noiseScale = 0.002; 
+        let mandalas = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight;
+            ctx.fillStyle = COLORS.bg; ctx.fillRect(0, 0, width, height);
+            
+            mandalas = [
+                new Mandala(width, 0, width * 0.3, -0.002, COLORS.mandala), 
+                new Mandala(0, height, width * 0.35, 0.0015, COLORS.mandala)
+            ];
+            
+            if (particles.length === 0) { for(let i=0; i<numParticles; i++) particles.push(new FlowParticle()); }
+        }
+
+        function noise(x, y) { return Math.sin(x) * Math.cos(y); }
+        class FlowParticle {
+            constructor() { this.x = Math.random() * width; this.y = Math.random() * height; this.speed = Math.random() * 2 + 0.5; this.angle = 0; this.size = Math.random() * 2.5 + 0.5; this.color = Math.random() > 0.9 ? COLORS.gold : (Math.random() > 0.6 ? COLORS.swirlGreen : COLORS.swirlDark); }
+            update() { const n = noise(this.x * noiseScale, this.y * noiseScale); this.angle = n * Math.PI * 4; this.x += Math.cos(this.angle) * this.speed; this.y += Math.sin(this.angle) * this.speed; if (this.x < 0) this.x = width; if (this.x > width) this.x = 0; if (this.y < 0) this.y = height; if (this.y > height) this.y = 0; }
+            draw() { ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
+        }
+        class Mandala {
+            constructor(x, y, radius, speed, color) { this.x = x; this.y = y; this.radius = radius; this.speed = speed; this.angle = 0; this.color = color; }
+            update() { this.angle += this.speed; }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                ctx.strokeStyle = this.color;
+                
+                if (isMobile) {
+                    ctx.lineWidth = 1;
+                    ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 2); ctx.stroke();
+                    ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.8, 0, Math.PI * 2); ctx.stroke();
+                    ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.6, 0, Math.PI * 2); ctx.stroke();
+                } else {
+                    ctx.lineWidth = 1.5;
+                    const petals = 12;
+                    for (let i = 0; i < petals; i++) {
+                        ctx.rotate(Math.PI * 2 / petals);
+                        ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(this.radius * 0.5, this.radius * 0.5, 0, this.radius); ctx.quadraticCurveTo(-this.radius * 0.5, this.radius * 0.5, 0, 0); ctx.stroke();
+                        ctx.beginPath(); ctx.arc(0, this.radius * 0.7, this.radius * 0.05, 0, Math.PI * 2); ctx.fillStyle = COLORS.gold; ctx.fill();
+                    }
+                    ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 2); ctx.stroke();
+                    ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.9, 0, Math.PI * 2); ctx.stroke();
+                }
+                ctx.restore();
+            }
+        }
+        function animate() { 
+            ctx.fillStyle = COLORS.trail; 
+            ctx.fillRect(0, 0, width, height); 
+            mandalas.forEach(m => { m.update(); m.draw(); }); 
+            particles.forEach(p => { p.update(); p.draw(); }); 
+            requestAnimationFrame(animate); 
+        }
+        window.addEventListener('resize', resize); resize(); animate();
+    });
+</script>
+<ishya-footer></ishya-footer>
+</body>
+</html>
