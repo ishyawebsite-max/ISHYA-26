@@ -10,8 +10,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Syncopate:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
-    <!-- GSAP -->
+    <!-- GLOBAL CSS & LAYOUT -->
+    <link rel="stylesheet" href="/global.css">
+    <script src="/layout.js" defer></script>
+
+    <!-- GSAP & THREE -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script type="module" src="https://unpkg.com/three@0.160.0/build/three.module.js"></script>
     
     <style>
         :root {
@@ -21,101 +26,47 @@
         }
 
         body { 
-            margin: 0; overflow: hidden; 
+            margin: 0; 
+            overflow: hidden; /* CRITICAL: Keeps 3D raycasting accurate */
             background-color: var(--bg-dark); 
             font-family: var(--font-tech);
+            width: 100vw;
+            height: 100vh;
         }
 
-        #font-loader-text { font-family: 'Cinzel'; font-weight: 900; opacity: 0; position: absolute; }
-        #font-loader-icon { font-family: 'Font Awesome 6 Free'; font-weight: 900; opacity: 0; position: absolute; }
+        /* --- HEADER OVERRIDES FOR THIS PAGE ONLY --- */
+        /* 1. Hide the dark full-width bar */
+        ishya-header .ishya-nav-backdrop {
+            display: none !important;
+        }
+        /* 2. Remove the layout spacer */
+        ishya-header .ishya-header-spacer {
+            display: none !important;
+        }
+        /* 3. Style the pill to float cleanly */
+        ishya-header .ishya-nav-container {
+            top: 25px !important;
+            background: rgba(5, 20, 8, 0.6) !important; /* Semi-transparent dark bg */
+            border: 1px solid rgba(214, 194, 106, 0.4) !important;
+            backdrop-filter: blur(5px);
+        }
+
+        /* LOADER & LAYERS */
+        #font-loader-text { font-family: 'Cinzel'; font-weight: 900; opacity: 0; position: absolute; pointer-events: none;}
+        #font-loader-icon { font-family: 'Font Awesome 6 Free'; font-weight: 900; opacity: 0; position: absolute; pointer-events: none;}
 
         #animated-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; pointer-events: none; }
-        #canvas-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
-        
         .overlay-grain {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
             pointer-events: none; z-index: 5; opacity: 0.6;
         }
+        #canvas-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
     </style>
 </head>
 <body>
-    <!-- ISHYA AERO / STICKY GLASS HEADER -->
-    <style>
-        :root {
-            --ishya-gold: #f0d57a;
-            --ishya-green: #4ade80;
-            --ishya-peach: #ffb08e;
-            --ishya-creme: #fef9c3;
-            --ishya-white: #ffffff;
-            --ishya-dark-aero: rgba(5, 8, 15, 0.6);
-            --ishya-glass-bright: rgba(255, 255, 255, 0.12);
-            --anim-fluid: cubic-bezier(0.16, 1, 0.3, 1);
-            --bar-height: 75px; 
-        }
-        body { padding-top: 0 !important; }
-        .ishya-header-spacer { display: none; }
-        #animated-bg { top: 75px !important; height: calc(100vh - 75px) !important; }
-        .overlay-grain { top: 75px !important; height: calc(100vh - 75px) !important; }
-        #canvas-container { top: 75px !important; height: calc(100vh - 75px) !important; }
-        .ishya-nav-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: var(--bar-height); background: var(--ishya-dark-aero); backdrop-filter: blur(35px) saturate(160%); -webkit-backdrop-filter: blur(35px) saturate(160%); border-bottom: 1px solid rgba(255, 255, 255, 0.1); z-index: 9997; overflow: hidden; }
-        .ishya-fluid-layer { position: absolute; inset: -30%; z-index: -1; opacity: 0.2; filter: blur(60px); background: radial-gradient(circle at 15% 25%, var(--ishya-green) 0%, transparent 40%), radial-gradient(circle at 85% 75%, var(--ishya-gold) 0%, transparent 40%), radial-gradient(circle at 50% 50%, var(--ishya-peach) 0%, transparent 35%), radial-gradient(circle at 30% 85%, var(--ishya-creme) 0%, transparent 30%); animation: fluidDrift 30s ease-in-out infinite alternate; will-change: transform; }
-        @keyframes fluidDrift { from { transform: translate(0, 0) scale(1); } to { transform: translate(4%, 3%) scale(1.15); } }
-        .ishya-nav-backdrop::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--ishya-glass-bright), transparent); z-index: 2; }
-        .ishya-nav-container { position: fixed; z-index: 9999; top: 10px; left: 50%; transform: translateX(-50%); width: 56px; height: 56px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--ishya-gold); border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); overflow: hidden; cursor: pointer; will-change: width, height, background; transition: width 0.6s var(--anim-fluid), height 0.6s var(--anim-fluid), background 0.4s ease, border-radius 0.4s ease; }
-        .ishya-logo-btn { position: absolute; top: 0; left: 0; width: 100%; height: 56px; display: flex; justify-content: center; align-items: center; transition: opacity 0.3s ease, transform 0.3s ease; }
-        .ishya-logo-btn img { height: 38px; width: auto; filter: drop-shadow(0 0 10px var(--ishya-green)); }
-        .ishya-menu-grid { display: flex; width: 100%; height: 100%; align-items: center; justify-content: space-evenly; opacity: 0; pointer-events: none; box-sizing: border-box; }
-        .ishya-link { display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: #fff; padding: 8px; min-width: 90px; transition: transform 0.3s var(--anim-fluid); }
-        .ishya-link svg { width: 24px; height: 24px; stroke: var(--ishya-green); fill: none; stroke-width: 1.8; margin-bottom: 5px; transition: stroke 0.3s ease, transform 0.3s ease; }
-        .ishya-link span { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--ishya-creme); opacity: 0.8; }
-        .ishya-nav-container.expanded { width: 880px; height: 68px; border-radius: 14px; background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.15); top: 4px; }
-        .ishya-nav-container.expanded .ishya-logo-btn { opacity: 0; transform: scale(0.8); pointer-events: none; }
-        .ishya-nav-container.expanded .ishya-menu-grid { opacity: 1; pointer-events: auto; }
-        .ishya-link:hover { transform: translateY(-3px); }
-        .ishya-link:hover svg { stroke: var(--ishya-gold); }
-        .ishya-link:hover span { opacity: 1; color: #fff; text-shadow: 0 0 10px var(--ishya-gold); }
-        @media screen and (max-width: 900px) {
-            .ishya-nav-container { top: 10px; width: 56px; height: 56px; }
-            .ishya-nav-container.expanded { width: 94%; height: auto; min-height: 380px; top: 10px; border-radius: 24px; background: rgba(10, 15, 20, 0.9); padding-bottom: 30px; }
-            .ishya-nav-container.expanded .ishya-menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 75px 15px 0 15px; }
-            .ishya-link { background: rgba(255,255,255,0.04); padding: 25px 10px; clip-path: polygon(0 0, 100% 0, 100% 88%, 88% 100%, 0 100%); border: 1px solid rgba(255,255,255,0.06); }
-            .ishya-nav-container.expanded .ishya-logo-btn { opacity: 1; transform: scale(1); height: 60px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        }
-    </style>
-    <div class="ishya-header-spacer"></div>
-    <div id="ishya-floating-nav-wrapper">
-        <div class="ishya-nav-backdrop">
-            <div class="ishya-fluid-layer"></div>
-        </div>
-        <nav class="ishya-nav-container" id="ishyaHeader">
-            <div class="ishya-logo-btn">
-                <img src="../Logo Ishya.ico" alt="ISHYA">
-            </div>
-            <div class="ishya-menu-grid">
-                <a href="../homemob.html" class="ishya-link"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Home</span></a>
-                <a href="../EVENTS/index_events.html" class="ishya-link"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg><span>Events</span></a>
-                <a href="../STORE/index_store.html" class="ishya-link"><svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M9 6a3 3 0 1 0 6 0"/><circle cx="12" cy="13" r="3"/></svg><span>Store</span></a>
-                <a href="../SPONSOR/index_sponsor.html" class="ishya-link"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Sponsors</span></a>
-                <a href="../TEAM/index_team.html" class="ishya-link"><svg viewBox="0 0 24 24"><path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/></svg><span>Team</span></a>
-                <a href="../RESULTS/index_results.html" class="ishya-link"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg><span>Results</span></a>
-            </div>
-        </nav>
-    </div>
-    <script>
-        (function(){
-            const nav = document.getElementById('ishyaHeader');
-            let isExpanded = false;
-            const toggleNav = (state) => {
-                isExpanded = (state !== undefined) ? state : !isExpanded;
-                nav.classList.toggle('expanded', isExpanded);
-            };
-            nav.addEventListener('mouseenter', () => { if(window.innerWidth > 900 && !isExpanded) nav.classList.add('expanded'); });
-            nav.addEventListener('mouseleave', () => { if(window.innerWidth > 900 && !isExpanded) nav.classList.remove('expanded'); });
-            nav.addEventListener('click', (e) => { if (e.target.closest('a')) return; toggleNav(); });
-            document.addEventListener('click', (e) => { if (!nav.contains(e.target) && isExpanded) toggleNav(false); });
-        })();
-    </script>
+
+    <ishya-header></ishya-header>
 
     <div id="font-loader-text">ISHYA LOADING</div>
     <div id="font-loader-icon" class="fa-solid fa-gamepad"></div>
@@ -124,68 +75,33 @@
     <div class="overlay-grain"></div>
     <div id="canvas-container"></div>
 
-    <!-- BACKGROUND ANIMATION -->
+    <!-- BACKGROUND ANIMATION SCRIPT (unchanged) -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const canvas = document.getElementById('animated-bg');
             const ctx = canvas.getContext('2d');
             let width, height;
-            
             const isMobile = window.innerWidth < 950;
-            const COLORS = { 
-                trail: 'rgba(5, 20, 8, 0.15)',
-                swirlGreen: 'rgba(77, 183, 72, 0.1)', 
-                gold: 'rgba(214, 194, 106, 0.3)', 
-                mandala: 'rgba(214, 194, 106, 0.08)' 
-            };
-            
-            const particles = []; 
-            let mandalas = [];
-
+            const COLORS = { trail: 'rgba(5, 20, 8, 0.15)', swirlGreen: 'rgba(77, 183, 72, 0.1)', gold: 'rgba(214, 194, 106, 0.3)', mandala: 'rgba(214, 194, 106, 0.08)' };
+            const particles = []; let mandalas = [];
             function resize() {
-                width = canvas.width = window.innerWidth; 
-                height = canvas.height = window.innerHeight;
+                width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight;
                 mandalas = [new Mandala(width/2, height*0.4, Math.min(width,height)*0.45, 0.0005, COLORS.mandala)];
                 particles.length = 0;
                 const pCount = isMobile ? 30 : 100;
                 for(let i=0; i<pCount; i++) particles.push(new FlowParticle());
             }
-
             class FlowParticle {
-                constructor() { 
-                    this.x = Math.random()*width; this.y = Math.random()*height; 
-                    this.speed = Math.random()*1.0+0.2; this.angle = 0; this.size = Math.random()*2+0.5;
-                    this.color = Math.random()>0.8 ? COLORS.gold : COLORS.swirlGreen; 
-                }
-                update() { 
-                    const n = Math.sin(this.x*0.002) * Math.cos(this.y*0.002);
-                    this.angle = n * Math.PI * 4; 
-                    this.x += Math.cos(this.angle)*this.speed; this.y += Math.sin(this.angle)*this.speed;
-                    if(this.x<0)this.x=width; if(this.x>width)this.x=0; if(this.y<0)this.y=height; if(this.y>height)this.y=0;
-                }
+                constructor() { this.x = Math.random()*width; this.y = Math.random()*height; this.speed = Math.random()*1.0+0.2; this.angle = 0; this.size = Math.random()*2+0.5; this.color = Math.random()>0.8 ? COLORS.gold : COLORS.swirlGreen; }
+                update() { const n = Math.sin(this.x*0.002) * Math.cos(this.y*0.002); this.angle = n * Math.PI * 4; this.x += Math.cos(this.angle)*this.speed; this.y += Math.sin(this.angle)*this.speed; if(this.x<0)this.x=width; if(this.x>width)this.x=0; if(this.y<0)this.y=height; if(this.y>height)this.y=0; }
                 draw() { ctx.fillStyle=this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill(); }
             }
-
             class Mandala {
                 constructor(x,y,r,s,c) { this.x=x;this.y=y;this.r=r;this.s=s;this.angle=0;this.c=c; }
                 update() { this.angle+=this.s; }
-                draw() {
-                    ctx.save(); ctx.translate(this.x,this.y); ctx.rotate(this.angle); ctx.strokeStyle=this.c; ctx.lineWidth=2;
-                    for(let i=0;i<12;i++){
-                        ctx.rotate(Math.PI*2/12); ctx.beginPath(); ctx.moveTo(0,0);
-                        ctx.quadraticCurveTo(this.r*0.5,this.r*0.5,0,this.r);
-                        ctx.quadraticCurveTo(-this.r*0.5,this.r*0.5,0,0); ctx.stroke();
-                    }
-                    ctx.restore();
-                }
+                draw() { ctx.save(); ctx.translate(this.x,this.y); ctx.rotate(this.angle); ctx.strokeStyle=this.c; ctx.lineWidth=2; for(let i=0;i<12;i++){ ctx.rotate(Math.PI*2/12); ctx.beginPath(); ctx.moveTo(0,0); ctx.quadraticCurveTo(this.r*0.5,this.r*0.5,0,this.r); ctx.quadraticCurveTo(-this.r*0.5,this.r*0.5,0,0); ctx.stroke(); } ctx.restore(); }
             }
-
-            function animate() { 
-                ctx.fillStyle=COLORS.trail; ctx.fillRect(0,0,width,height); 
-                mandalas.forEach(m=>{m.update();m.draw();}); 
-                particles.forEach(p=>{p.update();p.draw();}); 
-                requestAnimationFrame(animate); 
-            }
+            function animate() { ctx.fillStyle=COLORS.trail; ctx.fillRect(0,0,width,height); mandalas.forEach(m=>{m.update();m.draw();}); particles.forEach(p=>{p.update();p.draw();}); requestAnimationFrame(animate); }
             window.addEventListener('resize', resize); resize(); animate();
         });
     </script>
@@ -194,22 +110,10 @@
     <script type="module">
         import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
-        // FontAwesome Unicodes
-        const ICONS = {
-            masks: "\uf630", music: "\uf001",
-            feather: "\uf56b", mic: "\uf130",
-            palette: "\uf53f", brush: "\uf1fc",
-            gamepad: "\uf11b", headset: "\uf590",
-            camera: "\uf030", film: "\uf008"
-        };
-
+        const ICONS = { masks: "\uf630", music: "\uf001", feather: "\uf56b", mic: "\uf130", palette: "\uf53f", brush: "\uf1fc", gamepad: "\uf11b", headset: "\uf590", camera: "\uf030", film: "\uf008" };
         const CONFIG = {
-            bannerWidth: 50,
-            bannerHeight: 18, 
-            cardWidth: 50,
-            cardHeight: 14,
-            closedAngle: 1.55, 
-            openAngle: 0.18,   
+            bannerWidth: 50, bannerHeight: 18, cardWidth: 50, cardHeight: 14,
+            closedAngle: 1.55, openAngle: 0.18,   
             categories: [
                 { name: "PERFORMING ARTS", iconL: ICONS.masks, iconR: ICONS.music },
                 { name: "LITERARY & ORATORY", iconL: ICONS.feather, iconR: ICONS.mic },
@@ -221,346 +125,134 @@
 
         async function initApp() {
             await document.fonts.ready;
-            
-            // --- SCENE ---
             const container = document.getElementById('canvas-container');
-            const scene = new THREE.Scene();
-            scene.background = null; 
-            
+            const scene = new THREE.Scene(); scene.background = null; 
             const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
             camera.position.set(0, 0, 110); 
-            
             const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             container.appendChild(renderer.domElement);
-
-            const ambLight = new THREE.AmbientLight(0x051408, 0.8);
-            scene.add(ambLight);
-
+            
+            scene.add(new THREE.AmbientLight(0x051408, 0.8));
             const dirLight = new THREE.DirectionalLight(0xD6C26A, 1.8);
-            dirLight.position.set(10, 50, 60);
-            dirLight.castShadow = true;
-            dirLight.shadow.bias = -0.001; 
+            dirLight.position.set(10, 50, 60); dirLight.castShadow = true; dirLight.shadow.bias = -0.001; 
             scene.add(dirLight);
 
-            // --- HELPER: TEXT SCALING LOGIC ---
-            // Measures text and fits it into "Safe Zone" to prevent overlap with icons
             function getSafeFontSize(ctx, text, baseSize, maxWid) {
                 ctx.font = `900 ${baseSize}px 'Cinzel', serif`;
                 let width = ctx.measureText(text).width;
-                if(width > maxWid) {
-                    return Math.floor(baseSize * (maxWid / width));
-                }
+                if(width > maxWid) return Math.floor(baseSize * (maxWid / width));
                 return baseSize;
             }
 
-            // --- TEXTURE: NORMAL (STATIC) ---
             function createCardTexture(data) {
-                const canvas = document.createElement('canvas');
-                canvas.width = 1024; canvas.height = 256;
-                const ctx = canvas.getContext('2d');
-
-                // 1. Gold BG
-                const grad = ctx.createLinearGradient(0,0,0,256);
-                grad.addColorStop(0, '#8a6e28'); grad.addColorStop(0.2, '#D6C26A'); 
-                grad.addColorStop(0.5, '#fcf6ba'); grad.addColorStop(0.8, '#D6C26A'); grad.addColorStop(1, '#8a6e28');
+                const canvas = document.createElement('canvas'); canvas.width = 1024; canvas.height = 256; const ctx = canvas.getContext('2d');
+                const grad = ctx.createLinearGradient(0,0,0,256); grad.addColorStop(0, '#8a6e28'); grad.addColorStop(0.2, '#D6C26A'); grad.addColorStop(0.5, '#fcf6ba'); grad.addColorStop(0.8, '#D6C26A'); grad.addColorStop(1, '#8a6e28');
                 ctx.fillStyle = grad; ctx.fillRect(0,0,1024,256);
-                
-                // Noise
-                ctx.fillStyle = "rgba(0,0,0,0.12)";
-                for(let i=0; i<8000; i++) ctx.fillRect(Math.random()*1024, Math.random()*256, 1.5, 1.5);
-                
-                // 2. Calculation
-                const iconPad = 40; // Push to edges
-                const iconWid = 60; // Estimated icon width
-                // Text area = Total Width - (2 * (Pad + Icon + Spacing))
-                const maxTextWidth = 1024 - (2 * (iconPad + iconWid + 20)); 
-                const fontSize = getSafeFontSize(ctx, data.name, 65, maxTextWidth);
-
-                // 3. Render
-                ctx.fillStyle = "#051408"; 
-                ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                
-                // Text
-                ctx.font = `900 ${fontSize}px 'Cinzel', serif`;
-                ctx.fillText(data.name, 512, 128);
-                
-                // Icons
-                ctx.font = "900 55px 'Font Awesome 6 Free'";
-                ctx.fillText(data.iconL, iconPad + 30, 128);
-                ctx.fillText(data.iconR, 1024 - (iconPad + 30), 128);
-
-                const tex = new THREE.CanvasTexture(canvas);
-                tex.colorSpace = THREE.SRGBColorSpace;
-                tex.anisotropy = 16;
-                return tex;
+                ctx.fillStyle = "rgba(0,0,0,0.12)"; for(let i=0; i<8000; i++) ctx.fillRect(Math.random()*1024, Math.random()*256, 1.5, 1.5);
+                const iconPad = 40; const iconWid = 60; const maxTextWidth = 1024 - (2 * (iconPad + iconWid + 20)); const fontSize = getSafeFontSize(ctx, data.name, 65, maxTextWidth);
+                ctx.fillStyle = "#051408"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                ctx.font = `900 ${fontSize}px 'Cinzel', serif`; ctx.fillText(data.name, 512, 128);
+                ctx.font = "900 55px 'Font Awesome 6 Free'"; ctx.fillText(data.iconL, iconPad + 30, 128); ctx.fillText(data.iconR, 1024 - (iconPad + 30), 128);
+                const tex = new THREE.CanvasTexture(canvas); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 16; return tex;
             }
 
-            // --- BANNER TEXTURE ---
             function createBannerTexture() {
-                const canvas = document.createElement('canvas');
-                canvas.width = 1024; canvas.height = 368;
-                const ctx = canvas.getContext('2d');
-
-                const grad = ctx.createLinearGradient(0,0,0,368);
-                grad.addColorStop(0, '#3e2b18'); grad.addColorStop(0.5, '#5a461b'); grad.addColorStop(1, '#3e2b18');
+                const canvas = document.createElement('canvas'); canvas.width = 1024; canvas.height = 368; const ctx = canvas.getContext('2d');
+                const grad = ctx.createLinearGradient(0,0,0,368); grad.addColorStop(0, '#3e2b18'); grad.addColorStop(0.5, '#5a461b'); grad.addColorStop(1, '#3e2b18');
                 ctx.fillStyle = grad; ctx.fillRect(0,0,1024,368);
-
-                ctx.fillStyle = "rgba(0,0,0,0.2)";
-                for(let i=0; i<10000; i++) ctx.fillRect(Math.random()*1024, Math.random()*368, 2, 2);
-                
+                ctx.fillStyle = "rgba(0,0,0,0.2)"; for(let i=0; i<10000; i++) ctx.fillRect(Math.random()*1024, Math.random()*368, 2, 2);
                 ctx.lineWidth = 15; ctx.strokeStyle = "#D6C26A"; ctx.strokeRect(10,10,1004,348);
-                
-                ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                ctx.fillStyle = "#D6C26A"; 
-                
-                ctx.shadowColor="rgba(0,0,0,0.5)"; ctx.shadowBlur=10;
-                ctx.font = "900 110px 'Cinzel', serif";
-                ctx.fillText("ISHYA '26", 512, 140);
-                
-                ctx.shadowBlur=0;
-                ctx.fillStyle = "#e0e0e0"; ctx.letterSpacing = "5px";
-                ctx.font = "700 35px 'Syncopate', sans-serif";
-                ctx.fillText("FLAMES IN THE FOLD", 512, 250);
-
-                const tex = new THREE.CanvasTexture(canvas);
-                tex.colorSpace = THREE.SRGBColorSpace;
-                tex.minFilter = THREE.LinearFilter;
-                return tex;
+                ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillStyle = "#D6C26A"; 
+                ctx.shadowColor="rgba(0,0,0,0.5)"; ctx.shadowBlur=10; ctx.font = "900 110px 'Cinzel', serif"; ctx.fillText("ISHYA '26", 512, 140);
+                ctx.shadowBlur=0; ctx.fillStyle = "#e0e0e0"; ctx.letterSpacing = "5px"; ctx.font = "700 35px 'Syncopate', sans-serif"; ctx.fillText("FLAMES IN THE FOLD", 512, 250);
+                const tex = new THREE.CanvasTexture(canvas); tex.colorSpace = THREE.SRGBColorSpace; tex.minFilter = THREE.LinearFilter; return tex;
             }
 
-            // --- MESH SETUP ---
-            const hinges = [];
-            const meshes = [];
-            const rootGroup = new THREE.Group();
-            rootGroup.position.set(0, 42, 0); 
+            const hinges = []; const meshes = []; const rootGroup = new THREE.Group();
+            
+            // --- FIX START: SCALE DOWN AND RE-CENTER ---
+            // 1. Scale down to 0.85 (85% size) to create top/bottom margins
+            rootGroup.scale.set(0.85, 0.85, 0.85);
+
+            // 2. Position Y at 35. 
+            // (Previous 42 was too high, 30 was too low. 35 is the sweet spot for this scale)
+            rootGroup.position.set(0, 35, 0); 
+            // --- FIX END ---
+            
             scene.add(rootGroup);
 
-            // Banner
-            const bannerMat = new THREE.MeshStandardMaterial({
-                map: createBannerTexture(), roughness: 0.7, metalness: 0.3, side: THREE.DoubleSide
-            });
-            const bannerMesh = new THREE.Mesh(new THREE.PlaneGeometry(CONFIG.bannerWidth, CONFIG.bannerHeight), bannerMat);
-            bannerMesh.castShadow = true;
-            bannerMesh.position.y = -CONFIG.bannerHeight / 2;
-            rootGroup.add(bannerMesh);
+            const bannerMesh = new THREE.Mesh(new THREE.PlaneGeometry(CONFIG.bannerWidth, CONFIG.bannerHeight), new THREE.MeshStandardMaterial({ map: createBannerTexture(), roughness: 0.7, metalness: 0.3, side: THREE.DoubleSide }));
+            bannerMesh.castShadow = true; bannerMesh.position.y = -CONFIG.bannerHeight / 2; rootGroup.add(bannerMesh);
 
-            // Cards
             let parent = rootGroup;
             CONFIG.categories.forEach((catData, i) => {
-                const hinge = new THREE.Group();
-                hinge.position.y = (i === 0) ? -CONFIG.bannerHeight : -CONFIG.cardHeight;
-                (i === 0) ? rootGroup.add(hinge) : parent.add(hinge);           
-                hinges.push(hinge);
-                parent = hinge;
-
-                const geom = new THREE.PlaneGeometry(CONFIG.cardWidth, CONFIG.cardHeight, 40, 1);
-                geom.translate(0, -CONFIG.cardHeight/2, 0);
-
-                // Create Static Normal Map
+                const hinge = new THREE.Group(); hinge.position.y = (i === 0) ? -CONFIG.bannerHeight : -CONFIG.cardHeight; (i === 0) ? rootGroup.add(hinge) : parent.add(hinge); hinges.push(hinge); parent = hinge;
+                const geom = new THREE.PlaneGeometry(CONFIG.cardWidth, CONFIG.cardHeight, 40, 1); geom.translate(0, -CONFIG.cardHeight/2, 0);
                 const texNormal = createCardTexture(catData);
-
-                // Create Dynamic Hover Canvas (retained for animation updates)
-                const hoverCanvas = document.createElement('canvas');
-                hoverCanvas.width = 1024; hoverCanvas.height = 256;
-                const texHover = new THREE.CanvasTexture(hoverCanvas);
-                texHover.colorSpace = THREE.SRGBColorSpace;
-                texHover.anisotropy = 16;
-
-                const matNormal = new THREE.MeshStandardMaterial({
-                    map: texNormal, side: THREE.DoubleSide, roughness: 0.5, metalness: 0.5
-                });
-
-                const matHover = new THREE.MeshBasicMaterial({
-                    map: texHover, side: THREE.DoubleSide
-                });
-
-                const mesh = new THREE.Mesh(geom, matNormal);
-                mesh.castShadow = true; mesh.receiveShadow = true;
-                
-                mesh.userData = { 
-                    id: i, name: catData.name, data: catData,
-                    matNormal: matNormal, matHover: matHover,
-                    hoverCanvas: hoverCanvas, texHover: texHover,
-                    anim: { progress: 0 } // Animation State 0 -> 1
-                };
-                
-                hinge.add(mesh);
-                meshes.push(mesh); 
+                const hoverCanvas = document.createElement('canvas'); hoverCanvas.width = 1024; hoverCanvas.height = 256; const texHover = new THREE.CanvasTexture(hoverCanvas); texHover.colorSpace = THREE.SRGBColorSpace; texHover.anisotropy = 16;
+                const matNormal = new THREE.MeshStandardMaterial({ map: texNormal, side: THREE.DoubleSide, roughness: 0.5, metalness: 0.5 });
+                const matHover = new THREE.MeshBasicMaterial({ map: texHover, side: THREE.DoubleSide });
+                const mesh = new THREE.Mesh(geom, matNormal); mesh.castShadow = true; mesh.receiveShadow = true;
+                mesh.userData = { id: i, name: catData.name, data: catData, matNormal: matNormal, matHover: matHover, hoverCanvas: hoverCanvas, texHover: texHover, anim: { progress: 0 } };
+                hinge.add(mesh); meshes.push(mesh); 
             });
 
-            // --- ANIMATIONS ---
-            function updateFolds(angle) {
-                hinges.forEach((h, i) => {
-                    h.rotation.x = (i === 0) ? angle : angle * 2 * ((i % 2 === 0) ? 1 : -1);
-                });
-            }
-            const animState = { angle: CONFIG.closedAngle };
-            updateFolds(CONFIG.closedAngle);
+            function updateFolds(angle) { hinges.forEach((h, i) => { h.rotation.x = (i === 0) ? angle : angle * 2 * ((i % 2 === 0) ? 1 : -1); }); }
+            const animState = { angle: CONFIG.closedAngle }; updateFolds(CONFIG.closedAngle);
+            gsap.to(animState, { angle: CONFIG.openAngle, duration: 2.5, ease: "elastic.out(1, 0.6)", delay: 0.5, onUpdate: () => updateFolds(animState.angle), onComplete: () => { isInteracting = true; } });
 
-            gsap.to(animState, {
-                angle: CONFIG.openAngle, duration: 2.5, ease: "elastic.out(1, 0.6)", delay: 0.5,
-                onUpdate: () => updateFolds(animState.angle),
-                onComplete: () => { isInteracting = true; }
-            });
-
-            let isInteracting = false; 
-            let isClosing = false;
-            let activeHoverIndex = -1;
-
-            // --- RENDER DYNAMIC TEXTURE (HOVER) ---
-            // This runs inside the animate loop for the ACTIVE card only
+            let isInteracting = false; let isClosing = false; let activeHoverIndex = -1;
             function updateActiveCardTexture(mesh) {
                 if(mesh.material !== mesh.userData.matHover) return;
-
-                const ctx = mesh.userData.hoverCanvas.getContext('2d');
-                const p = mesh.userData.anim.progress; // 0 to 1
-                const data = mesh.userData.data;
-
-                // 1. Clear & BG (Inverted Dark)
-                ctx.fillStyle = "#051408"; ctx.fillRect(0,0,1024,256);
-                
-                // 2. Grain
-                ctx.fillStyle = "rgba(255,255,255,0.04)";
-                for(let i=0; i<1000; i++) ctx.fillRect(Math.random()*1024, Math.random()*256, 1, 1);
-
-                // 3. Dynamic Scale (1.0 -> 1.05)
-                const scale = 1.0 + (p * 0.05); 
-
-                // Draw Text (Scaled)
-                // Re-calc font size safely
-                const iconPad = 40; 
-                const iconWid = 60; 
-                const maxTextWidth = 1024 - (2 * (iconPad + iconWid + 20)); 
-                let fontSize = getSafeFontSize(ctx, data.name, 65, maxTextWidth);
-                fontSize = fontSize * scale;
-
-                ctx.save();
-                ctx.translate(512, 128); // Pivot center
-                // ctx.scale(scale, scale); // We scale font size instead for sharper text
-                ctx.font = `900 ${fontSize}px 'Cinzel', serif`;
-                ctx.fillStyle = "#D6C26A"; 
-                ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                ctx.fillText(data.name, 0, 0);
-                
-                // Icons (Scaled)
-                ctx.font = `900 ${55 * scale}px 'Font Awesome 6 Free'`;
-                // Calculate position based on scale push (Optional, keep centered is cleaner)
-                // Left
-                ctx.fillText(data.iconL, -(512 - (iconPad+30)), 0);
-                // Right
-                ctx.fillText(data.iconR, (512 - (iconPad+30)), 0);
-                ctx.restore();
-
-                // 4. Drawing Border
-                // Path: Top Left -> Right -> Bottom -> Left -> Top
-                // Total Perim = (1024 + 256) * 2 = 2560
-                const perim = 2560;
-                
-                ctx.lineWidth = 15; 
-                ctx.strokeStyle = "#D6C26A"; 
-                ctx.setLineDash([perim * p, perim]); // The magic "drawing" effect
-                ctx.lineDashOffset = 0; // Starts from Top Left corner
-                
-                ctx.strokeRect(0, 0, 1024, 256);
-
+                const ctx = mesh.userData.hoverCanvas.getContext('2d'); const p = mesh.userData.anim.progress; const data = mesh.userData.data;
+                ctx.fillStyle = "#051408"; ctx.fillRect(0,0,1024,256); ctx.fillStyle = "rgba(255,255,255,0.04)"; for(let i=0; i<1000; i++) ctx.fillRect(Math.random()*1024, Math.random()*256, 1, 1);
+                const scale = 1.0 + (p * 0.05); const iconPad = 40; const iconWid = 60; const maxTextWidth = 1024 - (2 * (iconPad + iconWid + 20)); 
+                let fontSize = getSafeFontSize(ctx, data.name, 65, maxTextWidth); fontSize = fontSize * scale;
+                ctx.save(); ctx.translate(512, 128); ctx.font = `900 ${fontSize}px 'Cinzel', serif`; ctx.fillStyle = "#D6C26A"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(data.name, 0, 0);
+                ctx.font = `900 ${55 * scale}px 'Font Awesome 6 Free'`; ctx.fillText(data.iconL, -(512 - (iconPad+30)), 0); ctx.fillText(data.iconR, (512 - (iconPad+30)), 0); ctx.restore();
+                const perim = 2560; ctx.lineWidth = 15; ctx.strokeStyle = "#D6C26A"; ctx.setLineDash([perim * p, perim]); ctx.lineDashOffset = 0; ctx.strokeRect(0, 0, 1024, 256);
                 mesh.userData.texHover.needsUpdate = true;
             }
 
-            // --- INTERACTION HANDLERS ---
-            const raycaster = new THREE.Raycaster();
-            const mouse = new THREE.Vector2();
-
+            const raycaster = new THREE.Raycaster(); const mouse = new THREE.Vector2();
             window.addEventListener('mousemove', (e) => {
                 if(!isInteracting || isClosing) return;
-                mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-                mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-                raycaster.setFromCamera(mouse, camera);
-                const intersects = raycaster.intersectObjects(meshes);
-
-                if(intersects.length > 0) {
-                    const idx = intersects[0].object.userData.id;
-                    if(activeHoverIndex !== idx) {
-                        switchHover(idx);
-                        document.body.style.cursor = 'pointer';
-                    }
-                } else {
-                    if(activeHoverIndex !== -1) {
-                        switchHover(-1);
-                        document.body.style.cursor = 'default';
-                    }
-                }
+                mouse.x = (e.clientX / window.innerWidth) * 2 - 1; mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+                raycaster.setFromCamera(mouse, camera); const intersects = raycaster.intersectObjects(meshes);
+                if(intersects.length > 0) { const idx = intersects[0].object.userData.id; if(activeHoverIndex !== idx) { switchHover(idx); document.body.style.cursor = 'pointer'; } } 
+                else { if(activeHoverIndex !== -1) { switchHover(-1); document.body.style.cursor = 'default'; } }
             });
 
             function switchHover(newIndex) {
-                // Deactivate current
-                if(activeHoverIndex !== -1) {
-                    const mesh = meshes[activeHoverIndex];
-                    mesh.material = mesh.userData.matNormal;
-                    gsap.killTweensOf(mesh.userData.anim);
-                    mesh.userData.anim.progress = 0; // Reset
-                }
-                
+                if(activeHoverIndex !== -1) { const mesh = meshes[activeHoverIndex]; mesh.material = mesh.userData.matNormal; gsap.killTweensOf(mesh.userData.anim); mesh.userData.anim.progress = 0; }
                 activeHoverIndex = newIndex;
-
-                // Activate new
-                if(activeHoverIndex !== -1) {
-                    const mesh = meshes[activeHoverIndex];
-                    mesh.material = mesh.userData.matHover;
-                    gsap.to(mesh.userData.anim, {
-                        progress: 1,
-                        duration: 0.4,
-                        ease: "power2.out"
-                    });
-                }
+                if(activeHoverIndex !== -1) { const mesh = meshes[activeHoverIndex]; mesh.material = mesh.userData.matHover; gsap.to(mesh.userData.anim, { progress: 1, duration: 0.4, ease: "power2.out" }); }
             }
 
-            // --- EXIT ---
             window.addEventListener('click', () => {
-                // Check if we are hovering a card, not already closing, and the menu is fully open
                 if(activeHoverIndex !== -1 && !isClosing && isInteracting) {
-                    isClosing = true;
-                    
-                    // 1. Get the category name (e.g., "PERFORMING ARTS")
-                    const catName = meshes[activeHoverIndex].userData.name;
-                    
-                    // 2. Revert material to normal (remove glowing border)
-                    meshes[activeHoverIndex].material = meshes[activeHoverIndex].userData.matNormal;
-
-                    // 3. Play the "Closing" animation
-                    gsap.to(animState, {
-                        angle: CONFIG.closedAngle, 
-                        duration: 0.8, 
-                        ease: "power2.inOut",
-                        onUpdate: () => updateFolds(animState.angle),
-                        onComplete: () => {
-                            // 4. REDIRECT LOGIC
-                            // We encode the URI to handle spaces and symbols (like "&") correctly
-                            // Make sure your second page is named 'events_landed.html'
-                            window.location.href = `events_landed.html?category=${encodeURIComponent(catName)}`;
-                        }
-                    });
+                    isClosing = true; const catName = meshes[activeHoverIndex].userData.name; meshes[activeHoverIndex].material = meshes[activeHoverIndex].userData.matNormal;
+                    gsap.to(animState, { angle: CONFIG.closedAngle, duration: 0.8, ease: "power2.inOut", onUpdate: () => updateFolds(animState.angle), onComplete: () => { window.location.href = `events_landed.html?category=${encodeURIComponent(catName)}`; } });
                 }
             });
 
-            function animate() {
-                requestAnimationFrame(animate);
-                
-                // Only redraw the specific canvas if we are hovering
-                if(activeHoverIndex !== -1) {
-                    updateActiveCardTexture(meshes[activeHoverIndex]);
-                }
-
-                renderer.render(scene, camera);
-            }
+            function animate() { requestAnimationFrame(animate); if(activeHoverIndex !== -1) updateActiveCardTexture(meshes[activeHoverIndex]); renderer.render(scene, camera); }
             animate();
-
+            // window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
             window.addEventListener('resize', () => {
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
+                
+                // --- OPTIONAL RESPONSIVE TWEAK ---
+                // If screen gets very short, shrink it a bit more automatically
+                if(window.innerHeight < 800) {
+                    rootGroup.scale.set(0.75, 0.75, 0.75);
+                } else {
+                    rootGroup.scale.set(0.85, 0.85, 0.85);
+                }
             });
         }
         initApp();

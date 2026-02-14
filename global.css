@@ -1,0 +1,34 @@
+/* Import Google Fonts here so you don't have to paste them in every HTML head */
+@import url('https://fonts.googleapis.com/css2?family=Foldit:wght@400;600;800;900&family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;500;700&family=Cormorant+Garamond:ital,wght@1,300;1,600&family=Share+Tech+Mono&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css');
+
+:root {
+    /* --- COLORS --- */
+    --bg-dark: #051408;       
+    --accent-gold: #D6C26A;   
+    --accent-olive: #6B7540;  
+    --accent-green: #4D8F48;  
+    --text-light: #e0e0e0;
+    
+    /* ISHYA SPECIFIC */
+    --ishya-gold: #f0d57a;
+    --ishya-green: #4ade80;
+    --ishya-peach: #ffb08e;
+    --ishya-creme: #fef9c3;
+    --ishya-white: #ffffff;
+    --ishya-dark-aero: rgba(5, 8, 15, 0.6);
+    --ishya-glass-bright: rgba(255, 255, 255, 0.12);
+    --anim-fluid: cubic-bezier(0.16, 1, 0.3, 1);
+    --bar-height: 75px; 
+    --header-h: 75px;
+
+    /* FONTS */
+    --font-display: 'Syncopate', sans-serif;
+    --font-fold: 'Foldit', display;
+    --font-body: 'Space Grotesk', sans-serif;
+    --font-tech: 'Share Tech Mono', monospace;
+    --font-serif: 'Cormorant Garamond', serif;
+}
+
+body { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-body); background: var(--bg-dark); color: var(--text-light); }
+a { text-decoration: none; }
