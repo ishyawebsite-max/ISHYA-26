@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <link rel="shortcut icon" type="image/x-icon" href="../Logo Ishya.ico">
-    <link rel="stylesheet" href="/global.css"> <!--H&F change 1-->
+    <link rel="stylesheet" href="/global.css">
     <meta charset="UTF-8">
     <script async src="https://tally.so/widgets/embed.js"></script>
-    <script src="/layout.js" defer></script> <!--H&F change 2-->
+    <script src="/layout.js" defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ISHYA '26 | FLAMES IN EVERY FOLD</title>
 
-    <!-- FAVICON LINK (Ensure logo.png is in the same folder) -->
+    <!-- FAVICON LINK -->
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
 
@@ -53,9 +53,8 @@
     .ishya-nav-backdrop {
         position: fixed;
         top: 0;
-        height: var(--bar-height); /* ~75px */
+        height: var(--bar-height);
     }
-
 
     /* --- LAYERS --- */
     #animated-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; background-color: var(--bg-dark); pointer-events: none; }
@@ -194,13 +193,14 @@
         padding: 30px 0; 
         overflow: hidden; 
         transform: rotate(-2deg) scale(1.05); 
+        will-change: transform; /* Optimization */
     }
     .image-marquee-track { 
         display: flex; 
         gap: 20px; 
         width: max-content; 
         animation: scrollImages 80s linear infinite; 
-        will-change: transform; /* Optimized for Jitter */
+        will-change: transform; 
     }
     .image-marquee-item { 
         width: 400px; 
@@ -210,7 +210,8 @@
         border: 1px solid rgba(255,255,255,0.2); 
         filter: grayscale(100%); 
         transition: 0.4s; 
-        backface-visibility: hidden; /* Optimized for Jitter */
+        backface-visibility: hidden; 
+        transform: translateZ(0); /* Hardware Acceleration */
     }
     .image-marquee-item:hover { 
         filter: grayscale(0%); 
@@ -228,7 +229,7 @@
         100% { transform: translateX(-50%);}
     }
 
-    /* --- SECTION 3: EVENTS --- */
+    /* --- SECTION 3: EVENTS (OPTIMIZED) --- */
     .events-3d-section { flex-direction: column; overflow: hidden; position: relative; padding-top: 5vh; padding-bottom: 5vh; justify-content: flex-start; }
     .events-header { padding: 0 5vw; margin-bottom: 20px; width: 100%; display: flex; justify-content: space-between; align-items: flex-end; z-index: 5; }
     .carousel-stage { 
@@ -237,29 +238,48 @@
         perspective: 1200px; margin-top: 20px;
         perspective-origin: center; 
     }
-    .carousel-container { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; display: flex; justify-content: center; align-items: center; }
+    .carousel-container { 
+        width: 100%; height: 100%; position: relative; 
+        transform-style: preserve-3d; display: flex; 
+        justify-content: center; align-items: center; 
+    }
 
+    /* 
+       CRITICAL FIX: 
+       Removed 'glass-panel' from here to avoid backdrop-filter lag during 3D transform.
+       Added 'will-change' and 'backface-visibility' 
+    */
     .carousel-card-3d {
         position: absolute; 
         width: 320px; height: 500px;
-        background: #000; border-radius: 12px;
+        background: rgba(10, 15, 8, 0.85); /* Slightly darker, no blur for performance */
+        border-radius: 12px;
         border: 1px solid rgba(255, 255, 255, 0.1);
         transform-origin: center center; 
         left: 0; right: 0; margin: auto;
         overflow: hidden; cursor: pointer;
         box-shadow: 0 15px 40px rgba(0,0,0,0.8);
-        transition: border-color 0.3s, box-shadow 0.3s;
-        will-change: transform, opacity; /* Optimized for Jitter */
+        transition: border-color 0.3s; /* Removed box-shadow transition to save FPS */
+        will-change: transform, opacity; 
         backface-visibility: hidden;
+        transform-style: preserve-3d;
     }
     .carousel-card-3d::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(5,20,8,0.95) 100%); z-index: 2; pointer-events: none; }
     .carousel-card-3d:hover { border-color: var(--accent-gold); }
-    .card-bg-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: filter 0.5s; position: absolute; top: 0; left: 0; z-index: 1; }
+    
+    .card-bg-img { 
+        width: 100%; height: 100%; object-fit: cover; 
+        filter: grayscale(100%); transition: filter 0.5s; 
+        position: absolute; top: 0; left: 0; z-index: 1; 
+        will-change: filter;
+    }
     .carousel-card-3d.active-card .card-bg-img { filter: grayscale(0%); }
     .card-content { position: absolute; z-index: 3; padding: 25px; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
     .card-number { font-family: var(--font-serif); font-style: italic; font-weight: 300; font-size: 5rem; color: rgba(255,255,255,0.9); line-height: 0.8; margin-left: -5px; }
+    
     .card-details { transform: translateY(20px); opacity: 0; transition: all 0.4s ease 0.2s; }
     .carousel-card-3d.active-card .card-details { transform: translateY(0); opacity: 1; }
+    
     .card-cat { font-family: var(--font-tech); color: var(--accent-gold); font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 8px; text-transform: uppercase; }
     .card-title { font-family: var(--font-display); font-size: 2rem; color: #fff; line-height: 1; margin-bottom: 5px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
     .card-arrow-icon { position: absolute; top: 25px; right: 25px; color: #fff; font-size: 1.2rem; opacity: 0.7; transform: rotate(45deg); }
@@ -357,7 +377,6 @@
         .perch-title { font-size: 2.5rem; text-align: center; }
         .perch-subtitle { font-size: 0.8rem; }
         
-        /* --- [MODIFIED] HERO TEXT --- */
         .hero-title {
             font-family: 'Syncopate', sans-serif !important; 
             font-weight: 700;
@@ -366,7 +385,7 @@
             flex-direction: column; 
             align-items: center;
             line-height: 1.1;
-            margin-top: 45vh; /* Pushes title down to create space for the logo */
+            margin-top: 45vh; 
             margin-bottom: 0;
             gap: 5px;
             color: var(--accent-gold);
@@ -376,19 +395,17 @@
         }
         .word-group { margin: 0; }
         
-        /* --- [MODIFIED] HERO LAYOUT --- */
         #hero {
-            padding-top: 80px; /* Reduced top padding */
+            padding-top: 80px; 
             padding-bottom: 30px;
             min-height: 100vh;
-            justify-content: center; /* Center the content block vertically */
+            justify-content: center; 
         }
         
-        /* --- [MODIFIED] HERO DATE --- */
         .hero-date { 
             font-size: 8vw;
             letter-spacing: 2px; 
-            margin-top: 15px; /* Removed the huge gap */
+            margin-top: 15px; 
             margin-bottom: 15px;
         }
 
@@ -439,81 +456,6 @@
 </style>
 </head>
 <body>
-    <!-- ISHYA AERO / STICKY GLASS HEADER -->
-    <!-- <style>
-        :root {
-            --ishya-gold: #f0d57a;
-            --ishya-green: #4ade80;
-            --ishya-peach: #ffb08e;
-            --ishya-creme: #fef9c3;
-            --ishya-white: #ffffff;
-            --ishya-dark-aero: rgba(5, 8, 15, 0.6);
-            --ishya-glass-bright: rgba(255, 255, 255, 0.12);
-            --anim-fluid: cubic-bezier(0.16, 1, 0.3, 1);
-            --bar-height: 75px; 
-            --header-h: 75px;
-        }
-        .ishya-header-spacer { display: none; }
-        #animated-bg { top: 0 !important; height: 100vh !important; }
-        #bg-overlay { top: 0 !important; height: 100vh !important; }
-        #webgl { top: 0 !important; height: 100vh !important; }
-        .ishya-nav-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: var(--bar-height); background: var(--ishya-dark-aero); backdrop-filter: blur(35px) saturate(160%); -webkit-backdrop-filter: blur(35px) saturate(160%); border-bottom: 1px solid rgba(255, 255, 255, 0.1); z-index: 9997; overflow: hidden; }
-        .ishya-fluid-layer { position: absolute; inset: -30%; z-index: -1; opacity: 0.2; filter: blur(60px); background: radial-gradient(circle at 15% 25%, var(--ishya-green) 0%, transparent 40%), radial-gradient(circle at 85% 75%, var(--ishya-gold) 0%, transparent 40%), radial-gradient(circle at 50% 50%, var(--ishya-peach) 0%, transparent 35%), radial-gradient(circle at 30% 85%, var(--ishya-creme) 0%, transparent 30%); animation: fluidDrift 30s ease-in-out infinite alternate; will-change: transform; }
-        @keyframes fluidDrift { from { transform: translate(0, 0) scale(1); } to { transform: translate(4%, 3%) scale(1.15); } }
-        .ishya-nav-backdrop::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--ishya-glass-bright), transparent); z-index: 2; }
-        .ishya-nav-container { position: fixed; z-index: 9999; top: 10px; left: 50%; transform: translateX(-50%); width: 56px; height: 56px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--ishya-gold); border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); overflow: hidden; cursor: pointer; will-change: width, height, background; transition: width 0.6s var(--anim-fluid), height 0.6s var(--anim-fluid), background 0.4s ease, border-radius 0.4s ease; }
-        .ishya-logo-btn { position: absolute; top: 0; left: 0; width: 100%; height: 56px; display: flex; justify-content: center; align-items: center; transition: opacity 0.3s ease, transform 0.3s ease; }
-        .ishya-logo-btn img { height: 38px; width: auto; filter: drop-shadow(0 0 10px var(--ishya-green)); }
-        .ishya-menu-grid { display: flex; width: 100%; height: 100%; align-items: center; justify-content: space-evenly; opacity: 0; pointer-events: none; box-sizing: border-box; }
-        .ishya-link { display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: #fff; padding: 8px; min-width: 90px; transition: transform 0.3s var(--anim-fluid); }
-        .ishya-link svg { width: 24px; height: 24px; stroke: var(--ishya-green); fill: none; stroke-width: 1.8; margin-bottom: 5px; transition: stroke 0.3s ease, transform 0.3s ease; }
-        .ishya-link span { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--ishya-creme); opacity: 0.8; }
-        .ishya-nav-container.expanded { width: 880px; height: 68px; border-radius: 14px; background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.15); top: 4px; }
-        .ishya-nav-container.expanded .ishya-logo-btn { opacity: 0; transform: scale(0.8); pointer-events: none; }
-        .ishya-nav-container.expanded .ishya-menu-grid { opacity: 1; pointer-events: auto; }
-        .ishya-link:hover { transform: translateY(-3px); }
-        .ishya-link:hover svg { stroke: var(--ishya-gold); }
-        .ishya-link:hover span { opacity: 1; color: #fff; text-shadow: 0 0 10px var(--ishya-gold); }
-        @media screen and (max-width: 900px) {
-            .ishya-nav-container { top: 10px; width: 56px; height: 56px; }
-            .ishya-nav-container.expanded { width: 94%; height: auto; min-height: 380px; top: 10px; border-radius: 24px; background: rgba(10, 15, 20, 0.9); padding-bottom: 30px; }
-            .ishya-nav-container.expanded .ishya-menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 75px 15px 0 15px; }
-            .ishya-link { background: rgba(255,255,255,0.04); padding: 25px 10px; clip-path: polygon(0 0, 100% 0, 100% 88%, 88% 100%, 0 100%); border: 1px solid rgba(255,255,255,0.06); }
-            .ishya-nav-container.expanded .ishya-logo-btn { opacity: 1; transform: scale(1); height: 60px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        }
-    </style>
-    <div class="ishya-header-spacer"></div>
-    <div id="ishya-floating-nav-wrapper">
-        <div class="ishya-nav-backdrop">
-            <div class="ishya-fluid-layer"></div>
-        </div>
-        <nav class="ishya-nav-container" id="ishyaHeader">
-            <div class="ishya-logo-btn">
-                <img src="./Logo Ishya.ico" alt="ISHYA">
-            </div>
-            <div class="ishya-menu-grid">
-                <a href="./index.html" class="ishya-link"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Home</span></a>
-                <a href="./EVENTS/index.html" class="ishya-link"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg><span>Events</span></a>
-                <a href="./bookrooms/index.html" class="ishya-link"><svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M9 6a3 3 0 1 0 6 0"/><circle cx="12" cy="13" r="3"/></svg><span>Book Rooms</span></a>
-                <a href="./TEAM/index.html" class="ishya-link"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Team</span></a>
-                <a href="./Gallery/index.html" class="ishya-link"><svg viewBox="0 0 24 24"><path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/></svg><span>Gallery</span></a>
-            </div>
-        </nav>
-    </div>
-    <script>
-        (function(){
-            const nav = document.getElementById('ishyaHeader');
-            let isExpanded = false;
-            const toggleNav = (state) => {
-                isExpanded = (state !== undefined) ? state : !isExpanded;
-                nav.classList.toggle('expanded', isExpanded);
-            };
-            nav.addEventListener('mouseenter', () => { if(window.innerWidth > 900 && !isExpanded) nav.classList.add('expanded'); });
-            nav.addEventListener('mouseleave', () => { if(window.innerWidth > 900 && !isExpanded) nav.classList.remove('expanded'); });
-            nav.addEventListener('click', (e) => { if (e.target.closest('a')) return; toggleNav(); });
-            document.addEventListener('click', (e) => { if (!nav.contains(e.target) && isExpanded) toggleNav(false); });
-        })();
-    </script> -->
     <ishya-header></ishya-header>
 
 <!-- 1. BACKGROUND CANVAS -->
@@ -571,7 +513,6 @@
     </section>
 
     <!-- SECTION 2: MEMORIES -->
-    <!-- OPTIMIZED IMAGES: Using low-res thumbnails (=w500) for the marquee to improve speed -->
     <section id="memories">
         <div class="section-layout layout-content-left">
             <div class="perch-zone">
@@ -581,7 +522,7 @@
             <div class="content-zone">
                 <div class="image-marquee-container glass-panel">
                     <div class="image-marquee-track">
-                        <!-- Repeated images for smooth loop - Optimized Links -->
+                        <!-- Added loading="lazy" for performance -->
                         <div class="image-marquee-item"><img src="https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_400,h_200,al_c,q_80/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg" loading="lazy"></div>
                         <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1FAwb4Q6bGfn8LfGYl7bzxTydX1I4BQ3l=w500" loading="lazy"></div>
                         <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1xPXLyX47aNUus9lO0blEKS22OubXrcNK=w500" loading="lazy"></div>
@@ -592,7 +533,7 @@
                         <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1s_trrwMrJzxeb_Ze2Z4OcKkLveacLWHO=w500" loading="lazy"></div>
                         <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1S4SwVvVa4fcsdPNXEgYOIjsDojw3XiuI=w500" loading="lazy"></div>
                         <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1RoTOcpLlqvWZOd_DN0sW_DJl1sT-J1aV=w500" loading="lazy"></div>
-                        <!-- Duplicate for seamless scrolling -->
+                        
                         <div class="image-marquee-item"><img src="https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_400,h_200,al_c,q_80/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg" loading="lazy"></div>
                         <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1FAwb4Q6bGfn8LfGYl7bzxTydX1I4BQ3l=w500" loading="lazy"></div>
                         <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1xPXLyX47aNUus9lO0blEKS22OubXrcNK=w500" loading="lazy"></div>
@@ -666,50 +607,6 @@
             </div>
         </div>
     </section>
-
-    <!-- FOOTER -->
-    <!-- <footer class="footer-section">
-        <div class="footer-content">
-            <h2 class="footer-logo">ISHYA</h2>
-            
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <h4>LOCATION</h4>
-                    <p>IISER Thiruvananthapuram,<br>
-                    Maruthamala PO, Vithura,<br>
-                    Thiruvananthapuram - 695551,<br>
-                    Kerala, India.</p>
-                </div>
-
-                <div class="footer-col">
-                    <h4>CONTACT US</h4>
-                    <p>+91 90745 66956</p>
-                    <p>ishya@iisertvm.ac.in</p>
-                    
-                    <div class="social-icons-footer">
-                        <a href="https://www.facebook.com/ishya.iisertvm/" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="https://www.instagram.com/ishyaiiser/?hl=en" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="https://x.com/ishya_iiser" aria-label="X (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
-                        <a href="https://www.youtube.com/c/ishyaiisertvm" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
-                    </div>
-
-                    <div style="margin-top: 20px;">
-                        <p style="font-size: 0.8rem; color: #888;">Facing Any Problems?</p>
-                        <a href="https://tally.so/r/Zj6zbA" target="_blank" class="grievance-btn">Grievance Redressal</a>
-                    </div>
-                </div>
-
-                <div class="footer-col">
-                    <h4>FIND US</h4>
-                    <div class="map-container">
-                        <iframe class="map-frame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3944.095804976186!2d77.13271147563017!3d8.682439094316278!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b05bec780ab70fd%3A0xc960a94d0cef086f!2sIndian%20Institute%20of%20Science%20Education%20and%20Research%20Thiruvananthapuram!5e0!3m2!1sen!2sin!4v1770744366350!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    </div>
-                </div>
-            </div>
-
-            <p class="copyright">© 2026 ISHYA. FLAMES IN EVERY FOLD.</p>
-        </div>
-    </footer> -->
 </main>
 
 <!-- WEBGL 3D SHADERS -->
@@ -753,19 +650,18 @@
     
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 950;
 
-    // --- FIX 1: LOGO_Y_OFFSET Adjusted for Center Alignment in Gap ---
     const CONFIG = { 
         LOGO_PATH: 'logo.png', 
         PARTICLE_DENSITY: isMobile ? 12 : 8, 
-        LOGO_SCALE: isMobile ? 5 : 12, // Reduced scale for mobile gap
-        LOGO_Y_OFFSET: isMobile ? 2 : 0.5 // Centered on mobile
+        LOGO_SCALE: isMobile ? 5 : 12, 
+        LOGO_Y_OFFSET: isMobile ? 2 : 0.5 
     };
 
     const canvas = document.getElementById('webgl'); 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); 
     renderer.setSize(window.innerWidth, window.innerHeight); 
     
-    // --- FIX 2: Limit Pixel Ratio for Performance ---
+    // Performance: Limit Pixel Ratio 
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); 
     renderer.setClearColor(0x000000, 0);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -791,7 +687,7 @@
                 solidTexture.minFilter = THREE.LinearFilter;
                 solidTexture.colorSpace = THREE.SRGBColorSpace;
 
-                const particleW = isMobile ? 300 : 1024; // Optimization: Smaller processing canvas on mobile
+                const particleW = isMobile ? 300 : 1024; 
                 const particleH = isMobile ? 300 : 1024;
                 const particleCanvas = (particleW === textureW) ? textureCanvas : document.createElement('canvas');
                 if (particleW !== textureW) {
@@ -808,7 +704,6 @@
                         }
                     } 
                 } 
-                
                 resolve({ solidTexture: solidTexture, points: new Float32Array(points) }); 
             }; 
             
@@ -870,10 +765,8 @@
         });
         
         const group = new THREE.Group(); group.visible = false; scene.add(group);
-        
         const vBody=[0,0,1,1,0,0,0,0,-1,0,0,1,0,0,-1,-1,0,0,0,0.8,-0.2,0,0,1,1,0,0,0,0.8,-0.2,-1,0,0,0,0,1,0,0.8,-0.2,1,0,0,0,0,-1,0,0.8,-0.2,0,0,-1,-1,0,0,0,0,1,0.15,0,0.8,0,2.5,2.0,0,0,1,0,2.5,2.0,-0.15,0,0.8,0,2.5,2.0,0.1,2.2,2.0,0,1.8,2.5,0,2.5,2.0,0,1.8,2.5,-0.1,2.2,2.0,0,0,-1,0.15,0,-0.8,0,2.0,-2.5,0,0,-1,0,2.0,-2.5,-0.15,0,-0.8];
         const vWing=[0,0,0.8,0,0,-0.8,3.5,1.5,0,0,0,0.8,3.5,1.5,0,0,0.8,-0.2];
-        
         const bGeo=new THREE.BufferGeometry(); bGeo.setAttribute('position', new THREE.Float32BufferAttribute(vBody,3)); bGeo.computeVertexNormals();
         const wGeo=new THREE.BufferGeometry(); wGeo.setAttribute('position', new THREE.Float32BufferAttribute(vWing,3)); wGeo.computeVertexNormals();
         
@@ -881,22 +774,14 @@
         const wingL=new THREE.Mesh(wGeo, birdMaterial); wingL.position.set(-0.9,0,0); wingL.scale.x=-1; 
         const wingR=new THREE.Mesh(wGeo, birdMaterial); wingR.position.set(0.9,0,0);
         group.add(wingL, wingR); group.rotation.x=0.2; 
-        
         return { group, wingL, wingR };
     }
 
     function setupLights() { 
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-        scene.add(ambientLight);
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 2.5);
-        directionalLight.position.set(5, 10, 7.5);
-        scene.add(directionalLight);
-        const goldPointLight = new THREE.PointLight(0xffaa00, 4, 30);
-        goldPointLight.position.set(0, 5, 5);
-        scene.add(goldPointLight);
-        const rimLight = new THREE.DirectionalLight(0x4D8F48, 1.5); 
-        rimLight.position.set(-5, 0, -5);
-        scene.add(rimLight);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 2.5); directionalLight.position.set(5, 10, 7.5); scene.add(directionalLight);
+        const goldPointLight = new THREE.PointLight(0xffaa00, 4, 30); goldPointLight.position.set(0, 5, 5); scene.add(goldPointLight);
+        const rimLight = new THREE.DirectionalLight(0x4D8F48, 1.5); rimLight.position.set(-5, 0, -5); scene.add(rimLight);
     }
 
     function setupAnimations(particles, solidLogo, bird) {
@@ -927,32 +812,23 @@
         
         if (!isMobile) {
             const birdScale = 1;
-            // --- FIX 3: Increased scrub time for smoother 3D jitter ---
             heroTl.call(() => { bird.group.visible = true; }, null, "<0.1") 
                   .fromTo(bird.group.scale, {x:0, y:0, z:0}, {x:birdScale, y:birdScale, z:birdScale, duration: 0.8}, "<");
 
             gsap.timeline({ scrollTrigger: { trigger: "#about-ishya", start: "top bottom", end: "center center", scrub: 1.5 }})
-                .to(bird.group.position, { x: -6, y: -0.5, z: 2 })
-                .to(bird.group.rotation, { y: -0.5, x: 0.2, z: 0 }, "<");
-
+                .to(bird.group.position, { x: -6, y: -0.5, z: 2 }).to(bird.group.rotation, { y: -0.5, x: 0.2, z: 0 }, "<");
             gsap.timeline({ scrollTrigger: { trigger: "#memories", start: "top bottom", end: "center center", scrub: 1.5 }})
-                .to(bird.group.position, { x: 6, y: 0, z: 0 })
-                .to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
-
+                .to(bird.group.position, { x: 6, y: 0, z: 0 }).to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
             gsap.timeline({ scrollTrigger: { trigger: "#events", start: "top bottom", end: "center center", scrub: 1.5 }})
-                .to(bird.group.position, { x: -5.5, y: -0.5, z: 1 })
-                .to(bird.group.rotation, { y: -0.6, x: 0.1, z: 0 }, "<");
-
+                .to(bird.group.position, { x: -5.5, y: -0.5, z: 1 }).to(bird.group.rotation, { y: -0.6, x: 0.1, z: 0 }, "<");
             gsap.timeline({ scrollTrigger: { trigger: "#team", start: "top bottom", end: "center center", scrub: 1.5 }})
-                .to(bird.group.position, { x: 6, y: 0.5, z: 1 })
-                .to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
-
+                .to(bird.group.position, { x: 6, y: 0.5, z: 1 }).to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
             gsap.timeline({ scrollTrigger: { trigger: "#proshows", start: "top bottom", end: "center center", scrub: 1.5 }})
-                .to(bird.group.position, { x: 0, y: 0, z: 3 })
-                .to(bird.group.rotation, { y: 0, x: 0, z: 0 }, "<"); 
+                .to(bird.group.position, { x: 0, y: 0, z: 3 }).to(bird.group.rotation, { y: 0, x: 0, z: 0 }, "<"); 
         }
     }
 
+    // --- CAROUSEL OPTIMIZATION FIX ---
     function init3DCarousel() {
         const container = document.getElementById('cardCarousel');
         const prevBtn = document.getElementById('prevBtn');
@@ -973,9 +849,10 @@
 
         eventsData.forEach((item, index) => {
             const card = document.createElement('div');
-            card.className = 'carousel-card-3d glass-panel';
+            // 'glass-panel' is removed here to improve FPS, styling handled in CSS with transparency
+            card.className = 'carousel-card-3d'; 
             card.innerHTML = `
-                <img src="${item.img}" class="card-bg-img" alt="${item.title}">
+                <img src="${item.img}" class="card-bg-img" alt="${item.title}" loading="lazy" decoding="async">
                 <div class="card-content">
                     <div>
                         <div class="card-number">${item.id}</div>
@@ -1002,8 +879,9 @@
                 const offset = index - activeIndex;
                 const absOffset = Math.abs(offset);
                 
+                // Hide off-screen cards to save resources
                 if (absOffset > 3) {
-                    gsap.to(card, { opacity: 0, duration: 0.3, pointerEvents: 'none' });
+                    gsap.to(card, { opacity: 0, duration: 0.3, pointerEvents: 'none', overwrite: 'auto' });
                 } else {
                     const zIndex = 100 - absOffset;
                     const scale = 1 - (absOffset * scaleIntensity);
@@ -1015,7 +893,19 @@
                     if (offset === 0) card.classList.add('active-card');
                     else card.classList.remove('active-card');
 
-                    gsap.to(card, { x: translateX, z: translateZ, rotateY: rotateY, scale: scale, opacity: opacity, zIndex: zIndex, duration: 0.8, ease: "power2.out", pointerEvents: 'auto' });
+                    // ADDED: overwrite: 'auto' to prevent animation conflict lag
+                    gsap.to(card, { 
+                        x: translateX, 
+                        z: translateZ, 
+                        rotateY: rotateY, 
+                        scale: scale, 
+                        opacity: opacity, 
+                        zIndex: zIndex, 
+                        duration: 0.8, 
+                        ease: "power2.out", 
+                        pointerEvents: 'auto',
+                        overwrite: 'auto' 
+                    });
                 }
             });
         }
@@ -1047,12 +937,12 @@
     }
 
     function setupEventListeners() {
-        // --- FIX 4: Sync Lenis and ScrollTrigger to Prevent Jitter ---
+        // --- SYNC FIX: Lenis and ScrollTrigger must be perfectly synced ---
         const lenis = new Lenis({ lerp: 0.1, smooth: true });
         
         function raf(time) { 
             lenis.raf(time); 
-            ScrollTrigger.update(); // CRITICAL: Updates ScrollTrigger with Lenis scroll
+            ScrollTrigger.update(); 
             requestAnimationFrame(raf); 
         } 
         requestAnimationFrame(raf);
@@ -1071,10 +961,8 @@
         let width, height;
         
         const isMobile = window.innerWidth < 950;
-
         const COLORS = { bg: 'rgba(5, 20, 8, 1)', trail: 'rgba(5, 20, 8, 0.08)', swirlGreen: 'rgba(77, 183, 72, 0.2)', swirlDark: 'rgba(30, 50, 20, 0.3)', gold: 'rgba(214, 194, 106, 0.4)', mandala: 'rgba(214, 194, 106, 0.15)' };
         
-        // --- FIX 5: Reduced particle count for speed ---
         const particles = []; 
         const numParticles = isMobile ? 30 : 400; 
         const noiseScale = 0.002; 
