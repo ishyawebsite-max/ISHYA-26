@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISHYA '26 | Events</title>
+    
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Syncopate:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="/global.css"> <!--H&F change #1-->
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="/layout.js" defer></script> <!--H&F change #2-->
+    <style>
+        :root {
+            --bg-dark: #051408;       
+            --accent-gold: #D6C26A;
+            --card-gold-gradient: linear-gradient(135deg, #c4ae58 0%, #e8d689 40%, #D6C26A 100%);
+            --text-on-gold: #051408; 
+            
+            --font-cinzel: 'Cinzel', serif;
+            --font-sync: 'Syncopate', sans-serif;
+            --font-tech: 'Share Tech Mono', monospace;
+        }
+
+        body { 
+            margin: 0; 
+            background-color: var(--bg-dark); 
+            font-family: var(--font-tech);
+            color: #e0e0e0;
+            overflow-x: hidden; 
+            overflow-y: auto;
+            min-height: 100vh;
+        }
+
+        /* --- BACKGROUND FX --- */
+        #animated-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; pointer-events: none;}
+        .overlay-grain {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 500; opacity: 0.4;
+        }
+
+        /* --- HEADER --- */
+        header {
+            padding: 2rem 5%;
+            display: flex; justify-content: space-between; align-items: flex-end;
+            border-bottom: 1px solid rgba(214, 194, 106, 0.2);
+            background: linear-gradient(to bottom, #051408 0%, rgba(5,20,8,0.95) 100%);
+            position: sticky; top: 0; z-index: 100;
+        }
+
+        .page-title {
+            font-family: var(--font-cinzel);
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            color: var(--accent-gold);
+            text-shadow: 0 0 15px rgba(214, 194, 106, 0.4);
+            margin: 0;
+        }
+        /*Fix for mobile irregularity*/
+        .back-btn {
+            font-family: var(--font-sync); 
+            color: #e0e0e0; 
+            text-decoration: none;
+            font-size: 0.8rem; 
+            letter-spacing: 2px;
+            border: 1px solid var(--accent-gold); 
+            padding: 0.5rem 1.5rem;
+            transition: 0.3s; 
+            text-transform: uppercase;
+            
+            /* FIXES FOR MOBILE ALIGNMENT */
+            display: inline-flex;  /* Keeps icon and text together */
+            align-items: center;   /* Vertically centers them */
+            white-space: nowrap;   /* Forces text to stay on one line */
+            gap: 8px;              /* Adds space between icon and text */
+        }
+        /* ADD THIS MEDIA QUERY FOR MOBILE */
+        @media (max-width: 600px) {
+            header { padding: 1.5rem 5%; }
+            .page-title { font-size: 1.5rem; } /* Scale down title */
+            .back-btn { 
+                padding: 0.4rem 0.8rem; /* Smaller padding */
+                font-size: 0.7rem;      /* Smaller text */
+            }
+        }
+        .back-btn:hover { background: var(--accent-gold); color: var(--bg-dark); }
+
+        /* --- FILTER BAR --- */
+        .filter-container {
+            padding: 2rem 5%; display: flex; gap: 2rem; overflow-x: auto;
+            border-bottom: 1px solid rgba(214, 194, 106, 0.1);
+        }
+        .filter-container::-webkit-scrollbar { height: 4px; }
+        .filter-container::-webkit-scrollbar-thumb { background: var(--accent-gold); }
+
+        .filter-btn {
+            background: none; border: none; color: #888;
+            font-family: var(--font-sync); font-size: 0.9rem; cursor: pointer;
+            white-space: nowrap; padding-bottom: 0.5rem;
+            position: relative; transition: 0.3s; text-transform: uppercase;
+        }
+        .filter-btn::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 0%; height: 2px;
+            background: var(--accent-gold); transition: 0.3s;
+        }
+        .filter-btn.active, .filter-btn:hover { color: var(--accent-gold); }
+        .filter-btn.active::after { width: 100%; }
+
+        /* --- EVENTS GRID --- */
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 3rem;
+            padding: 3rem 5% 5rem 5%;
+            min-height: 50vh;
+        }
+
+        /* --- GOLD CARD --- */
+        .event-card {
+            background: var(--card-gold-gradient);
+            position: relative;
+            height: 380px; 
+            display: flex; flex-direction: column;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            clip-path: polygon(0 0, calc(100% - 40px) 0, 100% 40px, 100% 100%, 0 100%);
+            overflow: hidden; 
+        }
+
+        .event-card::after {
+            content: ''; position: absolute; top:0; left:0; width:100%; height:100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.15'/%3E%3C/svg%3E");
+            pointer-events: none; mix-blend-mode: multiply; z-index: 1;
+        }
+
+        .event-card::before {
+            content: ''; position: absolute; top: 0; right: 0;
+            width: 41px; height: 41px;
+            background: linear-gradient(to bottom left, transparent 48%, #5a461b 50%, transparent 52%);
+            z-index: 10; pointer-events: none;
+        }
+
+        .event-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(214, 194, 106, 0.15);
+        }
+
+        /* --- IMAGE --- */
+        .card-img-container {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 75%; 
+            z-index: 0;
+        }
+
+        .card-img {
+            width: 100%; height: 100%; object-fit: cover;
+            /* REFINEMENT: No filters, full color */
+            transition: 0.5s;
+        }
+
+        .event-card:hover .card-img {
+            transform: scale(1.05); /* Just Zoom, no color change */
+        }
+        
+        /* --- CONTENT --- */
+        .card-content {
+            position: absolute; 
+            bottom: 0; left: 0; width: 100%; 
+            height: auto;
+            max-height: 25%; 
+            background: var(--card-gold-gradient); 
+            padding: 1.5rem; 
+            box-sizing: border-box;
+            z-index: 5;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column;
+            border-top: 2px solid rgba(5,20,8,0.1);
+        }
+
+        .event-card:hover .card-content {
+            max-height: 100%; 
+            border-top: none;
+            padding-top: 2.5rem; 
+        }
+        
+        .type-badge {
+            position: absolute; top: 12px; left: 12px;
+            background: var(--bg-dark);
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 5px 10px; font-size: 0.7rem; font-weight: bold;
+            font-family: var(--font-sync);
+            z-index: 20; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        .card-title {
+            font-family: var(--font-cinzel);
+            font-size: 1.4rem; 
+            color: var(--text-on-gold); 
+            margin: 0 0 0.5rem 0; font-weight: 900;
+            line-height: 1.1;
+            flex-shrink: 0;
+        }
+
+        .card-desc {
+            font-size: 0.95rem; 
+            color: #2a3a2a;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            opacity: 0; 
+            transform: translateY(20px);
+            transition: 0.3s;
+            overflow-y: auto; 
+            max-height: 0;    
+            scrollbar-width: thin;
+            scrollbar-color: #5a461b transparent;
+        }
+
+        .event-card:hover .card-desc {
+            opacity: 1;
+            transform: translateY(0);
+            max-height: 200px; 
+            margin-top: 1rem;
+        }
+
+        .card-footer {
+            display: flex; justify-content: flex-end; align-items: center;
+            margin-top: auto; 
+            padding-top: 1rem;
+            gap: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        /* --- BUTTONS --- */
+        .status-btn {
+            font-family: var(--font-sync);
+            font-size: 0.8rem; font-weight: 700;
+            padding: 10px 16px;
+            text-decoration: none; text-transform: uppercase; letter-spacing: 1px;
+            transition: 0.3s; display: inline-block; text-align: center;
+            min-width: 100px;
+        }
+
+        /* 1. REGISTER */
+        .btn-register {
+            background: var(--bg-dark); color: var(--accent-gold);
+            border: 2px solid var(--bg-dark);
+        }
+        .btn-register:hover {
+            background: transparent; color: var(--bg-dark);
+        }
+
+        /* 2. CLOSED */
+        .btn-closed {
+            background: transparent; color: #611818;
+            border: 2px solid #611818; pointer-events: none; opacity: 0.7;
+        }
+
+        /* 3. TBA */
+        .btn-tba {
+            background: transparent; color: #444;
+            border: 2px dashed #444; pointer-events: none;
+        }
+
+        /* 4. INFO (Refined to be a button) */
+        .btn-info {
+            background: transparent;
+            color: var(--bg-dark);
+            border: 1px solid var(--bg-dark);
+            padding: 10px 16px;
+            font-family: var(--font-sync);
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+        .btn-info:hover {
+            background: var(--bg-dark);
+            color: var(--accent-gold);
+        }
+
+        /* --- LOADER --- */
+        #loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-dark);
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            z-index: 5000;
+        }
+        #loader-canvas { width: 150px; height: 150px; }
+        
+    </style>
+</head>
+<body>
+    <ishya-header></ishya-header>
+
+    <div id="loader">
+        <canvas id="loader-canvas"></canvas>
+        <p style="margin-top:1rem; font-family:var(--font-sync); color:var(--accent-gold); font-size:0.8rem; letter-spacing: 2px;">UNFOLDING...</p>
+    </div>
+
+    <canvas id="animated-bg"></canvas>
+    <div class="overlay-grain"></div>
+
+    <header>
+        <h1 class="page-title" id="category-title">EVENTS</h1>
+        <a href="index_events.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i> &nbsp;FOLD</a>
+    </header>
+
+    <div class="filter-container" id="filter-container"></div>
+    <div class="events-grid" id="events-grid"></div>
+
+    <!-- BACKGROUND SCRIPT -->
+    <script>
+        const canvas = document.getElementById('animated-bg');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        const particles = []; 
+        const COLORS = { gold: 'rgba(214, 194, 106, 0.3)', green: 'rgba(77, 183, 72, 0.1)' };
+
+        function resize() {
+            width = canvas.width = window.innerWidth; 
+            height = canvas.height = window.innerHeight;
+            particles.length = 0;
+            const pCount = window.innerWidth < 950 ? 30 : 50; 
+            for(let i=0; i<pCount; i++) particles.push(new FlowParticle());
+        }
+
+        class FlowParticle {
+            constructor() { 
+                this.x = Math.random()*width; this.y = Math.random()*height; 
+                this.speed = Math.random()*0.5+0.1; this.size = Math.random()*2+0.5;
+                this.color = Math.random()>0.8 ? COLORS.gold : COLORS.green; 
+            }
+            update() { 
+                const n = Math.sin(this.x*0.002) * Math.cos(this.y*0.002);
+                const angle = n * Math.PI * 4; 
+                this.x += Math.cos(angle)*this.speed; this.y += Math.sin(angle)*this.speed;
+                if(this.x<0)this.x=width; if(this.x>width)this.x=0; if(this.y<0)this.y=height; if(this.y>height)this.y=0;
+            }
+            draw() { ctx.fillStyle=this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill(); }
+        }
+
+        function animateBg() { 
+            ctx.clearRect(0,0,width,height);
+            particles.forEach(p=>{p.update();p.draw();}); 
+            requestAnimationFrame(animateBg); 
+        }
+        window.addEventListener('resize', resize); resize(); animateBg();
+    </script>
+
+    <!-- MANDALA SCRIPT -->
+    <script>
+        const lCanvas = document.getElementById('loader-canvas');
+        const lCtx = lCanvas.getContext('2d');
+        lCanvas.width = 150; lCanvas.height = 150;
+        let lAngle = 0;
+
+        function drawMandala() {
+            lCtx.clearRect(0, 0, 150, 150);
+            const cx = 75, cy = 75, r = 30;
+            lAngle += 0.02;
+
+            lCtx.save();
+            lCtx.translate(cx, cy);
+            lCtx.rotate(lAngle);
+            lCtx.strokeStyle = "#D6C26A";
+            lCtx.lineWidth = 1.5;
+
+            for(let i=0; i<12; i++) {
+                lCtx.rotate(Math.PI*2/12);
+                lCtx.beginPath();
+                lCtx.moveTo(0,0);
+                lCtx.quadraticCurveTo(r*0.5, r*0.5, 0, r);
+                lCtx.quadraticCurveTo(-r*0.5, r*0.5, 0, 0);
+                lCtx.stroke();
+            }
+            lCtx.beginPath(); lCtx.arc(0,0, r*1.2, 0, Math.PI*2); lCtx.stroke();
+            lCtx.restore();
+
+            if(document.getElementById('loader')) requestAnimationFrame(drawMandala);
+        }
+        drawMandala();
+    </script>
+
+    <!-- DATA SCRIPT -->
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbzavv7_8jmJfR15WeS6U91o0gFTf1Nnvr0s7kIQ4hS_8PBghM2Tnz14z6vh2U1-0BN2/exec"; 
+
+        const CATEGORY_MAP = {
+            "MEDIA & PHOTO": "Media & Photography",
+            "VISUAL & FINE ARTS": "Visual & Fine Arts",
+            "LITERARY & ORATORY": "Literary & Oratory",
+            "PERFORMING ARTS": "Performing Arts",
+            "GAMING & ESPORTS": "Gaming & Esports"
+        };
+
+        const urlParams = new URLSearchParams(window.location.search);
+        let rawCategory = urlParams.get('category') ? urlParams.get('category').toUpperCase() : "PERFORMING ARTS";
+        let targetCategory = CATEGORY_MAP[rawCategory] || rawCategory;
+
+        document.getElementById('category-title').innerText = rawCategory;
+
+        let allEvents = [];
+
+        function getDriveImage(link) {
+            if(!link) return 'https://placehold.co/600x400/051408/D6C26A?text=ISHYA';
+            const idMatch = link.match(/[-\w]{25,}/);
+            return idMatch ? `https://drive.google.com/thumbnail?id=${idMatch[0]}&sz=w600` : link;
+        }
+
+        async function fetchEvents() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                
+                allEvents = data.filter(e => e.Category && e.Category.trim().toLowerCase() === targetCategory.toLowerCase());
+                
+                initFilters();
+                renderEvents('all');
+                
+                gsap.to("#loader", { opacity: 0, duration: 0.5, onComplete: () => {
+                    const l = document.getElementById("loader");
+                    if(l) l.remove();
+                }});
+
+            } catch (error) {
+                console.error("Error:", error);
+                document.querySelector("#loader p").innerText = "FAILED TO SUMMON DATA";
+            }
+        }
+
+        function initFilters() {
+            const container = document.getElementById('filter-container');
+            const subCats = [...new Set(allEvents.map(e => e['Sub Category']).filter(Boolean))];
+            
+            const allBtn = document.createElement('button');
+            allBtn.className = 'filter-btn active';
+            allBtn.innerText = "ALL";
+            allBtn.onclick = (e) => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                renderEvents('all');
+            }
+            container.appendChild(allBtn);
+
+            subCats.forEach(sub => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-btn';
+                btn.innerText = sub;
+                btn.onclick = () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderEvents(sub);
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function renderEvents(filterSub) {
+            const grid = document.getElementById('events-grid');
+            grid.innerHTML = "";
+
+            const filtered = filterSub === 'all' 
+                ? allEvents 
+                : allEvents.filter(e => e['Sub Category'] === filterSub);
+
+            if(filtered.length === 0) {
+                grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:#888; font-family:var(--font-tech); margin-top:2rem;">No events found in this fold.</div>`;
+                return;
+            }
+
+            filtered.forEach(event => {
+                let btnHtml = `<span class="status-btn btn-tba">COMING SOON</span>`; 
+
+                if (event.Status) {
+                    const s = event.Status.toUpperCase();
+                    if (s === "OPEN") {
+                        btnHtml = `<a href="${event['Reg link'] || '#'}" target="_blank" class="status-btn btn-register">REGISTER</a>`;
+                    } else if (s === "CLOSED") {
+                        btnHtml = `<span class="status-btn btn-closed">REG CLOSED</span>`;
+                    }
+                }
+
+                // REFINEMENT: Info button with text
+                let infoBtn = "";
+                if(event.Details && event.Details.length > 5) {
+                    infoBtn = `<a href="${event.Details}" target="_blank" class="btn-info"><i class="fa-solid fa-file-pdf"></i> INFO</a>`;
+                }
+
+                const card = document.createElement('div');
+                card.className = "event-card";
+                card.innerHTML = `
+                    <span class="type-badge">${event.Type || 'Event'}</span>
+                    <div class="card-img-container">
+                        <img src="${getDriveImage(event.Picture)}" alt="${event.Event}" class="card-img" loading="lazy">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">${event.Event}</h3>
+                        <div class="card-desc">${event.Description || 'Details unavailable at this time.'}</div>
+                        
+                        <div class="card-footer">
+                            ${infoBtn}
+                            ${btnHtml}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        fetchEvents();
+    </script>
+    <ishya-footer></ishya-footer>
+</body>
+</html>
