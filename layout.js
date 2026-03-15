@@ -15,7 +15,10 @@ class IshyaHeader extends HTMLElement {
           .ishya-link { display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: #fff; padding: 8px; min-width: 90px; transition: transform 0.3s var(--anim-fluid); }
           .ishya-link svg { width: 24px; height: 24px; stroke: var(--ishya-green); fill: none; stroke-width: 1.8; margin-bottom: 5px; transition: stroke 0.3s ease, transform 0.3s ease; }
           .ishya-link span { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--ishya-creme); opacity: 0.8; }
-          .ishya-nav-container.expanded { width: 880px; height: 68px; border-radius: 14px; background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.15); top: 4px; }
+          
+          /* MODIFIED: Increased width from 880px to 1100px to fit 8 items */
+          .ishya-nav-container.expanded { width: 1100px; height: 68px; border-radius: 14px; background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.15); top: 4px; }
+          
           .ishya-nav-container.expanded .ishya-logo-btn { opacity: 0; transform: scale(0.8); pointer-events: none; }
           .ishya-nav-container.expanded .ishya-menu-grid { opacity: 1; pointer-events: auto; }
           .ishya-link:hover { transform: translateY(-3px); }
@@ -23,7 +26,8 @@ class IshyaHeader extends HTMLElement {
           .ishya-link:hover span { opacity: 1; color: #fff; text-shadow: 0 0 10px var(--ishya-gold); }
           @media screen and (max-width: 900px) {
               .ishya-nav-container { top: 10px; width: 56px; height: 56px; }
-              .ishya-nav-container.expanded { width: 94%; height: auto; min-height: 380px; top: 10px; border-radius: 24px; background: rgba(10, 15, 20, 0.9); padding-bottom: 30px; }
+              /* MODIFIED: Increased min-height from 380px to 480px to fit the extra row */
+              .ishya-nav-container.expanded { width: 94%; height: auto; min-height: 480px; top: 10px; border-radius: 24px; background: rgba(10, 15, 20, 0.9); padding-bottom: 30px; }
               .ishya-nav-container.expanded .ishya-menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 75px 15px 0 15px; }
               .ishya-link { background: rgba(255,255,255,0.04); padding: 25px 10px; clip-path: polygon(0 0, 100% 0, 100% 88%, 88% 100%, 0 100%); border: 1px solid rgba(255,255,255,0.06); }
               .ishya-nav-container.expanded .ishya-logo-btn { opacity: 1; transform: scale(1); height: 60px; border-bottom: 1px solid rgba(255,255,255,0.1); }
@@ -47,6 +51,13 @@ class IshyaHeader extends HTMLElement {
                     <a href="https://www.ishyaiisertvm.in/TEAM/index.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Team</span></a>
                     <a href="https://www.ishyaiisertvm.in/Gallery/index.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Gallery</span></a>
                     <a href="https://www.ishyaiisertvm.in/STORE/index.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1"/><circle cx="17" cy="20" r="1"/><path d="M3 3h2l2.5 12h10l2-8H6"/></svg><span>Store</span></a>
+                    
+                    <!-- MODIFIED: Added Sponsors Link -->
+                    <a href="https://www.ishyaiisertvm.in/SPONSORS/index.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Sponsors</span></a>
+                    
+                    <!-- MODIFIED: Added Results Link -->
+                    <a href="https://www.ishyaiisertvm.in/RESULTS/index.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg><span>Results</span></a>
+                </div>
             </nav>
         </div>
       `;
@@ -148,7 +159,7 @@ class IshyaHeader extends HTMLElement {
                           <a href="https://www.facebook.com/ishya.iisertvm/" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
                           <a href="https://www.instagram.com/ishyaiiser/?hl=en" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
                           <a href="https://x.com/ishya_iiser" aria-label="X (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
-                          <a href="https://www.youtube.com/c/ishyaiisertvm" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                          <a href=" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
                       </div>
                       <div style="margin-top: 20px;">
                           <p style="font-size: 0.8rem; color: #888;">Facing Any Problems?</p>
