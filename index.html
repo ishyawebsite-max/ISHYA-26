@@ -64,7 +64,15 @@
     main { position: relative; z-index: 10; will-change: opacity; }
     
     /* --- UTILITIES & GLASSMORPHISM --- */
-    section { min-height: 100vh; padding: 0 5vw; position: relative; display: flex; align-items: center; justify-content: center; }
+    /* <<< --- SPACING CHANGE HERE --- >>> */
+    section { 
+        min-height: 100vh; 
+        padding: 10vh 5vw; /* Increased vertical padding for more space */
+        position: relative; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+    }
     
     .glass-panel {
         background: rgba(24, 28, 16, 0.4) !important;
@@ -77,7 +85,7 @@
     .section-layout { width: 100%; max-width: 1600px; display: flex; align-items: center; justify-content: space-between; }
     
     .perch-title { 
-        font-family: var(--font-fold), var(--font-display), sans-serif; /* Added Backup Font */
+        font-family: var(--font-fold), var(--font-display), sans-serif;
         font-size: clamp(3rem, 6vw, 5rem); 
         color: var(--accent-gold); opacity: 0.9; text-shadow: 0 0 20px rgba(0,0,0,0.8); 
         line-height: 1; margin-bottom: 10px;
@@ -98,6 +106,7 @@
     .cta-btn:hover { color: #fff; border-color: var(--accent-gold); box-shadow: 0 0 20px rgba(77, 143, 72, 0.4); background: rgba(77, 143, 72, 0.2); }
 
     /* --- HERO --- */
+    /* Hero padding is more specific, so it overrides the general section padding correctly. No changes needed here. */
     #hero { 
         flex-direction: column; 
         text-align: center; 
@@ -106,21 +115,16 @@
     }
     .hero-content { pointer-events: none; width: 100%; position: relative; z-index: 20; }
     
-    /* --- FIX IMPLEMENTED HERE --- */
     .hero-title { 
         perspective: 1000px; 
         font-family: var(--font-fold), 'Syncopate', 'Impact', sans-serif; 
         font-size: clamp(3rem, 7vw, 8rem); 
         line-height: 1.1; 
         text-transform: uppercase; 
-        
-        /* REPLACED GRADIENT TEXT WITH SOLID COLOR FOR VISIBILITY SAFETY */
         color: #D6C26A; 
         background: none;
-        -webkit-text-fill-color: initial; /* Forces browser to paint the text color */
-        
-        text-shadow: 0 0 30px rgba(214, 194, 106, 0.6); /* Glow effect instead of gradient */
-        
+        -webkit-text-fill-color: initial;
+        text-shadow: 0 0 30px rgba(214, 194, 106, 0.6);
         margin-bottom: 1vh; font-weight: 900; 
         width: 100%;
         max-width: 95vw;
@@ -298,11 +302,133 @@
     .team-text p { margin-bottom: 20px; }
     .team-highlight { color: var(--accent-gold); font-style: italic; font-weight: 600; }
 
-    /* SECTION 5: PROSHOWS */
-    .proshow-container { display: flex; justify-content: center; align-items: center; width: 100%; }
-    .wait-see-wrapper { text-align: center; padding: 50px; border: 1px solid var(--accent-gold); background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); transform: skewX(-10deg); }
-    .wait-see-text { font-family: var(--font-display); font-size: clamp(3rem, 8vw, 7rem); font-weight: 700; color: transparent; -webkit-text-stroke: 2px var(--accent-gold); text-shadow: 0 0 30px rgba(214, 194, 106, 0.3); transform: skewX(10deg); animation: pulseText 3s infinite ease-in-out; }
-    @keyframes pulseText { 0%, 100% { opacity: 0.6; text-shadow: 0 0 10px rgba(214, 194, 106, 0.1); } 50% { opacity: 1; text-shadow: 0 0 50px rgba(214, 194, 106, 0.6), 0 0 20px #fff; } }
+    /* --- SECTION 5: SPONSORS --- */
+    .sponsors-container {
+        width: 100%;
+    }
+    .title-sponsors-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        margin-bottom: 16px;
+    }
+    .title-sponsor-card {
+        position: relative;
+        min-height: 170px;
+        padding: 20px 16px;
+        border-radius: 10px;
+        border: 1.5px solid rgba(214, 194, 106, 0.72);
+        background: rgba(15, 16, 12, 0.98);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.48);
+        overflow: hidden;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .title-sponsor-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+            circle at top right,
+            rgba(214, 194, 106, 0.22),
+            transparent 55%
+        );
+        pointer-events: none;
+    }
+    .title-sponsor-card .sponsor-tag {
+        color: var(--accent-gold);
+        margin-bottom: 8px;
+    }
+    .title-sponsor-card .sponsor-name {
+        font-size: clamp(1rem, 2.2vw, 1.3rem);
+    }
+    .title-sponsor-icon {
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        color: rgba(214, 194, 106, 0.85);
+        font-size: 0.82rem;
+    }
+    .sponsors-carousel-shell {
+        position: relative;
+        overflow: hidden;
+        border-radius: 10px;
+        border: 1.5px solid rgba(214, 194, 106, 0.48);
+        background: rgba(7, 10, 8, 0.96);
+        padding: 18px 18px 68px;
+        box-shadow: 0 18px 34px rgba(0, 0, 0, 0.55);
+    }
+    .sponsor-cards-stage {
+        position: relative;
+        height: 300px;
+        width: 100%;
+        overflow: hidden;
+        perspective: 900px;
+    }
+    .sponsor-card {
+        position: absolute;
+        width: min(82%, 430px);
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        padding: 30px 20px;
+        border-radius: 16px;
+        border: 1px solid rgba(214, 194, 106, 0.2);
+        background: linear-gradient(
+            150deg,
+            rgba(15, 22, 11, 0.95),
+            rgba(4, 8, 5, 0.92)
+        );
+        text-align: center;
+        box-shadow: 0 14px 35px rgba(0, 0, 0, 0.55);
+        transition: border-color 0.25s ease;
+        will-change: transform, opacity, filter;
+    }
+    .sponsor-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        pointer-events: none;
+    }
+    .sponsor-tag {
+        font-family: var(--font-tech);
+        font-size: 0.75rem;
+        letter-spacing: 1.8px;
+        text-transform: uppercase;
+        color: var(--accent-green);
+        margin-bottom: 12px;
+    }
+    .sponsor-name {
+        font-family: var(--font-display);
+        font-size: clamp(1.2rem, 3vw, 1.8rem);
+        color: #fefce8;
+        line-height: 1.2;
+    }
+    .sponsor-card.active {
+        border-color: rgba(214, 194, 106, 0.7);
+    }
+    .sponsors-controls {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 16px;
+        margin-top: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+    }
+    .sponsors-indicator {
+        font-family: var(--font-tech);
+        color: rgba(255, 255, 255, 0.8);
+        letter-spacing: 1px;
+        min-width: 62px;
+        text-align: center;
+    }
 
     /* --- FOOTER --- */
     .footer-section { 
@@ -353,9 +479,10 @@
 
     /* --- MOBILE & TABLET OPTIMIZATION --- */
     @media (max-width: 950px) {
+        /* <<< --- SPACING CHANGE HERE FOR MOBILE --- >>> */
         section {
             min-height: calc(100vh - var(--header-h));
-            padding: var(--header-h) 5vw 0;
+            padding: var(--header-h) 5vw 5vh; /* Added 5vh bottom padding */
             position: relative;
             display: flex;
             align-items: center;
@@ -384,7 +511,6 @@
         .perch-subtitle { font-size: 0.8rem; }
         
         .hero-title {
-            /* --- FIX: Robust Stack for Mobile Too --- */
             font-family: var(--font-fold), 'Syncopate', 'Impact', sans-serif !important; 
             font-weight: 700;
             font-size: 10vw;
@@ -395,12 +521,9 @@
             margin-top: 45vh; 
             margin-bottom: 0;
             gap: 5px;
-            
-            /* REPLACED GRADIENT TEXT WITH SOLID COLOR ON MOBILE TOO */
             color: #D6C26A; 
             background: none !important; 
-            -webkit-text-fill-color: initial !important; /* Force solid color */
-            
+            -webkit-text-fill-color: initial !important;
             flex-grow: 0;
         }
         .word-group { margin: 0; }
@@ -452,6 +575,39 @@
         .team-content-wrapper { padding: 30px 20px; text-align: center; }
         .team-text { font-size: 1rem; }
         
+        /* --- OPTIMIZED MOBILE STYLES FOR SPONSORS SECTION --- */
+        .sponsors-carousel-shell {
+            padding: 12px 8px 60px; /* Reduced padding */
+        }
+        .title-sponsors-grid {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        .title-sponsor-card {
+            min-height: 110px; /* Reduced height */
+            padding: 14px;
+        }
+        .title-sponsor-card .sponsor-name {
+            font-size: 1rem; /* Adjusted font size */
+        }
+        .sponsor-cards-stage {
+            height: 250px;
+        }
+        .sponsor-card {
+            width: 88%;
+            padding: 20px 14px; /* Reduced padding */
+        }
+        .sponsor-name {
+            font-size: 1.1rem;
+        }
+        .sponsors-controls .nav-btn {
+            width: 45px; /* Smaller buttons */
+            height: 45px;
+        }
+        .sponsors-indicator {
+            font-size: 0.9rem; /* Smaller indicator text */
+        }
+
         .hero-countdown { gap: 10px; }
         .time-block { padding: 10px; min-width: 60px; }
         .time-block span { font-size: 1.8rem; }
@@ -532,7 +688,6 @@
             <div class="content-zone">
                 <div class="image-marquee-container glass-panel">
                     <div class="image-marquee-track">
-                        <!-- Added loading="lazy" for performance -->
                         <div class="image-marquee-item"><img src="https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_400,h_200,al_c,q_80/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg" loading="lazy"></div>
                         <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1FAwb4Q6bGfn8LfGYl7bzxTydX1I4BQ3l=w500" loading="lazy"></div>
                         <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1xPXLyX47aNUus9lO0blEKS22OubXrcNK=w500" loading="lazy"></div>
@@ -543,7 +698,6 @@
                         <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1s_trrwMrJzxeb_Ze2Z4OcKkLveacLWHO=w500" loading="lazy"></div>
                         <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1S4SwVvVa4fcsdPNXEgYOIjsDojw3XiuI=w500" loading="lazy"></div>
                         <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1RoTOcpLlqvWZOd_DN0sW_DJl1sT-J1aV=w500" loading="lazy"></div>
-                        
                         <div class="image-marquee-item"><img src="https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_400,h_200,al_c,q_80/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg" loading="lazy"></div>
                         <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1FAwb4Q6bGfn8LfGYl7bzxTydX1I4BQ3l=w500" loading="lazy"></div>
                         <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1xPXLyX47aNUus9lO0blEKS22OubXrcNK=w500" loading="lazy"></div>
@@ -601,17 +755,42 @@
         </div>
     </section>
 
-    <!-- SECTION 5: PROSHOWS -->
-    <section id="proshows">
-        <div class="section-layout layout-content-left">
+    <!-- SECTION 5: SPONSORS -->
+    <section id="sponsors">
+        <div class="section-layout layout-content-right">
             <div class="perch-zone">
-                <h2 class="perch-title">SPONSORS</h2>
-                <div class="perch-subtitle">POWERING ISHYA 26</div>
+                <h2 class="perch-title">
+                    <a href="./SPONSOR/index_sponsor.html" style="text-decoration: none; color: inherit;">SPONSORS</a>
+                </h2>
+                <div class="perch-subtitle">POWERING ISHYA 2026</div>
             </div>
             <div class="content-zone">
-                <div class="proshow-container">
-                    <div class="wait-see-wrapper">
-                        <div class="wait-see-text">COMING SOON....</div>
+                <div class="sponsors-container">
+                    <div class="title-sponsors-grid">
+                        <article class="title-sponsor-card">
+                            <i class="fa-solid fa-crown title-sponsor-icon" aria-hidden="true"></i>
+                            <div class="sponsor-tag">Title Sponsor</div>
+                            <div class="sponsor-name">State Bank of India</div>
+                        </article>
+                        <article class="title-sponsor-card">
+                            <i class="fa-solid fa-gem title-sponsor-icon" aria-hidden="true"></i>
+                            <div class="sponsor-tag"></div>
+                            <div class="sponsor-name">
+                                <img src="sponsor_images/sbi.png" alt="SBI LOGO" style="max-width: 50%" />
+                            </div>
+                        </article>
+                    </div>
+                    <div class="sponsors-carousel-shell">
+                        <div class="sponsor-cards-stage" id="sponsorsCardCarousel"></div>
+                        <div class="sponsors-controls">
+                            <button id="sponsorPrevBtn" class="nav-btn" aria-label="Previous sponsor">
+                                <i class="fa-solid fa-arrow-left"></i>
+                            </button>
+                            <span id="sponsorsIndicator" class="sponsors-indicator">01 / 05</span>
+                            <button id="sponsorNextBtn" class="nav-btn" aria-label="Next sponsor">
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -671,7 +850,6 @@
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); 
     renderer.setSize(window.innerWidth, window.innerHeight); 
     
-    // Performance: Limit Pixel Ratio 
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); 
     renderer.setClearColor(0x000000, 0);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -737,6 +915,7 @@
         setupEventListeners();
         setupInteractiveElements();
         init3DCarousel(); 
+        initSponsorsCarousel();
 
         const animate = () => { 
             const t = clock.getElapsedTime(); 
@@ -765,14 +944,7 @@
 
     function createBird() {
         const birdMaterial = new THREE.MeshStandardMaterial({ 
-            color: 0xffc400,       
-            roughness: 0.25,      
-            metalness: 0.95,       
-            emissive: 0x6e5200,    
-            emissiveIntensity: 0.3,
-            side: THREE.DoubleSide,
-            flatShading: true      
-        });
+            color: 0xffc400, roughness: 0.25, metalness: 0.95, emissive: 0x6e5200, emissiveIntensity: 0.3, side: THREE.DoubleSide, flatShading: true });
         
         const group = new THREE.Group(); group.visible = false; scene.add(group);
         const vBody=[0,0,1,1,0,0,0,0,-1,0,0,1,0,0,-1,-1,0,0,0,0.8,-0.2,0,0,1,1,0,0,0,0.8,-0.2,-1,0,0,0,0,1,0,0.8,-0.2,1,0,0,0,0,-1,0,0.8,-0.2,0,0,-1,-1,0,0,0,0,1,0.15,0,0.8,0,2.5,2.0,0,0,1,0,2.5,2.0,-0.15,0,0.8,0,2.5,2.0,0.1,2.2,2.0,0,1.8,2.5,0,2.5,2.0,0,1.8,2.5,-0.1,2.2,2.0,0,0,-1,0.15,0,-0.8,0,2.0,-2.5,0,0,-1,0,2.0,-2.5,-0.15,0,-0.8];
@@ -833,12 +1005,11 @@
                 .to(bird.group.position, { x: -5.5, y: -0.5, z: 1 }).to(bird.group.rotation, { y: -0.6, x: 0.1, z: 0 }, "<");
             gsap.timeline({ scrollTrigger: { trigger: "#team", start: "top bottom", end: "center center", scrub: 1.5 }})
                 .to(bird.group.position, { x: 6, y: 0.5, z: 1 }).to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
-            gsap.timeline({ scrollTrigger: { trigger: "#proshows", start: "top bottom", end: "center center", scrub: 1.5 }})
+            gsap.timeline({ scrollTrigger: { trigger: "#sponsors", start: "top bottom", end: "center center", scrub: 1.5 }})
                 .to(bird.group.position, { x: 0, y: 0, z: 3 }).to(bird.group.rotation, { y: 0, x: 0, z: 0 }, "<"); 
         }
     }
 
-    // --- CAROUSEL OPTIMIZATION FIX ---
     function init3DCarousel() {
         const container = document.getElementById('cardCarousel');
         const prevBtn = document.getElementById('prevBtn');
@@ -859,7 +1030,6 @@
 
         eventsData.forEach((item, index) => {
             const card = document.createElement('div');
-            // 'glass-panel' is removed here to improve FPS, styling handled in CSS with transparency
             card.className = 'carousel-card-3d'; 
             card.innerHTML = `
                 <img src="${item.img}" class="card-bg-img" alt="${item.title}" loading="lazy" decoding="async">
@@ -889,7 +1059,6 @@
                 const offset = index - activeIndex;
                 const absOffset = Math.abs(offset);
                 
-                // Hide off-screen cards to save resources
                 if (absOffset > 3) {
                     gsap.to(card, { opacity: 0, duration: 0.3, pointerEvents: 'none', overwrite: 'auto' });
                 } else {
@@ -903,18 +1072,9 @@
                     if (offset === 0) card.classList.add('active-card');
                     else card.classList.remove('active-card');
 
-                    // ADDED: overwrite: 'auto' to prevent animation conflict lag
                     gsap.to(card, { 
-                        x: translateX, 
-                        z: translateZ, 
-                        rotateY: rotateY, 
-                        scale: scale, 
-                        opacity: opacity, 
-                        zIndex: zIndex, 
-                        duration: 0.8, 
-                        ease: "power2.out", 
-                        pointerEvents: 'auto',
-                        overwrite: 'auto' 
+                        x: translateX, z: translateZ, rotateY: rotateY, scale: scale, opacity: opacity, 
+                        zIndex: zIndex, duration: 0.8, ease: "power2.out", pointerEvents: 'auto', overwrite: 'auto' 
                     });
                 }
             });
@@ -933,6 +1093,111 @@
         updateCarousel();
     }
 
+    function initSponsorsCarousel() {
+        const stage = document.getElementById("sponsorsCardCarousel");
+        const prevBtn = document.getElementById("sponsorPrevBtn");
+        const nextBtn = document.getElementById("sponsorNextBtn");
+        const indicator = document.getElementById("sponsorsIndicator");
+        if (!stage || !prevBtn || !nextBtn || !indicator) return;
+
+        const sponsorsData = [
+            { tag: "Inter-Event Sponsor", name: "CBC Mahindra", image_src: "cbc_mahindra.png" },
+            { tag: "Inter-Event Sponsor", name: "Delic Store", image_src: "delicstore.png" },
+            { tag: "Inter-Event Sponsor", name: "The Next Trade", image_src: "the_next_trade.png" },
+            { tag: "Education Partner", name: "Fortune IAS Academy", image_src: "fortune_ias.avif" },
+            { tag: "Education Partner", name: "T.I.M.E", image_src: "time.avif" },
+            { tag: "Banking Partner", name: "Canara Bank", image_src: "canarabank.png" },
+            { tag: "Laboratory Partner", name: "SK Biosystems", image_src: "skbiosystems.png" },
+            { tag: "Laboratory Partner", name: "Spectrochem", image_src: "spectrochem.png" },
+            { tag: "Laboratory Partner", name: "Crescent", image_src: "crescent.png" },
+            { tag: "Brand Partner", name: "Finlatics", image_src: "finlatics.png" },
+            { tag: "Brand Partner", name: "Bhima Jewellers", image_src: "bhima.png" },
+            { tag: "Brand Partner", name: "Picaboo", image_src: "picaboo.png" },
+            { tag: "Hospitality Partner", name: "Rinshi", image_src: "rinshi.png" },
+            { tag: "Health Partner", name: "DKMS", image_src: "dkms.png" },
+            { tag: "Building Partner", name: "Sowparnika Builders", image_src: "sowparnika.png" },
+            { tag: "Travel Partner", name: "Moonway", image_src: "moonway.png" },
+            { tag: "Proshow Hospitality Partner", name: "Santhikrishna Palace", image_src: "santhikrishna.webp" },
+            { tag: "Food Partner", name: "Nestle", image_src: "nestle.png" },
+            { tag: "Food Partner", name: "Camerry", image_src: "cammery.png" },
+            { tag: "Food Partner", name: "Dinu Bakery", image_src: "dinusbakery.png" },
+            { tag: "Food Partner", name: "Burger King", image_src: "bking.png" },
+            { tag: "Food Partner", name: "Wow! Momo", image_src: "wowmomo.jpeg" },
+            { tag: "Food Partner", name: "Adivaram Restaurant", image_src: "adivaramresto.png" },
+            { tag: "Food Partner", name: "Dominos", image_src: "dominos.png" },
+            { tag: "Food Partner", name: "Tasty", image_src: "tastys.png" },
+            { tag: "Food Partner", name: "The Food Truck", image_src: "" },
+            { tag: "Book Partner", name: "DC Books", image_src: "dcbooks.jpeg" },
+            { tag: "Stationery Partner", name: "Phoebus Gifts", image_src: "phoebus.png" },
+        ];
+
+        let activeIndex = 0;
+        const cardElements = sponsorsData.map((item, index) => {
+            const card = document.createElement("article");
+            card.className = "sponsor-card";
+            card.innerHTML = `
+                <div class="sponsor-tag">${item.tag}</div>
+                <div>
+                    ${item.image_src ? `<img src="sponsor_images/${item.image_src}" style="max-width: 30%" alt="${item.name}" />` : ''}
+                </div>
+                <div class="sponsor-name">${item.name}</div>
+            `;
+            card.addEventListener("click", () => {
+                if (activeIndex !== index) {
+                    activeIndex = index;
+                    updateSponsors();
+                }
+            });
+            stage.appendChild(card);
+            return card;
+        });
+
+        function updateSponsors() {
+            cardElements.forEach((card, index) => {
+                const offset = index - activeIndex;
+                const abs = Math.abs(offset);
+                const clamped = Math.min(abs, 2);
+                const translateX = offset * (isMobile ? 120 : 170);
+                const scale = 1 - clamped * 0.14;
+                const depth = -clamped * 90;
+                const opacity = abs > 3 ? 0 : 1 - clamped * 0.24;
+                const gray = offset === 0 ? 0 : 100;
+
+                card.classList.toggle("active", offset === 0);
+
+                gsap.to(card, {
+                    x: translateX, z: depth, scale, opacity, zIndex: 100 - abs,
+                    filter: `grayscale(${gray}%)`, duration: 0.55, ease: "power2.out", overwrite: "auto",
+                });
+            });
+            indicator.textContent = `${String(activeIndex + 1).padStart(2, "0")} / ${String(cardElements.length).padStart(2, "0")}`;
+        }
+
+        prevBtn.addEventListener("click", () => {
+            activeIndex = (activeIndex - 1 + cardElements.length) % cardElements.length;
+            updateSponsors();
+        });
+        nextBtn.addEventListener("click", () => {
+            activeIndex = (activeIndex + 1) % cardElements.length;
+            updateSponsors();
+        });
+
+        let touchStartX = 0;
+        stage.addEventListener("touchstart", (e) => (touchStartX = e.changedTouches[0].screenX), { passive: true });
+        stage.addEventListener("touchend", (e) => {
+                const touchEndX = e.changedTouches[0].screenX;
+                if (touchStartX - touchEndX > 45) nextBtn.click();
+                if (touchEndX - touchStartX > 45) prevBtn.click();
+            }, { passive: true });
+        
+        setInterval(() => {
+            activeIndex = (activeIndex + 1) % cardElements.length;
+            updateSponsors();
+        }, 4500);
+
+        updateSponsors();
+    }
+
     function setupInteractiveElements() {
         const targetDate = new Date("March 12, 2026 18:00:00").getTime();
         setInterval(() => {
@@ -947,14 +1212,8 @@
     }
 
     function setupEventListeners() {
-        // --- SYNC FIX: Lenis and ScrollTrigger must be perfectly synced ---
         const lenis = new Lenis({ lerp: 0.1, smooth: true });
-        
-        function raf(time) { 
-            lenis.raf(time); 
-            ScrollTrigger.update(); 
-            requestAnimationFrame(raf); 
-        } 
+        function raf(time) { lenis.raf(time); ScrollTrigger.update(); requestAnimationFrame(raf); } 
         requestAnimationFrame(raf);
         
         let resizeTimeout;
