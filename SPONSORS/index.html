@@ -1,31 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link
-        rel="shortcut icon"
-        type="image/x-icon"
-        href="../Logo Ishya.ico"
-    />
-    <link rel="stylesheet" href="/global.css" />
-    <meta charset="UTF-8" />
-    <script async src="https://tally.so/widgets/embed.js"></script>
-    <script src="./layout.js" defer></script>
     <title>ISHYA '26 | Sponsors & Partners</title>
 
-    <!-- GLOBAL THEME -->
-    <link rel="stylesheet" href="/global.css">
-    <link rel="shortcut icon" type="image/x-icon" href="../Logo Ishya.ico">
-
-    <!-- FONTS & ICONS (kept for safety even though global.css imports them) -->
+    <!-- GLOBAL THEME & ICONS -->
+    <link rel="shortcut icon" type="image/x-icon" href="../Logo Ishya.ico" />
+    <link rel="stylesheet" href="/global.css" />
+    
+    <!-- FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Foldit:wght@400;600;800;900&family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;500;700&family=Cormorant+Garamond:ital,wght@1,300;1,600&family:Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Foldit:wght@400;600;800;900&family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;500;700&family=Cormorant+Garamond:ital,wght@1,300;1,600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
     <!-- SHARED LAYOUT / HEADER-FOOTER -->
     <script async src="https://tally.so/widgets/embed.js"></script>
+    
+    <!-- FIXED: Changed from ./layout.js to ../layout.js -->
+    <script src="../layout.js" defer></script>
 
     <style>
         :root {
@@ -154,210 +147,6 @@
             color: rgba(240,240,240,0.9);
         }
 
-        .hero-kpi-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 18px;
-            margin-top: 28px;
-        }
-
-        .hero-kpi {
-            flex: 1 1 150px;
-            padding: 14px 18px;
-            border-radius: 14px;
-            border: 1px solid rgba(214, 194, 106, 0.25);
-            background: rgba(10, 15, 6, 0.7);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
-        }
-
-        .hero-kpi-label {
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            font-family: var(--font-tech);
-            text-transform: uppercase;
-            color: rgba(226, 232, 240, 0.75);
-        }
-
-        .hero-kpi-value {
-            margin-top: 6px;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--accent-gold);
-        }
-
-        /* Shared glass button */
-        .cta-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 30px;
-            padding: 14px 32px;
-            background: rgba(24, 28, 16, 0.7);
-            border: 1px solid var(--accent-green);
-            color: var(--accent-gold);
-            font-family: var(--font-display);
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta-btn i {
-            font-size: 0.95rem;
-        }
-
-        .cta-btn:hover {
-            color: #ffffff;
-            border-color: var(--accent-gold);
-            box-shadow: 0 0 22px rgba(77, 143, 72, 0.4);
-            background: rgba(77, 143, 72, 0.2);
-        }
-
-        .cta-secondary {
-            margin-left: 16px;
-            border-color: rgba(214, 194, 106, 0.4);
-            background: rgba(5, 10, 6, 0.85);
-        }
-
-        .cta-secondary:hover {
-            background: rgba(24, 28, 16, 0.95);
-        }
-
-        /* SPONSORSHIP TIERS */
-        .tiers-grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 26px;
-        }
-
-        .tier-card {
-            position: relative;
-            padding: 24px 22px 26px;
-            border-radius: 18px;
-            background: radial-gradient(circle at top left, rgba(214, 194, 106, 0.18), rgba(5, 8, 6, 0.95));
-            border: 1px solid rgba(214, 194, 106, 0.3);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
-            overflow: hidden;
-        }
-
-        .tier-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 12px;
-            border-radius: 999px;
-            border: 1px solid rgba(214, 194, 106, 0.4);
-            background: rgba(0,0,0,0.6);
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-family: var(--font-tech);
-            color: var(--accent-gold);
-        }
-
-        .tier-title {
-            font-family: var(--font-display);
-            font-size: 1.4rem;
-            margin-top: 14px;
-            color: #fefce8;
-        }
-
-        .tier-tagline {
-            font-size: 0.9rem;
-            margin-top: 6px;
-            color: rgba(226, 232, 240, 0.8);
-        }
-
-        .tier-benefits {
-            margin-top: 16px;
-            list-style: none;
-            padding-left: 0;
-            font-size: 0.95rem;
-        }
-
-        .tier-benefits li {
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-            margin-bottom: 8px;
-            color: rgba(229, 231, 235, 0.9);
-        }
-
-        .tier-benefits li i {
-            font-size: 0.7rem;
-            margin-top: 4px;
-            color: var(--accent-green);
-        }
-
-        .tier-footer-text {
-            margin-top: 14px;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-family: var(--font-tech);
-            color: rgba(209, 213, 219, 0.95);
-        }
-
-        .tier-accent-orbit {
-            position: absolute;
-            inset: -40%;
-            opacity: 0.22;
-            background:
-                radial-gradient(circle at 20% 0%, rgba(234, 179, 8, 0.5), transparent 55%),
-                radial-gradient(circle at 100% 80%, rgba(74, 222, 128, 0.35), transparent 55%),
-                radial-gradient(circle at 0% 100%, rgba(15, 118, 110, 0.35), transparent 55%);
-            mix-blend-mode: screen;
-            pointer-events: none;
-        }
-
-        .tier-card:nth-child(2) {
-            border-color: rgba(234, 179, 8, 0.8);
-            background: radial-gradient(circle at top, rgba(248, 250, 252, 0.06), rgba(5, 8, 6, 0.98));
-        }
-
-        /* WHY SPONSOR */
-        .reason-grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 26px;
-        }
-
-        .reason-card {
-            padding: 22px 22px 24px;
-            border-radius: 18px;
-            border: 1px solid rgba(148, 163, 184, 0.4);
-            background: rgba(10, 15, 12, 0.9);
-            box-shadow: 0 16px 36px rgba(0,0,0,0.7);
-        }
-
-        .reason-icon {
-            width: 34px;
-            height: 34px;
-            border-radius: 999px;
-            border: 1px solid rgba(148, 163, 184, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent-gold);
-            margin-bottom: 12px;
-        }
-
-        .reason-title {
-            font-family: var(--font-display);
-            font-size: 1.1rem;
-            margin-bottom: 6px;
-        }
-
-        .reason-body {
-            font-size: 0.95rem;
-            color: rgba(229, 231, 235, 0.9);
-            line-height: 1.6;
-        }
-
         /* LOGOS GRID */
         .logos-wrapper {
             border-radius: 24px;
@@ -365,24 +154,6 @@
             background: radial-gradient(circle at top left, rgba(148, 163, 184, 0.18), rgba(5, 10, 8, 0.96));
             padding: 26px 24px 24px;
             box-shadow: 0 18px 40px rgba(0,0,0,0.8);
-        }
-
-        /* Scrollable list variant for the hero section */
-        .logos-wrapper--scroll {
-            max-height: 360px;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: rgba(148,163,184,0.8) rgba(15,23,42,0.9);
-        }
-        .logos-wrapper--scroll::-webkit-scrollbar {
-            width: 6px;
-        }
-        .logos-wrapper--scroll::-webkit-scrollbar-track {
-            background: rgba(15,23,42,0.95);
-        }
-        .logos-wrapper--scroll::-webkit-scrollbar-thumb {
-            background: linear-gradient(to bottom, rgba(234,179,8,0.8), rgba(59,130,246,0.7));
-            border-radius: 999px;
         }
 
         .logos-header-row {
@@ -424,80 +195,6 @@
             color: rgba(226, 232, 240, 0.9);
         }
 
-        /* Prominent chips for title sponsors */
-        .title-sponsor-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-            margin-bottom: 18px;
-        }
-
-        .logo-chip--title {
-            border-style: solid;
-            border-color: rgba(234, 179, 8, 0.9);
-            background: radial-gradient(circle at top, rgba(250, 204, 21, 0.35), rgba(15, 23, 42, 0.98));
-            color: #fefce8;
-            height: 110px;
-            font-size: 1rem;
-            box-shadow: 0 20px 45px rgba(0,0,0,0.9);
-        }
-
-        /* Secondary grids below title sponsors */
-        .logos-grid--secondary {
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-        }
-
-        /* CONTACT SECTION */
-        .contact-card {
-            border-radius: 22px;
-            border: 1px solid rgba(148, 163, 184, 0.6);
-            background: radial-gradient(circle at top left, rgba(129, 230, 217, 0.18), rgba(5, 10, 10, 0.98));
-            padding: 26px 22px 24px;
-            box-shadow: 0 18px 40px rgba(0,0,0,0.9);
-        }
-
-        .contact-detail-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 18px;
-            margin-top: 16px;
-        }
-
-        .contact-pill {
-            flex: 1 1 220px;
-            padding: 10px 14px;
-            border-radius: 999px;
-            border: 1px solid rgba(148, 163, 184, 0.7);
-            background: rgba(15, 23, 42, 0.9);
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .contact-pill i {
-            color: var(--accent-gold);
-        }
-
-        .contact-note {
-            margin-top: 14px;
-            font-size: 0.85rem;
-            color: rgba(209, 213, 219, 0.9);
-        }
-
-        .tally-launch {
-            margin-top: 18px;
-        }
-
-        .tally-launch button {
-            all: unset;
-            cursor: pointer;
-        }
-
-        .tally-launch .cta-btn {
-            margin-top: 0;
-        }
-
         /* RESPONSIVE */
         @media (max-width: 1024px) {
             .section-layout {
@@ -518,11 +215,6 @@
                 max-width: none;
             }
 
-            .tiers-grid,
-            .reason-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
             .logos-grid {
                 grid-template-columns: repeat(3, minmax(0, 1fr));
             }
@@ -532,29 +224,15 @@
             section {
                 padding: calc(var(--header-h) + 20px) 5vw 50px;
             }
-
-            .tiers-grid,
-            .reason-grid {
-                grid-template-columns: minmax(0, 1fr);
-            }
-
             .logos-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
-            .hero-kpi-row {
-                flex-direction: column;
-            }
-
-            .cta-secondary {
-                margin-left: 0;
-                margin-top: 14px;
             }
         }
     </style>
 </head>
 <body>
-<ishya-header></ishya-header>
+    <ishya-header></ishya-header>
+    
     <!-- STORE-STYLE SCANLINE + HEADER WRAPPER -->
     <div class="scanline"></div>
 
@@ -581,7 +259,7 @@
                     </p>
                 </div>
                 <div class="content-zone">
-                    <div class="logos-wrapper logos-wrapper">
+                    <div class="logos-wrapper">
                         <div class="logos-header-row">
                             <div style="font-size: 0.95rem; font-family: var(--font-display);">
                                 State Bank of India (SBI)
@@ -591,8 +269,7 @@
                             </div>
                         </div>
                         <img src="../sponsor_images/sbi.png" style="max-width: 50%; display: block; margin-left: auto; margin-right: auto;"/>
-                        </div>
-                    </div>
+                    </div> <!-- FIXED: Removed the extra stray closing div here -->
                 </div>
             </div>
         </section>
@@ -624,7 +301,6 @@
                             <div class="logo-chip logo-chip--primary">
                                 <img src="../sponsor_images/the_next_trade.png" style="max-width: 60%; display: block; margin-left: auto; margin-right: auto;"/>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -658,17 +334,14 @@
                             <div class="logo-chip logo-chip--primary">
                                 <img src="../sponsor_images/canarabank.png" style="max-width: 90%; display: block; margin-left: auto; margin-right: auto;"/>
                             </div>
-                            <p style="font-size: 0.8rem; margin-top: 14px; color: rgba(209, 213, 219, 0.86);">
-
-                            </p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- CATEGORY / IN-KIND PARTNERS -->
-        <section id="category-partners">
+        <!-- CATEGORY / IN-KIND PARTNERS 1 -->
+        <section id="category-partners-1">
             <div class="section-layout layout-two-column-reverse">
                 <div class="perch-zone">
                     <h2 class="perch-title">Laboratory Partners</h2>
@@ -694,9 +367,6 @@
                             <div class="logo-chip logo-chip--primary">
                                 <img src="../sponsor_images/spectrochem.png" style="max-width: 90%; display: block; margin-left: auto; margin-right: auto;"/>
                             </div>
-                            <p style="font-size: 0.8rem; margin-top: 14px; color: rgba(209, 213, 219, 0.86);">
-
-                            </p>
                         </div>
                     </div>
                 </div>
@@ -704,7 +374,7 @@
         </section>
 
         <!-- MEDIA / COMMUNITY PARTNERS -->
-        <section id="brand-partners">
+        <section id="brand-partners-1">
             <div class="section-layout layout-two-column">
                 <div class="perch-zone">
                     <h2 class="perch-title">Brand Partners</h2>
@@ -742,15 +412,14 @@
                             <div class="logo-chip logo-chip--primary">
                                 <img src="../sponsor_images/phoebus.png" style="max-width: 90%; display: block; margin-left: auto; margin-right: auto;"/>
                             </div>
-                            <p style="font-size: 0.8rem; margin-top: 14px; color: rgba(209, 213, 219, 0.86);">
-                            </p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="category-partners">
+        <!-- CATEGORY / IN-KIND PARTNERS 2 -->
+        <section id="category-partners-2">
             <div class="section-layout layout-two-column-reverse">
                 <div class="perch-zone">
                     <h2 class="perch-title">Health &amp; <br> Bulding Partners</h2>
@@ -772,15 +441,14 @@
                             <div class="logo-chip logo-chip--primary">
                                 <img src="../sponsor_images/sowparnika.png" style="max-width: 90%; display: block; margin-left: auto; margin-right: auto;"/>
                             </div>
-                            <p style="font-size: 0.8rem; margin-top: 14px; color: rgba(209, 213, 219, 0.86);">
-                            </p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="brand-partners">
+        <!-- BRAND PARTNERS 2 -->
+        <section id="brand-partners-2">
             <div class="section-layout layout-two-column">
                 <div class="perch-zone">
                     <h2 class="perch-title">Hospitality <br>  &amp; Travel Partners</h2>
@@ -806,14 +474,14 @@
                             <div class="logo-chip logo-chip--primary">
                                 <img src="../sponsor_images/moonway.png" style="max-width: 80%; display: block; margin-left: auto; margin-right: auto;"/>
                             </div>
-                            <p style="font-size: 0.8rem; margin-top: 14px; color: rgba(209, 213, 219, 0.86);">
-                            </p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-        <section id="category-partners">
+        
+        <!-- FOOD PARTNERS -->
+        <section id="category-partners-3">
             <div class="section-layout layout-two-column-reverse">
                 <div class="perch-zone">
                     <h2 class="perch-title">Food Partners</h2>
@@ -853,7 +521,6 @@
                             <div class="logo-chip logo-chip--primary">
                                 <img src="../sponsor_images/nestle.png" style="max-width: 90%; display: block; margin-left: auto; margin-right: auto;"/>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -862,7 +529,7 @@
 
     </main>
 
-    <!-- BACKGROUND ANIMATION (reused from landing) -->
+    <!-- BACKGROUND ANIMATION -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const canvas = document.getElementById('animated-bg');
