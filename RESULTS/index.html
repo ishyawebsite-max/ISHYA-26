@@ -12,31 +12,60 @@
             width: 100%;
             overflow: hidden; 
             background-color: #060606;
-            display: flex;
-            flex-direction: column;
         }
         iframe {
-            flex-grow: 1;
             width: 100%;
+            height: 100%;
             border: none;
         }
-        .fallback {
-            background: #111;
-            color: #ccc;
+        /* This button only shows if the iframe fails to load */
+        .mobile-fix {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
             text-align: center;
-            padding: 10px;
             font-family: sans-serif;
-            font-size: 14px;
+            z-index: 10;
+        }
+        .mobile-fix a {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 25px;
+            background: #2dd4a0;
+            color: black;
             text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <iframe src="https://script.google.com/macros/s/AKfycbydHUzX3RydKQeVqzUTPFwMqjN-TM1xdHgUwSf32aDrf68d_G2cyGOVZpqfOr4RPoKE/exec?authuser=0"></iframe>
-    
-    <a href="https://script.google.com/macros/s/AKfycbydHUzX3RydKQeVqzUTPFwMqjN-TM1xdHgUwSf32aDrf68d_G2cyGOVZpqfOr4RPoKE/exec?authuser=0" 
-       class="fallback" target="_blank">
-       Trouble viewing? Click here to open results in a new tab.
-    </a>
+    <div id="fail-message" class="mobile-fix">
+        <p>Google is blocking the results view on this browser.</p>
+        <a href="https://script.google.com/macros/s/AKfycbydHUzX3RydKQeVqzUTPFwMqjN-TM1xdHgUwSf32aDrf68d_G2cyGOVZpqfOr4RPoKE/exec?authuser=0" target="_blank">
+            Tap to View Results
+        </a>
+    </div>
+
+    <iframe id="results-frame" src="https://script.google.com/macros/s/AKfycbydHUzX3RydKQeVqzUTPFwMqjN-TM1xdHgUwSf32aDrf68d_G2cyGOVZpqfOr4RPoKE/exec?authuser=0"></iframe>
+
+    <script>
+        // If the iframe doesn't load content within 3 seconds, show the manual link
+        setTimeout(function() {
+            var iframe = document.getElementById('results-frame');
+            try {
+                // If we can't access the iframe content (standard for cross-origin), 
+                // we assume it might be blocked on mobile and show the backup link.
+                if (window.innerWidth < 768) {
+                    document.getElementById('fail-message').style.display = 'block';
+                }
+            } catch (e) {
+                document.getElementById('fail-message').style.display = 'block';
+            }
+        }, 3000);
+    </script>
 </body>
 </html>
