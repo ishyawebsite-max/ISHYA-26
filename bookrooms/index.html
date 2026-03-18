@@ -351,10 +351,10 @@
     <ishya-header></ishya-header>
 
     <div id="app">
-        <!-- 24-HOUR CONSTRIANT BANNER -->
+        <!-- 24-HOUR CONSTRIANT BANNER
         <div class="booking-notice-banner">
             🕒 <b>Note:</b> You can only book slots exactly 24 hours before the slot opens. All future slots beyond this are blacked out.
-        </div>
+        </div> -->
 
         <div class="app-toolbar">
             <h1>Room Booking System</h1>
@@ -701,13 +701,15 @@
             renderTimeSlots();
         }
 
-        // --- Time Slot & 24 HOUR CONSTRAINT LOGIC ---
+        // --- Time Slot & 2 weeks CONSTRAINT LOGIC ---
         function renderTimeSlots() {
             const grid = document.getElementById('timeslot-grid');
             grid.innerHTML = '';
 
             const now = new Date();
-            const twentyFourHoursMs = 24 * 60 * 60 * 1000;
+            
+            // NEW: Calculate 14 days (2 weeks) in milliseconds
+            const twoWeeksMs = 14 * 24 * 60 * 60 * 1000; 
 
             STANDARD_SLOTS.forEach(time => {
                 // Parse the specific slot time safely
@@ -723,13 +725,13 @@
                     btn.classList.add('blacked-out');
                     btn.innerHTML = `<span>${time}</span><span style="font-size:0.65em">(Past)</span>`;
                 } 
-                else if (timeDiffMs > twentyFourHoursMs) {
-                    // Future Slot > 24 Hours
+                else if (timeDiffMs > twoWeeksMs) { 
+                    // Future Slot > 2 Weeks
                     btn.classList.add('blacked-out');
-                    btn.innerHTML = `<span>${time}</span><span style="font-size:0.65em">(Opens 24h prior)</span>`;
+                    btn.innerHTML = `<span>${time}</span><span style="font-size:0.65em">(Opens 14 days prior)</span>`; 
                 } 
                 else {
-                    // Slot is within the 24-hour booking window
+                    // Slot is within the 2 week booking window
                     btn.innerHTML = `<span>${time}</span>`;
                     
                     // Check Backend Availability capacity
