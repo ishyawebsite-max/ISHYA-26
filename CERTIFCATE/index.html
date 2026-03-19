@@ -179,9 +179,10 @@
 
     <script>
         // --- 1. CONFIGURATION ---
-        // Your specific Apps Script URL
-        const API_URL = "https://script.google.com/macros/s/AKfycbyLqEdp6FG72nTkI2_4wHeeI98cvToK_eXeF0x-YCLbFoBIJ6qc7aMLnc_qC_iJ3OTo/exec"; 
-        const TEMPLATE_URL = "./TEMPLATE.pdf"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbyrsXbC1aBZWElqrCcBQlWUNEagw_gonKMhbVwxDumZS9zLtyv8P8uGYGAu2YEwNhek/exec"; 
+        
+        // Ensure this points to a completely blank version of your PDF
+        const TEMPLATE_URL = "./certificate.pdf"; 
 
         const eventSelect = document.getElementById('event-select');
         const generateBtn = document.getElementById('generate-btn');
@@ -191,11 +192,10 @@
         window.addEventListener('DOMContentLoaded', async () => {
             try {
                 const res = await fetch(`${API_URL}?action=getEvents`);
-                const rawText = await res.text(); // Read as text first to catch HTML error pages
+                const rawText = await res.text(); 
                 
                 try {
                     const json = JSON.parse(rawText);
-                    
                     if (json.status === "success" && json.data) {
                         eventSelect.innerHTML = '<option value="" disabled selected>-- Choose your event --</option>';
                         json.data.forEach(eventName => {
@@ -205,15 +205,12 @@
                             eventSelect.appendChild(opt);
                         });
                     } else {
-                        console.error("Backend returned error:", json.message);
                         eventSelect.innerHTML = `<option value="" disabled>Error: ${json.message}</option>`;
                     }
                 } catch (parseError) {
-                    console.error("Google Apps Script did not return JSON. It returned HTML. Check permissions or deployment:", rawText);
                     eventSelect.innerHTML = '<option value="" disabled>Script Error (Check Console)</option>';
                 }
             } catch (err) {
-                console.error("Fetch Request Failed:", err);
                 eventSelect.innerHTML = '<option value="" disabled>Network Error (Check Console)</option>';
             }
         });
@@ -232,32 +229,47 @@
             generateBtn.disabled = true;
 
             try {
+                // Fetch User Data
                 const res = await fetch(`${API_URL}?action=getCertificates&event=${encodeURIComponent(eventName)}&mobile=${encodeURIComponent(mobile)}`);
                 const rawText = await res.text();
                 
                 let result;
-                try {
-                    result = JSON.parse(rawText);
-                } catch(e) {
-                    console.error("Non-JSON Response:", rawText);
-                    throw new Error("Server configuration error. Check console.");
-                }
+                try { result = JSON.parse(rawText); } 
+                catch(e) { throw new Error("Server configuration error."); }
 
                 if(result.status !== 'success') {
                     throw new Error(result.message || "Record not found. Check your details.");
                 }
 
                 const participants = result.data; 
-                setStatus(`Found ${participants.length} record(s). Designing PDF...`, "loading");
+                setStatus(`Found ${participants.length} record(s). Downloading Template...`, "loading");
+
+                // Fetch PDF
+                const pdfResponse = await fetch(TEMPLATE_URL);
+                if (!pdfResponse.ok) {
+                    throw new Error(`Failed to load PDF template. Check if ${TEMPLATE_URL} exists.`);
+                }
+                
+                const contentType = pdfResponse.headers.get("content-type");
+                if (contentType && !contentType.includes("application/pdf")) {
+                     throw new Error("The TEMPLATE_URL is pointing to a webpage, not a .pdf file.");
+                }
+
+                const existingPdfBytes = await pdfResponse.arrayBuffer();
+                setStatus(`Designing PDF...`, "loading");
 
                 // Initialize PDF creation
                 const { PDFDocument, rgb, StandardFonts } = PDFLib;
-                const existingPdfBytes = await fetch(TEMPLATE_URL).then(r => r.arrayBuffer());
                 const finalPdf = await PDFDocument.create();
                 
-                // Load standard font for width measurement (Auto-Centering)
-                const customFont = await finalPdf.embedFont(StandardFonts.HelveticaBold);
-                const FONT_SIZE = 36; 
+                // LOAD FONTS (To match your elegant template)
+                const nameFont = await finalPdf.embedFont(StandardFonts.TimesRomanItalic); // Serif for elegant names
+                const regularFont = await finalPdf.embedFont(StandardFonts.Helvetica); // Clean sans-serif for subtext
+                const boldFont = await finalPdf.embedFont(StandardFonts.HelveticaBold); // Bold for event name
+                
+                // Color Mapping (Matching your provided template design)
+                const goldColor = rgb(0.95, 0.92, 0.80); // Hex #f2ebcd
+                const whiteColor = rgb(0.9, 0.9, 0.9);
 
                 // Process each team member
                 for (let person of participants) {
@@ -266,20 +278,72 @@
                     const page = pages[0];
                     const { width, height } = page.getSize();
 
-                    // Calculate perfect X position to center the name
-                    const textWidth = customFont.widthOfTextAtSize(person.name, FONT_SIZE);
-                    const centerX = (width - textWidth) / 2;
+                    // --- A. DETERMINE GRAMMAR ---
+                    let posText = person.position.toLowerCase();
+                    let actionText = "for participating in";
+                    
+                    if (posText && posText !== "participant") {
+                        if (posText.includes("winner") || posText.includes("runner")) {
+                            actionText = `for emerging as the ${person.position} in`;
+                        } else {
+                            actionText = `for bagging ${person.position} Position in`;
+                        }
+                    }
 
-                    // Draw the name
-                    page.drawText(person.name.toUpperCase(), {
-                        x: centerX,
-                        y: 280, // Adjust this Y coordinate based on your template design
-                        size: FONT_SIZE,
-                        font: customFont,
-                        color: rgb(0.83, 0.76, 0.41) // Gold color mapping
+                    // --- B. CALCULATE POSITIONS (X is auto-centered, Y is vertical height) ---
+                    // Note: (0,0) is the bottom-left corner in PDF-lib. 
+                    // Tweak these offsets (-20, -70, etc) to push text up/down to fit your background.
+                    const yName = height / 2 - 20;     
+                    const yAction = height / 2 - 70;   
+                    const yEvent = height / 2 - 100;   
+                    const yFooter = height / 2 - 130;  
+
+                    // Draw Name (Large, Gold, Serif)
+                    const nameFontSize = 48;
+                    const nameWidth = nameFont.widthOfTextAtSize(person.name, nameFontSize);
+                    page.drawText(person.name, {
+                        x: (width - nameWidth) / 2,
+                        y: yName,
+                        size: nameFontSize,
+                        font: nameFont,
+                        color: goldColor
                     });
 
-                    // Add to final compiled PDF
+                    // Draw Action Text ("for participating in...")
+                    const actionFontSize = 18;
+                    const actionWidth = regularFont.widthOfTextAtSize(actionText, actionFontSize);
+                    page.drawText(actionText, {
+                        x: (width - actionWidth) / 2,
+                        y: yAction,
+                        size: actionFontSize,
+                        font: regularFont,
+                        color: whiteColor
+                    });
+
+                    // Draw Event Name (Bold, Gold, Larger)
+                    const eventFontSize = 24;
+                    const eventWidth = boldFont.widthOfTextAtSize(eventName.toUpperCase(), eventFontSize);
+                    page.drawText(eventName.toUpperCase(), {
+                        x: (width - eventWidth) / 2,
+                        y: yEvent,
+                        size: eventFontSize,
+                        font: boldFont,
+                        color: goldColor
+                    });
+
+                    // Draw Static Footer Text
+                    const footerText = "as a part of ISHYA 2026";
+                    const footerFontSize = 16;
+                    const footerWidth = regularFont.widthOfTextAtSize(footerText, footerFontSize);
+                    page.drawText(footerText, {
+                        x: (width - footerWidth) / 2,
+                        y: yFooter,
+                        size: footerFontSize,
+                        font: regularFont,
+                        color: whiteColor
+                    });
+
+                    // Add to compiled PDF
                     const[copiedPage] = await finalPdf.copyPages(tempDoc, [0]);
                     finalPdf.addPage(copiedPage);
                 }
@@ -306,6 +370,129 @@
             statusEl.innerText = text;
             statusEl.className = `status-message status-${type}`;
         }
+
+        // --- BACKGROUND ANIMATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('animated-bg');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let width, height;
+
+            const isMobile = window.innerWidth < 950;
+            const COLORS = {
+                bg: 'rgba(5, 20, 8, 1)',
+                trail: 'rgba(5, 20, 8, 0.08)',
+                swirlGreen: 'rgba(77, 183, 72, 0.2)',
+                swirlDark: 'rgba(30, 50, 20, 0.3)',
+                gold: 'rgba(214, 194, 106, 0.4)',
+                mandala: 'rgba(214, 194, 106, 0.15)'
+            };
+
+            const particles = [];
+            const numParticles = isMobile ? 30 : 400;
+            const noiseScale = 0.002;
+            let mandalas = [];
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+                ctx.fillStyle = COLORS.bg;
+                ctx.fillRect(0, 0, width, height);
+
+                mandalas = [
+                    new Mandala(width, 0, width * 0.3, -0.002, COLORS.mandala),
+                    new Mandala(0, height, width * 0.35, 0.0015, COLORS.mandala)
+                ];
+
+                if (particles.length === 0) {
+                    for (let i = 0; i < numParticles; i++) particles.push(new FlowParticle());
+                }
+            }
+
+            function noise(x, y) {
+                return Math.sin(x) * Math.cos(y);
+            }
+
+            class FlowParticle {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.speed = Math.random() * 2 + 0.5;
+                    this.angle = 0;
+                    this.size = Math.random() * 2.5 + 0.5;
+                    this.color = Math.random() > 0.9
+                        ? COLORS.gold
+                        : (Math.random() > 0.6 ? COLORS.swirlGreen : COLORS.swirlDark);
+                }
+                update() {
+                    const n = noise(this.x * noiseScale, this.y * noiseScale);
+                    this.angle = n * Math.PI * 4;
+                    this.x += Math.cos(this.angle) * this.speed;
+                    this.y += Math.sin(this.angle) * this.speed;
+                    if (this.x < 0) this.x = width;
+                    if (this.x > width) this.x = 0;
+                    if (this.y < 0) this.y = height;
+                    if (this.y > height) this.y = 0;
+                }
+                draw() {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            class Mandala {
+                constructor(x, y, radius, speed, color) {
+                    this.x = x; this.y = y; this.radius = radius;
+                    this.speed = speed; this.angle = 0; this.color = color;
+                }
+                update() { this.angle += this.speed; }
+                draw() {
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate(this.angle);
+                    ctx.strokeStyle = this.color;
+
+                    if (isMobile) {
+                        ctx.lineWidth = 1;
+                        ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 2); ctx.stroke();
+                        ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.8, 0, Math.PI * 2); ctx.stroke();
+                        ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.6, 0, Math.PI * 2); ctx.stroke();
+                    } else {
+                        ctx.lineWidth = 1.5;
+                        const petals = 12;
+                        for (let i = 0; i < petals; i++) {
+                            ctx.rotate(Math.PI * 2 / petals);
+                            ctx.beginPath();
+                            ctx.moveTo(0, 0);
+                            ctx.quadraticCurveTo(this.radius * 0.5, this.radius * 0.5, 0, this.radius);
+                            ctx.quadraticCurveTo(-this.radius * 0.5, this.radius * 0.5, 0, 0);
+                            ctx.stroke();
+                            ctx.beginPath();
+                            ctx.arc(0, this.radius * 0.7, this.radius * 0.05, 0, Math.PI * 2);
+                            ctx.fillStyle = COLORS.gold;
+                            ctx.fill();
+                        }
+                        ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 2); ctx.stroke();
+                        ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.9, 0, Math.PI * 2); ctx.stroke();
+                    }
+                    ctx.restore();
+                }
+            }
+
+            function animate() {
+                ctx.fillStyle = COLORS.trail;
+                ctx.fillRect(0, 0, width, height);
+                mandalas.forEach(m => { m.update(); m.draw(); });
+                particles.forEach(p => { p.update(); p.draw(); });
+                requestAnimationFrame(animate);
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+            animate();
+        });
     </script>
 </body>
 </html>
