@@ -179,7 +179,8 @@
 
     <script>
         // --- 1. CONFIGURATION ---
-        const API_URL = "https://script.google.com/macros/s/AKfycbza4TAAB8azPA5-4hJdM1BJi_Q1irwyJMbPtrCEDxwbyHUOY2m6mqwRZX1_2zJfzjGj/exec"; 
+        // Your specific Apps Script URL
+        const API_URL = "https://script.google.com/macros/s/AKfycbzIzPtzDU8uNRqanRzM9omK8y84gb05Hi56fZKfRGFX5wCk2vRVrRc7lRBRlTKr8pfY/exec"; 
         const TEMPLATE_URL = "../TEMPLATE.pdf"; 
 
         const eventSelect = document.getElementById('event-select');
@@ -189,23 +190,31 @@
         // --- 2. FETCH DYNAMIC EVENTS ON LOAD ---
         window.addEventListener('DOMContentLoaded', async () => {
             try {
-                // 'redirect: "follow"' is crucial for Google Apps Script URLs
-                const res = await fetch(`${API_URL}?action=getEvents`, { redirect: "follow" });
-                const json = await res.json();
-
-                if (json.status === "success") {
-                    eventSelect.innerHTML = '<option value="" disabled selected>-- Choose your event --</option>';
-                    json.data.forEach(eventName => {
-                        const opt = document.createElement('option');
-                        opt.value = eventName;
-                        opt.innerText = eventName;
-                        eventSelect.appendChild(opt);
-                    });
-                } else {
-                    eventSelect.innerHTML = '<option value="" disabled>Error loading events</option>';
+                const res = await fetch(`${API_URL}?action=getEvents`);
+                const rawText = await res.text(); // Read as text first to catch HTML error pages
+                
+                try {
+                    const json = JSON.parse(rawText);
+                    
+                    if (json.status === "success" && json.data) {
+                        eventSelect.innerHTML = '<option value="" disabled selected>-- Choose your event --</option>';
+                        json.data.forEach(eventName => {
+                            const opt = document.createElement('option');
+                            opt.value = eventName;
+                            opt.innerText = eventName;
+                            eventSelect.appendChild(opt);
+                        });
+                    } else {
+                        console.error("Backend returned error:", json.message);
+                        eventSelect.innerHTML = `<option value="" disabled>Error: ${json.message}</option>`;
+                    }
+                } catch (parseError) {
+                    console.error("Google Apps Script did not return JSON. It returned HTML. Check permissions or deployment:", rawText);
+                    eventSelect.innerHTML = '<option value="" disabled>Script Error (Check Console)</option>';
                 }
             } catch (err) {
-                eventSelect.innerHTML = '<option value="" disabled>Failed to load events</option>';
+                console.error("Fetch Request Failed:", err);
+                eventSelect.innerHTML = '<option value="" disabled>Network Error (Check Console)</option>';
             }
         });
 
@@ -223,9 +232,16 @@
             generateBtn.disabled = true;
 
             try {
-                // Fetch user/team details
-                const res = await fetch(`${API_URL}?action=getCertificates&event=${encodeURIComponent(eventName)}&mobile=${encodeURIComponent(mobile)}`, { redirect: "follow" });
-                const result = await res.json();
+                const res = await fetch(`${API_URL}?action=getCertificates&event=${encodeURIComponent(eventName)}&mobile=${encodeURIComponent(mobile)}`);
+                const rawText = await res.text();
+                
+                let result;
+                try {
+                    result = JSON.parse(rawText);
+                } catch(e) {
+                    console.error("Non-JSON Response:", rawText);
+                    throw new Error("Server configuration error. Check console.");
+                }
 
                 if(result.status !== 'success') {
                     throw new Error(result.message || "Record not found. Check your details.");
@@ -239,7 +255,7 @@
                 const existingPdfBytes = await fetch(TEMPLATE_URL).then(r => r.arrayBuffer());
                 const finalPdf = await PDFDocument.create();
                 
-                // Load a standard font for accurate width measurement (Auto-Centering)
+                // Load standard font for width measurement (Auto-Centering)
                 const customFont = await finalPdf.embedFont(StandardFonts.HelveticaBold);
                 const FONT_SIZE = 36; 
 
@@ -257,7 +273,7 @@
                     // Draw the name
                     page.drawText(person.name.toUpperCase(), {
                         x: centerX,
-                        y: 280, // Adjust Y coordinate based on your template design
+                        y: 280, // Adjust this Y coordinate based on your template design
                         size: FONT_SIZE,
                         font: customFont,
                         color: rgb(0.83, 0.76, 0.41) // Gold color mapping
@@ -290,9 +306,6 @@
             statusEl.innerText = text;
             statusEl.className = `status-message status-${type}`;
         }
-
-        // --- BACKGROUND ANIMATION (Keep existing canvas code here) ---
-        // Just paste the `<script>` contents from your original file for the background particles
     </script>
 </body>
 </html>
