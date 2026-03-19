@@ -11,8 +11,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Foldit:wght@400;600;800;900&family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
-    <!-- PDF Generation Library -->
+    <!-- PDF Generation Libraries -->
     <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+    <!-- Fontkit is REQUIRED to load custom cursive .ttf fonts into the PDF -->
+    <script src="https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.min.js"></script>
+    
     <script src="../layout.js" defer></script>
 
     <style>
@@ -179,10 +182,11 @@
 
     <script>
         // --- 1. CONFIGURATION ---
-        const API_URL = "https://script.google.com/macros/s/AKfycbyrsXbC1aBZWElqrCcBQlWUNEagw_gonKMhbVwxDumZS9zLtyv8P8uGYGAu2YEwNhek/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbza4TAAB8azPA5-4hJdM1BJi_Q1irwyJMbPtrCEDxwbyHUOY2m6mqwRZX1_2zJfzjGj/exec"; 
+        const TEMPLATE_URL = "./T.pdf"; 
         
-        // Ensure this points to a completely blank version of your PDF
-        const TEMPLATE_URL = "./Participant.pdf"; 
+        // This is a beautiful Cursive Script font from Google Fonts (Great Vibes)
+        const CURSIVE_FONT_URL = "https://fonts.gstatic.com/s/greatvibes/v14/RWmMoKWR9v4ksMfaWd_JN9XliaO6.ttf";
 
         const eventSelect = document.getElementById('event-select');
         const generateBtn = document.getElementById('generate-btn');
@@ -242,44 +246,48 @@
                 }
 
                 const participants = result.data; 
-                setStatus(`Found ${participants.length} record(s). Downloading Template...`, "loading");
+                setStatus(`Found ${participants.length} record(s). Downloading Template & Fonts...`, "loading");
 
-                // Fetch PDF
+                // Fetch PDF Template
                 const pdfResponse = await fetch(TEMPLATE_URL);
-                if (!pdfResponse.ok) {
-                    throw new Error(`Failed to load PDF template. Check if ${TEMPLATE_URL} exists.`);
-                }
-                
-                const contentType = pdfResponse.headers.get("content-type");
-                if (contentType && !contentType.includes("application/pdf")) {
-                     throw new Error("The TEMPLATE_URL is pointing to a webpage, not a .pdf file.");
-                }
-
+                if (!pdfResponse.ok) throw new Error(`Failed to load PDF template.`);
                 const existingPdfBytes = await pdfResponse.arrayBuffer();
-                setStatus(`Designing PDF...`, "loading");
+
+                // Fetch Custom Cursive Font
+                const fontResponse = await fetch(CURSIVE_FONT_URL);
+                if (!fontResponse.ok) throw new Error("Failed to load cursive font.");
+                const customFontBytes = await fontResponse.arrayBuffer();
+
+                setStatus(`Designing Certificate...`, "loading");
 
                 // Initialize PDF creation
                 const { PDFDocument, rgb, StandardFonts } = PDFLib;
                 const finalPdf = await PDFDocument.create();
                 
-                // LOAD FONTS (To match your elegant template)
-                const nameFont = await finalPdf.embedFont(StandardFonts.TimesRomanItalic); // Serif for elegant names
-                const regularFont = await finalPdf.embedFont(StandardFonts.Helvetica); // Clean sans-serif for subtext
-                const boldFont = await finalPdf.embedFont(StandardFonts.HelveticaBold); // Bold for event name
+                // Register Fontkit (Required for custom .ttf fonts)
+                finalPdf.registerFontkit(window.fontkit);
                 
-                // Color Mapping (Matching your provided template design)
-                const goldColor = rgb(0.95, 0.92, 0.80); // Hex #f2ebcd
+                // Embed Fonts
+                const cursiveFont = await finalPdf.embedFont(customFontBytes); 
+                const boldSerifFont = await finalPdf.embedFont(StandardFonts.TimesRomanBoldItalic); // For Event Name
+                const regularFont = await finalPdf.embedFont(StandardFonts.Helvetica); // For "securing position in"
+                
+                // Colors
+                const goldColor = rgb(0.85, 0.77, 0.50); // Muted gold matching your template
                 const whiteColor = rgb(0.9, 0.9, 0.9);
+
+                // Load Template Once
+                const templateDoc = await PDFDocument.load(existingPdfBytes);
 
                 // Process each team member
                 for (let person of participants) {
-                    const tempDoc = await PDFDocument.load(existingPdfBytes);
-                    const pages = tempDoc.getPages();
-                    const page = pages[0];
+                    
+                    const [copiedPage] = await finalPdf.copyPages(templateDoc, [0]);
+                    const page = finalPdf.addPage(copiedPage); 
                     const { width, height } = page.getSize();
 
                     // --- A. DETERMINE GRAMMAR ---
-                    let posText = person.position.toLowerCase();
+                    let posText = person.position ? person.position.toLowerCase() : "participant";
                     let actionText = "for participating in";
                     
                     if (posText && posText !== "participant") {
@@ -290,62 +298,55 @@
                         }
                     }
 
-                    // --- B. CALCULATE POSITIONS (X is auto-centered, Y is vertical height) ---
-                    // Note: (0,0) is the bottom-left corner in PDF-lib. 
-                    // Tweak these offsets (-20, -70, etc) to push text up/down to fit your background.
-                    const yName = height / 2 - 20;     
-                    const yAction = height / 2 - 70;   
-                    const yEvent = height / 2 - 100;   
-                    const yFooter = height / 2 - 130;  
-
-                    // Draw Name (Large, Gold, Serif)
-                    const nameFontSize = 48;
-                    const nameWidth = nameFont.widthOfTextAtSize(person.name, nameFontSize);
+                    // --- B. AUTO-SCALING THE NAME & CALCULATING POSITIONS ---
+                    // "proudly presented to" is just above midline. We will place text exactly beneath it.
+                    
+                    // 1. Draw Cursive Name
+                    let nameFontSize = 64; 
+                    let nameWidth = cursiveFont.widthOfTextAtSize(person.name, nameFontSize);
+                    
+                    // Shrink font if name is too long for the page!
+                    while (nameWidth > width - 120) {
+                        nameFontSize -= 2;
+                        nameWidth = cursiveFont.widthOfTextAtSize(person.name, nameFontSize);
+                    }
+                    
                     page.drawText(person.name, {
                         x: (width - nameWidth) / 2,
-                        y: yName,
+                        y: height / 2 - 25, 
                         size: nameFontSize,
-                        font: nameFont,
+                        font: cursiveFont,
                         color: goldColor
                     });
 
-                    // Draw Action Text ("for participating in...")
-                    const actionFontSize = 18;
+                    // 2. Draw Action Text ("for bagging 1st Position in")
+                    const actionFontSize = 16;
                     const actionWidth = regularFont.widthOfTextAtSize(actionText, actionFontSize);
                     page.drawText(actionText, {
                         x: (width - actionWidth) / 2,
-                        y: yAction,
+                        y: height / 2 - 65,
                         size: actionFontSize,
                         font: regularFont,
                         color: whiteColor
                     });
 
-                    // Draw Event Name (Bold, Gold, Larger)
-                    const eventFontSize = 24;
-                    const eventWidth = boldFont.widthOfTextAtSize(eventName.toUpperCase(), eventFontSize);
+                    // 3. Draw Event Name (Bold Serif)
+                    let eventFontSize = 32;
+                    let eventWidth = boldSerifFont.widthOfTextAtSize(eventName.toUpperCase(), eventFontSize);
+                    
+                    // Shrink event font if it's too long
+                    while (eventWidth > width - 120) {
+                        eventFontSize -= 2;
+                        eventWidth = boldSerifFont.widthOfTextAtSize(eventName.toUpperCase(), eventFontSize);
+                    }
+
                     page.drawText(eventName.toUpperCase(), {
                         x: (width - eventWidth) / 2,
-                        y: yEvent,
+                        y: height / 2 - 110,
                         size: eventFontSize,
-                        font: boldFont,
+                        font: boldSerifFont,
                         color: goldColor
                     });
-
-                    // Draw Static Footer Text
-                    const footerText = "as a part of ISHYA 2026";
-                    const footerFontSize = 16;
-                    const footerWidth = regularFont.widthOfTextAtSize(footerText, footerFontSize);
-                    page.drawText(footerText, {
-                        x: (width - footerWidth) / 2,
-                        y: yFooter,
-                        size: footerFontSize,
-                        font: regularFont,
-                        color: whiteColor
-                    });
-
-                    // Add to compiled PDF
-                    const[copiedPage] = await finalPdf.copyPages(tempDoc, [0]);
-                    finalPdf.addPage(copiedPage);
                 }
 
                 // Download Final PDF
@@ -409,36 +410,25 @@
                 }
             }
 
-            function noise(x, y) {
-                return Math.sin(x) * Math.cos(y);
-            }
+            function noise(x, y) { return Math.sin(x) * Math.cos(y); }
 
             class FlowParticle {
                 constructor() {
-                    this.x = Math.random() * width;
-                    this.y = Math.random() * height;
-                    this.speed = Math.random() * 2 + 0.5;
-                    this.angle = 0;
+                    this.x = Math.random() * width; this.y = Math.random() * height;
+                    this.speed = Math.random() * 2 + 0.5; this.angle = 0;
                     this.size = Math.random() * 2.5 + 0.5;
-                    this.color = Math.random() > 0.9
-                        ? COLORS.gold
-                        : (Math.random() > 0.6 ? COLORS.swirlGreen : COLORS.swirlDark);
+                    this.color = Math.random() > 0.9 ? COLORS.gold : (Math.random() > 0.6 ? COLORS.swirlGreen : COLORS.swirlDark);
                 }
                 update() {
                     const n = noise(this.x * noiseScale, this.y * noiseScale);
                     this.angle = n * Math.PI * 4;
-                    this.x += Math.cos(this.angle) * this.speed;
-                    this.y += Math.sin(this.angle) * this.speed;
-                    if (this.x < 0) this.x = width;
-                    if (this.x > width) this.x = 0;
-                    if (this.y < 0) this.y = height;
-                    if (this.y > height) this.y = 0;
+                    this.x += Math.cos(this.angle) * this.speed; this.y += Math.sin(this.angle) * this.speed;
+                    if (this.x < 0) this.x = width; if (this.x > width) this.x = 0;
+                    if (this.y < 0) this.y = height; if (this.y > height) this.y = 0;
                 }
                 draw() {
                     ctx.fillStyle = this.color;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fill();
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
                 }
             }
 
@@ -449,30 +439,21 @@
                 }
                 update() { this.angle += this.speed; }
                 draw() {
-                    ctx.save();
-                    ctx.translate(this.x, this.y);
-                    ctx.rotate(this.angle);
-                    ctx.strokeStyle = this.color;
-
+                    ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.angle); ctx.strokeStyle = this.color;
                     if (isMobile) {
                         ctx.lineWidth = 1;
                         ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 2); ctx.stroke();
                         ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.8, 0, Math.PI * 2); ctx.stroke();
                         ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.6, 0, Math.PI * 2); ctx.stroke();
                     } else {
-                        ctx.lineWidth = 1.5;
-                        const petals = 12;
+                        ctx.lineWidth = 1.5; const petals = 12;
                         for (let i = 0; i < petals; i++) {
                             ctx.rotate(Math.PI * 2 / petals);
-                            ctx.beginPath();
-                            ctx.moveTo(0, 0);
+                            ctx.beginPath(); ctx.moveTo(0, 0);
                             ctx.quadraticCurveTo(this.radius * 0.5, this.radius * 0.5, 0, this.radius);
-                            ctx.quadraticCurveTo(-this.radius * 0.5, this.radius * 0.5, 0, 0);
-                            ctx.stroke();
-                            ctx.beginPath();
-                            ctx.arc(0, this.radius * 0.7, this.radius * 0.05, 0, Math.PI * 2);
-                            ctx.fillStyle = COLORS.gold;
-                            ctx.fill();
+                            ctx.quadraticCurveTo(-this.radius * 0.5, this.radius * 0.5, 0, 0); ctx.stroke();
+                            ctx.beginPath(); ctx.arc(0, this.radius * 0.7, this.radius * 0.05, 0, Math.PI * 2);
+                            ctx.fillStyle = COLORS.gold; ctx.fill();
                         }
                         ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 2); ctx.stroke();
                         ctx.beginPath(); ctx.arc(0, 0, this.radius * 0.9, 0, Math.PI * 2); ctx.stroke();
@@ -482,16 +463,13 @@
             }
 
             function animate() {
-                ctx.fillStyle = COLORS.trail;
-                ctx.fillRect(0, 0, width, height);
+                ctx.fillStyle = COLORS.trail; ctx.fillRect(0, 0, width, height);
                 mandalas.forEach(m => { m.update(); m.draw(); });
                 particles.forEach(p => { p.update(); p.draw(); });
                 requestAnimationFrame(animate);
             }
 
-            window.addEventListener('resize', resize);
-            resize();
-            animate();
+            window.addEventListener('resize', resize); resize(); animate();
         });
     </script>
 </body>
