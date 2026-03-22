@@ -56,7 +56,9 @@ class IshyaHeader extends HTMLElement {
                     <a href="https://www.ishyaiisertvm.in/SPONSORS/index.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Sponsors</span></a>
                     
                     <!-- MODIFIED: Added Results Link -->
+                    
                     <a href="https://www.ishyaiisertvm.in/RESULTS/index.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg><span>Results</span></a>
+                    <a href="https://www.ishyaiisertvm.in/legacy.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Legacy</span></a>
                 </div>
             </nav>
         </div>
