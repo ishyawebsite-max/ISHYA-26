@@ -1,99 +1,435 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="shortcut icon" type="image/x-icon" href="../Logo Ishya.ico">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/x-icon" href="../Logo Ishya.ico">
+    <title>Room Booking System | Ishya IISER TVM</title>
     
-    <title>Room Booking System</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     
-    <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Your Global Header/Footer CSS and JS -->
+    <link rel="stylesheet" href="/global.css">
+    <script src="/layout.js" defer></script>
     
-    <!-- CSS Connection -->
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="/global.css"> <!--H&F #1-->
-    <!-- Google Identity Services (Login) -->
+    <!-- Google Identity Services -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="/layout.js" defer></script><!--H&F #2-->
-    <!-- Custom Background Style -->
+
+    <!-- Unified App CSS -->
     <style>
-        body {
-            /* Fallback color if image fails */
-            background-color: #363636; 
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            min-height: 100vh;
+        :root {
+            --bg-dark: #121212;
+            --bg-card: #1e1e1e;
+            --bg-hover: #2c2c2c;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent-gold: #f0b90b;
+            --accent-gold-hover: #dca300;
+            
+            --color-available: #10b981; /* Green */
+            --color-waitlist: #f59e0b; /* Orange */
+            --color-booked: #ef4444; /* Red */
+            --color-blacked-out: #333333; /* Dark Grey */
+            --border-radius: 10px;
+        }
+
+        #app {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: calc(100vh - 150px);
+            display: flex;
+            flex-direction: column;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .booking-notice-banner {
+            background-color: #2a2005;
+            color: #ffd700;
+            text-align: center;
+            padding: 12px 20px;
+            font-weight: 500;
+            font-size: 14px;
+            border-bottom: 1px solid #4a3a00;
+        }
+
+        .app-toolbar {
+            background-color: var(--bg-card);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .app-toolbar h1 {
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+            margin: 0;
+        }
+
+        main.app-content {
+            flex: 1;
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .step { display: none; }
+        .step.active { display: block; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #app h2 { margin-bottom: 25px; font-weight: 500; color: var(--text-main); }
+
+        /* Buttons */
+        .cta-btn, .back-btn {
+            background-color: var(--accent-gold);
+            color: #121212;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .cta-btn:hover { background-color: var(--accent-gold-hover); }
+        .cta-btn:disabled { background-color: #555; color: #888; cursor: not-allowed; }
+        
+        .back-btn { background-color: #333; color: white; margin-bottom: 20px; }
+        .back-btn:hover { background-color: #444; }
+
+        /* Room Cards */
+        .card-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        .room-card {
+            background-color: var(--bg-card);
+            border: 1px solid #333;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            overflow: hidden;
+        }
+        .room-card:hover {
+            border-color: var(--accent-gold);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(240, 185, 11, 0.15);
+        }
+        .room-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background-color: #222;
+        }
+        .room-card h3 { color: var(--accent-gold); margin-bottom: 5px; font-size: 1.3rem;}
+
+        /* Schedule Container */
+        .schedule-container {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 40px;
+            background-color: var(--bg-card);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            border: 1px solid #333;
+        }
+
+        /* Calendar */
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .calendar-header button { background: none; border: none; color: var(--accent-gold); font-size: 1.5rem; cursor: pointer; padding: 5px 15px;}
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
+        .day-header { font-size: 0.8rem; color: var(--text-muted); padding-bottom: 10px; }
+        .calendar-day {
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: 0.2s;
+        }
+        .calendar-day:hover:not(.empty):not(.disabled) { border-color: var(--accent-gold); }
+        .calendar-day.selected { background-color: var(--accent-gold); color: #121212; font-weight: bold; }
+        .calendar-day.disabled { color: #444; cursor: not-allowed; }
+
+        /* Time Slots */
+        #timeslot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+            margin-top: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        /* Custom Scrollbar for Time Slots */
+        #timeslot-grid::-webkit-scrollbar { width: 6px; }
+        #timeslot-grid::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
+        
+        .slot-btn {
+            background-color: #222;
+            color: var(--text-main);
+            border: 1px solid #444;
+            padding: 10px 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .slot-btn.available { border-color: var(--color-available); }
+        .slot-btn.available:hover { background-color: rgba(16, 185, 129, 0.2); }
+        .slot-btn.selected { background-color: var(--color-available); color: #000; font-weight: bold; border-color: var(--color-available); }
+        
+        .slot-btn.waitlist { border-color: var(--color-waitlist); border-style: dashed; }
+        .slot-btn.waitlist:hover { background-color: rgba(245, 158, 11, 0.2); }
+        .slot-btn.waitlist.selected { background-color: var(--color-waitlist); color: #000; font-weight: bold; }
+
+        .slot-btn.booked { background-color: var(--color-booked); color: white; border-color: var(--color-booked); cursor: not-allowed; opacity: 0.5; }
+        .slot-btn.blacked-out { background-color: var(--color-blacked-out); color: #666; border-color: #222; cursor: not-allowed; font-size: 0.7rem; }
+
+        /* Legend & Disclaimer */
+        .timeslot-legend { display: flex; gap: 15px; margin-bottom: 15px; font-size: 0.85rem; flex-wrap: wrap;}
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .legend-color-box { width: 14px; height: 14px; border-radius: 3px; }
+
+        .waitlist-disclaimer {
+            background-color: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--color-waitlist);
+            padding: 12px;
+            font-size: 0.85rem;
+            color: #ffd27f;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        /* Loader */
+        #loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 10000; /* Increased Z-Index */
+        }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 5px solid #333; border-top-color: var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        .hidden { display: none !important; }
+
+        /* Modals */
+        .modal-wrapper {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 9999; /* Increased Z-Index so it goes above headers */
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .modal-content {
+            background-color: var(--bg-card);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            width: 100%; max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid #444;
+            position: relative;
+        }
+        /* Enhanced Close Button */
+        .close-btn { 
+            position: absolute; 
+            top: 15px; 
+            right: 15px; 
+            font-size: 1.5rem; 
+            cursor: pointer; 
+            color: var(--text-muted);
+            background: rgba(0,0,0,0.3);
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: 0.2s;
+            z-index: 10;
+        }
+        .close-btn:hover { color: white; background: rgba(255,255,255,0.1); }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-size: 0.9rem; color: var(--text-muted); }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 10px; border-radius: 5px;
+            background-color: #222; border: 1px solid #444; color: white;
+            box-sizing: border-box;
+        }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent-gold); }
+
+        /* User Dashboard Items */
+        .booking-item {
+            background-color: #222;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .booking-info { font-size: 0.9rem; }
+        .booking-status { font-weight: bold; margin-top: 5px; display: inline-block; }
+        .status-confirmed { color: var(--color-available); }
+        .status-waitlisted { color: var(--color-waitlist); }
+        .status-canceled { color: var(--color-booked); }
+
+        /* Responsive Mobile Optimizations */
+        @media (max-width: 768px) {
+            .app-toolbar { 
+                flex-direction: column; 
+                gap: 15px; 
+                text-align: center; 
+                padding: 15px 20px;
+            }
+            main.app-content { 
+                padding: 20px 15px; 
+            }
+            .schedule-container { 
+                grid-template-columns: 1fr; 
+                gap: 20px;
+                padding: 15px;
+            }
+            .calendar-day {
+                padding: 8px 5px;
+                font-size: 0.9rem;
+            }
+            #timeslot-grid {
+                grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+                gap: 8px;
+            }
+            .modal-content {
+                padding: 20px;
+            }
+            .booking-item { 
+                flex-direction: column; 
+                align-items: flex-start; 
+                gap: 15px; 
+            }
+            .booking-item button {
+                width: 100%;
+            }
+            .timeslot-legend {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .app-toolbar h1 { font-size: 1.25rem; }
+            #user-info { flex-direction: column; width: 100%; }
+            #user-info button { width: 100%; margin-top: 5px; margin-bottom: 0;}
+            .room-image { height: 160px; }
+            .card-container { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <ishya-header></ishya-header>
-    <!-- Main Application Container -->
-    <div id="app">
 
-        <header>
+    <!-- YOUR CUSTOM HEADER -->
+    <ishya-header></ishya-header>
+
+    <div id="app">
+        <!-- 24-HOUR CONSTRIANT BANNER
+        <div class="booking-notice-banner">
+            🕒 <b>Note:</b> You can only book slots exactly 24 hours before the slot opens. All future slots beyond this are blacked out.
+        </div> -->
+
+        <div class="app-toolbar">
             <h1>Room Booking System</h1>
             <div id="auth-container">
-                <!-- Login Button injected here by JS -->
+                <!-- IMPORTANT: Replace the client_id below with your Client ID from Google Cloud Console -->
+                <div id="g_id_onload"
+                     data-client_id="750824340469-nrqmioc1jgoe6rjnuaqjdu9mh0b4or2o.apps.googleusercontent.com" 
+                     data-callback="handleCredentialResponse"
+                     data-auto_prompt="false">
+                </div>
+                <div class="g_id_signin" data-type="standard" data-theme="filled_black"></div>
             </div>
-        </header>
+            <div id="user-info" class="hidden" style="display: flex; gap: 15px; align-items: center;">
+                <span id="welcome-text"></span>
+                <button onclick="openMyBookings()" class="cta-btn" style="padding: 6px 12px; font-size: 0.85rem;">My Bookings</button>
+                <button onclick="logout()" class="back-btn" style="margin:0; padding: 6px 12px; font-size: 0.85rem;">Logout</button>
+            </div>
+        </div>
 
-        <main>
+        <main class="app-content">
+            <!-- Step 0: Login Prompt (Visible to logged-out users) -->
+            <section id="login-prompt-section" class="step active" style="text-align: center; padding: 60px 20px;">
+                <h2 style="font-size: 2rem; color: var(--accent-gold);">Welcome to Ishya Room Booking</h2>
+                <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto 20px auto;">
+                    Please log in with your Google account using the button in the top right corner to view available rooms, make a booking, or access your dashboard.
+                </p>
+                <div style="font-size: 3rem;">🔒</div>
+            </section>
+
             <!-- Step 1: Room Selection -->
-            <section id="room-selection" class="step active">
-                <h2>Our Services</h2>
+            <section id="room-selection" class="step">
+                <h2>Select a Room / Service</h2>
                 <div id="room-list" class="card-container">
-                    <!-- Rooms injected here by JS -->
+                    <!-- Rooms injected here -->
                 </div>
             </section>
 
-            <!-- Step 2: Date and Time Selection -->
+            <!-- Step 2: Schedule Selection -->
             <section id="schedule-selection" class="step">
-                <button class="back-btn" data-target="room-selection">&larr; Back to Rooms</button>
+                <button class="back-btn" onclick="goToStep('room-selection')">&larr; Back to Rooms</button>
                 <h2 id="schedule-title">Schedule your service</h2>
                 
                 <div class="schedule-container">
-                    <!-- Calendar Side -->
+                    <!-- Calendar -->
                     <div id="calendar-container">
                         <h3>Select a Date</h3>
                         <div class="calendar-header">
-                            <button id="prev-month">&lt;</button>
-                            <span id="month-year"></span>
-                            <button id="next-month">&gt;</button>
+                            <button onclick="changeMonth(-1)">&lt;</button>
+                            <span id="month-year" style="font-weight: 500;"></span>
+                            <button onclick="changeMonth(1)">&gt;</button>
                         </div>
-                        <div class="calendar-grid"></div>
+                        <div class="calendar-grid" id="calendar-grid"></div>
                     </div>
 
-                    <!-- Time Slots Side -->
+                    <!-- Time Slots -->
                     <div id="timeslot-container">
-                        <h3>Available Time Slots for <span id="selected-date-display"></span></h3>
+                        <h3>Available Slots for <span id="selected-date-display" style="color:var(--accent-gold)">...</span></h3>
                         
                         <div id="timeslot-grid">
-                            <!-- Slots injected here by JS -->
+                            <!-- Slots injected here -->
                         </div>
                         
-                        <p class="info-text">You can select multiple slots.</p>
-                        
-                        <!-- LEGEND -->
+                        <!-- LEGEND & DISCLAIMER -->
                         <div class="timeslot-legend">
-                            <div class="legend-item">
-                                <div class="legend-color-box" style="border: 1px solid var(--accent-color);"></div>
-                                <span>Available</span>
-                            </div>
-                            <div class="legend-item">
-                                <div class="legend-color-box" style="border: 1px dashed var(--waitlist-color);"></div>
-                                <span>Waitlist</span>
-                            </div>
-                            <div class="legend-item">
-                                <div class="legend-color-box" style="background-color: var(--booked-color);"></div>
-                                <span>Booked</span>
-                            </div>
+                            <div class="legend-item"><div class="legend-color-box" style="border: 2px solid var(--color-available);"></div><span>Available</span></div>
+                            <div class="legend-item"><div class="legend-color-box" style="border: 2px dashed var(--color-waitlist);"></div><span>Waitlist</span></div>
+                            <div class="legend-item"><div class="legend-color-box" style="background-color: var(--color-booked);"></div><span>Booked</span></div>
+                            <div class="legend-item"><div class="legend-color-box" style="background-color: var(--color-blacked-out);"></div><span>Not Open Yet</span></div>
                         </div>
 
-                        <button id="proceed-to-booking-btn" class="cta-btn" disabled>Book Selected Slots</button>
+                        <div class="waitlist-disclaimer">
+                            ⚠️ <b>Waitlist Note:</b> Booking a waitlisted slot <u>does not</u> confirm your reservation. Your slot will only be confirmed if the currently booked user cancels. You can track your status in the <b>My Bookings</b> dashboard.
+                        </div>
+
+                        <button id="proceed-to-booking-btn" class="cta-btn" style="width:100%" disabled onclick="openBookingModal()">Proceed to Book Selected Slots</button>
                     </div>
                 </div>
             </section>
@@ -107,36 +443,37 @@
         <!-- Booking Form Modal -->
         <div id="booking-modal" class="modal-wrapper hidden">
             <div class="modal-content">
-                <span class="close-btn">&times;</span>
-                <h3>Booking Form</h3>
-                <div id="booking-summary"></div>
-                <form id="booking-form">
+                <span class="close-btn" onclick="closeModals()">&times;</span>
+                <h3 style="margin-bottom: 20px; color: var(--accent-gold);">Confirm Booking</h3>
+                <div id="booking-summary" style="margin-bottom: 20px; font-size: 0.9rem; color: #ccc;"></div>
+                <form id="booking-form" onsubmit="submitBooking(event)">
                     <div class="form-group">
-                        <label for="user-name">Team Head Name</label>
+                        <label>Name</label>
                         <input type="text" id="user-name" disabled>
                     </div>
                     <div class="form-group">
-                        <label for="user-email">Email</label>
+                        <label>Email</label>
                         <input type="text" id="user-email" disabled>
                     </div>
                     <div class="form-group">
-                        <label for="participants">Number of Participants *</label>
+                        <label>Number of Participants *</label>
                         <input type="number" id="participants" min="1" required>
                     </div>
                     <div class="form-group">
-                        <label for="notes">Paragraph / Notes</label>
+                        <label>Notes / Purpose</label>
                         <textarea id="notes" rows="3"></textarea>
                     </div>
-                    <button type="submit" class="cta-btn">Confirm Booking</button>
+                    <button type="submit" class="cta-btn" style="width:100%">Confirm Booking</button>
                 </form>
             </div>
         </div>
 
-        <!-- My Bookings Modal -->
+        <!-- My Bookings Dashboard Modal -->
         <div id="my-bookings-modal" class="modal-wrapper hidden">
             <div class="modal-content">
-                <span class="close-btn">&times;</span>
-                <h3>My Bookings</h3>
+                <span class="close-btn" onclick="closeModals()">&times;</span>
+                <h3 style="margin-bottom: 20px; color: var(--accent-gold);">My Bookings Dashboard</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Here you can track your current and past bookings, check waitlist status, and cancel slots you no longer need.</p>
                 <div id="user-bookings-list">
                     <!-- User bookings injected here -->
                 </div>
@@ -145,8 +482,461 @@
 
     </div>
 
-    <!-- MAIN LOGIC SCRIPT -->
-    <script src="scriptv5.js"></script>
-    <ishya-footer></ishya-footer> 
+    <!-- YOUR CUSTOM FOOTER -->
+    <ishya-footer></ishya-footer>
+
+    <!-- UNIFIED JAVASCRIPT LOGIC -->
+    <script>
+        // ==========================================
+        // CONFIGURATION - UPDATE THIS URL
+        // ==========================================
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzXutz96vgb_IwCM2V5Fnx222nJIxgiVNKNn-t1C-5FwGmbY3JUL-p920YqC6Eba9sDbA/exec"; 
+        
+        // --- State Variables ---
+        let currentUser = null;
+        let roomsData =[];
+        let selectedRoomId = null;
+        let selectedRoomName = null;
+        
+        let currentDate = new Date();
+        let displayMonth = currentDate.getMonth();
+        let displayYear = currentDate.getFullYear();
+        let selectedDateStr = null; 
+        
+        let availableSlotsData = {};
+        let selectedSlots =[];
+
+        // GENERATE 30-MIN SLOTS FROM 6 AM TO 11:30 PM (Midnight limit)
+        const STANDARD_SLOTS =[];
+        for (let h = 6; h < 24; h++) {
+            const hour = h.toString().padStart(2, '0');
+            STANDARD_SLOTS.push(`${hour}:00`);
+            STANDARD_SLOTS.push(`${hour}:30`);
+        }
+
+        // --- Utility Functions ---
+        function showLoader() { document.getElementById('loader').classList.remove('hidden'); }
+        function hideLoader() { document.getElementById('loader').classList.add('hidden'); }
+        function goToStep(stepId) {
+            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+            document.getElementById(stepId).classList.add('active');
+        }
+        function closeModals() {
+            document.querySelectorAll('.modal-wrapper').forEach(el => el.classList.add('hidden'));
+        }
+
+        // --- Authentication (Google JWT) ---
+        function parseJwt(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                return JSON.parse(window.atob(base64));
+            } catch (e) { return null; }
+        }
+
+        function handleCredentialResponse(response) {
+            const data = parseJwt(response.credential);
+            currentUser = { name: data.name, email: data.email };
+            document.querySelector('.g_id_signin').style.display = 'none';
+            document.getElementById('user-info').classList.remove('hidden');
+            document.getElementById('welcome-text').innerText = `Hi, ${currentUser.name.split(' ')[0]}`;
+            
+            // Move from login prompt to room selection
+            goToStep('room-selection');
+            fetchRooms(); 
+        }
+
+        function logout() {
+            currentUser = null;
+            document.querySelector('.g_id_signin').style.display = 'block';
+            document.getElementById('user-info').classList.add('hidden');
+            goToStep('login-prompt-section');
+        }
+
+        // --- API Calls ---
+        async function fetchAPI(action, payload = {}) {
+            try {
+                const res = await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action, ...payload })
+                });
+                return await res.json();
+            } catch (err) {
+                console.error("API Error:", err);
+                alert("Connection failed. Check console.");
+                return null;
+            }
+        }
+
+        async function fetchRooms() {
+            if (!currentUser) return;
+            showLoader();
+            const data = await fetchAPI('getRooms');
+            hideLoader();
+            if (data) {
+                roomsData = data;
+                renderRooms();
+            }
+        }
+
+        // --- UI Rendering ---
+        function renderRooms() {
+            const container = document.getElementById('room-list');
+            container.innerHTML = '';
+            
+            if (roomsData.length === 0) {
+                container.innerHTML = '<p>No rooms available currently.</p>';
+                return;
+            }
+
+            roomsData.forEach(room => {
+                const div = document.createElement('div');
+                div.className = 'room-card';
+                
+                // Fetch image from Google sheet column (handles variations of column name)
+                const imgUrl = room.Image || room.ImageUrl || room.ImageURL || room.Photo || 'https://via.placeholder.com/400x250?text=No+Image+Available';
+                
+                div.innerHTML = `
+                    <img src="${imgUrl}" alt="${room.RoomName}" class="room-image" onerror="this.src='https://via.placeholder.com/400x250?text=Image+Not+Found'">
+                    <h3>${room.RoomName}</h3>
+                    <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:10px;">Capacity: ${room.Capacity}</p>
+                    <p style="font-size:0.85rem">${room.Description || 'Available for booking'}</p>
+                `;
+                div.onclick = () => selectRoom(room.RoomID, room.RoomName);
+                container.appendChild(div);
+            });
+        }
+
+        function selectRoom(id, name) {
+            selectedRoomId = id;
+            selectedRoomName = name;
+            document.getElementById('schedule-title').innerText = `Schedule: ${name}`;
+            
+            // Reset Selections
+            selectedDateStr = null;
+            selectedSlots =[];
+            document.getElementById('timeslot-grid').innerHTML = '';
+            document.getElementById('selected-date-display').innerText = '...';
+            document.getElementById('proceed-to-booking-btn').disabled = true;
+
+            goToStep('schedule-selection');
+
+            // --- IMMEDIATELY OPEN TODAY'S DATE ---
+            const today = new Date();
+            displayMonth = today.getMonth();
+            displayYear = today.getFullYear();
+            
+            // Format today's date safely to YYYY-MM-DD
+            const todayStr = `${displayYear}-${String(displayMonth + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+            
+            renderCalendar();
+            selectDate(todayStr); // Trigger the API fetch and slot rendering for today
+        }
+
+        // --- Calendar Logic ---
+        function changeMonth(offset) {
+            displayMonth += offset;
+            if (displayMonth < 0) { displayMonth = 11; displayYear--; }
+            else if (displayMonth > 11) { displayMonth = 0; displayYear++; }
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            grid.innerHTML = '';
+            
+            const monthNames =["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            document.getElementById('month-year').innerText = `${monthNames[displayMonth]} ${displayYear}`;['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
+                const el = document.createElement('div');
+                el.className = 'day-header';
+                el.innerText = day;
+                grid.appendChild(el);
+            });
+
+            const firstDay = new Date(displayYear, displayMonth, 1).getDay();
+            const daysInMonth = new Date(displayYear, displayMonth + 1, 0).getDate();
+            
+            const today = new Date();
+            today.setHours(0,0,0,0);
+
+            // Empty slots before 1st day
+            for (let i = 0; i < firstDay; i++) {
+                const el = document.createElement('div');
+                el.className = 'calendar-day empty';
+                grid.appendChild(el);
+            }
+
+            // Days
+            for (let d = 1; d <= daysInMonth; d++) {
+                const cellDate = new Date(displayYear, displayMonth, d);
+                // Adjust for local timezone safe string YYYY-MM-DD
+                const dateString = `${displayYear}-${String(displayMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                
+                const el = document.createElement('div');
+                el.className = 'calendar-day';
+                el.innerText = d;
+
+                if (cellDate < today) {
+                    el.classList.add('disabled');
+                } else {
+                    if (selectedDateStr === dateString) el.classList.add('selected');
+                    el.onclick = () => selectDate(dateString);
+                }
+                grid.appendChild(el);
+            }
+        }
+
+        async function selectDate(dateString) {
+            selectedDateStr = dateString;
+            selectedSlots =[]; // Reset selected slots
+            updateSlotButtonState();
+            renderCalendar(); // Re-render to show selected circle
+            
+            document.getElementById('selected-date-display').innerText = dateString;
+            
+            showLoader();
+            availableSlotsData = await fetchAPI('getAvailability', { roomId: selectedRoomId, date: dateString });
+            hideLoader();
+            
+            renderTimeSlots();
+        }
+
+        // --- Time Slot & 2 weeks CONSTRAINT LOGIC ---
+        function renderTimeSlots() {
+            const grid = document.getElementById('timeslot-grid');
+            grid.innerHTML = '';
+
+            const now = new Date();
+            
+            // NEW: Calculate 14 days (2 weeks) in milliseconds
+            const twoWeeksMs = 14 * 24 * 60 * 60 * 1000; 
+
+            STANDARD_SLOTS.forEach(time => {
+                // Parse the specific slot time safely
+                const slotDateTime = new Date(`${selectedDateStr}T${time}:00`);
+                const timeDiffMs = slotDateTime.getTime() - now.getTime();
+
+                const btn = document.createElement('div');
+                btn.className = 'slot-btn';
+                
+                // 1. Time Constraint Checks
+                if (timeDiffMs < 0) {
+                    // Past Slot
+                    btn.classList.add('blacked-out');
+                    btn.innerHTML = `<span>${time}</span><span style="font-size:0.65em">(Past)</span>`;
+                } 
+                else if (timeDiffMs > twoWeeksMs) { 
+                    // Future Slot > 2 Weeks
+                    btn.classList.add('blacked-out');
+                    btn.innerHTML = `<span>${time}</span><span style="font-size:0.65em">(Opens 14 days prior)</span>`; 
+                } 
+                else {
+                    // Slot is within the 2 week booking window
+                    btn.innerHTML = `<span>${time}</span>`;
+                    
+                    // Check Backend Availability capacity
+                    let confirmed = 0, waitlisted = 0;
+                    if (availableSlotsData && availableSlotsData[time]) {
+                        confirmed = availableSlotsData[time].confirmed || 0;
+                        waitlisted = availableSlotsData[time].waitlisted || 0;
+                    }
+
+                    // Max 1 Confirmed, Max 1 Waitlist rule
+                    if (confirmed >= 1 && waitlisted >= 1) {
+                        btn.classList.add('booked');
+                    } else if (confirmed >= 1) {
+                        btn.classList.add('waitlist');
+                        btn.onclick = () => toggleSlot(time, btn, 'Waitlist');
+                    } else {
+                        btn.classList.add('available');
+                        btn.onclick = () => toggleSlot(time, btn, 'Available');
+                    }
+                }
+
+                grid.appendChild(btn);
+            });
+        }
+
+        function toggleSlot(time, btnElement, type) {
+            const index = selectedSlots.indexOf(time);
+            if (index > -1) {
+                selectedSlots.splice(index, 1);
+                btnElement.classList.remove('selected');
+            } else {
+                selectedSlots.push(time);
+                btnElement.classList.add('selected');
+            }
+            updateSlotButtonState();
+        }
+
+        function updateSlotButtonState() {
+            const btn = document.getElementById('proceed-to-booking-btn');
+            if (selectedSlots.length > 0) {
+                btn.disabled = false;
+                btn.innerText = `Book ${selectedSlots.length} Selected Slot(s)`;
+            } else {
+                btn.disabled = true;
+                btn.innerText = `Proceed to Book Selected Slots`;
+            }
+        }
+
+        // --- Booking Submission ---
+        function openBookingModal() {
+            document.getElementById('booking-modal').classList.remove('hidden');
+            document.getElementById('user-name').value = currentUser.name;
+            document.getElementById('user-email').value = currentUser.email;
+            
+            document.getElementById('booking-summary').innerHTML = `
+                <b>Room:</b> ${selectedRoomName}<br>
+                <b>Date:</b> ${selectedDateStr}<br>
+                <b>Times:</b> ${selectedSlots.join(', ')}
+            `;
+        }
+
+        async function submitBooking(e) {
+            e.preventDefault();
+            
+            const participants = document.getElementById('participants').value;
+            const notes = document.getElementById('notes').value;
+
+            const payload = {
+                bookingDetails: {
+                    user: currentUser,
+                    roomName: selectedRoomName,
+                    participants: participants,
+                    notes: notes,
+                    slots: selectedSlots.map(time => ({
+                        roomId: selectedRoomId,
+                        date: selectedDateStr,
+                        time: time
+                    }))
+                }
+            };
+
+            closeModals();
+            showLoader();
+            
+            const result = await fetchAPI('makeBooking', payload);
+            hideLoader();
+
+            if (result && result.status === 'completed') {
+                let msgs = result.results.map(r => `Time: ${r.time} - ${r.status === 'success' ? `✅ ${r.bookingStatus}` : `❌ ${r.message}`}`);
+                alert("Booking Processed!\n\n" + msgs.join("\n"));
+                
+                // Refresh calendar state
+                selectDate(selectedDateStr);
+            } else {
+                alert("Error making booking: " + (result ? result.message : "Unknown error"));
+            }
+        }
+
+        // --- User Dashboard (My Bookings) ---
+        async function openMyBookings() {
+            if (!currentUser) return;
+            showLoader();
+            const bookings = await fetchAPI('getUserBookings', { userEmail: currentUser.email });
+            hideLoader();
+            
+            const listContainer = document.getElementById('user-bookings-list');
+            listContainer.innerHTML = '';
+
+            if (!bookings || bookings.length === 0) {
+                listContainer.innerHTML = '<p style="color:#aaa;">You have no booking history.</p>';
+            } else {
+                // Sort bookings: Newest first based on Timestamp (assuming Timestamp is last column/index)
+                bookings.reverse().forEach(b => {
+                    const div = document.createElement('div');
+                    div.className = 'booking-item';
+                    
+                    let statusClass = 'status-canceled';
+                    if (b.Status === 'Confirmed') statusClass = 'status-confirmed';
+                    if (b.Status === 'Waitlisted') statusClass = 'status-waitlisted';
+
+                    div.innerHTML = `
+                        <div class="booking-info">
+                            <strong style="color:var(--accent-gold); font-size:1.1rem;">Room ID: ${b.RoomID}</strong><br>
+                            📅 Date: ${b.BookingDate} | ⏰ Time: ${b.StartTime}<br>
+                            <span class="booking-status ${statusClass}">Status: ${b.Status}</span>
+                        </div>
+                    `;
+
+                    // Parse Date Safely to check if the slot time has already passed
+                    let isPast = false;
+                    try {
+                        let dateStr = b.BookingDate.split('T')[0]; // Handle ISO if present
+                        // Convert DD/MM/YYYY formatting if present
+                        if(dateStr.includes('/')) {
+                            let parts = dateStr.split('/');
+                            if(parts[2] && parts[2].length === 4) {
+                                dateStr = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+                            }
+                        }
+                        
+                        let timeStr = b.StartTime.length === 5 ? b.StartTime + ':00' : b.StartTime;
+                        let slotDateTime = new Date(`${dateStr}T${timeStr}`);
+                        
+                        // Fallback parsing just in case strict ISO format fails
+                        if(isNaN(slotDateTime.getTime())) {
+                            slotDateTime = new Date(`${b.BookingDate} ${b.StartTime}`);
+                        }
+
+                        if (!isNaN(slotDateTime.getTime()) && slotDateTime < new Date()) {
+                            isPast = true;
+                        }
+                    } catch(e) { console.error("Could not parse date", e); }
+
+
+                    // Condition rendering: 
+                    // 1. If canceled -> Show Canceled badge
+                    // 2. If time passed -> Show Elapsed Badge
+                    // 3. Otherwise -> Show Cancel Button
+                    if (b.Status === 'Canceled') {
+                        const closedBadge = document.createElement('span');
+                        closedBadge.style.color = '#ef4444';
+                        closedBadge.style.fontSize = '0.85rem';
+                        closedBadge.innerText = 'Canceled';
+                        div.appendChild(closedBadge);
+                    } else if (isPast) {
+                        const elapsedBadge = document.createElement('span');
+                        elapsedBadge.style.color = 'var(--text-muted)';
+                        elapsedBadge.style.fontSize = '0.85rem';
+                        elapsedBadge.innerText = 'Elapsed / Completed';
+                        div.appendChild(elapsedBadge);
+                    } else {
+                        const cancelBtn = document.createElement('button');
+                        cancelBtn.className = 'back-btn';
+                        cancelBtn.style.margin = '0';
+                        cancelBtn.style.backgroundColor = 'var(--color-booked)'; // Explicit red to indicate deletion
+                        cancelBtn.innerText = 'Cancel Slot';
+                        cancelBtn.onclick = () => cancelUserBooking(b.BookingID);
+                        div.appendChild(cancelBtn);
+                    }
+
+                    listContainer.appendChild(div);
+                });
+            }
+            document.getElementById('my-bookings-modal').classList.remove('hidden');
+        }
+
+        async function cancelUserBooking(bookingId) {
+            if (!confirm("Are you sure you want to cancel this booking? Waitlisted users will automatically take your spot.")) return;
+            
+            showLoader();
+            const res = await fetchAPI('cancelBooking', { bookingId: bookingId, userEmail: currentUser.email });
+            hideLoader();
+            
+            if (res && res.status === 'success') {
+                alert('Your booking has been successfully canceled.');
+                openMyBookings(); // Refresh the modal list
+                
+                // If the user is currently looking at a date, refresh the visual slot grid behind the modal
+                if (selectedDateStr) {
+                    selectDate(selectedDateStr);
+                }
+            } else {
+                alert('Failed to cancel booking: ' + (res ? res.message : 'Unknown error'));
+            }
+        }
+    </script>
 </body>
 </html>
